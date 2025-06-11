@@ -58,7 +58,7 @@
   },
   "lint-staged": {
     "*.{ts,html,scss}": [
-      "ng lint --fix",
+      "eslint --fix",
       "prettier --write"
     ]
   }
