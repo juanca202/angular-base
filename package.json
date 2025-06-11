@@ -8,7 +8,8 @@
     "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json && node generate-i18n.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org factor-ec --project angular-base-project ./dist && sentry-cli sourcemaps upload --org factor-ec --project angular-base-project ./dist"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org factor-ec --project angular-base-project ./dist && sentry-cli sourcemaps upload --org factor-ec --project angular-base-project ./dist",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -39,12 +40,26 @@
     "@angular/localize": "^20.0.3",
     "@capacitor/cli": "latest",
     "@types/jasmine": "~5.1.0",
+    "angular-eslint": "20.0.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "husky": "^9.1.7",
     "jasmine-core": "~5.7.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.2"
+    "lint-staged": "^16.1.0",
+    "prettier": "^3.5.3",
+    "typescript": "~5.8.2",
+    "typescript-eslint": "8.33.1"
+  },
+  "lint-staged": {
+    "*.{ts,html,scss}": [
+      "ng lint --fix",
+      "prettier --write"
+    ]
   }
 }
