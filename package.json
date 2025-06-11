@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build && npm run sentry:sourcemaps",
+    "start": "node git-version.js && ng serve",
+    "build": "node git-version.js && ng build && npm run sentry:sourcemaps",
     "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json && node generate-i18n.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -31,6 +31,7 @@
     "@factor_ec/utils": "^5.0.8",
     "@sentry/angular": "^9.28.1",
     "@sentry/cli": "^2.46.0",
+    "git-describe": "^4.1.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
