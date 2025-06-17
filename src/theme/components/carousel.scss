@@ -1,0 +1,69 @@
+.ft-carousel {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  position: relative;
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > div > .ft-item {
+      display: block;
+      max-width: 100vw;
+      width: 100%;
+      scroll-snap-align: center;
+
+      &--placeholder {
+        display: flex;
+        margin: 0 5px;
+        border: 1px dashed var(--ft-border-color);
+        border-radius: 0.5rem;
+        justify-content: center;
+      }
+    }
+  }
+
+  &__strip {
+    width: calc(100% * var(--ft-carousel-items));
+    display: flex;
+  }
+
+  &__pager {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem auto;
+    width: fit-content;
+
+    .ft-item {
+      width: 0.25rem;
+      height: 0.25rem;
+      background-color: color-mix(
+        in srgb,
+        var(--ft-primary-color) 20%,
+        transparent
+      );
+      border-radius: 0.25rem;
+      transition:
+        background-color 0.2s,
+        width 0.2s;
+
+      &--active {
+        width: 2rem;
+        height: 0.25rem;
+        border-radius: 0.125rem;
+        background-color: var(--ft-primary-color);
+        margin: -0.125rem -0.06rem;
+      }
+    }
+  }
+}

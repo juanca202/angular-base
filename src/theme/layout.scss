@@ -1,0 +1,124 @@
+@use 'mixins' as mixins;
+@use 'variables-scss' as variables;
+
+// Generar clases para gap
+@include mixins.generate-space-classes('ft-g', 'gap');
+@include mixins.generate-space-classes('ft-cg', 'column-gap');
+@include mixins.generate-space-classes('ft-rg', 'row-gap');
+
+// Generar clases para padding
+@include mixins.generate-space-classes('ft-p', 'padding');
+@include mixins.generate-space-classes('ft-pb', 'padding-block');
+@include mixins.generate-space-classes('ft-pbs', 'padding-block-start');
+@include mixins.generate-space-classes('ft-pbe', 'padding-block-end');
+@include mixins.generate-space-classes('ft-pi', 'padding-inline');
+@include mixins.generate-space-classes('ft-pis', 'padding-inline-start');
+@include mixins.generate-space-classes('ft-pie', 'padding-inline-end');
+
+// Generar clases para margin
+@include mixins.generate-space-classes(
+  'ft-m',
+  'margin',
+  map-merge(
+    variables.$spacers,
+    (
+      auto: auto
+    )
+  )
+);
+@include mixins.generate-space-classes(
+  'ft-mb',
+  'margin-block',
+  map-merge(
+    variables.$spacers,
+    (
+      auto: auto
+    )
+  )
+);
+@include mixins.generate-space-classes(
+  'ft-mbs',
+  'margin-block-start',
+  map-merge(
+    variables.$spacers,
+    (
+      auto: auto
+    )
+  )
+);
+@include mixins.generate-space-classes(
+  'ft-mbe',
+  'margin-block-end',
+  map-merge(
+    variables.$spacers,
+    (
+      auto: auto
+    )
+  )
+);
+@include mixins.generate-space-classes(
+  'ft-mi',
+  'margin-inline',
+  map-merge(
+    variables.$spacers,
+    (
+      auto: auto
+    )
+  )
+);
+@include mixins.generate-space-classes(
+  'ft-mis',
+  'margin-inline-start',
+  map-merge(
+    variables.$spacers,
+    (
+      auto: auto
+    )
+  )
+);
+@include mixins.generate-space-classes(
+  'ft-mie',
+  'margin-inline-end',
+  map-merge(
+    variables.$spacers,
+    (
+      auto: auto
+    )
+  )
+);
+
+// Generar clases de display
+@include mixins.generate-responsive-classes(
+  'ft-d',
+  'display',
+  variables.$display-values
+);
+@include mixins.generate-responsive-classes(
+  'ft-fd',
+  'flex-direction',
+  variables.$flex-direction-values
+);
+@include mixins.generate-responsive-classes(
+  'ft-fg',
+  'flex-grow',
+  variables.$flex-grow-values
+);
+@include mixins.generate-responsive-classes(
+  'ft-ai',
+  'align-items',
+  variables.$align-values
+);
+@include mixins.generate-responsive-classes(
+  'ft-jc',
+  'justify-content',
+  map-merge(
+    variables.$align-values,
+    (
+      sb: space-between
+    )
+  )
+);
+
+.ft-w-100 {
+  width: 100% !important;
+}

@@ -1,0 +1,59 @@
+@use 'variables-scss' as variables;
+
+// Mixin responsivo
+@mixin media-breakpoint-up($breakpoint) {
+  $min-width: map-get(variables.$breakpoints, $breakpoint);
+
+  @if $min-width != null {
+    @media (min-width: #{$min-width}) {
+      @content;
+    }
+  } @else {
+    @warn "Punto de quiebre '#{$breakpoint}' no definido en \$breakpoints.";
+  }
+}
+
+@mixin media-breakpoint-down($breakpoint) {
+  $max-width: map-get(variables.$breakpoints, $breakpoint);
+
+  @if $max-width != null {
+    @media (max-width: #{$max-width - 0.02}) {
+      // Ajuste para evitar conflictos en el límite exacto
+      @content;
+    }
+  } @else {
+    @warn "Punto de quiebre '#{$breakpoint}' no definido en \$breakpoints.";
+  }
+}
+
+// Mixin genérico para generar clases
+@mixin generate-space-classes(
+  $prefix,
+  $property,
+  $custom-spacers: variables.$spacers
+) {
+  @each $key, $value in $custom-spacers {
+    .#{$prefix}-#{$key} {
+      #{$property}: #{$value} !important;
+    }
+  }
+}
+
+// Mixin para generar clases responsivas
+@mixin generate-responsive-classes($prefix, $property, $value-map) {
+  @each $class, $value in $value-map {
+    // Clase base (sin punto de quiebre)
+    .#{$prefix}-#{$class} {
+      #{$property}: #{$value} !important;
+    }
+
+    // Clases para cada punto de quiebre
+    @each $breakpoint, $min-width in variables.$breakpoints {
+      .#{$prefix}-#{$breakpoint}-#{$class} {
+        @media (min-width: #{$min-width}) {
+          #{$property}: #{$value} !important;
+        }
+      }
+    }
+  }
+}

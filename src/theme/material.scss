@@ -1,0 +1,243 @@
+@use 'mixins' as mixins;
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.elevation-classes();
+@include mat.app-background();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+$primary-palette: (
+  50: #fff3e0,
+  100: #ffe0b2,
+  200: #ffcc80,
+  300: #ffb74d,
+  400: #ffa726,
+  500: var(--ft-primary-color),
+  600: #fb8c00,
+  700: #f57c00,
+  800: #ef6c00,
+  900: #e65100,
+  A100: #ffd180,
+  A200: #ffab40,
+  A400: #ff9100,
+  A700: #ff6d00,
+  contrast: (
+    50: var(--ft-dark-color),
+    100: var(--ft-dark-color),
+    200: var(--ft-dark-color),
+    300: var(--ft-dark-color),
+    400: var(--ft-dark-color),
+    500: var(--ft-dark-color),
+    600: var(--ft-dark-color),
+    700: var(--ft-dark-color),
+    800: var(--ft-light-color),
+    900: var(--ft-light-color),
+    A100: var(--ft-dark-color),
+    A200: var(--ft-dark-color),
+    A400: var(--ft-dark-color),
+    A700: var(--ft-dark-color)
+  )
+);
+
+$factor-expenses-primary: mat.m2-define-palette($primary-palette);
+$factor-expenses-accent: mat.m2-define-palette(
+  $primary-palette,
+  A200,
+  A100,
+  A400
+);
+
+// The warn palette is optional (defaults to red).
+$factor-expenses-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$factor-expenses-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $factor-expenses-primary,
+      accent: $factor-expenses-accent,
+      warn: $factor-expenses-warn
+    ),
+    typography: mat.m2-define-typography-config(),
+    density: 0
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($factor-expenses-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.mat-bottom-sheet-container {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  padding: 1rem !important;
+
+  @include mixins.media-breakpoint-up(md) {
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    padding-inline: 2rem !important;
+  }
+}
+
+.mdc-dialog {
+  --mdc-dialog-container-color: var(--ft-body-bg);
+  --mdc-dialog-supporting-text-color: var(--ft-text-color);
+  --mdc-dialog-supporting-text-font: var(--ft-text-font-family);
+  --mdc-dialog-supporting-text-tracking: 0;
+  --mdc-dialog-container-shape: 0.5rem;
+
+  &__actions {
+    button {
+      min-width: 100px;
+    }
+  }
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-radio-button {
+  &.mat-accent {
+    --mat-radio-label-text-tracking: 0;
+    --mat-radio-label-text-font: var(--ft-text-font-family);
+    --mat-radio-label-text-size: var(--ft-text-font-size);
+    --mat-radio-label-text-color: var(--ft-text-color);
+    --mat-radio-label-text-line-height: 1.2;
+
+    --mdc-radio-unselected-icon-color: var(--ft-text-color);
+    --mdc-radio-unselected-hover-icon-color: color-mix(
+      in srgb,
+      var(--ft-text-color) 80%,
+      transparent
+    );
+  }
+}
+
+.mat-mdc-fab {
+  --mdc-icon-button-icon-color: var(--ft-dark-color);
+  z-index: 1;
+
+  html &.mat-primary {
+    --mdc-fab-container-color: var(--ft-primary-color);
+    --mat-fab-foreground-color: var(--ft-dark-color);
+    --mat-fab-state-layer-color: var(--ft-dark-color);
+  }
+}
+
+.mat-mdc-unelevated-button {
+  &.mat-primary {
+    --mdc-filled-button-container-color: var(--ft-primary-color);
+    --mdc-filled-button-label-text-color: var(--ft-dark-color);
+    --mat-filled-button-state-layer-color: var(--ft-dark-color);
+    --mat-filled-button-ripple-color: var(--ft-border-color);
+  }
+}
+
+.mat-mdc-outlined-button {
+  --mdc-outlined-button-outline-color: var(--ft-border-color);
+  --mdc-outlined-button-container-height: 40px;
+  --mdc-outlined-button-label-text-weight: 600;
+  --mdc-outlined-button-container-shape: 100vh;
+  --mdc-outlined-button-label-text-tracking: 0;
+  --mdc-outlined-button-label-text-font: var(--ft-text-font-family);
+  --mdc-outlined-button-label-text-size: var(--ft-text-font-size);
+  --mdc-outlined-button-label-text-color: var(--ft-text-color);
+
+  &.mat-primary {
+    --mdc-outlined-button-label-text-color: var(--ft-primary-color);
+  }
+}
+
+.mdc-button {
+  &--outlined.mdc-button {
+    background-color: color-mix(in srgb, var(--ft-text-color) 3%, transparent);
+
+    .ft-button-more-options {
+      background-color: color-mix(
+        in srgb,
+        var(--ft-text-color) 10%,
+        transparent
+      );
+    }
+  }
+}
+
+.mat-mdc-icon-button {
+  &.mat-mdc-button-base {
+    --mdc-icon-button-state-layer-size: unset;
+    padding: 8px;
+  }
+
+  .ft-icon {
+    display: block;
+
+    svg {
+      width: 1em;
+      height: 1em;
+    }
+  }
+}
+
+.mdc-icon-button {
+  .ft-badge {
+    position: absolute;
+    font-size: 10px;
+    border-radius: 100vh;
+    background-color: var(--ft-danger-color);
+    min-width: 18px;
+    height: 18px;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 0 2px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: ft-bounce 0.3s ease;
+  }
+}
+
+.mat-mdc-form-field-icon-suffix,
+[dir='rtl'] .mat-mdc-form-field-icon-prefix {
+  padding: 0 0.25rem 0 0.25rem !important;
+}
+
+.mat-mdc-optgroup .mat-mdc-option:not(.mat-mdc-option-multiple) {
+  padding-left: 1rem !important;
+}
+
+.mat-datepicker-content-touch {
+  --mat-datepicker-calendar-container-touch-shape: 1rem;
+}
+
+div.mat-mdc-menu-panel {
+  max-width: 320px;
+}
+
+.mat-mdc-snack-bar-container {
+  margin-top: 56px !important;
+  margin-bottom: 72px !important;
+}

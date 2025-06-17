@@ -1,0 +1,50 @@
+// Breakpoints
+$breakpoints: (
+  xs: 0,
+  // Extra small
+  sm: 576px,
+  // Small
+  md: 768px,
+  // Medium
+  lg: 992px,
+  // Large
+  xl: 1200px,
+  // Extra large
+  xxl: 1400px // Extra extra large
+) !default;
+
+// Espacios
+$spacer: 1rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer * 0.25,
+  2: $spacer * 0.5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3
+) !default;
+
+$display-values: (
+  n: none,
+  f: flex,
+  b: block,
+  g: grid
+);
+
+$flex-direction-values: (
+  cl: column,
+  clr: column-reverse,
+  ro: row,
+  ror: row-reverse
+);
+
+$flex-grow-values: (
+  1: 1,
+  0: 0
+);
+
+$align-values: (
+  s: flex-start,
+  c: center,
+  e: flex-end
+);

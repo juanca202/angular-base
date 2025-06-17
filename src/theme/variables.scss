@@ -1,0 +1,267 @@
+:root {
+  color-scheme: light dark;
+
+  // Colors
+  --ft-dark-color: #333;
+  --ft-light-color: #fff;
+  --ft-info-color: #0dcaf0;
+  --ft-danger-color: #ba1a1a;
+  --ft-success-color: #4caf50;
+  --ft-warning-color: #ffc107;
+  --ft-primary-color: #ff9800;
+
+  // Text
+  --ft-text-color: var(--ft-dark-color);
+  --ft-text-muted-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 50%,
+    transparent
+  );
+  --ft-text-font-family: sans-serif;
+  --ft-text-font-size: var(--ft-text-font-size-md);
+  --ft-text-font-size-sm: 0.875rem;
+  --ft-text-font-size-md: 1rem;
+  --ft-text-font-size-lg: 1.125rem;
+  --ft-text-font-size-xl: 1.5rem;
+  --ft-text-font-weight: 600;
+  --ft-text-line-height: 1.5;
+
+  // Misc
+  --ft-border-color: color-mix(in srgb, var(--ft-text-color) 20%, transparent);
+  --ft-border2-color: color-mix(in srgb, var(--ft-text-color) 10%, transparent);
+  --ft-button-outline-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 3%,
+    transparent
+  );
+  --ft-body-bg: var(--ft-light-color);
+  --ft-overlapped-shadow:
+    0 0 1px 0 rgba(0, 0, 0, 0.14), 0 0 6px 0 rgba(0, 0, 0, 0.12);
+
+  // Avatar
+  --ft-avatar-size: 2.5rem;
+  --ft-avatar-bg: var(--ft-border-color);
+  --ft-avatar-color: var(--ft-light-color);
+
+  // Thumbnail
+  --ft-thumbnail-bg: color-mix(
+    in srgb,
+    var(--ft-border-color) 40%,
+    transparent
+  );
+  --ft-thumbnail-size: 2.5rem;
+
+  // Input
+  --ft-input-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+  --ft-input-focused-bg: color-mix(
+    in srgb,
+    var(--ft-border-color) 50%,
+    transparent
+  );
+  --ft-input-disabled-bg: color-mix(
+    in srgb,
+    var(--ft-border-color) 60%,
+    transparent
+  );
+
+  // Progress bar
+  --ft-progress-bar-color: var(--ft-primary-color);
+  --ft-progress-track-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 10%,
+    transparent
+  );
+
+  // Message
+  --ft-message-warning-color: #664d03;
+  --ft-message-warning-bg: #fff3cd;
+  --ft-message-info-color: #055160;
+  --ft-message-info-bg: #cff4fc;
+
+  // List
+  --ft-list-item-hover-bg: color-mix(
+    in srgb,
+    var(--ft-text-color) 3%,
+    transparent
+  );
+  --ft-list-item-active-bg: color-mix(
+    in srgb,
+    var(--ft-text-color) 6%,
+    transparent
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ft-body-bg: var(--ft-dark-color);
+    --ft-text-color: var(--ft-light-color);
+    --ft-danger-color: #ff4d4d;
+    --ft-avatar-bg: #000;
+    --ft-thumbnail-bg: #000;
+    --ft-overlapped-shadow:
+      0 0 1px 0 rgba(0, 0, 0, 0.54), 0 0 6px 0 rgba(0, 0, 0, 0.52);
+  }
+}
+
+html {
+  --mat-button-filled-container-shape: 0.5rem;
+  --mat-button-filled-label-text-tracking: 0;
+  --mat-button-filled-label-text-font: var(--ft-text-font-family);
+  --mat-button-filled-label-text-size: var(--ft-text-font-size-sm);
+  --mat-button-filled-label-text-weight: 600;
+  --mat-button-filled-disabled-container-color: var(--ft-border-color);
+  --mat-button-filled-container-height: 40px;
+
+  --mat-button-text-container-shape: 0.5rem;
+  --mat-button-text-label-text-tracking: 0;
+  --mat-button-text-label-text-font: var(--ft-text-font-family);
+  --mat-button-text-label-text-size: var(--ft-text-font-size-sm);
+  --mat-button-text-label-text-weight: 600;
+  --mat-button-text-label-text-color: var(--ft-text-color);
+  --mat-button-text-horizontal-padding: 1rem;
+  --mat-button-text-disabled-label-text-color: var(--ft-text-muted-color);
+  --mat-button-text-container-height: 40px;
+
+  --mat-button-outlined-container-shape: 0.5rem;
+  --mat-button-outlined-label-text-tracking: 0;
+  --mat-button-outlined-label-text-font: var(--ft-text-font-family);
+  --mat-button-outlined-label-text-size: var(--ft-text-font-size-sm);
+  --mat-button-outlined-label-text-weight: 600;
+  --mat-button-outlined-label-text-color: var(--ft-text-color);
+  --mat-button-outlined-horizontal-padding: 1rem;
+  --mat-button-outlined-disabled-label-text-color: var(--ft-text-muted-color);
+
+  --mdc-list-list-item-label-text-weight: var(--ft-text-font-weight);
+
+  --mat-form-field-filled-container-color: var(--ft-input-bg);
+  --mat-form-field-filled-container-shape: 0.5rem;
+  --mat-form-field-filled-label-text-tracking: 0;
+  --mat-form-field-filled-label-text-font: var(--ft-text-font-family);
+  --mat-form-field-filled-input-text-color: var(--ft-text-color);
+  --mat-form-field-filled-label-text-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 60%,
+    transparent
+  );
+  --mat-form-field-filled-active-indicator-color: var(--ft-border-color);
+  --mat-form-field-filled-hover-label-text-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 80%,
+    transparent
+  );
+  --mat-form-field-filled-hover-active-indicator-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 80%,
+    transparent
+  );
+  --mat-form-field-filled-disabled-container-color: var(--ft-input-disabled-bg);
+  --mat-form-field-filled-disabled-input-text-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 20%,
+    transparent
+  );
+  --mat-form-field-filled-disabled-label-text-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 20%,
+    transparent
+  );
+  --mat-form-field-filled-error-label-text-color: var(--ft-danger-color);
+  --mat-form-field-filled-error-hover-label-text-color: var(--ft-danger-color);
+
+  --mdc-icon-button-icon-color: var(--ft-text-color);
+  --mdc-icon-button-disabled-icon-color: var(--ft-text-muted-color);
+
+  --mdc-plain-tooltip-supporting-text-font: var(--ft-text-font-family);
+
+  --mat-dialog-container-small-max-width: calc(100vw - 2rem);
+  --mdc-dialog-subhead-color: var(--ft-text-color);
+  --mdc-dialog-subhead-tracking: 0;
+  --mat-dialog-supporting-text-tracking: 0;
+
+  --mdc-snackbar-supporting-text-font: var(--ft-text-font-family);
+  --mdc-snackbar-supporting-text-color: var(--ft-body-bg);
+  --mdc-snackbar-container-shape: 0.5rem;
+  --mdc-snackbar-container-color: var(--ft-text-color);
+  --mat-snack-bar-button-color: var(--ft-primary-color);
+
+  --mat-radio-label-text-tracking: 0;
+  --mat-radio-label-text-font: var(--ft-text-font-family);
+  --mat-radio-label-text-size: var(--ft-text-font-size);
+  --mat-radio-label-text-color: var(--ft-text-color);
+  --mat-radio-label-text-line-height: 1.2;
+
+  --mat-checkbox-label-text-font: var(--ft-text-font-family);
+  --mat-checkbox-label-text-size: var(--ft-text-font-size);
+  --mat-checkbox-label-text-color: var(--ft-text-color);
+  --mdc-checkbox-unselected-icon-color: var(--ft-border-color);
+  --mdc-checkbox-unselected-hover-icon-color: var(--ft-border-color);
+  --mdc-checkbox-unselected-focus-icon-color: var(--ft-border-color);
+  --mdc-checkbox-selected-checkmark-color: var(--ft-dark-color);
+
+  --mat-menu-item-label-text-tracking: 0;
+  --mat-menu-item-label-text-font: var(--ft-text-font-family);
+  --mat-menu-item-label-text-size: var(--ft-text-font-size);
+  --mat-menu-item-label-text-weight: var(--ft-text-font-weight);
+  --mat-menu-item-label-text-color: var(--ft-text-color);
+  --mat-menu-container-color: var(--ft-body-bg);
+  --mat-menu-container-shape: 0.5rem;
+
+  --mat-form-field-container-text-font: var(--ft-text-font-family);
+  --mat-form-field-container-text-tracking: 0;
+  --mat-form-field-subscript-text-font: var(--ft-text-font-family);
+  --mat-form-field-subscript-text-tracking: 0;
+  --mat-form-field-error-text-color: var(--ft-danger-color);
+  --mat-form-field-filled-error-label-text-color: var(--ft-danger-color);
+
+  --mat-select-trigger-text-font: var(--ft-text-font-family);
+  --mat-select-trigger-text-tracking: 0;
+  --mat-select-enabled-trigger-text-color: var(--ft-text-color);
+  --mat-select-enabled-arrow-color: var(--ft-text-color);
+  --mat-select-disabled-trigger-text-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 20%,
+    transparent
+  );
+  --mat-select-disabled-arrow-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 20%,
+    transparent
+  );
+  --mat-select-panel-background-color: var(--ft-body-bg);
+
+  --mat-option-label-text-font: var(--ft-text-font-family);
+  --mat-option-label-text-tracking: 0;
+  --mat-option-label-text-weight: 500;
+  --mat-option-label-text-color: var(--ft-text-color);
+  --mat-optgroup-label-text-color: var(--ft-text-color);
+  --mat-optgroup-label-text-font: var(--ft-text-font-family);
+  --mat-optgroup-label-text-tracking: 0;
+  --mat-optgroup-label-text-weight: 700;
+
+  --mat-datepicker-calendar-text-font: var(--ft-text-font-family);
+  --mat-datepicker-calendar-header-text-color: var(--ft-text-color);
+  --mat-datepicker-calendar-period-button-text-color: var(--ft-text-color);
+  --mat-datepicker-calendar-period-button-icon-color: var(--ft-text-color);
+  --mat-datepicker-calendar-body-label-text-color: var(--ft-text-color);
+  --mat-datepicker-calendar-navigation-button-icon-color: var(--ft-text-color);
+  --mat-datepicker-calendar-date-text-color: var(--ft-text-color);
+  --mat-datepicker-calendar-date-disabled-state-text-color: color-mix(
+    in srgb,
+    var(--ft-text-color) 20%,
+    transparent
+  );
+  --mat-datepicker-calendar-date-today-outline-color: var(--ft-primary-color);
+  --mat-datepicker-calendar-date-preview-state-outline-color: var(
+    --ft-primary-color
+  );
+  --mat-datepicker-calendar-container-background-color: var(--ft-body-bg);
+  --mat-datepicker-calendar-header-divider-color: var(--ft-border-color);
+
+  --mat-bottom-sheet-container-text-font: var(--ft-text-font-family);
+  --mat-bottom-sheet-container-text-size: var(--ft-text-font-size);
+  --mat-bottom-sheet-container-text-weight: var(--ft-text-font-weight);
+  --mat-bottom-sheet-container-text-color: var(--ft-text-color);
+  --mat-bottom-sheet-container-text-tracking: 0;
+  --mat-bottom-sheet-container-background-color: var(--ft-body-bg);
+  --mat-bottom-sheet-container-shape: 1rem;
+}

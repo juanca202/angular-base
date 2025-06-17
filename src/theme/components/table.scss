@@ -1,0 +1,64 @@
+@use '../mixins' as mixins;
+
+.ft-table {
+  width: 100%;
+  background-color: var(--ft-body-bg);
+  border-collapse: collapse;
+
+  &__wrapper {
+    border: 1px solid var(--ft-border-color);
+    border-radius: 0.5rem;
+    overflow: auto;
+
+    @include mixins.media-breakpoint-up(md) {
+      overflow: hidden;
+      width: fit-content;
+    }
+  }
+
+  &__loader {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  th,
+  td {
+    text-align: start;
+    padding-inline: 1.125rem;
+    padding-block: 0.5rem;
+  }
+
+  > thead {
+    th {
+      white-space: nowrap;
+      font-size: var(--ft-text-font-size-sm);
+    }
+  }
+
+  > tbody > *:not(:last-child) > *,
+  > thead > *:last-child > th {
+    border-bottom: 1px solid var(--ft-border-color);
+  }
+
+  .ft-tr-action {
+    cursor: pointer;
+
+    &:hover td {
+      background-color: var(--ft-item-hover-bg);
+    }
+
+    &:active td {
+      background-color: var(--ft-item-active-bg);
+    }
+
+    &:focus td {
+      background-color: var(--ft-item-focus-bg);
+    }
+  }
+
+  .ft-actions {
+    position: sticky;
+    right: 0;
+    background-color: var(--ft-body-bg);
+  }
+}

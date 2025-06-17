@@ -1,0 +1,122 @@
+.ft-chart {
+  position: relative;
+  user-select: none;
+
+  &__canvas {
+    width: calc(100% - 1rem);
+    height: 100px;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    display: block;
+    border-bottom: 1px solid var(--ft-border-color);
+  }
+
+  &__placeholder {
+    rect:hover {
+      fill: var(--ft-border2-color);
+    }
+
+    rect:focus {
+      outline: none;
+      fill: var(--ft-border2-color);
+    }
+
+    rect.ft-active,
+    rect:active {
+      fill: var(--ft-border-color);
+    }
+  }
+
+  &__title {
+    font-size: var(--ft-text-font-size-md);
+    font-weight: 700;
+    padding: 0.5rem 1rem 0.25rem;
+  }
+
+  &__tooltip {
+    position: absolute;
+    font-size: 1.125rem;
+    background-color: var(--ft-body-bg);
+    padding: 0.5rem 1rem;
+    box-shadow: var(--ft-overlapped-shadow);
+    border-radius: 0.5rem;
+    display: none;
+    transition: 0.2s left;
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+    margin-top: 3px;
+
+    .ft-chart:focus-within & {
+      display: block;
+    }
+  }
+
+  &__axis {
+    display: flex;
+    text-align: center;
+    text-transform: capitalize;
+    margin-inline: 0.5rem;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+
+    .ft-item {
+      flex: 1;
+      justify-content: center;
+      min-height: 18px;
+
+      &.ft-active {
+        div {
+          background-color: var(--ft-body-bg);
+          padding-inline: 0.5rem;
+          font-weight: 700;
+          z-index: 1;
+        }
+      }
+
+      div {
+        min-width: 18px;
+        position: absolute;
+      }
+    }
+  }
+
+  &__legend {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: var(--ft-text-font-size-md);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-inline: 1rem;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ft-item {
+      display: flex;
+      gap: 0.25rem;
+      flex-grow: 1;
+      min-width: fit-content;
+      line-height: normal;
+      border: 0;
+      background-color: transparent;
+      text-align: left;
+      border-radius: 0.5rem;
+      align-items: flex-start;
+
+      > div > div {
+        font-size: 1.125rem;
+      }
+
+      .ft-circle {
+        width: 0.5rem;
+        min-width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 5px;
+        margin-top: 7px;
+      }
+    }
+  }
+}

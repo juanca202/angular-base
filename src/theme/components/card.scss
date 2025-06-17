@@ -1,0 +1,27 @@
+.ft-card {
+  border-radius: 0.5rem;
+  border: 1px solid var(--ft-border-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    padding: 0.5rem 0.25rem 0.5rem 1rem;
+    display: flex;
+    font-weight: 700;
+    align-items: center;
+    min-height: 3rem;
+  }
+
+  &__body {
+    padding: 1rem;
+  }
+}
+
+button.ft-card {
+  background-color: var(--ft-button-outline-color);
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}

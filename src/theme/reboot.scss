@@ -1,0 +1,76 @@
+/*
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+*/
+
+body {
+  overscroll-behavior-y: contain;
+  margin: 0;
+  font-family: var(--ft-text-font-family);
+  font-size: var(--ft-text-font-size);
+  font-weight: var(--ft-text-font-weight);
+  line-height: var(--ft-text-line-height);
+  color: var(--ft-text-color);
+  background-color: var(--ft-body-bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+button,
+select,
+optgroup,
+textarea {
+  margin: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+h1 {
+  font-size: var(--ft-text-font-size-xl);
+  font-weight: 700;
+  margin-block: 0.5rem;
+}
+
+h2 {
+  font-size: var(--ft-text-font-size-md);
+  font-weight: 700;
+  margin-block: 0.5rem;
+}
+
+h3 {
+  font-size: var(--ft-text-font-size-sm);
+  font-weight: 700;
+  margin-block: 0.5rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button:not(:disabled),
+[type='button']:not(:disabled),
+[type='reset']:not(:disabled),
+[type='submit']:not(:disabled) {
+  cursor: pointer;
+}
+
+// Evita que el navegador fuerce el modo oscuro
+meta[name='color-scheme'][content='dark light'],
+meta[name='supported-color-schemes'][content='dark light'] {
+  --samsung-invert-colors: 0 !important;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--ft-border-color);
+}

@@ -1,0 +1,41 @@
+.ft-logo-plus {
+  width: 123px;
+  height: 22px;
+  margin-bottom: -4px;
+  //background-image: url(../../../../public/images/logo-plus.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  @media (prefers-color-scheme: dark) {
+    //background-image: url(../../../../public/images/logo-plus-dark.svg);
+  }
+}
+
+.ft-title {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.ft-price {
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.ft-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .ft-icon {
+    color: var(--ft-success-color);
+  }
+
+  div {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+}

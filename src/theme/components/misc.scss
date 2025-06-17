@@ -1,0 +1,16 @@
+.ft-observe-interseting {
+  min-height: 1px;
+  min-width: 1px;
+  position: absolute;
+}
+
+.ft-overlapped {
+  box-shadow: var(--ft-overlapped-shadow);
+}
+
+.ft-disabled {
+  a {
+    text-decoration: none;
+    pointer-events: none;
+  }
+}

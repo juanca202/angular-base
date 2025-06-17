@@ -1,0 +1,26 @@
+.ft-filters {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  overflow: auto;
+  scrollbar-width: none;
+  min-height: fit-content;
+  background-color: var(--ft-body-bg);
+  max-width: 960px;
+  width: 100%;
+  margin-inline: auto;
+  clip-path: inset(0 0 -10px 0);
+
+  &__content {
+    width: fit-content;
+    display: flex;
+  }
+
+  button {
+    white-space: nowrap;
+    font-size: var(--ft-text-font-size-sm);
+    font-weight: var(--ft-text-font-weight);
+    --mdc-text-button-container-height: 2rem;
+    --mat-text-button-horizontal-padding: 0.75rem;
+  }
+}

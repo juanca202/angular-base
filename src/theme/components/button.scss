@@ -1,0 +1,40 @@
+.ft-button-group {
+  max-width: fit-content;
+  margin: auto;
+  border: 1px solid var(--ft-border-color);
+  border-radius: 100vh;
+  padding: 0.125rem;
+  display: flex;
+  gap: 0.125rem;
+  --mat-text-button-horizontal-padding: 1.5rem;
+  --mdc-text-button-container-shape: 100vh;
+
+  button {
+    font-size: var(--ft-text-font-size-sm);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    --mdc-filled-button-disabled-label-text-color: var(--ft-text-color);
+    transition: background-color 0.2s;
+
+    &:disabled {
+      background-color: color-mix(
+        in srgb,
+        var(--ft-border-color) 80%,
+        transparent
+      );
+    }
+  }
+}
+
+.ft-button {
+  .ft-item {
+    line-height: normal;
+  }
+
+  &.ft-button--sm {
+    font-size: var(--ft-text-font-size-sm);
+    font-weight: var(--ft-text-font-weight);
+    --mdc-text-button-container-height: 2rem;
+    --mat-text-button-horizontal-padding: 0.75rem;
+  }
+}

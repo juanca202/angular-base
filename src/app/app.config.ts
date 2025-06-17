@@ -1,37 +1,99 @@
-import * as Sentry from "@sentry/angular";
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
-  isDevMode,
   ErrorHandler,
-  provideAppInitializer,
+  LOCALE_ID,
   inject,
+  isDevMode,
+  provideAppInitializer
 } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
-
-import { routes } from './app.routes';
+import {
+  provideRouter,
+  Router,
+  withComponentInputBinding
+} from '@angular/router';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideServiceWorker } from '@angular/service-worker';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getMessaging, provideMessaging } from '@angular/fire/messaging';
+import { provideClientHydration } from '@angular/platform-browser';
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors
+} from '@angular/common/http';
+
+import * as Sentry from '@sentry/angular';
+import { languageInterceptor } from 'app/core/language.interceptor';
+import { graphqlProvider } from 'app/core/graphql.provider';
+import { UI_OPTIONS } from '@factor_ec/ui';
+
+import { routes } from 'app/app.routes';
+import { AppService } from 'app/core/app.service';
+import { authInterceptor } from 'app/core/auth.interceptor';
+import { environment } from 'environments/environment';
+import { clientInterceptor } from 'app/core/client.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideRouter(routes),
-    provideServiceWorker('ngsw-worker.js', {
-              enabled: !isDevMode(),
-              registrationStrategy: 'registerWhenStable:30000'
-            }),
+    provideRouter(routes, withComponentInputBinding()),
+    provideAnimationsAsync(),
+    provideAppInitializer(async () => {
+      const appService = inject(AppService);
+      await appService.initialize();
+    }),
+    provideServiceWorker('sw-custom.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        authInterceptor,
+        clientInterceptor,
+        languageInterceptor
+      ])
+    ),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideMessaging(() => getMessaging()),
+    provideClientHydration(),
+    graphqlProvider,
     {
       provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler()
+      useValue: Sentry.createErrorHandler({
+        logErrors: true,
+        showDialog: false
+      })
     },
     {
       provide: Sentry.TraceService,
       deps: [Router]
     },
-    provideAppInitializer(() => {
-      inject(Sentry.TraceService);
-    })
+    {
+      provide: UI_OPTIONS,
+      useValue: {
+        iconSettings: {
+          path: 'images',
+          collection: 'factoricons-regular'
+        }
+      }
+    },
+    {
+      provide: 'FactorUiConfiguration',
+      useValue: {
+        icon: {
+          collection: 'factoricons-regular',
+          mode: null
+        }
+      }
+    },
+    {
+      provide: LOCALE_ID,
+      useFactory: (appService: AppService) => appService.getLocale(),
+      deps: [AppService]
+    }
   ]
 };

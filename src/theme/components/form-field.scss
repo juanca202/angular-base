@@ -1,0 +1,7 @@
+.ft-form-field {
+  &--without-error {
+    .mat-mdc-form-field-error {
+      visibility: hidden;
+    }
+  }
+}

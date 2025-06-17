@@ -1,0 +1,14 @@
+.ft-space {
+  padding: 0.5rem 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  &__options {
+    min-height: 38px;
+    --mdc-outlined-button-label-text-size: var(--ft-text-font-size-md);
+    .ft-item {
+      max-width: 60vw;
+    }
+  }
+}

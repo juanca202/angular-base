@@ -1,1 +1,57 @@
-export const environment = {};
+import { Environment } from '../app/core/models/environment';
+
+export const environment: Environment = {
+  auth: {
+    signupUrl: '',
+    tokenUrl: '',
+    refreshTokenUrl: '',
+    forgotPasswordUrl: '',
+    resetPasswordUrl: '',
+    settingsUrl: '',
+    allowRefreshToken: true,
+    clients: {
+      google: ''
+    }
+  },
+  fedcm: {
+    google: {
+      tokenUrl: '',
+      configURL: '',
+      clientId: ''
+    }
+  },
+  sessionPrefix: '',
+  iconSettings: {
+    path: '/images',
+    collection: 'factoricons-regular'
+  },
+  filesPath: '',
+  appPath: '',
+  graphqlEndpoint: '',
+  restEndpoint: '',
+  serverEndpoint: '',
+  apiIdPrefix: '',
+  supportEmail: 'support@email.com',
+  googleApi: {
+    clientId: ''
+  },
+  googleTagManager: {
+    trackingCode: ''
+  },
+  sentry: {
+    dsn: '',
+    tracingOrigins: ['localhost'],
+    tracesSampleRate: 1.0
+  },
+  firebaseConfig: {
+    apiKey: '',
+    authDomain: '',
+    databaseURL: '',
+    projectId: '',
+    storageBucket: '',
+    messagingSenderId: '',
+    appId: '',
+    measurementId: ''
+  },
+  vapidKey: ''
+};

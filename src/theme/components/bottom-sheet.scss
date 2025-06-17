@@ -1,0 +1,38 @@
+.mat-bottom-sheet-container {
+  .ft-amount--detail {
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+
+    .ft-thumbnail {
+      --ft-thumbnail-size: 4rem;
+      font-size: 2rem;
+
+      &__badge {
+        font-size: 22px;
+        box-shadow: 0 0 0 3px var(--ft-body-bg);
+      }
+    }
+
+    .ft-value {
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: normal;
+    }
+  }
+
+  .ft-list--detail {
+    margin-left: -1rem;
+    margin-right: -1rem;
+
+    &__item {
+      .ft-avatar {
+        --ft-avatar-size: 2.5rem;
+      }
+
+      .ft-thumbnail {
+        --ft-thumbnail-size: 2.5rem;
+      }
+    }
+  }
+}

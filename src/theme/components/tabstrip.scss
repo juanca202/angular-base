@@ -1,0 +1,32 @@
+.ft-tabstrip {
+  display: flex;
+  background-color: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+
+  &__item {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 0;
+    transition: background-color 0.2s ease-in-out;
+    font-size: var(--ft-text-font-size-md);
+    font-weight: 700;
+
+    &.mdc-button {
+      border-radius: 0;
+    }
+
+    &--active.mdc-button {
+      border-radius: 0;
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+      background-color: var(--ft-body-bg);
+
+      &:hover {
+        background-color: color-mix(in srgb, var(--ft-body-bg) 95%, #000);
+        .mdc-button__ripple {
+          display: none;
+        }
+      }
+    }
+  }
+}

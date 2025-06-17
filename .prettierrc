@@ -1,4 +1,8 @@
 {
     "singleQuote": true,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "html.format.templating": [
+        "angular"
+    ],
+    "html.format.indentHandlebars": true
 }

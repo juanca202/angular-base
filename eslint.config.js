@@ -7,6 +7,7 @@ const { FlatCompat } = require('@eslint/eslintrc');
 const compat = new FlatCompat();
 
 module.exports = tseslint.config(
+  // Configuración para archivos TypeScript
   {
     files: ["**/*.ts"],
     extends: [
@@ -15,8 +16,8 @@ module.exports = tseslint.config(
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
     ],
-    processor: angular.processInlineTemplates,
     rules: {
+      "@typescript-eslint/no-explicit-any": "off",
       "@angular-eslint/directive-selector": [
         "error",
         {
@@ -35,14 +36,22 @@ module.exports = tseslint.config(
       ],
     },
   },
+  // Configuración para archivos HTML (plantillas)
   {
     files: ["**/*.html"],
     extends: [
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
     ],
-    rules: {},
+    rules: {
+      // Puedes agregar tus reglas específicas para plantillas aquí
+      // Desactiva prettier si te da conflictos
+      "prettier/prettier": "off",
+    },
   },
-  // Prettier Integration
-  ...compat.extends('plugin:prettier/recommended'),
+  // Prettier Integration SOLO para archivos TS
+  ...compat.extends('plugin:prettier/recommended').map(config => ({
+    ...config,
+    files: ["**/*.ts"], // Solo aplicar Prettier a TypeScript
+  }))
 );

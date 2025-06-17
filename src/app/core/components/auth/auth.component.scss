@@ -1,0 +1,9 @@
+.ft-auth__signin,
+.ft-auth__signup {
+  .ft-actions button {
+    --mdc-outlined-button-container-height: 3rem;
+    color: var(--ft-dark-color);
+    background-color: #fff;
+    width: 100%;
+  }
+}

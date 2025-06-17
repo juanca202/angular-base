@@ -1,0 +1,100 @@
+.ft-page {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+
+  &__header {
+    position: relative;
+    z-index: 3;
+    background-color: var(--ft-body-bg);
+    padding: 0.5rem 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    top: 0;
+
+    .mdc-button__label {
+      overflow: hidden;
+    }
+  }
+
+  &__content {
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+    padding-bottom: 1rem;
+
+    &--nodata {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding-left: 3rem;
+      padding-right: 3rem;
+
+      .ft-image--nodata {
+        width: 200px;
+        height: 200px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-bottom: 2rem;
+        margin-inline: auto;
+        //background-image: url(../../../public/images/no-data.svg);
+
+        @media (prefers-color-scheme: dark) {
+          //background-image: url(../../../public/images/no-data-dark.svg);
+        }
+      }
+
+      .mdc-button {
+        min-height: 3rem;
+        min-width: 180px !important;
+        --mdc-icon-button-icon-color: var(--ft-dark-color);
+      }
+
+      p {
+        font-size: 0.875rem;
+        color: var(--ft-text-muted-color);
+        max-width: 400px;
+        margin-inline: auto;
+      }
+    }
+
+    > .ft-container {
+      max-width: 960px;
+      width: 100%;
+      margin: auto;
+    }
+  }
+
+  &__footer {
+    &.ft-controlbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+
+      &__item.mdc-button {
+        min-height: 3rem;
+        min-width: 160px !important;
+        --mdc-icon-button-icon-color: var(--ft-dark-color);
+      }
+    }
+  }
+
+  .ft-button-profile {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .ft-avatar {
+      --ft-avatar-size: 1.5rem;
+    }
+  }
+}

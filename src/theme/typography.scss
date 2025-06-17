@@ -1,0 +1,84 @@
+// Clases para text-align
+.ft-ta-s {
+  text-align: start !important;
+}
+
+.ft-ta-c {
+  text-align: center !important;
+}
+
+.ft-ta-e {
+  text-align: end !important;
+}
+
+// Clases para font-size
+.ft-fs-sm,
+small {
+  font-size: var(--ft-text-font-size-sm) !important;
+}
+
+.ft-fs-md {
+  font-size: var(--ft-text-font-size-md) !important;
+}
+
+.ft-fs-lg {
+  font-size: var(--ft-text-font-size-lg) !important;
+}
+
+.ft-fs-lead {
+  font-size: calc(1.6rem + 0.6vw);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.ft-fs-small {
+  font-size: var(--ft-text-font-size-sm);
+  font-weight: 500;
+}
+
+// Clases de color
+.ft-tc-muted {
+  color: var(--ft-text-muted-color) !important;
+}
+
+.ft-tc-primary {
+  color: var(--ft-primary-color) !important;
+}
+
+.ft-tc-info {
+  color: var(--ft-info-color) !important;
+}
+
+.ft-tc-success {
+  color: var(--ft-success-color) !important;
+}
+
+.ft-tc-danger {
+  color: var(--ft-danger-color) !important;
+}
+
+.ft-tc-warning {
+  color: var(--ft-warning-color) !important;
+}
+
+// Clases de transformación
+.ft-tt-capitalize {
+  text-transform: capitalize !important;
+}
+
+// Clases de whitepace
+.ft-wp-nowrap {
+  white-space: nowrap !important;
+}
+
+// Clases de alto de linea
+.ft-lh-1 {
+  line-height: 1 !important;
+}
+
+// Clases mixtas
+.ft-text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
