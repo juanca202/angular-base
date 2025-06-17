@@ -1,7 +1,6 @@
 import {
   Injectable,
   Injector,
-  WritableSignal,
   PLATFORM_ID,
   signal,
   inject
@@ -32,7 +31,7 @@ import { versionInfo } from 'version-info';
 import { environment } from 'environments/environment';
 import { AuthService } from 'app/core/auth.service';
 import { Period } from 'app/core/models/period';
-import { PageComponent } from 'app/core/components/page/page.component';
+import { Page } from 'app/core/components/page/page';
 import { Router } from '@angular/router';
 
 registerLocaleData(localeEn, 'en');
@@ -69,7 +68,7 @@ export class AppService {
     symbol: '$',
     name: 'US Dollar'
   };
-  languages: WritableSignal<Language[]> = signal([
+  languages = signal<Language[]>([
     { code: 'es', name: 'Español' },
     { code: 'en', name: 'English' }
   ]);
@@ -265,7 +264,7 @@ export class AppService {
     });
   }
   openPage(uuid: string): void {
-    this.dialog.open(PageComponent, {
+    this.dialog.open(Page, {
       data: {
         url: `https://factor.ec/${this.getLocale()}/jsonapi/node/page/${uuid}`
       },

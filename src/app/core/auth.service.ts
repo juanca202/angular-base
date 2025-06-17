@@ -38,8 +38,8 @@ import {
 } from 'rxjs';
 
 import { environment } from 'environments/environment';
-import { DeleteUserComponent } from './components/delete-user/delete-user.component';
-import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { DeleteUser } from './components/delete-user/delete-user';
+import { ChangePassword } from './components/change-password/change-password';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
   identity: {
@@ -132,7 +132,7 @@ export class AuthService {
     });
   }
   changePassword(): void {
-    this.dialog.open(ChangePasswordComponent, {
+    this.dialog.open(ChangePassword, {
       panelClass: 'ft-dialog',
       width: '400px'
     });
@@ -209,7 +209,7 @@ export class AuthService {
     return true;
   }
   confirmDeleteUser(): void {
-    this.dialog.open(DeleteUserComponent, {
+    this.dialog.open(DeleteUser, {
       panelClass: 'ft-dialog',
       width: '400px'
     });

@@ -168,8 +168,8 @@ html {
   --mat-form-field-filled-error-label-text-color: var(--ft-danger-color);
   --mat-form-field-filled-error-hover-label-text-color: var(--ft-danger-color);
 
-  --mdc-icon-button-icon-color: var(--ft-text-color);
-  --mdc-icon-button-disabled-icon-color: var(--ft-text-muted-color);
+  --mat-icon-button-icon-color: var(--ft-text-color);
+  --mat-icon-button-disabled-icon-color: var(--ft-text-muted-color);
 
   --mdc-plain-tooltip-supporting-text-font: var(--ft-text-font-family);
 
@@ -177,6 +177,8 @@ html {
   --mdc-dialog-subhead-color: var(--ft-text-color);
   --mdc-dialog-subhead-tracking: 0;
   --mat-dialog-supporting-text-tracking: 0;
+  --mat-dialog-supporting-text-color: var(--ft-text-color);
+  --mat-dialog-container-color: var(--ft-body-bg);
 
   --mdc-snackbar-supporting-text-font: var(--ft-text-font-family);
   --mdc-snackbar-supporting-text-color: var(--ft-body-bg);

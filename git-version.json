@@ -1,8 +1,8 @@
 {
   "dirty": true,
-  "raw": "v1.0.0-1-g2076012-dirty",
-  "hash": "g2076012",
-  "distance": 1,
+  "raw": "v1.0.0-3-g06d96d9-dirty",
+  "hash": "g06d96d9",
+  "distance": 3,
   "tag": "v1.0.0",
   "semver": {
     "options": {
@@ -18,6 +18,6 @@
     "build": [],
     "version": "1.0.0"
   },
-  "suffix": "1-g2076012-dirty",
-  "semverString": "1.0.0+1.g2076012.dirty"
+  "suffix": "3-g06d96d9-dirty",
+  "semverString": "1.0.0+3.g06d96d9.dirty"
 }

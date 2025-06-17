@@ -1,0 +1,94 @@
+<div mat-dialog-content class="ft-pbe-0">
+  <div class="ft-ta-c ft-tc-danger ft-mbe-3">
+    <ft-icon
+      name="warning"
+      class="ft-icon--5"
+      collection="factoricons-slim"
+    ></ft-icon>
+  </div>
+  <p class="ft-ta-c ft-tc-danger" i18n>This action can not be undone</p>
+  <p class="ft-fs-sm ft-tc-muted ft-mbe-2" i18n>
+    After confirming your decision, you will no longer be able to log into your
+    account.
+  </p>
+  @if (!codeExpiresIn()) {
+  <p class="ft-fs-sm ft-tc-muted ft-mbe-2" i18n>
+    To continue, enter the email associated with your account.
+  </p>
+  <form id="step1Form" [formGroup]="step1Form" (ngSubmit)="submit()">
+    <mat-form-field appearance="fill" class="ft-mbe-2">
+      <mat-label i18n>Email</mat-label>
+      <input type="email" matInput formControlName="email" maxlength="50" />
+      @if (step1Form.get('email')?.invalid) {
+      <mat-error>
+        {{ appService.getErrorMessage(step1Form.get('email'), { pattern:
+        invalidUserEmail }) }}
+      </mat-error>
+      }
+    </mat-form-field>
+  </form>
+  } @if (codeExpiresIn()) {
+  <p class="ft-fs-sm ft-tc-muted ft-mbe-2" i18n>
+    You have <strong>{{ codeExpiresIn() }} minutes</strong> to enter
+    verification code sent to
+    <strong>{{ authService.settings()?.user?.email }}</strong> to confirm
+    deletion.
+  </p>
+  <form id="step2Form" [formGroup]="step2Form" (ngSubmit)="submit()">
+    <mat-form-field appearance="fill" class="ft-mbe-2">
+      <mat-label i18n>Verification code</mat-label>
+      <input type="text" matInput formControlName="code" maxlength="13" />
+      @if (step2Form.get('code')?.invalid) {
+      <mat-error>
+        {{ appService.getErrorMessage(step2Form.get('code')) }}
+      </mat-error>
+      }
+    </mat-form-field>
+  </form>
+  }
+</div>
+<div mat-dialog-actions>
+  <button
+    type="button"
+    mat-button
+    mat-dialog-close
+    [disabled]="submitting()"
+    i18n
+  >
+    Cancel
+  </button>
+  @if (!codeExpiresIn()) {
+  <button
+    type="submit"
+    form="step1Form"
+    mat-flat-button
+    color="primary"
+    [disabled]="submitting()"
+  >
+    @if (!submitting()) {
+    <span i18n>Continue</span>
+    } @else {
+    <ng-container *ngTemplateOutlet="submittingTemplate" />
+    }
+  </button>
+  } @if (codeExpiresIn()) {
+  <button
+    type="submit"
+    form="step2Form"
+    mat-flat-button
+    color="primary"
+    [disabled]="submitting()"
+  >
+    @if (!submitting()) {
+    <span i18n>Confirm</span>
+    } @else {
+    <ng-container *ngTemplateOutlet="submittingTemplate" />
+    }
+  </button>
+  }
+</div>
+<ng-template #submittingTemplate>
+  <div class="ft-ta-c">
+    <ft-progress class="ft-progress--2"></ft-progress>
+  </div>
+</ng-template>

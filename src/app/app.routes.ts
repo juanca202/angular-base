@@ -8,13 +8,13 @@ import {
 import { environment } from '../environments/environment.development';
 import { AppService } from './core/app.service';
 import { AuthService } from './core/auth.service';
-import { AuthComponent } from './core/components/auth/auth.component';
-import { ErrorComponent } from './core/components/error/error.component';
-import { NotificationsComponent } from './core/components/notifications/notifications.component';
-import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
-import { SettingsComponent } from './core/components/settings/settings.component';
+import { Auth } from './core/components/auth/auth';
+import { Error } from './core/components/error/error';
+import { Notifications } from './core/components/notifications/notifications';
+import { ResetPassword } from './core/components/reset-password/reset-password';
+import { Settings } from './core/components/settings/settings';
 import { Home } from './main/components/home/home';
-import { LanguageComponent } from './core/components/language/language.component';
+import { Language } from './core/components/language/language';
 
 export const authGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
@@ -57,36 +57,36 @@ export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: Home, canActivate: [authGuard] },
 
-  { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
+  { path: 'settings', component: Settings, canActivate: [authGuard] },
   {
     path: 'settings/language',
-    component: LanguageComponent,
+    component: Language,
     canActivate: [authGuard]
   },
 
-  { path: 'auth', component: AuthComponent, canActivate: [loginGuard] },
+  { path: 'auth', component: Auth, canActivate: [loginGuard] },
   {
     path: 'signin',
-    component: AuthComponent,
+    component: Auth,
     data: { mode: 'signin' },
     canActivate: [loginGuard]
   },
   {
     path: 'signup',
-    component: AuthComponent,
+    component: Auth,
     data: { mode: 'signup' },
     canActivate: [loginGuard]
   },
   {
     path: 'reset-password',
-    component: ResetPasswordComponent,
+    component: ResetPassword,
     canActivate: [resetGuard]
   },
   {
     path: 'notifications',
-    component: NotificationsComponent,
+    component: Notifications,
     canActivate: [authGuard]
   },
-  { path: 'error/:code', component: ErrorComponent, title: $localize`Error` },
-  { path: '**', component: ErrorComponent, data: { code: 404 } }
+  { path: 'error/:code', component: Error, title: $localize`Error` },
+  { path: '**', component: Error, data: { code: 404 } }
 ];
