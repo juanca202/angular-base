@@ -1,9 +1,7 @@
-/*
-html, body {
-    height: 100%;
-    overflow: hidden;
+html,
+body {
+  height: 100%;
 }
-*/
 
 body {
   overscroll-behavior-y: contain;
@@ -51,12 +49,6 @@ h3 {
   margin-block: 0.5rem;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 button:not(:disabled),
 [type='button']:not(:disabled),
 [type='reset']:not(:disabled),
@@ -73,4 +65,10 @@ meta[name='supported-color-schemes'][content='dark light'] {
 hr {
   border: 0;
   border-top: 1px solid var(--ft-border-color);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

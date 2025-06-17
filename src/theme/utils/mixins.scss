@@ -1,8 +1,9 @@
 @use 'variables-scss' as variables;
+@use 'sass:map';
 
 // Mixin responsivo
 @mixin media-breakpoint-up($breakpoint) {
-  $min-width: map-get(variables.$breakpoints, $breakpoint);
+  $min-width: map.get(variables.$breakpoints, $breakpoint);
 
   @if $min-width != null {
     @media (min-width: #{$min-width}) {
@@ -14,7 +15,7 @@
 }
 
 @mixin media-breakpoint-down($breakpoint) {
-  $max-width: map-get(variables.$breakpoints, $breakpoint);
+  $max-width: map.get(variables.$breakpoints, $breakpoint);
 
   @if $max-width != null {
     @media (max-width: #{$max-width - 0.02}) {

@@ -173,12 +173,29 @@ html {
 
   --mdc-plain-tooltip-supporting-text-font: var(--ft-text-font-family);
 
+  --mat-dialog-actions-padding: 1rem 1.5rem;
+  --mat-dialog-actions-alignment: flex-end;
   --mat-dialog-container-small-max-width: calc(100vw - 2rem);
-  --mdc-dialog-subhead-color: var(--ft-text-color);
-  --mdc-dialog-subhead-tracking: 0;
+  --mat-dialog-container-shape: 0.5rem;
+  --mat-dialog-content-padding: 1.5rem 1.5rem 0;
+  --mat-dialog-supporting-text-tracking: 0;
+  --mat-dialog-supporting-text-line-height: var(--ft-text-line-height);
+  --mat-dialog-subhead-color: var(--ft-text-color);
+  --mat-dialog-subhead-tracking: 0;
+  --mat-dialog-headline-padding: 0.5rem 0.25rem 0.5rem 1.5rem;
+  --mat-dialog-with-actions-content-padding: 1.5rem 1.5rem 0;
+  /*
+  
   --mat-dialog-supporting-text-tracking: 0;
   --mat-dialog-supporting-text-color: var(--ft-text-color);
   --mat-dialog-container-color: var(--ft-body-bg);
+
+  --mdc-dialog-container-color: var(--ft-body-bg);
+  --mdc-dialog-supporting-text-color: var(--ft-text-color);
+  --mdc-dialog-supporting-text-font: var(--ft-text-font-family);
+  --mdc-dialog-supporting-text-tracking: 0;
+  --mdc-dialog-container-shape: 0.5rem;
+  */
 
   --mdc-snackbar-supporting-text-font: var(--ft-text-font-family);
   --mdc-snackbar-supporting-text-color: var(--ft-body-bg);

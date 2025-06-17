@@ -1,5 +1,6 @@
 @use 'mixins' as mixins;
 @use 'variables-scss' as variables;
+@use 'sass:map';
 
 // Generar clases para gap
 @include mixins.generate-space-classes('ft-g', 'gap');
@@ -19,7 +20,7 @@
 @include mixins.generate-space-classes(
   'ft-m',
   'margin',
-  map-merge(
+  map.merge(
     variables.$spacers,
     (
       auto: auto
@@ -29,7 +30,7 @@
 @include mixins.generate-space-classes(
   'ft-mb',
   'margin-block',
-  map-merge(
+  map.merge(
     variables.$spacers,
     (
       auto: auto
@@ -39,7 +40,7 @@
 @include mixins.generate-space-classes(
   'ft-mbs',
   'margin-block-start',
-  map-merge(
+  map.merge(
     variables.$spacers,
     (
       auto: auto
@@ -49,7 +50,7 @@
 @include mixins.generate-space-classes(
   'ft-mbe',
   'margin-block-end',
-  map-merge(
+  map.merge(
     variables.$spacers,
     (
       auto: auto
@@ -59,7 +60,7 @@
 @include mixins.generate-space-classes(
   'ft-mi',
   'margin-inline',
-  map-merge(
+  map.merge(
     variables.$spacers,
     (
       auto: auto
@@ -69,7 +70,7 @@
 @include mixins.generate-space-classes(
   'ft-mis',
   'margin-inline-start',
-  map-merge(
+  map.merge(
     variables.$spacers,
     (
       auto: auto
@@ -79,7 +80,7 @@
 @include mixins.generate-space-classes(
   'ft-mie',
   'margin-inline-end',
-  map-merge(
+  map.merge(
     variables.$spacers,
     (
       auto: auto
@@ -111,7 +112,7 @@
 @include mixins.generate-responsive-classes(
   'ft-jc',
   'justify-content',
-  map-merge(
+  map.merge(
     variables.$align-values,
     (
       sb: space-between

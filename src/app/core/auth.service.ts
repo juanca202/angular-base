@@ -67,7 +67,7 @@ declare let navigator: any;
  * [PREFIX]_cid = client ID
  * [PREFIX]_lus = last user
  *
- * [PREFIX]_jwt = token sessión
+ * [PREFIX]_jwt = token sessipn
  * [PREFIX]_set = user settings
  * [PREFIX]_rdi = url redirect
  * [PREFIX]_cur = default currency

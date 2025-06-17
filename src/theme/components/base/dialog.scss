@@ -1,31 +1,8 @@
-@use '../mixins' as mixins;
+@use '../../utils/mixins' as mixins;
 
 .ft-dialog {
   .mdc-dialog {
-    --mdc-dialog-container-shape: 0.5rem;
-    --mdc-dialog-subhead-font: var(--ft-text-font-family);
-    --mdc-dialog-subhead-line-height: normal;
-    --mdc-dialog-supporting-text-font: var(--ft-text-font-family);
-    --mdc-dialog-supporting-text-tracking: 0;
-    --mdc-dialog-supporting-text-line-height: var(--ft-text-line-height);
-
-    &__surface {
-      border-radius: 0.5rem;
-    }
-
-    &__content {
-      padding: 1.5rem;
-    }
-
-    &__actions {
-      padding-inline: 1.5rem;
-      padding-block: 1rem;
-      display: flex;
-      justify-content: flex-end;
-    }
-
     &__title {
-      padding: 0.5rem 0.5rem 0.5rem 0.25rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;

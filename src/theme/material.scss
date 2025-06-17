@@ -1,4 +1,4 @@
-@use 'mixins' as mixins;
+@use 'utils/mixins' as mixins;
 
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
@@ -80,15 +80,6 @@ $factor-expenses-theme: mat.m2-define-light-theme(
 
 /* You can add global styles to this file, and also import other style files */
 
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-}
-
 .mat-bottom-sheet-container {
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -101,6 +92,7 @@ body {
   }
 }
 
+/*
 .mdc-dialog {
   --mdc-dialog-container-color: var(--ft-body-bg);
   --mdc-dialog-supporting-text-color: var(--ft-text-color);
@@ -114,6 +106,7 @@ body {
     }
   }
 }
+*/
 
 .mat-mdc-form-field {
   width: 100%;
@@ -133,17 +126,6 @@ body {
       var(--ft-text-color) 80%,
       transparent
     );
-  }
-}
-
-.mat-mdc-fab {
-  --mdc-icon-button-icon-color: var(--ft-dark-color);
-  z-index: 1;
-
-  html &.mat-primary {
-    --mdc-fab-container-color: var(--ft-primary-color);
-    --mat-fab-foreground-color: var(--ft-dark-color);
-    --mat-fab-state-layer-color: var(--ft-dark-color);
   }
 }
 
