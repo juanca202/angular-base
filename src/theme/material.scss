@@ -92,22 +92,6 @@ $factor-expenses-theme: mat.m2-define-light-theme(
   }
 }
 
-/*
-.mdc-dialog {
-  --mdc-dialog-container-color: var(--ft-body-bg);
-  --mdc-dialog-supporting-text-color: var(--ft-text-color);
-  --mdc-dialog-supporting-text-font: var(--ft-text-font-family);
-  --mdc-dialog-supporting-text-tracking: 0;
-  --mdc-dialog-container-shape: 0.5rem;
-
-  &__actions {
-    button {
-      min-width: 100px;
-    }
-  }
-}
-*/
-
 .mat-mdc-form-field {
   width: 100%;
 }
