@@ -13,9 +13,10 @@ import { CommonModule } from '@angular/common';
 
 import { lastValueFrom } from 'rxjs';
 import { IconComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
-import { GraphqlService, StringService } from '@factor_ec/utils';
+import { StringService } from '@factor_ec/utils';
 import { QueryRef, Apollo, gql } from 'apollo-angular';
 
+import { GraphqlService } from 'app/core/graphql.service';
 import { AppService } from 'app/core/app.service';
 import { NotificationWrapped } from 'app/core/models/notification-wrapped';
 import { Notification } from 'app/core/models/notification';

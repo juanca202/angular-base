@@ -1,6 +1,6 @@
 @use '../../../../theme/utils/mixins' as mixins;
 
-.ft-auth {
+:host {
   display: flex;
   min-height: 100vh;
   min-height: 100svh;
@@ -28,12 +28,6 @@
     .ft-logo {
       @media (prefers-color-scheme: dark) {
         //background-image: url(../../../public/images/logo-dark.svg);
-      }
-    }
-
-    .ft-actions {
-      button {
-        color: var(--ft-dark-color);
       }
     }
   }
@@ -103,7 +97,7 @@
     }
   }
 
-  &--form {
+  &.ft-auth--form {
     @include mixins.media-breakpoint-down(md) {
       .ft-auth__info {
         display: none;
@@ -111,7 +105,7 @@
     }
   }
 
-  &__info {
+  .ft-auth__info {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
@@ -141,13 +135,6 @@
       line-height: normal;
     }
 
-    .ft-terms {
-      &,
-      a {
-        color: color-mix(in srgb, var(--ft-dark-color) 50%, transparent);
-      }
-    }
-
     .ft-actions {
       @include mixins.media-breakpoint-down(md) {
         padding-left: 2rem;
@@ -156,18 +143,8 @@
     }
   }
 
-  &__signin,
-  &__signup {
-    .ft-actions button {
-      --mdc-outlined-button-container-height: 3rem;
-      color: var(--ft-dark-color);
-      background-color: #fff;
-      width: 100%;
-    }
-  }
-
-  &__reset,
-  &__signin {
+  .ft-auth__reset,
+  .ft-auth__signin {
     margin: auto;
     padding: 1.5rem;
     max-width: max(40vw, 450px);
@@ -177,7 +154,7 @@
     }
   }
 
-  &__signup {
+  .ft-auth__signup {
     margin: auto;
     padding: 1.5rem;
     max-width: max(40vw, 450px);
