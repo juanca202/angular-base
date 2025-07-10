@@ -7,16 +7,16 @@
     ></ft-icon>
   </div>
   <p class="ft-ta-c ft-tc-danger" i18n>This action can not be undone</p>
-  <p class="ft-fs-sm ft-tc-muted ft-mbe-2" i18n>
+  <p class="ft-fs-sm ft-tc-muted" i18n>
     After confirming your decision, you will no longer be able to log into your
     account.
   </p>
   @if (!codeExpiresIn()) {
-  <p class="ft-fs-sm ft-tc-muted ft-mbe-2" i18n>
+  <p class="ft-fs-sm ft-tc-muted" i18n>
     To continue, enter the email associated with your account.
   </p>
   <form id="step1Form" [formGroup]="step1Form" (ngSubmit)="submit()">
-    <mat-form-field appearance="fill" class="ft-mbe-2">
+    <mat-form-field appearance="fill">
       <mat-label i18n>Email</mat-label>
       <input type="email" matInput formControlName="email" maxlength="50" />
       @if (step1Form.get('email')?.invalid) {
@@ -28,14 +28,14 @@
     </mat-form-field>
   </form>
   } @if (codeExpiresIn()) {
-  <p class="ft-fs-sm ft-tc-muted ft-mbe-2" i18n>
+  <p class="ft-fs-sm ft-tc-muted" i18n>
     You have <strong>{{ codeExpiresIn() }} minutes</strong> to enter
     verification code sent to
     <strong>{{ authService.settings()?.user?.email }}</strong> to confirm
     deletion.
   </p>
   <form id="step2Form" [formGroup]="step2Form" (ngSubmit)="submit()">
-    <mat-form-field appearance="fill" class="ft-mbe-2">
+    <mat-form-field appearance="fill">
       <mat-label i18n>Verification code</mat-label>
       <input type="text" matInput formControlName="code" maxlength="13" />
       @if (step2Form.get('code')?.invalid) {
