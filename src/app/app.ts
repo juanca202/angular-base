@@ -7,7 +7,8 @@ import { AuthService } from './core/auth.service';
   selector: 'app-root',
   imports: [RouterOutlet, IconComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
+  standalone: true
 })
 export class App {
   protected title = 'angular-base-project';
