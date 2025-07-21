@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node git-version.js && ng serve",
-    "build": "node git-version.js && ng build --subresource-integrity && npm run sentry:sourcemaps",
+    "build": "node git-version.js && ng build && npm run sentry:sourcemaps",
     "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json && node generate-i18n.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -12,19 +12,29 @@
     "lint": "eslint --fix",
     "prepare": "husky install"
   },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.0.3",
-    "@angular/cdk": "^20.0.3",
-    "@angular/common": "^20.0.0",
-    "@angular/compiler": "^20.0.0",
-    "@angular/core": "^20.0.0",
+    "@angular/animations": "^20.1.0",
+    "@angular/cdk": "^20.1.0",
+    "@angular/common": "^20.1.0",
+    "@angular/compiler": "^20.1.0",
+    "@angular/core": "^20.1.0",
     "@angular/fire": "^20.0.1",
-    "@angular/forms": "^20.0.0",
-    "@angular/material": "^20.0.3",
-    "@angular/platform-browser": "^20.0.0",
-    "@angular/router": "^20.0.0",
-    "@angular/service-worker": "^20.0.0",
+    "@angular/forms": "^20.1.0",
+    "@angular/material": "^20.1.0",
+    "@angular/platform-browser": "^20.1.0",
+    "@angular/router": "^20.1.0",
+    "@angular/service-worker": "^20.1.0",
     "@capacitor/android": "^7.3.0",
     "@capacitor/angular": "^2.0.3",
     "@capacitor/core": "latest",
@@ -41,18 +51,18 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular-eslint/builder": "^20.1.0",
-    "@angular-eslint/eslint-plugin": "^20.1.0",
-    "@angular-eslint/eslint-plugin-template": "^20.1.0",
-    "@angular-eslint/schematics": "^20.1.0",
-    "@angular-eslint/template-parser": "^20.1.0",
-    "@angular/build": "^20.0.2",
-    "@angular/cli": "^20.0.2",
-    "@angular/compiler-cli": "^20.0.0",
-    "@angular/localize": "^20.0.3",
+    "@angular-eslint/builder": "^20.1.1",
+    "@angular-eslint/eslint-plugin": "^20.1.1",
+    "@angular-eslint/eslint-plugin-template": "^20.1.1",
+    "@angular-eslint/schematics": "^20.1.1",
+    "@angular-eslint/template-parser": "^20.1.1",
+    "@angular/build": "^20.1.0",
+    "@angular/cli": "^20.1.0",
+    "@angular/compiler-cli": "^20.1.0",
+    "@angular/localize": "^20.1.0",
     "@capacitor/cli": "latest",
     "@types/jasmine": "~5.1.0",
-    "angular-eslint": "20.0.0",
+    "angular-eslint": "20.1.1",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",

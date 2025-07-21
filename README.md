@@ -1,13 +1,11 @@
 # Angular Base Project
 
 - PWA (Web)
-- Capacitor (Dispositivos, despliegue en tiendas con Appflow)
 - ESLint, Prettier, Husky (Calidad de código)
 - Karma+Jasmine (Pruebas unitarias)
 - Playwight (Pruebas e2e)
 - Sentry (Log de errores)
 - Google TagManager (Marketing, UX, Ads)
-- Firebase (Analytics, Messaging)
 - Localize (Internacionalización)
 - Notificaciones Push
 - Material (Componentes)
@@ -25,6 +23,8 @@
     - Notifications
     - Container
 - Guía de Estilo Angular 20 ([https://angular.dev/style-guide](https://angular.dev/style-guide#))
+- Capacitor (Dispositivos, despliegue en tiendas con Appflow)
+- Firebase (Analytics, Messaging)
 
  ## Requisitos Previos
 - Node.js (versión 19 o superior)
@@ -46,6 +46,9 @@
 - `npm run test`: Ejecuta las pruebas unitarias
 - `npm run prettier`: Formatea automáticamente el código fuente usando Prettier
 
+## Seguridad
+- Hash de integridad en archivos CSS y JS
+
 ## Estructura del Proyecto
 
 ```plaintext 
@@ -53,7 +56,6 @@ public/ # Recursos estáticos
 src/
 ├── app/
 │ ├── core/ # Servicios core, guardias, interceptores
-│ ├── lib/ # Componentes y utilidades adicionales
 │ ├── shared/ # Componentes y utilidades compartidas
 │ └── main/ # Componentes principales de la aplicación
 ├── theme/ # Estilos y temas
