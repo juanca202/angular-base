@@ -1,59 +1,72 @@
-# CashAdvance
+# Angular Base Project
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
+- PWA (Web)
+- ESLint, Prettier, Husky (Calidad de código)
+- Jest (Pruebas unitarias)
+- Playwight (Pruebas e2e)
+- Sentry (Log de errores)
+- Google TagManager (Marketing, UX, Ads)
+- Localize (Internacionalización)
+- Notificaciones Push
+- Material (Componentes)
+- Theme (Estilos)
+- Modo oscuro
+- Estructura base
+    - Login
+    - Signup
+    - Reset password
+    - Change password
+    - Delete account
+    - Errors
+    - Settings
+    - Page (Privacy, terms)
+    - Notifications
+    - Container
+- Guía de Estilo Angular 20 ([https://angular.dev/style-guide](https://angular.dev/style-guide#))
+- Capacitor (Dispositivos, despliegue en tiendas con Appflow)
+- Firebase (Analytics, Messaging)
 
-## Development server
+ ## Requisitos Previos
+- Node.js (versión 19 o superior)
+- Angular CLI (versión 19)
+- NPM (versión 20 o superior)
 
-To start a local development server, run:
+## Instalación
 
-```bash
-ng serve
-```
+1. Clonar el repositorio
+2. Instalar dependencias
+3. Iniciar servidor de desarrollo
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Scripts Disponibles
 
-## Code scaffolding
+- `npm run start`: Genera la versión de Git y inicia el servidor de desarrollo
+- `npm run build`: Genera la versión de Git y compila la aplicación para desplegarla con Capacitor
+- `npm run extract-i18n`: Extrae las cadenas de internacionalización a un archivo JSON en inglés
+- `npm run watch`: Compila la aplicación en modo desarrollo con recarga automática
+- `npm run test`: Ejecuta las pruebas unitarias
+- `npm run prettier`: Formatea automáticamente el código fuente usando Prettier
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Seguridad
+- Hash de integridad en archivos CSS y JS
 
-```bash
-ng generate component component-name
-```
+## Estructura del Proyecto
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+```plaintext 
+public/ # Recursos estáticos
+src/
+├── app/
+│ ├── core/ # Servicios core, guardias, interceptores
+│ ├── shared/ # Componentes y utilidades compartidas
+│ └── main/ # Componentes principales de la aplicación
+├── theme/ # Estilos y temas
+└── environments/ # Configuraciones por ambiente
+ ```
 
-```bash
-ng generate --help
-```
+<br>
 
-## Building
+## Tecnologías Principales
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Angular 
+- Angular Material
+- TypeScript
+- SCSS
