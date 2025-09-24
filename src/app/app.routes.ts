@@ -15,6 +15,7 @@ import { ResetPassword } from './core/components/reset-password/reset-password';
 import { Settings } from './core/components/settings/settings';
 import { Home } from './main/components/home/home';
 import { Language } from './core/components/language/language';
+import { MainLayout } from './core/components/main-layout/main-layout';
 
 export const authGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
@@ -55,8 +56,14 @@ export const resetGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: Home, canActivate: [authGuard] },
-
+  {
+    path: '',
+    component: MainLayout,
+    //canActivate: [authGuard],
+    children: [
+      { path: 'home', component: Home },
+    ],
+  },
   { path: 'settings', component: Settings, canActivate: [authGuard] },
   {
     path: 'settings/language',

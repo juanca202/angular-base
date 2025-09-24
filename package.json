@@ -1,6 +1,6 @@
 {
   "name": "angular-base-project",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "node git-version.js && ng serve",
@@ -13,6 +13,8 @@
     "prepare": "husky install"
   },
   "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
     "overrides": [
       {
         "files": "*.html",
@@ -24,17 +26,16 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.1.0",
-    "@angular/cdk": "^20.1.0",
-    "@angular/common": "^20.1.0",
-    "@angular/compiler": "^20.1.0",
-    "@angular/core": "^20.1.0",
+    "@angular/cdk": "~20.2.4",
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
     "@angular/fire": "^20.0.1",
-    "@angular/forms": "^20.1.0",
-    "@angular/material": "^20.1.0",
-    "@angular/platform-browser": "^20.1.0",
-    "@angular/router": "^20.1.0",
-    "@angular/service-worker": "^20.1.0",
+    "@angular/forms": "^20.3.0",
+    "@angular/material": "~20.2.4",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@angular/service-worker": "^20.3.0",
     "@capacitor/android": "^7.3.0",
     "@capacitor/angular": "^2.0.3",
     "@capacitor/core": "latest",
@@ -44,44 +45,30 @@
     "@sentry/angular": "^9.28.1",
     "@sentry/cli": "^2.46.0",
     "apollo-angular": "^11.0.0",
-    "firebase": "^11.9.1",
     "git-describe": "^4.1.1",
     "moment": "^2.30.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular-eslint/builder": "^20.1.1",
-    "@angular-eslint/eslint-plugin": "^20.1.1",
-    "@angular-eslint/eslint-plugin-template": "^20.1.1",
-    "@angular-eslint/schematics": "^20.1.1",
-    "@angular-eslint/template-parser": "^20.1.1",
-    "@angular/build": "^20.1.0",
-    "@angular/cli": "^20.1.0",
-    "@angular/compiler-cli": "^20.1.0",
-    "@angular/localize": "^20.1.0",
-    "@capacitor/cli": "latest",
-    "@types/jasmine": "~5.1.0",
-    "angular-eslint": "20.1.1",
-    "eslint": "^9.28.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.4.1",
-    "husky": "^8.0.0",
-    "jasmine-core": "~5.7.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "lint-staged": "^16.1.0",
-    "prettier": "^3.5.3",
-    "typescript": "~5.8.2",
-    "typescript-eslint": "8.33.1"
-  },
-  "lint-staged": {
-    "*.{ts,html,scss}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "@angular-eslint/eslint-plugin": "^20.3.0",
+    "@angular-eslint/eslint-plugin-template": "^20.3.0",
+    "@angular-eslint/schematics": "^20.3.0",
+    "@angular-eslint/template-parser": "^20.3.0",
+    "@angular/build": "^20.3.2",
+    "@angular/cli": "^20.3.2",
+    "@angular/compiler-cli": "^20.3.0",
+    "@angular/localize": "^20.3.1",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "eslint": "^9.36.0",
+    "husky": "^9.1.7",
+    "jest": "^30.1.3",
+    "jest-environment-jsdom": "^30.1.2",
+    "jest-preset-angular": "^15.0.1",
+    "jsdom": "^27.0.0",
+    "ts-jest": "^29.4.4",
+    "typescript": "~5.9.2"
   }
 }

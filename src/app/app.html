@@ -1,16 +1,1 @@
 <router-outlet />
-@if (authService.getToken()) {
-<div class="ft-navbar ft-overlapped">
-  <div class="ft-navbar__actions">
-    <button
-      type="button"
-      routerLink="/home"
-      routerLinkActive="ft-active"
-      mat-button
-    >
-      <ft-icon name="home" class="ft-icon--2" />
-      <div i18n>Home</div>
-    </button>
-  </div>
-</div>
-}

@@ -17,6 +17,7 @@
     var(--ft-text-color) 50%,
     transparent
   );
+  --ft-text-font: 400 0.875rem / 1.25rem sans-serif;
   --ft-text-font-family: sans-serif;
   --ft-text-font-size: var(--ft-text-font-size-md);
   --ft-text-font-size-sm: 0.875rem;
@@ -104,6 +105,7 @@
 }
 
 html {
+  --mat-button-filled-container-color: var(--ft-primary-color);
   --mat-button-filled-container-shape: 0.5rem;
   --mat-button-filled-container-height: 40px;
   --mat-button-filled-label-text-tracking: 0;

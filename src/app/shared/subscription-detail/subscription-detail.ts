@@ -15,8 +15,8 @@ import { CommonModule } from '@angular/common';
   standalone: true
 })
 export class SubscriptionDetail implements OnInit {
-  private googleTagManagerService = inject(GoogleTagManagerService);
-  private subscriptionService = inject(SubscriptionService);
+  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  private readonly subscriptionService = inject(SubscriptionService);
 
   message = input<string>();
   subscriptionDetail = signal<any>(undefined);
