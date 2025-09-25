@@ -12,21 +12,22 @@
 - Theme (Estilos)
 - Modo oscuro
 - Estructura base
-    - Login
-    - Signup
-    - Reset password
-    - Change password
-    - Delete account
-    - Errors
-    - Settings
-    - Page (Privacy, terms)
-    - Notifications
-    - Container
+  - Login
+  - Signup
+  - Reset password
+  - Change password
+  - Delete account
+  - Errors
+  - Settings
+  - Page (Privacy, terms)
+  - Notifications
+  - Container
 - Guía de Estilo Angular 20 ([https://angular.dev/style-guide](https://angular.dev/style-guide#))
 - Capacitor (Dispositivos, despliegue en tiendas con Appflow)
 - Firebase (Analytics, Messaging)
 
- ## Requisitos Previos
+## Requisitos Previos
+
 - Node.js (versión 19 o superior)
 - Angular CLI (versión 19)
 - NPM (versión 20 o superior)
@@ -47,11 +48,12 @@
 - `npm run prettier`: Formatea automáticamente el código fuente usando Prettier
 
 ## Seguridad
+
 - Hash de integridad en archivos CSS y JS
 
 ## Estructura del Proyecto
 
-```plaintext 
+```plaintext
 public/ # Recursos estáticos
 src/
 ├── app/
@@ -60,13 +62,17 @@ src/
 │ └── main/ # Componentes principales de la aplicación
 ├── theme/ # Estilos y temas
 └── environments/ # Configuraciones por ambiente
- ```
+```
 
 <br>
 
 ## Tecnologías Principales
 
-- Angular 
+- Angular
 - Angular Material
 - TypeScript
 - SCSS
+
+## Enlaces
+
+- Conventional Commits[https://www.conventionalcommits.org/en/v1.0.0]
