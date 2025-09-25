@@ -76,3 +76,5 @@ src/
 ## Enlaces
 
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0)
+- [Semantic Versioning](https://semver.org/)
+- [Angular Material](https://material.angular.dev/)
