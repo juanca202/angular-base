@@ -1,10 +1,5 @@
 import { inject } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  Routes
-} from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, Routes } from '@angular/router';
 import { environment } from '../environments/environment.development';
 import { AppService } from './core/app.service';
 import { AuthService } from './core/auth.service';
@@ -59,16 +54,14 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayout,
-    //canActivate: [authGuard],
-    children: [
-      { path: 'home', component: Home },
-    ],
+    canActivate: [authGuard],
+    children: [{ path: 'home', component: Home }],
   },
   { path: 'settings', component: Settings, canActivate: [authGuard] },
   {
     path: 'settings/language',
     component: Language,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
 
   { path: 'auth', component: Auth, canActivate: [loginGuard] },
@@ -76,24 +69,24 @@ export const routes: Routes = [
     path: 'signin',
     component: Auth,
     data: { mode: 'signin' },
-    canActivate: [loginGuard]
+    canActivate: [loginGuard],
   },
   {
     path: 'signup',
     component: Auth,
     data: { mode: 'signup' },
-    canActivate: [loginGuard]
+    canActivate: [loginGuard],
   },
   {
     path: 'reset-password',
     component: ResetPassword,
-    canActivate: [resetGuard]
+    canActivate: [resetGuard],
   },
   {
     path: 'notifications',
     component: Notifications,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
   { path: 'error/:code', component: Error, title: $localize`Error` },
-  { path: '**', component: Error, data: { code: 404 } }
+  { path: '**', component: Error, data: { code: 404 } },
 ];

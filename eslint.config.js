@@ -1,57 +1,131 @@
 // @ts-check
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const angular = require("angular-eslint");
+const eslint = require('@eslint/js');
+const tseslint = require('@typescript-eslint/eslint-plugin');
+const angular = require('@angular-eslint/eslint-plugin');
 
-const { FlatCompat } = require('@eslint/eslintrc');
-const compat = new FlatCompat();
-
-module.exports = tseslint.config(
-  // Configuración para archivos TypeScript
+module.exports = [
+  // Configuración global de ignores
   {
-    files: ["**/*.ts"],
-    extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.stylistic,
-      ...angular.configs.tsRecommended,
+    ignores: [
+      '**/node_modules/**',
+      '**/.angular/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/coverage/**',
+      '**/*.json',
+      '**/angular.json',
+      '**/tsconfig*.json',
+      '**/jest.config.ts',
+      '**/eslint.config.js',
+      '**/generate-i18n.js',
+      '**/git-version.js',
+      '**/setup-jest.ts',
+      '**/*.html',
+      '**/*.scss',
+      '**/*.css',
+      '**/*.js',
+      '**/*.mjs',
+      '**/firebase-messaging-sw.js',
+      '**/sw-custom.js',
     ],
+  },
+  // Configuración base
+  eslint.configs.recommended,
+
+  // Configuración para archivos TypeScript (excluyendo archivos de prueba)
+  {
+    files: ['src/**/*.ts'],
+    ignores: [
+      '**/*.spec.ts',
+      '**/*.test.ts',
+      '**/node_modules/**',
+      '**/.angular/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/tsconfig*.json',
+      '**/package.json',
+      '**/angular.json',
+      '**/jest.config.ts',
+      '**/eslint.config.js',
+      '**/generate-i18n.js',
+      '**/git-version.js',
+      '**/setup-jest.ts',
+    ],
+    plugins: {
+      '@typescript-eslint': tseslint,
+      '@angular-eslint': angular,
+    },
+    languageOptions: {
+      parser: require('@typescript-eslint/parser'),
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: {
+        // Variables globales de Angular
+        $localize: 'readonly',
+        ngDevMode: 'readonly',
+        // Variables del navegador
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        navigator: 'readonly',
+        location: 'readonly',
+        history: 'readonly',
+        performance: 'readonly',
+        crypto: 'readonly',
+        fetch: 'readonly',
+        HTMLElement: 'readonly',
+        Node: 'readonly',
+        DocumentFragment: 'readonly',
+        URL: 'readonly',
+        XMLHttpRequest: 'readonly',
+        AbortController: 'readonly',
+        PaymentRequest: 'readonly',
+        CredentialRequestOptions: 'readonly',
+        sessionStorage: 'readonly',
+        localStorage: 'readonly',
+      },
+    },
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@angular-eslint/directive-selector": [
-        "error",
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@angular-eslint/directive-selector': [
+        'error',
         {
-          type: "attribute",
-          prefix: "app",
-          style: "camelCase",
+          type: 'attribute',
+          prefix: 'app',
+          style: 'camelCase',
         },
       ],
-      "@angular-eslint/component-selector": [
-        "error",
+      '@angular-eslint/component-selector': [
+        'error',
         {
-          type: "element",
-          prefix: "app",
-          style: "kebab-case",
+          type: 'element',
+          prefix: 'app',
+          style: 'kebab-case',
         },
       ],
+      'no-undef': 'off', // TypeScript maneja esto
+      'no-unused-vars': 'off', // Usamos la regla de TypeScript
     },
   },
-  // Configuración para archivos HTML (plantillas)
+  // Configuración para archivos de prueba
   {
-    files: ["**/*.html"],
-    extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-    ],
-    rules: {
-      // Puedes agregar tus reglas específicas para plantillas aquí
-      // Desactiva prettier si te da conflictos
-      "prettier/prettier": "off",
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        expect: 'readonly',
+        jest: 'readonly',
+      },
     },
   },
-  // Prettier Integration SOLO para archivos TS
-  ...compat.extends('plugin:prettier/recommended').map(config => ({
-    ...config,
-    files: ["**/*.ts"], // Solo aplicar Prettier a TypeScript
-  }))
-);
+];

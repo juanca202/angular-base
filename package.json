@@ -34,6 +34,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^20.3.1",
     "@angular/cdk": "~20.2.4",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
@@ -67,9 +68,12 @@
     "@angular/cli": "^20.3.2",
     "@angular/compiler-cli": "^20.3.0",
     "@angular/localize": "^20.3.1",
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.44.1",
     "@typescript-eslint/parser": "^8.44.1",
+    "babel-jest": "^30.0.0",
     "eslint": "^9.36.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.7",
@@ -81,9 +85,6 @@
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
-    "zone.js": "^0.15.1",
-    "babel-jest": "^30.0.0",
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0"
+    "zone.js": "^0.15.1"
   }
 }

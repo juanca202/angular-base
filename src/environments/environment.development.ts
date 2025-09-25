@@ -17,11 +17,10 @@ export const environment: Environment = {
     google: {
       tokenUrl: 'http://localhost:8000/auth/fedcm/google',
       configURL: 'https://accounts.google.com/o/fedcm/config.json',
-      clientId:
-        '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com',
+      clientId: '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com',
     },
   },
-  sessionPrefix: 'tp',
+  sessionPrefix: 'abp',
   iconSettings: {
     path: '/images',
     collection: 'factoricons-regular',
@@ -34,8 +33,7 @@ export const environment: Environment = {
   apiIdPrefix: '/api/',
   supportEmail: 'support@email.com',
   googleApi: {
-    clientId:
-      '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com',
+    clientId: '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com',
   },
   googleTagManager: {
     trackingCode: '',
