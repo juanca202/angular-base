@@ -31,10 +31,23 @@ const config: Config = {
     ...cjsPreset.transform,
     '^.+\\.(mjs|js)$': 'babel-jest',
   },
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/out-tsc/'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/out-tsc/', '/test/mocks/'],
   collectCoverage: true,
   coverageReporters: ['html', 'text', 'lcov'],
   coverageDirectory: '<rootDir>/coverage',
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/out-tsc/',
+    '/test/',
+    '/coverage/',
+    '/.angular/',
+    '/build/',
+    'jest.config.ts',
+    'setup-jest.ts',
+    'generate-i18n.js',
+    'git-version.js',
+  ],
 };
 
 export default config;

@@ -29,6 +29,7 @@ module.exports = [
       '**/sw-custom.js',
     ],
   },
+
   // Configuración base
   eslint.configs.recommended,
 
@@ -114,10 +115,19 @@ module.exports = [
       'no-unused-vars': 'off', // Usamos la regla de TypeScript
     },
   },
+
   // Configuración para archivos de prueba
   {
     files: ['**/*.spec.ts', '**/*.test.ts'],
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
     languageOptions: {
+      parser: require('@typescript-eslint/parser'),
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
       globals: {
         describe: 'readonly',
         it: 'readonly',
@@ -126,6 +136,10 @@ module.exports = [
         expect: 'readonly',
         jest: 'readonly',
       },
+    },
+    rules: {
+      // Reglas específicas para tests (opcional)
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },
 ];
