@@ -12,11 +12,7 @@
 
   // Text
   --ft-text-color: var(--ft-dark-color);
-  --ft-text-muted-color: color-mix(
-    in srgb,
-    var(--ft-text-color) 50%,
-    transparent
-  );
+  --ft-text-muted-color: color-mix(in srgb, var(--ft-text-color) 50%, transparent);
   --ft-text-font: 400 0.875rem / 1.25rem sans-serif;
   --ft-text-font-family: sans-serif;
   --ft-text-font-size: var(--ft-text-font-size-md);
@@ -30,14 +26,9 @@
   // Misc
   --ft-border-color: color-mix(in srgb, var(--ft-text-color) 20%, transparent);
   --ft-border2-color: color-mix(in srgb, var(--ft-text-color) 10%, transparent);
-  --ft-button-outline-color: color-mix(
-    in srgb,
-    var(--ft-text-color) 3%,
-    transparent
-  );
+  --ft-button-outline-color: color-mix(in srgb, var(--ft-text-color) 3%, transparent);
   --ft-body-bg: var(--ft-light-color);
-  --ft-overlapped-shadow:
-    0 0 1px 0 rgba(0, 0, 0, 0.14), 0 0 6px 0 rgba(0, 0, 0, 0.12);
+  --ft-overlapped-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.14), 0 0 6px 0 rgba(0, 0, 0, 0.12);
 
   // Avatar
   --ft-avatar-size: 2.5rem;
@@ -45,33 +36,17 @@
   --ft-avatar-color: var(--ft-light-color);
 
   // Thumbnail
-  --ft-thumbnail-bg: color-mix(
-    in srgb,
-    var(--ft-border-color) 40%,
-    transparent
-  );
+  --ft-thumbnail-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
   --ft-thumbnail-size: 2.5rem;
 
   // Input
   --ft-input-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
-  --ft-input-focused-bg: color-mix(
-    in srgb,
-    var(--ft-border-color) 50%,
-    transparent
-  );
-  --ft-input-disabled-bg: color-mix(
-    in srgb,
-    var(--ft-border-color) 60%,
-    transparent
-  );
+  --ft-input-focused-bg: color-mix(in srgb, var(--ft-border-color) 50%, transparent);
+  --ft-input-disabled-bg: color-mix(in srgb, var(--ft-border-color) 60%, transparent);
 
   // Progress bar
   --ft-progress-bar-color: var(--ft-primary-color);
-  --ft-progress-track-color: color-mix(
-    in srgb,
-    var(--ft-text-color) 10%,
-    transparent
-  );
+  --ft-progress-track-color: color-mix(in srgb, var(--ft-text-color) 10%, transparent);
 
   // Message
   --ft-message-warning-color: #664d03;
@@ -80,16 +55,8 @@
   --ft-message-info-bg: #cff4fc;
 
   // List
-  --ft-list-item-hover-bg: color-mix(
-    in srgb,
-    var(--ft-text-color) 3%,
-    transparent
-  );
-  --ft-list-item-active-bg: color-mix(
-    in srgb,
-    var(--ft-text-color) 6%,
-    transparent
-  );
+  --ft-list-item-hover-bg: color-mix(in srgb, var(--ft-text-color) 3%, transparent);
+  --ft-list-item-active-bg: color-mix(in srgb, var(--ft-text-color) 6%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -99,8 +66,7 @@
     --ft-danger-color: #ff4d4d;
     --ft-avatar-bg: #000;
     --ft-thumbnail-bg: #000;
-    --ft-overlapped-shadow:
-      0 0 1px 0 rgba(0, 0, 0, 0.54), 0 0 6px 0 rgba(0, 0, 0, 0.52);
+    --ft-overlapped-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.54), 0 0 6px 0 rgba(0, 0, 0, 0.52);
   }
 }
 
@@ -112,7 +78,7 @@ html {
   --mat-button-filled-label-text-font: var(--ft-text-font-family);
   --mat-button-filled-label-text-size: var(--ft-text-font-size-sm);
   --mat-button-filled-label-text-weight: 600;
-  --mat-button-filled-label-text-color: var(--ft-text-color);
+  --mat-button-filled-label-text-color: var(--ft-dark-color);
   --mat-button-filled-disabled-container-color: var(--ft-border-color);
 
   --mat-button-text-container-shape: 0.5rem;
@@ -236,11 +202,7 @@ html {
     var(--ft-text-color) 20%,
     transparent
   );
-  --mat-select-disabled-arrow-color: color-mix(
-    in srgb,
-    var(--ft-text-color) 20%,
-    transparent
-  );
+  --mat-select-disabled-arrow-color: color-mix(in srgb, var(--ft-text-color) 20%, transparent);
   --mat-select-panel-background-color: var(--ft-body-bg);
 
   --mat-option-label-text-font: var(--ft-text-font-family);
@@ -265,9 +227,7 @@ html {
     transparent
   );
   --mat-datepicker-calendar-date-today-outline-color: var(--ft-primary-color);
-  --mat-datepicker-calendar-date-preview-state-outline-color: var(
-    --ft-primary-color
-  );
+  --mat-datepicker-calendar-date-preview-state-outline-color: var(--ft-primary-color);
   --mat-datepicker-calendar-container-background-color: var(--ft-body-bg);
   --mat-datepicker-calendar-header-divider-color: var(--ft-border-color);
 
