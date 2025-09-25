@@ -8,7 +8,6 @@
     "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json && node generate-i18n.js",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
-    "test:karma": "ng test",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org factor-ec --project angular-base-project ./dist && sentry-cli sourcemaps upload --org factor-ec --project angular-base-project ./dist",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
