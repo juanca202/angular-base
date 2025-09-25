@@ -64,8 +64,6 @@ src/
 └── environments/ # Configuraciones por ambiente
 ```
 
-<br>
-
 ## Tecnologías Principales
 
 - Angular
@@ -93,7 +91,7 @@ La salida debería mostrar al menos un `origin` (tu fork).
 Si no ves un `upstream`, puedes añadirlo con el comando:
 
 ```sh
-git remote add upstream git@github.com:ORIGINAL_OWNER/REPO.git
+git remote add upstream https://github.com/juanca202/angular-base-project.git
 ```
 
 Donde:
