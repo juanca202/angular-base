@@ -1,68 +1,24 @@
-# Angular Base Project
+# 🌟 Angular Base Project
 
-- PWA (Web)
-- ESLint, Prettier, Husky (Calidad de código)
-- Jest (Pruebas unitarias)
-- Playwight (Pruebas e2e)
-- Sentry (Log de errores)
-- Google TagManager (Marketing, UX, Ads)
-- Localize (Internacionalización)
-- Notificaciones Push
-- Material (Componentes)
-- Theme (Estilos)
-- Modo oscuro
-- Estructura base
-  - Login
-  - Signup
-  - Reset password
-  - Change password
-  - Delete account
-  - Errors
-  - Settings
-  - Page (Privacy, terms)
-  - Notifications
-  - Container
-- Guía de Estilo Angular 20 ([https://angular.dev/style-guide](https://angular.dev/style-guide#))
-- Capacitor (Dispositivos, despliegue en tiendas con Appflow)
-- Firebase (Analytics, Messaging)
+Angular Base Project es una plantilla inicial diseñada para acelerar el desarrollo de aplicaciones modernas con Angular.  
+Incluye una configuración completa orientada a **buenas prácticas**, **calidad de código** y **escalabilidad**, integrando herramientas y librerías clave tanto para la web como para dispositivos móviles mediante **Capacitor**.
 
-## Requisitos Previos
+Este proyecto ofrece una base sólida con:
 
-- Node.js (versión 19 o superior)
-- Angular CLI (versión 19)
-- NPM (versión 20 o superior)
+- **PWA (Web App Progresiva)** lista para instalar y usar offline.
+- **Calidad de código** con ESLint, Prettier y Husky (hooks para validación).
+- **Pruebas unitarias y E2E** con Jest y Playwright.
+- **Monitoreo de errores** mediante Sentry.
+- **Marketing y analítica** con Google Tag Manager y Firebase (Analytics, Messaging).
+- **Internacionalización (i18n)** con Localize.
+- **Notificaciones Push** integradas.
+- **UI moderna** con Angular Material, theming, soporte de modo oscuro y basado en la guía de estilos de [Angular 20 Style Guide](https://angular.dev/style-guide).
+- **Autenticación completa**: login, signup, reset/change password y eliminación de cuenta.
+- **Gestión de configuración y páginas legales**: settings, privacy, terms.
+- **Contenedores y notificaciones** para estructurar la aplicación.
+- **Compatibilidad multiplataforma** gracias a Capacitor y despliegue en tiendas mediante Appflow.
 
-## Instalación
-
-1. Clonar el repositorio
-2. Instalar dependencias
-3. Iniciar servidor de desarrollo
-
-## Scripts Disponibles
-
-- `npm run start`: Genera la versión de Git y inicia el servidor de desarrollo
-- `npm run build`: Genera la versión de Git y compila la aplicación para desplegarla con Capacitor
-- `npm run extract-i18n`: Extrae las cadenas de internacionalización a un archivo JSON en inglés
-- `npm run watch`: Compila la aplicación en modo desarrollo con recarga automática
-- `npm run test`: Ejecuta las pruebas unitarias
-- `npm run prettier`: Formatea automáticamente el código fuente usando Prettier
-
-## Seguridad
-
-- Hash de integridad en archivos CSS y JS
-
-## Estructura del Proyecto
-
-```plaintext
-public/ # Recursos estáticos
-src/
-├── app/
-│ ├── core/ # Servicios core, guardias, interceptores
-│ ├── shared/ # Componentes y utilidades compartidas
-│ └── main/ # Componentes principales de la aplicación
-├── theme/ # Estilos y temas
-└── environments/ # Configuraciones por ambiente
-```
+Este repositorio busca servir como **punto de partida** para proyectos que requieren una base confiable, estructurada y lista para escalar.
 
 ## Tecnologías Principales
 
@@ -71,27 +27,45 @@ src/
 - TypeScript
 - SCSS
 
-## Enlaces
+## Requisitos Previos
 
-- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0)
-- [Semantic Versioning](https://semver.org/)
-- [Angular Material](https://material.angular.dev/)
+- Node.js (versión 19 o superior)
+- Angular CLI (versión 19)
+- NPM (versión 20 o superior)
 
-## 🔄 Configuración de remotos (`origin` y `upstream`)
+# Instalación
 
-Este repositorio se encuentra configurado como un **fork** de otro proyecto.  
-Para mantener tu copia actualizada, es importante agregar y verificar los remotos:
+> **Nota:** Este repositorio es un _boilerplate_. Lo recomendable es crear tu propio repositorio vacío y sincronizarlo con el repositorio principal.
+
+Repositorio principal: [angular-base-project](https://github.com/juanca202/angular-base-project.git)
+
+1. **Crear tu repositorio vacío**
 
 ```sh
-# Ver los remotos configurados
-git remote -v
+git init angular-app
+cd angular-app
 ```
 
-La salida debería mostrar al menos un `origin` (tu fork).  
-Si no ves un `upstream`, puedes añadirlo con el comando:
+2. **Agregar el repositorio principal como `upstream`**
 
 ```sh
 git remote add upstream https://github.com/juanca202/angular-base-project.git
+```
+
+3. **Traer el contenido del repositorio principal**
+
+```sh
+git fetch upstream
+```
+
+4. **Fusionar (`merge`) el contenido del upstream a tu rama principal**
+
+```sh
+# Asegúrate de estar en tu rama main
+git checkout -b main
+
+# Fusiona los cambios del upstream
+git merge upstream/main
 ```
 
 Donde:
@@ -107,14 +81,27 @@ git checkout main
 git merge upstream/main
 ```
 
-O con rebase (opcional):
+## Scripts Disponibles
 
-```sh
-git checkout main
-git pull --rebase upstream main
+- `npm run start`: Genera la versión de Git y inicia el servidor de desarrollo
+- `npm run build`: Genera la versión de Git y compila la aplicación para desplegarla con Capacitor
+- `npm run extract-i18n`: Extrae las cadenas de internacionalización a un archivo JSON en inglés
+- `npm run watch`: Compila la aplicación en modo desarrollo con recarga automática
+- `npm run test`: Ejecuta las pruebas unitarias
+- `npm run prettier`: Formatea automáticamente el código fuente usando Prettier
+
+## Estructura del Proyecto
+
+```plaintext
+public/ # Recursos estáticos
+src/
+├── app/
+│ ├── core/ # Servicios core, guardias, interceptores
+│ ├── shared/ # Componentes y utilidades compartidas
+│ └── main/ # Componentes principales de la aplicación
+├── theme/ # Estilos y temas
+└── environments/ # Configuraciones por ambiente
 ```
-
-👉 Esto garantiza que tu fork siempre se mantenga alineado con el repositorio original.
 
 ## 📝 Convención para nombres de commits
 
@@ -152,3 +139,9 @@ chore(deps): actualizar Angular a v16
 - La descripción debe ser corta y en **tiempo presente**.
 - Usa **inglés** para los commits (recomendado en proyectos abiertos).
 - Los mensajes serán validados automáticamente por **commitlint** en el hook `commit-msg`
+
+## Enlaces
+
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0)
+- [Semantic Versioning](https://semver.org/)
+- [Angular Material](https://material.angular.dev/)
