@@ -1,7 +1,7 @@
 # 🌟 Angular Base Project
 
 Angular Base Project es una plantilla inicial diseñada para acelerar el desarrollo de aplicaciones modernas con Angular.  
-Incluye una configuración completa orientada a **buenas prácticas**, **calidad de código** y **escalabilidad**, integrando herramientas y librerías clave tanto para la web como para dispositivos móviles mediante **Capacitor**.
+Incluye una configuración completa orientada a **buenas prácticas**, **calidad de código** y **escalabilidad**, integrando herramientas y librerías clave tanto para web.
 
 Este proyecto ofrece una base sólida con:
 
@@ -16,7 +16,6 @@ Este proyecto ofrece una base sólida con:
 - **Autenticación completa**: login, signup, reset/change password y eliminación de cuenta.
 - **Gestión de configuración y páginas legales**: settings, privacy, terms.
 - **Contenedores y notificaciones** para estructurar la aplicación.
-- **Compatibilidad multiplataforma** gracias a Capacitor y despliegue en tiendas mediante Appflow.
 
 Este repositorio busca servir como **punto de partida** para proyectos que requieren una base confiable, estructurada y lista para escalar.
 
@@ -84,7 +83,7 @@ git merge upstream/main
 ## Scripts Disponibles
 
 - `npm run start`: Genera la versión de Git y inicia el servidor de desarrollo
-- `npm run build`: Genera la versión de Git y compila la aplicación para desplegarla con Capacitor
+- `npm run build`: Genera la versión de Git y compila la aplicación para desplegarla
 - `npm run extract-i18n`: Extrae las cadenas de internacionalización a un archivo JSON en inglés
 - `npm run watch`: Compila la aplicación en modo desarrollo con recarga automática
 - `npm run test`: Ejecuta las pruebas unitarias
@@ -102,6 +101,31 @@ src/
 ├── theme/ # Estilos y temas
 └── environments/ # Configuraciones por ambiente
 ```
+
+## Internacionalización (i18n)
+
+Este proyecto incluye soporte para **múltiples idiomas** utilizando archivos JSON como base y archivos JS para cada idioma.  
+El idioma base siempre es **inglés (`en.json`)** y los idiomas adicionales se generan o actualizan mediante el script `generate-i18n.js`.
+
+### Uso del script `generate-i18n.js`
+
+Para generar o actualizar los archivos de traducción de un idioma específico, ejecuta:
+
+```sh
+npm run extract-i18n     # Extrae la base en en.json
+npm run i18n -- es        # Genera o actualiza español
+npm run i18n -- fr        # Genera o actualiza francés
+```
+
+### Funcionamiento
+
+- El script toma **el JSON base en inglés (`en.json`)** y lo compara con el archivo JS del idioma destino (`es.js`, `fr.js`, etc.).
+- Ordena las claves según el archivo base.
+- Crea un archivo de **claves faltantes** (`<lang>_missing.json`) para que puedas completar traducciones que aún no existan.
+- Genera o actualiza el archivo JS del idioma destino.
+- Genera también el archivo JS del idioma base (`en.js`) a partir del JSON.
+
+> Esto permite que la aplicación pueda cambiar de idioma fácilmente y mantener todas las traducciones sincronizadas con la versión en inglés.
 
 ## 📝 Convención para nombres de commits
 

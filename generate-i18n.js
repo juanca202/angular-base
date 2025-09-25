@@ -2,104 +2,96 @@ const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
-const enJsonPath = path.join(__dirname, 'public/i18n/en.json');
-const esJsPath = path.join(__dirname, 'public/i18n/es.js');
-const enJsPath = path.join(__dirname, 'public/i18n/en.js');
-const missingTranslationsPath = path.join(__dirname, 'public/i18n/es_missing.json');
+const i18nDir = path.join(__dirname, 'public', 'i18n');
+const baseJsPath = path.join(i18nDir, 'en.js'); // Base siempre es en.js
 
-// Función para leer `es.js` usando un archivo temporal `.mjs`
-async function readEsJsFile(esFilePath) {
-  if (!fs.existsSync(esFilePath)) return {};
-
-  const tempMjsPath = esFilePath.replace('.js', '.mjs');
-  fs.copyFileSync(esFilePath, tempMjsPath);
-
+/**
+ * Leer un archivo JS como módulo
+ */
+async function readJsFile(jsFilePath) {
+  if (!fs.existsSync(jsFilePath)) return {};
+  const tempMjsPath = jsFilePath.replace('.js', '.mjs');
+  fs.copyFileSync(jsFilePath, tempMjsPath);
   try {
-    const esModule = await import(pathToFileURL(tempMjsPath));
+    const mod = await import(pathToFileURL(tempMjsPath));
     fs.unlinkSync(tempMjsPath);
-    return esModule.default || {};
-  } catch (error) {
-    console.error(`❌ Error al importar ${tempMjsPath}:`, error);
+    return mod.default || {};
+  } catch (err) {
+    console.error(`❌ Error al importar ${tempMjsPath}:`, err);
     return {};
   }
 }
 
-// Función para actualizar o crear `es.js`
-async function updateOrCreateEsJsFile(esFilePath, enTranslations) {
-  const esTranslations = await readEsJsFile(esFilePath);
+/**
+ * Generar o actualizar archivo del idioma destino
+ */
+async function generateLanguage(langCode) {
+  if (!fs.existsSync(baseJsPath)) {
+    console.error(`❌ No se encontró el archivo base: ${baseJsPath}`);
+    return;
+  }
+
+  const targetJsPath = path.join(i18nDir, `${langCode}.js`);
+  const missingPath = path.join(i18nDir, `${langCode}_missing.json`);
+
+  const baseTranslations = await readJsFile(baseJsPath);
+  const targetTranslations = await readJsFile(targetJsPath);
+
   const orderedTranslations = {};
   const missingTranslations = {};
 
-  // Ordenar las claves existentes en `es.js` según `en.json`
-  Object.keys(enTranslations).forEach(key => {
-    if (esTranslations.hasOwnProperty(key)) {
-      orderedTranslations[key] = esTranslations[key];
+  Object.keys(baseTranslations).forEach((key) => {
+    if (targetTranslations.hasOwnProperty(key)) {
+      orderedTranslations[key] = targetTranslations[key];
     } else {
-      missingTranslations[key] = enTranslations[key]; // Guardar claves faltantes
+      missingTranslations[key] = baseTranslations[key];
     }
   });
 
-  // Leer `missing_translations.json` y filtrar claves que ya existen en `es.js`
+  // Leer claves faltantes previas
   let completedTranslations = {};
-  if (fs.existsSync(missingTranslationsPath)) {
+  if (fs.existsSync(missingPath)) {
     try {
-      completedTranslations = JSON.parse(fs.readFileSync(missingTranslationsPath, 'utf-8'));
-      Object.keys(completedTranslations).forEach(key => {
-        if (!esTranslations.hasOwnProperty(key)) {
-          orderedTranslations[key] = completedTranslations[key]; // Solo agregar si sigue faltando
+      completedTranslations = JSON.parse(fs.readFileSync(missingPath, 'utf-8'));
+      Object.keys(completedTranslations).forEach((key) => {
+        if (!targetTranslations.hasOwnProperty(key)) {
+          orderedTranslations[key] = completedTranslations[key];
         }
       });
-    } catch (error) {
-      console.error(`❌ Error al leer ${missingTranslationsPath}:`, error);
+    } catch (err) {
+      console.error(`❌ Error al leer ${missingPath}:`, err);
     }
   }
 
-  // Guardar claves realmente faltantes en `missing_translations.json`
+  // Guardar realmente faltantes
   const stillMissing = {};
-  Object.keys(missingTranslations).forEach(key => {
+  Object.keys(missingTranslations).forEach((key) => {
     if (!completedTranslations.hasOwnProperty(key)) {
-      stillMissing[key] = enTranslations[key]; // Solo guardar las realmente faltantes
+      stillMissing[key] = baseTranslations[key];
     }
   });
 
   if (Object.keys(stillMissing).length > 0) {
-    fs.writeFileSync(missingTranslationsPath, JSON.stringify(stillMissing, null, 2), 'utf-8');
-    console.log(`⚠️ Aún hay claves faltantes en es.js. Complétalas en ${missingTranslationsPath}.`);
-  } else {
-    // Si no hay claves faltantes, borrar el archivo `es_missing.json`
-    if (fs.existsSync(missingTranslationsPath)) {
-      fs.unlinkSync(missingTranslationsPath);
-      console.log(`✅ El archivo ${missingTranslationsPath} ha sido eliminado porque no hay claves faltantes.`);
-    }
+    fs.writeFileSync(missingPath, JSON.stringify(stillMissing, null, 2), 'utf-8');
+    console.log(`⚠️ Claves faltantes guardadas en ${missingPath}`);
+  } else if (fs.existsSync(missingPath)) {
+    fs.unlinkSync(missingPath);
+    console.log(`✅ ${missingPath} eliminado porque no hay claves faltantes.`);
   }
 
-  // Guardar `es.js`
-  const esFileContent = `export default ${JSON.stringify(orderedTranslations, null, 2)};`;
-  fs.writeFileSync(esFilePath, esFileContent, 'utf-8');
-  console.log(`✅ Archivo ${esFilePath} actualizado correctamente.`);
+  // Guardar target JS
+  const content = `export default ${JSON.stringify(orderedTranslations, null, 2)};`;
+  fs.writeFileSync(targetJsPath, content, 'utf-8');
+  console.log(`✅ Archivo ${targetJsPath} actualizado correctamente.`);
 }
 
-// Función para generar `en.js`
-function generateEnJsFile(enTranslations, enFilePath) {
-  const enFileContent = `export default ${JSON.stringify(enTranslations, null, 2)};`;
-  fs.writeFileSync(enFilePath, enFileContent, 'utf-8');
-  console.log(`✅ Archivo ${enFilePath} generado correctamente.`);
+// === CLI ===
+const langCode = process.argv[2];
+
+if (!langCode) {
+  console.error('❌ Uso: node generate-i18n.js <codigo_idioma>');
+  console.error('Ejemplo: node generate-i18n.js es');
+  process.exit(1);
 }
 
-// Función principal
-async function processFiles() {
-  // Leer `en.json`
-  const enJson = JSON.parse(fs.readFileSync(enJsonPath, 'utf-8'));
-  const enTranslations = enJson.translations;
-
-  // Actualizar `es.js`
-  await updateOrCreateEsJsFile(esJsPath, enTranslations);
-
-  // Generar `en.js`
-  generateEnJsFile(enTranslations, enJsPath);
-
-  // Elimina archivo json
-  fs.unlinkSync(enJsonPath);
-}
-
-processFiles().catch((error) => console.error("❌ Hubo un error en el proceso:", error));
+generateLanguage(langCode).catch((err) => console.error('❌ Error en el proceso:', err));

@@ -14,11 +14,14 @@ export default {
   '3674927987131419133': 'Continuar con Email',
   '5207635742003539443': 'Iniciar sesión',
   '7028204981963450021': 'Registrarse',
+  '6749157715538041035':
+    ' Si continúas con el servicio, aceptas nuestros {$START_LINK}Términos y Condiciones{$CLOSE_LINK} y {$START_LINK_1}Políticas de Privacidad{$CLOSE_LINK}. ',
   '8164791295086777340': '¿No tienes una cuenta?',
   '2308975396733519902': 'Crear una cuenta',
   '6627551976444260400': 'ó',
   '3038490686065374306': 'Usuario o correo',
   '1431416938026210429': 'Contraseña',
+  '5351947831424640475': ' ¿Olvidaste tu contraseña? ',
   '5277739594710154939': '¿Ya tienes una cuenta?',
   '5342432350421167093': 'Nombre',
   '3586674587150281199': 'Apellido',
@@ -33,15 +36,23 @@ export default {
   '4573621010634883874': 'Debe contener al menos 1 carácter especial',
   '3464842298529737154': 'Debe contener 1 número',
   '8656126574213649581': 'Confirmar nueva contraseña',
+  '2330577642930707695': ' Cancelar ',
   '935187492052582731': 'Enviar',
   '995512079229124284': 'La nueva contraseña no coincide',
   '8576738668211315219': 'Tu contraseña fue actualizada exitosamente.',
   '8997139547470267312': 'Esta acción no se puede deshacer',
+  '686690422334604107':
+    ' Después de confirmar tu decisión, ya no podrás iniciar sesión en tu cuenta. ',
+  '8536753708685568713': ' Para continuar, ingresa el correo electrónico asociado a tu cuenta. ',
+  '5010765342245924719':
+    ' Tienes {$START_TAG_STRONG}{$INTERPOLATION} minutos{$CLOSE_TAG_STRONG} para ingresar el código de verificación enviado a {$START_TAG_STRONG}{$INTERPOLATION_1}{$CLOSE_TAG_STRONG} y confirmar la eliminación. ',
   '3950684299039506417': 'Código de verificación',
   '6962699013778688473': 'Continuar',
   '9178182467454450952': 'Confirmar',
   '70117775578143378': 'Ingresa el correo registrado en tu cuenta',
   '1622593191607721902': 'Ir a inicio',
+  '7504940227782988572': ' Cerrar sesión ',
+  '6992582657488330431': ' Recargar ',
   '7485224253733748591': 'Error de conexión',
   '8147200185269700820':
     'No se pudo conectar al servidor. Por favor, revisa tu conexión a internet o inténtalo más tarde.',
@@ -59,6 +70,8 @@ export default {
     'El servidor no puede manejar la solicitud en este momento debido a una sobrecarga temporal o mantenimiento.',
   '153674187856813645': 'Error desconocido',
   '1331971586784585295': 'El servidor no puede manejar la solicitud debido a un error desconocido.',
+  '3337073403786692055':
+    ' Ingresa tu dirección de correo electrónico para recibir las instrucciones de restablecimiento. Puede que necesites revisar tu carpeta de spam. ',
   '3967269098753656610': 'Correo electrónico',
   '8913551606113937117':
     'Si tu correo está registrado, revisa tu bandeja de entrada para las instrucciones de recuperación de contraseña. Si no llega, revisa tu carpeta de spam.',
@@ -78,6 +91,7 @@ export default {
   '571374457611214402': 'Políticas de Privacidad',
   '2949848596707725099': 'Cerrar sesión',
   '7662015208795302518': 'Eliminar cuenta',
+  '8488466185512780846': ' {$INTERPOLATION} está actualizado ',
   '6314346070876696385': 'Versión {$INTERPOLATION}',
   '7852623558864620203': 'Buscando actualizaciones',
   '4729218732449038591': 'Error al buscar actualizaciones',
@@ -93,18 +107,4 @@ export default {
   '6312378586926378071': 'Descripción de la funcionalidad',
   '8102730097297378641':
     'Disfruta de {$START_TAG_STRONG}30 días de prueba gratuita{$CLOSE_TAG_STRONG}. Si decides continuar, la facturación comenzará automáticamente desde el segundo mes. No se aplicarán cargos durante el período de prueba.{$LINE_BREAK}{$LINE_BREAK} Puedes cancelar en cualquier momento y solo se te cobrará hasta el último mes pagado.',
-  '6749157715538041035':
-    ' Si continúas con el servicio, aceptas nuestros {$START_LINK}Términos y Condiciones{$CLOSE_LINK} y {$START_LINK_1}Políticas de Privacidad{$CLOSE_LINK}. ',
-  '5351947831424640475': ' ¿Olvidaste tu contraseña? ',
-  '2330577642930707695': ' Cancelar ',
-  '686690422334604107':
-    ' Después de confirmar tu decisión, ya no podrás iniciar sesión en tu cuenta. ',
-  '8536753708685568713': ' Para continuar, ingresa el correo electrónico asociado a tu cuenta. ',
-  '5010765342245924719':
-    ' Tienes {$START_TAG_STRONG}{$INTERPOLATION} minutos{$CLOSE_TAG_STRONG} para ingresar el código de verificación enviado a {$START_TAG_STRONG}{$INTERPOLATION_1}{$CLOSE_TAG_STRONG} y confirmar la eliminación. ',
-  '7504940227782988572': ' Cerrar sesión ',
-  '6992582657488330431': ' Recargar ',
-  '3337073403786692055':
-    ' Ingresa tu dirección de correo electrónico para recibir las instrucciones de restablecimiento. Puede que necesites revisar tu carpeta de spam. ',
-  '8488466185512780846': ' {$INTERPOLATION} está actualizado ',
 };

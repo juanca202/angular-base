@@ -10,7 +10,7 @@ export function apolloOptionsFactory(): ApolloClientOptions<any> {
   const httpLink = inject(HttpLink);
   return {
     link: httpLink.create({ uri: environment.graphqlEndpoint }),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
   };
 }
 
@@ -18,6 +18,6 @@ export const graphqlProvider: ApplicationConfig['providers'] = [
   Apollo,
   {
     provide: APOLLO_OPTIONS,
-    useFactory: apolloOptionsFactory
-  }
+    useFactory: apolloOptionsFactory,
+  },
 ];

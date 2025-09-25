@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "node git-version.js && ng serve",
     "build": "node git-version.js && ng build && npm run sentry:sourcemaps",
-    "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json && node generate-i18n.js",
+    "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json",
+    "i18n": "node generate-i18n.js",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org factor-ec --project angular-base-project ./dist && sentry-cli sourcemaps upload --org factor-ec --project angular-base-project ./dist",
@@ -45,10 +46,6 @@
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
     "@angular/service-worker": "^20.3.0",
-    "@capacitor/android": "^7.3.0",
-    "@capacitor/angular": "^2.0.3",
-    "@capacitor/core": "latest",
-    "@capacitor/ios": "^7.3.0",
     "@factor_ec/ui": "^5.0.8",
     "@factor_ec/utils": "^5.0.8",
     "@sentry/angular": "^9.28.1",
@@ -86,7 +83,6 @@
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
-    "typescript": "~5.9.2",
-    "zone.js": "^0.15.1"
+    "typescript": "~5.9.2"
   }
 }
