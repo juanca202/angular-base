@@ -150,37 +150,6 @@
     </div>
   </div>
 </div>
-<ng-template #subscriptionTemplate>
-  <div mat-dialog-content class="ft-pbe-0">
-    <div style="margin-top: -1rem; margin-left: -1.25rem; margin-bottom: 1rem">
-      <button type="button" mat-icon-button mat-dialog-close i18n-title title="Back" ftLeft>
-        <ft-icon name="arrow-left" class="ft-icon--2" />
-      </button>
-    </div>
-    <app-subscription-detail />
-    <div
-      class="ft-observe-interseting"
-      (ftObserveIntersecting)="layoutManager.setOverlapped($event, actionsElement)"
-    ></div>
-  </div>
-  <div #actionsElement mat-dialog-actions class="ft-jc-c">
-    <button
-      type="button"
-      mat-flat-button
-      color="primary"
-      class="ft-controlbar__item"
-      style="min-width: 180px"
-      (click)="subscribe()"
-      [disabled]="subscribing()"
-    >
-      @if (!subscribing()) {
-        <span i18n>Subscribe</span>
-      } @else {
-        <ng-container *ngTemplateOutlet="submittingTemplate" />
-      }
-    </button>
-  </div>
-</ng-template>
 <ng-template #submittingTemplate>
   <div class="ft-ta-c">
     <ft-progress class="ft-progress--2"></ft-progress>

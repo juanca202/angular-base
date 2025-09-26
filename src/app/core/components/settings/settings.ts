@@ -1,13 +1,4 @@
-import {
-  Component,
-  OnInit,
-  TemplateRef,
-  signal,
-  inject,
-  HostBinding,
-  input,
-  viewChild,
-} from '@angular/core';
+import { Component, OnInit, TemplateRef, signal, inject, HostBinding, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -28,7 +19,6 @@ import { Language } from '@factor_ec/utils';
 import { lastValueFrom } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
 
-import { SubscriptionDetail } from 'app/shared/subscription-detail/subscription-detail';
 import { AppManager } from 'app/core/app-manager';
 import { AuthService } from 'app/core/auth.service';
 import { SubscriptionService } from 'app/core/subscription.service';
@@ -50,7 +40,6 @@ import { LayoutManager } from 'app/core/layout-manager';
     RouterModule,
     AvatarComponent,
     ObserveIntersectingDirective,
-    SubscriptionDetail,
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
@@ -75,7 +64,6 @@ export class Settings implements OnInit {
     code: 'en',
     name: 'English',
   });
-  readonly subscriptionTemplate = viewChild.required<TemplateRef<any>>('subscriptionTemplate');
   private subscriptionDialogRef!: MatDialogRef<TemplateRef<any>>;
   public subscribing = signal<boolean>(false);
   public supportSubject!: string;
@@ -132,25 +120,13 @@ export class Settings implements OnInit {
     );
     this.notificationsCount.set(query.data.notifications.totalCount);
   }
-  openSubscription(): void {
-    this.subscriptionDialogRef = this.dialog.open(this.subscriptionTemplate(), {
-      panelClass: ['ft-dialog', 'ft-dialog--stacked'],
-      height: '100vh',
-      width: '600px',
-      position: {
-        left: 'auto',
-        right: '0',
-      },
-      autoFocus: false,
-    });
-  }
   shareApp() {
     if (navigator.share) {
       navigator
         .share({
           title: $localize`Check out this amazing app!`,
           text: $localize`Discover this app I love. You can download it here:`,
-          url: 'https://play.google.com/store/apps/details?id=ec.factor.expenses',
+          url: '',
         })
         .then(() =>
           this.googleTagManagerService.addVariable({
@@ -163,19 +139,6 @@ export class Settings implements OnInit {
             message: error.message,
           }),
         );
-    }
-  }
-  async subscribe(): Promise<void> {
-    try {
-      this.subscribing.set(true);
-      const response = await this.subscriptionService.pay('tplus');
-      if (response) {
-        this.subscriptionDialogRef.close();
-      }
-      this.subscribing.set(false);
-    } catch (err) {
-      console.log(err);
-      this.subscribing.set(false);
     }
   }
 }
