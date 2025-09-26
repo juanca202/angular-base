@@ -25,6 +25,21 @@
     &__content {
       position: relative;
     }
+
+    &__actions {
+      padding: 1rem 1.5rem;
+      justify-content: center;
+      gap: 0.5rem;
+
+      button {
+        flex-grow: 1;
+        max-width: 150px;
+
+        &:not(.mdc-button--unelevated) {
+          background-color: var(--ft-input-bg);
+        }
+      }
+    }
   }
 
   &--stacked {

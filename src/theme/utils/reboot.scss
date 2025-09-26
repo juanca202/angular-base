@@ -69,3 +69,8 @@ hr {
 *::after {
   box-sizing: border-box;
 }
+
+app-root {
+  display: block;
+  height: 100%;
+}

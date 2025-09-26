@@ -1,8 +1,11 @@
 <div #headerElement class="ft-page__header">
-  <button routerLink="/" mat-icon-button i18n-title title="Back">
-    <ft-icon name="arrow-left" class="ft-icon--2" />
-  </button>
-  <div class="ft-header__title" i18n>Notifications</div>
+  <div class="ft-actions">
+    <button type="button" mat-icon-button i18n-title title="Back" routerLink="/settings">
+      <ft-icon name="arrow-left" class="ft-icon--2" />
+    </button>
+  </div>
+  <div class="ft-title" i18n>Notifications</div>
+  <div class="ft-actions"></div>
 </div>
 <div
   #content
