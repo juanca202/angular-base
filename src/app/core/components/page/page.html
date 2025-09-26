@@ -7,10 +7,7 @@
 <div mat-dialog-content class="ft-pbs-4">
   <div
     class="ft-observe-interseting"
-    (ftObserveIntersecting)="appService.setOverlapped($event, titleElement)"
+    (ftObserveIntersecting)="layoutManager.setOverlapped($event, titleElement)"
   ></div>
-  <div
-    class="ft-html-section"
-    [innerHTML]="page()?.data?.attributes?.body?.value"
-  ></div>
+  <div class="ft-html-section" [innerHTML]="page()?.data?.attributes?.body?.value"></div>
 </div>

@@ -1,16 +1,16 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 
 export const clientInterceptor: HttpInterceptorFn = (req, next) => {
-  const appService = inject(AppService);
+  const appManager = inject(AppManager);
   const clientReq = req.clone({
     setHeaders: {
-      'Client-Id': appService.getClientId(),
-      'App-Id': appService.id,
-      'App-Version': appService.version
-    }
+      'Client-Id': appManager.getClientId(),
+      'App-Id': appManager.id,
+      'App-Version': appManager.version,
+    },
   });
   return next(clientReq);
 };

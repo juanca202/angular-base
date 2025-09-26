@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  signal,
-  inject,
-  HostBinding,
-  input
-} from '@angular/core';
+import { Component, OnDestroy, signal, inject, HostBinding, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -17,9 +10,10 @@ import { StringService } from '@factor_ec/utils';
 import { QueryRef, Apollo, gql } from 'apollo-angular';
 
 import { GraphqlService } from 'app/core/graphql.service';
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { NotificationWrapped } from 'app/core/models/notification-wrapped';
 import { Notification } from 'app/core/models/notification';
+import { LayoutManager } from 'app/core/layout-manager';
 
 @Component({
   selector: 'app-notifications',
@@ -28,18 +22,19 @@ import { Notification } from 'app/core/models/notification';
     RouterModule,
     IconComponent,
     MatButtonModule,
-    ObserveIntersectingDirective
+    ObserveIntersectingDirective,
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
-  standalone: true
+  standalone: true,
 })
 export class Notifications implements OnDestroy {
-  private apollo = inject(Apollo);
-  appService = inject(AppService);
-  private graphqlService = inject(GraphqlService);
-  private stringService = inject(StringService);
-  private title = inject(Title);
+  private readonly apollo = inject(Apollo);
+  public readonly AppManager = inject(AppManager);
+  private readonly graphqlService = inject(GraphqlService);
+  public readonly layoutManager = inject(LayoutManager);
+  private readonly stringService = inject(StringService);
+  private readonly title = inject(Title);
 
   notifications = signal<NotificationWrapped[]>([]);
   loading = signal<boolean>(false);
@@ -78,7 +73,7 @@ export class Notifications implements OnDestroy {
           }
         }
       `,
-      fetchPolicy: 'network-only'
+      fetchPolicy: 'network-only',
     });
     this.queryRef.valueChanges.subscribe({
       next: (query) => {
@@ -91,15 +86,14 @@ export class Notifications implements OnDestroy {
                 option.queryParams = {
                   action: notification.action?.uuid,
                   actionType: notification.action?.type,
-                  actionValue: option.value
+                  actionValue: option.value,
                 };
               });
             }
             if (notification.action?.selected) {
-              notification.action.selectedObject =
-                notification.action.options.find(
-                  (a: any) => a.value === notification.action?.selected
-                );
+              notification.action.selectedObject = notification.action.options.find(
+                (a: any) => a.value === notification.action?.selected,
+              );
             }
             return { readTimer: null, notification };
           });
@@ -107,7 +101,7 @@ export class Notifications implements OnDestroy {
       },
       error: () => {
         this.loading.set(false);
-      }
+      },
     });
     this.postReadTimer = setInterval(() => {
       this.postReadNotifications(this.readPool);
@@ -145,8 +139,8 @@ export class Notifications implements OnDestroy {
                 }`;
             })}
           }
-        `
-        })
+        `,
+        }),
       );
       this.readPool = ids.filter((n) => !this.readPool.includes(n));
     }

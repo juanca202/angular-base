@@ -4,7 +4,7 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
@@ -15,15 +15,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 
 import { lastValueFrom } from 'rxjs';
-import {
-  IconComponent,
-  MessageService,
-  ProgressComponent
-} from '@factor_ec/ui';
+import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui';
 
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
+import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
   selector: 'app-reset-password',
@@ -35,13 +32,14 @@ import { CommonModule } from '@angular/common';
     MatFormField,
     MatInputModule,
     IconComponent,
-    ProgressComponent
+    ProgressComponent,
+    ErrorMessagePipe,
   ],
   templateUrl: './reset-password.html',
-  styleUrl: './reset-password.scss'
+  styleUrl: './reset-password.scss',
 })
 export class ResetPassword {
-  appService = inject(AppService);
+  AppManager = inject(AppManager);
   private formBuilder = inject(FormBuilder);
   private httpClient = inject(HttpClient);
   private messageService = inject(MessageService);
@@ -63,23 +61,14 @@ export class ResetPassword {
     this.form = this.formBuilder.group({
       token: this.route.snapshot.queryParamMap.get('token'),
       password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: [
-        '',
-        [Validators.required, this.confirmPasswordValidator]
-      ]
+      confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]],
     });
     this.title.setTitle($localize`Reset password`);
   }
 
-  confirmPasswordValidator(
-    control: AbstractControl
-  ): Record<string, any> | null {
+  confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {
     let value: Record<string, any> | null = null;
-    if (
-      control &&
-      control.parent &&
-      control.parent.get('password')?.value !== control.value
-    ) {
+    if (control && control.parent && control.parent.get('password')?.value !== control.value) {
       value = { notEqual: true, fieldName: $localize`New password` };
     }
     return value;
@@ -92,23 +81,20 @@ export class ResetPassword {
         await lastValueFrom(
           this.httpClient.post(environment.auth.resetPasswordUrl, {
             token: this.form.value.token,
-            password: this.form.value.password
-          })
+            password: this.form.value.password,
+          }),
         );
         this.submitting.set(false);
         this.router.navigateByUrl('/');
         setTimeout(() => {
-          this.messageService.show(
-            $localize`Your password was changed successfully.`
-          );
+          this.messageService.show($localize`Your password was changed successfully.`);
         }, 100);
       } catch (err: any) {
         this.submitting.set(false);
         this.form.enable();
-        this.messageService.show(
-          err.error?.detail || err.error.message || err.message,
-          { type: 'modal' }
-        );
+        this.messageService.show(err.error?.detail || err.error.message || err.message, {
+          type: 'modal',
+        });
       }
     }
   }

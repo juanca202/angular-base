@@ -8,29 +8,23 @@ import { Title } from '@angular/platform-browser';
 import { IconComponent } from '@factor_ec/ui';
 import { Language as LanguageModel, StorageService } from '@factor_ec/utils';
 
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-language',
-  imports: [
-    IconComponent,
-    MatButtonModule,
-    MatTooltipModule,
-    MatRippleModule,
-    RouterModule
-  ],
+  imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
   templateUrl: './language.html',
   styleUrl: './language.scss',
-  standalone: true
+  standalone: true,
 })
 export class Language {
-  appService = inject(AppService);
-  private storageService = inject(StorageService);
-  private title = inject(Title);
-  locale = signal<string | undefined>(this.appService.getLocale());
+  public readonly appManager = inject(AppManager);
+  private readonly storageService = inject(StorageService);
+  private readonly title = inject(Title);
 
-  readonly class = input<string>('');
+  public locale = signal<string | undefined>(this.appManager.getLocale());
+  public readonly class = input<string>('');
   @HostBinding('class') get hostClasses(): string {
     return ['ft-page', 'ft-page--fullscreen', this.class()].join(' ');
   }
@@ -40,11 +34,7 @@ export class Language {
   }
 
   async select(language: LanguageModel): Promise<void> {
-    this.storageService.set(
-      `${environment.sessionPrefix}_loc`,
-      language.code,
-      'local'
-    );
+    this.storageService.set(`${environment.sessionPrefix}_loc`, language.code, 'local');
     location.reload();
   }
 }

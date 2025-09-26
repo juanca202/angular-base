@@ -1,38 +1,23 @@
-import {
-  Component,
-  HostBinding,
-  signal,
-  inject,
-  OnInit,
-  input
-} from '@angular/core';
+import { Component, HostBinding, signal, inject, OnInit, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
-import {
-  ProgressComponent,
-  MessageService,
-  IconComponent
-} from '@factor_ec/ui';
+import { ProgressComponent, MessageService, IconComponent } from '@factor_ec/ui';
 
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { AuthService } from 'app/core/auth.service';
 import { ForgotPassword } from 'app/core/components/forgot-password/forgot-password';
 import { Page } from 'app/core/components/page/page';
 import { environment } from 'environments/environment';
+import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
   selector: 'app-auth',
@@ -45,13 +30,14 @@ import { environment } from 'environments/environment';
     MatMenuModule,
     RouterModule,
     IconComponent,
-    ProgressComponent
+    ProgressComponent,
+    ErrorMessagePipe,
   ],
   templateUrl: './auth.html',
-  styleUrl: './auth.scss'
+  styleUrl: './auth.scss',
 })
 export class Auth implements OnInit {
-  public appService = inject(AppService);
+  public appManager = inject(AppManager);
   public authService = inject(AuthService);
   readonly class = input<string>('');
   @HostBinding('class') get hostClasses(): string {
@@ -59,7 +45,7 @@ export class Auth implements OnInit {
       'ft-page--fullscreen',
       'ft-auth',
       this.mode() ? 'ft-auth--form' : null,
-      this.class()
+      this.class(),
     ].join(' ');
   }
   private dialog = inject(MatDialog);
@@ -81,18 +67,15 @@ export class Auth implements OnInit {
   constructor() {
     this.signinForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
     this.signupForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
-    this.lastUser = this.storageService.get(
-      `${environment.sessionPrefix}_lus`,
-      'local'
-    );
+    this.lastUser = this.storageService.get(`${environment.sessionPrefix}_lus`, 'local');
   }
 
   ngOnInit(): void {
@@ -120,7 +103,7 @@ export class Auth implements OnInit {
   forgotPassword(): void {
     this.dialog.open(ForgotPassword, {
       panelClass: 'ft-dialog',
-      width: '400px'
+      width: '400px',
     });
   }
   openPage(url: string): void {
@@ -131,8 +114,8 @@ export class Auth implements OnInit {
       width: '600px',
       position: {
         left: 'auto',
-        right: '0'
-      }
+        right: '0',
+      },
     });
   }
   setMode(mode: string): void {
@@ -150,7 +133,7 @@ export class Auth implements OnInit {
     }
     this.googleTagManagerService.addVariable({
       event: 'page_view',
-      page_title: this.title.getTitle()
+      page_title: this.title.getTitle(),
     });
   }
   async submitSignin(): Promise<void> {
@@ -163,16 +146,13 @@ export class Auth implements OnInit {
         this.googleTagManagerService.addVariable({
           event: 'login',
           user_id: this.signinForm.value.username,
-          app_id: this.appService.name
+          app_id: this.appManager.name,
         });
       } catch (err: any) {
         this.signinForm.enable();
         this.submitting.set(false);
         this.errorMessage.set(
-          err.error?.detail ||
-            err.error.message ||
-            err.message ||
-            $localize`Unexpected error`
+          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`,
         );
         this.messageService.show(this.errorMessage());
       }
@@ -188,17 +168,15 @@ export class Auth implements OnInit {
         this.googleTagManagerService.addVariable({
           event: 'sign_up',
           user_id: this.signupForm.value.username,
-          app_id: this.appService.name
+          app_id: this.appManager.name,
         });
         await this.authService.signin({
           username: this.signupForm.value.email,
-          password: this.signupForm.value.password
+          password: this.signupForm.value.password,
         });
         // Si encuentra una redirección la usa sino carga la pagina inicial
         if (this.storageService.get(`${environment.sessionPrefix}_rdi`)) {
-          this.router.navigateByUrl(
-            this.storageService.get(`${environment.sessionPrefix}_rdi`)
-          );
+          this.router.navigateByUrl(this.storageService.get(`${environment.sessionPrefix}_rdi`));
           this.storageService.delete(`${environment.sessionPrefix}_rdi`);
         } else {
           this.router.navigateByUrl('/');
@@ -207,10 +185,7 @@ export class Auth implements OnInit {
         this.signupForm.enable();
         this.submitting.set(false);
         this.errorMessage.set(
-          err.error?.detail ||
-            err.error.message ||
-            err.message ||
-            $localize`Unexpected error`
+          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`,
         );
         this.messageService.show(this.errorMessage());
       }

@@ -1,10 +1,5 @@
 import { Component, OnInit, signal, inject, OnDestroy } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -15,16 +10,13 @@ import { CommonModule } from '@angular/common';
 import { Subscription, interval, lastValueFrom } from 'rxjs';
 import moment from 'moment';
 import { StorageService } from '@factor_ec/utils';
-import {
-  MessageService,
-  ProgressComponent,
-  IconComponent
-} from '@factor_ec/ui';
+import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
 import { RestService } from 'app/core/rest.service';
 
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { AuthService } from 'app/core/auth.service';
 import { environment } from 'environments/environment';
+import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
   selector: 'app-delete-user',
@@ -36,13 +28,14 @@ import { environment } from 'environments/environment';
     MatFormField,
     MatInputModule,
     IconComponent,
-    ProgressComponent
+    ProgressComponent,
+    ErrorMessagePipe,
   ],
   templateUrl: './delete-user.html',
-  styleUrl: './delete-user.scss'
+  styleUrl: './delete-user.scss',
 })
 export class DeleteUser implements OnInit, OnDestroy {
-  appService = inject(AppService);
+  AppManager = inject(AppManager);
   authService = inject(AuthService);
   private formBuilder = inject(FormBuilder);
   private restService = inject(RestService);
@@ -66,12 +59,12 @@ export class DeleteUser implements OnInit, OnDestroy {
         [
           Validators.required,
           Validators.email,
-          Validators.pattern(`^${this.authService.settings()?.user.email}$`)
-        ]
-      ]
+          Validators.pattern(`^${this.authService.settings()?.user.email}$`),
+        ],
+      ],
     });
     this.step2Form = this.formBuilder.group({
-      code: ['', Validators.required]
+      code: ['', Validators.required],
     });
   }
 
@@ -86,7 +79,7 @@ export class DeleteUser implements OnInit, OnDestroy {
   initCode(): void {
     const deleteCodeExpiresAt = this.storageService.get(
       `${environment.sessionPrefix}_dce`,
-      'local'
+      'local',
     );
     if (deleteCodeExpiresAt) {
       this.setCountDown(moment(deleteCodeExpiresAt));
@@ -97,18 +90,15 @@ export class DeleteUser implements OnInit, OnDestroy {
       try {
         this.submitting.set(true);
         this.step1Form.disable();
-        const response = await lastValueFrom(
-          this.restService.post('generate-delete-code', null)
-        );
+        const response = await lastValueFrom(this.restService.post('generate-delete-code', null));
         this.setCountDown(moment(response));
         this.submitting.set(false);
         this.step1Form.enable();
       } catch (err: any) {
         this.submitting.set(false);
-        this.messageService.show(
-          err.error?.detail || err.error.message || err.message,
-          { type: 'modal' }
-        );
+        this.messageService.show(err.error?.detail || err.error.message || err.message, {
+          type: 'modal',
+        });
         this.step1Form.enable();
       }
     }
@@ -118,15 +108,13 @@ export class DeleteUser implements OnInit, OnDestroy {
       try {
         this.step2Form.disable();
         this.submitting.set(true);
-        await lastValueFrom(
-          this.restService.post('delete-user', this.step2Form.value)
-        );
+        await lastValueFrom(this.restService.post('delete-user', this.step2Form.value));
         this.submitting.set(false);
         this.authService.logout();
         this.storageService.delete('lastUser', 'local');
       } catch (err: any) {
         this.messageService.show(err.error?.detail || err.message, {
-          type: 'modal'
+          type: 'modal',
         });
         this.submitting.set(false);
         this.step2Form.enable();
@@ -134,11 +122,7 @@ export class DeleteUser implements OnInit, OnDestroy {
     }
   }
   setCountDown(codeExpiresAt: moment.Moment): void {
-    this.storageService.set(
-      `${environment.sessionPrefix}_dce`,
-      codeExpiresAt.toString(),
-      'local'
-    );
+    this.storageService.set(`${environment.sessionPrefix}_dce`, codeExpiresAt.toString(), 'local');
     const diff: number = codeExpiresAt.diff(moment());
     const codeExpired = diff <= 0;
     if (!codeExpired) {

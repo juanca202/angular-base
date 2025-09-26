@@ -5,23 +5,20 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { IconComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
 
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
+import { LayoutManager } from 'app/core/layout-manager';
 
 @Component({
   selector: 'app-page',
-  imports: [
-    MatButtonModule,
-    MatDialogModule,
-    IconComponent,
-    ObserveIntersectingDirective
-  ],
+  imports: [MatButtonModule, MatDialogModule, IconComponent, ObserveIntersectingDirective],
   templateUrl: './page.html',
-  styleUrl: './page.scss'
+  styleUrl: './page.scss',
 })
 export class Page implements OnInit {
-  appService = inject(AppService);
-  data = inject(MAT_DIALOG_DATA);
-  private httpClient = inject(HttpClient);
+  public readonly appManager = inject(AppManager);
+  public readonly data = inject(MAT_DIALOG_DATA);
+  private readonly httpClient = inject(HttpClient);
+  public readonly layoutManager = inject(LayoutManager);
 
   page = signal<any>(undefined);
   loading = signal<boolean>(false);

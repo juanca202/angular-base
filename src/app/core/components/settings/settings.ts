@@ -6,23 +6,14 @@ import {
   inject,
   HostBinding,
   input,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  ActivatedRoute,
-  ParamMap,
-  Router,
-  RouterModule
-} from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
 
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MatDialog
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { Title } from '@angular/platform-browser';
 
@@ -31,18 +22,19 @@ import {
   IconComponent,
   AvatarComponent,
   ObserveIntersectingDirective,
-  ProgressComponent
+  ProgressComponent,
 } from '@factor_ec/ui';
 import { Language } from '@factor_ec/utils';
 import { lastValueFrom } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
 
 import { SubscriptionDetail } from 'app/shared/subscription-detail/subscription-detail';
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { AuthService } from 'app/core/auth.service';
 import { SubscriptionService } from 'app/core/subscription.service';
 import { CommonModule } from '@angular/common';
 import { environment } from 'environments/environment';
+import { LayoutManager } from 'app/core/layout-manager';
 
 @Component({
   selector: 'app-settings',
@@ -58,19 +50,22 @@ import { environment } from 'environments/environment';
     RouterModule,
     AvatarComponent,
     ObserveIntersectingDirective,
-    SubscriptionDetail
+    SubscriptionDetail,
   ],
   templateUrl: './settings.html',
-  styleUrl: './settings.scss'
+  styleUrl: './settings.scss',
 })
 export class Settings implements OnInit {
-  public appService = inject(AppService);
-  public authService = inject(AuthService);
-  private apollo = inject(Apollo);
-  private dialog = inject(MatDialog);
-  private googleTagManagerService = inject(GoogleTagManagerService);
-  private subscriptionService = inject(SubscriptionService);
-  private title = inject(Title);
+  public readonly appManager = inject(AppManager);
+  public readonly authService = inject(AuthService);
+  private readonly apollo = inject(Apollo);
+  private readonly dialog = inject(MatDialog);
+  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  public readonly layoutManager = inject(LayoutManager);
+  private readonly subscriptionService = inject(SubscriptionService);
+  private readonly title = inject(Title);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   public notificationsCount = signal<number>(0);
   public spaces = signal<number>(0);
@@ -78,13 +73,9 @@ export class Settings implements OnInit {
   public tags = signal<number>(0);
   public language = signal<Language>({
     code: 'en',
-    name: 'English'
+    name: 'English',
   });
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  readonly subscriptionTemplate = viewChild.required<TemplateRef<any>>(
-    'subscriptionTemplate'
-  );
+  readonly subscriptionTemplate = viewChild.required<TemplateRef<any>>('subscriptionTemplate');
   private subscriptionDialogRef!: MatDialogRef<TemplateRef<any>>;
   public subscribing = signal<boolean>(false);
   public supportSubject!: string;
@@ -97,10 +88,10 @@ export class Settings implements OnInit {
 
   constructor() {
     this.title.setTitle($localize`Settings`);
-    this.appService.checkForUpdates();
-    const currentLanguage = this.appService
+    this.appManager.checkForUpdates();
+    const currentLanguage = this.appManager
       .languages()
-      .find((l) => l.code === this.appService.getLocale());
+      .find((l) => l.code === this.appManager.getLocale());
     if (currentLanguage) {
       this.language.set(currentLanguage);
     }
@@ -108,8 +99,7 @@ export class Settings implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const settings = await this.authService.getSettings();
-    this.supportSubject =
-      $localize`Support` + (settings ? `-${settings.user.username}` : '');
+    this.supportSubject = $localize`Support` + (settings ? `-${settings.user.username}` : '');
     this.getNotifications();
     this.route.paramMap.subscribe(async (paramMap: ParamMap) => {
       const action = paramMap.get('action');
@@ -120,7 +110,7 @@ export class Settings implements OnInit {
             break;
           default:
             this.router.navigateByUrl('error/404', {
-              skipLocationChange: true
+              skipLocationChange: true,
             });
             break;
         }
@@ -137,8 +127,8 @@ export class Settings implements OnInit {
             }
           }
         `,
-        fetchPolicy: 'network-only'
-      })
+        fetchPolicy: 'network-only',
+      }),
     );
     this.notificationsCount.set(query.data.notifications.totalCount);
   }
@@ -149,9 +139,9 @@ export class Settings implements OnInit {
       width: '600px',
       position: {
         left: 'auto',
-        right: '0'
+        right: '0',
       },
-      autoFocus: false
+      autoFocus: false,
     });
   }
   shareApp() {
@@ -160,18 +150,18 @@ export class Settings implements OnInit {
         .share({
           title: $localize`Check out this amazing app!`,
           text: $localize`Discover this app I love. You can download it here:`,
-          url: 'https://play.google.com/store/apps/details?id=ec.factor.expenses'
+          url: 'https://play.google.com/store/apps/details?id=ec.factor.expenses',
         })
         .then(() =>
           this.googleTagManagerService.addVariable({
-            event: 'share_app_success'
-          })
+            event: 'share_app_success',
+          }),
         )
         .catch((error) =>
           this.googleTagManagerService.addVariable({
             event: 'share_app_error',
-            message: error.message
-          })
+            message: error.message,
+          }),
         );
     }
   }

@@ -1,13 +1,13 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AppService } from './app.service';
+import { AppManager } from './app-manager';
 
 export const languageInterceptor: HttpInterceptorFn = (req, next) => {
-  const appService = inject(AppService);
+  const appManager = inject(AppManager);
   const langReq = req.clone({
     setHeaders: {
-      'Accept-Language': appService.getLocale()
-    }
+      'Accept-Language': appManager.getLocale(),
+    },
   });
   return next(langReq);
 };

@@ -6,31 +6,22 @@ import {
   LOCALE_ID,
   inject,
   isDevMode,
-  provideAppInitializer
+  provideAppInitializer,
 } from '@angular/core';
-import {
-  provideRouter,
-  Router,
-  withComponentInputBinding
-} from '@angular/router';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { provideClientHydration } from '@angular/platform-browser';
-import {
-  provideHttpClient,
-  withFetch,
-  withInterceptors
-} from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 import * as Sentry from '@sentry/angular';
 import { languageInterceptor } from 'app/core/language.interceptor';
-import { graphqlProvider } from 'app/core/graphql.provider';
+import { graphqlProvider } from 'app/core/graphql-provider';
 import { UI_OPTIONS } from '@factor_ec/ui';
 
 import { routes } from 'app/app.routes';
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { authInterceptor } from 'app/core/auth.interceptor';
 import { environment } from 'environments/environment';
 import { clientInterceptor } from 'app/core/client.interceptor';
@@ -40,22 +31,17 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding()),
-    provideAnimationsAsync(),
     provideAppInitializer(async () => {
-      const appService = inject(AppService);
-      await appService.initialize();
+      const appManager = inject(AppManager);
+      await appManager.init();
     }),
     provideServiceWorker('sw-custom.js', {
       enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
     provideHttpClient(
       withFetch(),
-      withInterceptors([
-        authInterceptor,
-        clientInterceptor,
-        languageInterceptor
-      ])
+      withInterceptors([authInterceptor, clientInterceptor, languageInterceptor]),
     ),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideMessaging(() => getMessaging()),
@@ -65,35 +51,35 @@ export const appConfig: ApplicationConfig = {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({
         logErrors: true,
-        showDialog: false
-      })
+        showDialog: false,
+      }),
     },
     {
       provide: Sentry.TraceService,
-      deps: [Router]
+      deps: [Router],
     },
     {
       provide: UI_OPTIONS,
       useValue: {
         iconSettings: {
           path: 'images',
-          collection: 'factoricons-regular'
-        }
-      }
+          collection: 'factoricons-regular',
+        },
+      },
     },
     {
       provide: 'FactorUiConfiguration',
       useValue: {
         icon: {
           collection: 'factoricons-regular',
-          mode: null
-        }
-      }
+          mode: null,
+        },
+      },
     },
     {
       provide: LOCALE_ID,
-      useFactory: (appService: AppService) => appService.getLocale(),
-      deps: [AppService]
-    }
-  ]
+      useFactory: (appManager: AppManager) => appManager.getLocale(),
+      deps: [AppManager],
+    },
+  ],
 };

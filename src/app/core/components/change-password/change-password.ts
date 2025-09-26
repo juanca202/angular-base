@@ -6,22 +6,19 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 
-import {
-  IconComponent,
-  ProgressComponent,
-  MessageService
-} from '@factor_ec/ui';
+import { IconComponent, ProgressComponent, MessageService } from '@factor_ec/ui';
 
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { lastValueFrom } from 'rxjs';
 import { RestService } from 'app/core/rest.service';
+import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
   selector: 'app-change-password',
@@ -32,13 +29,14 @@ import { RestService } from 'app/core/rest.service';
     MatDialogModule,
     MatInputModule,
     IconComponent,
-    ProgressComponent
+    ProgressComponent,
+    ErrorMessagePipe,
   ],
   templateUrl: './change-password.html',
-  styleUrl: './change-password.scss'
+  styleUrl: './change-password.scss',
 })
 export class ChangePassword {
-  public appService = inject(AppService);
+  public appManager = inject(AppManager);
   private restService = inject(RestService);
   private dialogRef = inject(MatDialogRef);
   public form: FormGroup = new FormGroup({});
@@ -53,15 +51,9 @@ export class ChangePassword {
     this.initForm();
   }
 
-  confirmPasswordValidator(
-    control: AbstractControl
-  ): Record<string, any> | null {
+  confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {
     let value: Record<string, any> | null = null;
-    if (
-      control &&
-      control.parent &&
-      control.parent.get('newPassword')?.value !== control.value
-    ) {
+    if (control && control.parent && control.parent.get('newPassword')?.value !== control.value) {
       value = { notEqual: true, fieldName: $localize`New password` };
     }
     return value;
@@ -70,10 +62,7 @@ export class ChangePassword {
     this.form = this.formBuilder.group({
       password: ['', Validators.required],
       newPassword: ['', [Validators.required, this.passwordValidator()]],
-      confirmPassword: [
-        '',
-        [Validators.required, this.confirmPasswordValidator]
-      ]
+      confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]],
     });
   }
   passwordValidator(): ValidatorFn {
@@ -89,12 +78,9 @@ export class ChangePassword {
 
       // Si no cumple alguna regla, devolver errores específicos
       const errors: any = {};
-      if (!hasMinLength)
-        errors.minLength = $localize`Must contain at least 8 characters`;
-      if (!hasUpperCase)
-        errors.upperCase = $localize`Must contain at least 1 capital letter`;
-      if (!hasLowerCase)
-        errors.lowerCase = $localize`Must contain at least 1 lowercase letter`;
+      if (!hasMinLength) errors.minLength = $localize`Must contain at least 8 characters`;
+      if (!hasUpperCase) errors.upperCase = $localize`Must contain at least 1 capital letter`;
+      if (!hasLowerCase) errors.lowerCase = $localize`Must contain at least 1 lowercase letter`;
       if (!hasSpecialCharacter)
         errors.specialCharacter = $localize`Must contain at least 1 special character`;
       if (!hasNumber) errors.number = $localize`Must contain 1 number`;
@@ -111,17 +97,16 @@ export class ChangePassword {
         await lastValueFrom(
           this.restService.post('change-password', {
             password: this.form.value.password,
-            newPassword: this.form.value.newPassword
-          })
+            newPassword: this.form.value.newPassword,
+          }),
         );
         this.dialogRef.close();
-        this.messageService.show(
-          $localize`Your password was updated successfully.`,
-          { verticalPosition: 'top' }
-        );
+        this.messageService.show($localize`Your password was updated successfully.`, {
+          verticalPosition: 'top',
+        });
       } catch (err: any) {
         this.messageService.show(err.error?.detail || err.message, {
-          type: 'modal'
+          type: 'modal',
         });
       } finally {
         this.form.enable();

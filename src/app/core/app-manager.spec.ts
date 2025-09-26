@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
-import { AppService } from 'app/core/app.service';
+import { AppManager } from 'app/core/app-manager';
 import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
 jest.mock('version-info', () => ({
   versionInfo: {
@@ -17,14 +17,14 @@ jest.mock('version-info', () => ({
   },
 }));
 
-describe('AppService', () => {
-  let service: AppService;
+describe('AppManager', () => {
+  let service: AppManager;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideHttpClientTesting(),
-        AppService,
+        AppManager,
         { provide: Router, useValue: { navigate: jest.fn() } },
         { provide: MatDialog, useValue: { open: jest.fn() } },
         { provide: MatSnackBar, useValue: { open: jest.fn() } },
@@ -48,7 +48,7 @@ describe('AppService', () => {
         },
       ],
     });
-    service = TestBed.inject(AppService);
+    service = TestBed.inject(AppManager);
   });
 
   it('should be created', () => {

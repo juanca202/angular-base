@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, Routes } from '@angular/router';
 import { environment } from '../environments/environment.development';
-import { AppService } from './core/app.service';
+import { AppManager } from './core/app-manager';
 import { AuthService } from './core/auth.service';
 import { Auth } from './core/components/auth/auth';
 import { Error } from './core/components/error/error';
@@ -14,7 +14,7 @@ import { MainLayout } from './core/components/main-layout/main-layout';
 
 export const authGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
-  const appService = inject(AppService);
+  const appManager = inject(AppManager);
   const router = inject(Router);
   // Verifica authenticación
   if (!authService.getToken() || !authService.settings()) {
@@ -22,7 +22,7 @@ export const authGuard: CanActivateFn = async (route, state) => {
     router.navigateByUrl(window.innerWidth < 1000 ? '/auth' : '/signin');
     return false;
   }
-  if (!appService.initialized) {
+  if (!appManager.initialized) {
     return false;
   }
   return true;
