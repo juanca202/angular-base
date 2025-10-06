@@ -85,12 +85,42 @@ async function generateLanguage(langCode) {
   console.log(`✅ Archivo ${targetJsPath} actualizado correctamente.`);
 }
 
-// === CLI ===
-const langCode = process.argv[2];
+/**
+ * Validar y sanitizar el código de idioma
+ */
+function validateLanguageCode(langCode) {
+  // Validar que el código de idioma sea alfanumérico y no contenga caracteres peligrosos
+  if (!langCode || typeof langCode !== 'string') {
+    throw new Error('Código de idioma inválido: debe ser una cadena no vacía');
+  }
 
-if (!langCode) {
+  // Solo permitir caracteres alfanuméricos y guiones bajos
+  if (!/^[a-zA-Z0-9_]+$/.test(langCode)) {
+    throw new Error('Código de idioma inválido: solo se permiten letras, números y guiones bajos');
+  }
+
+  // Longitud máxima razonable
+  if (langCode.length > 10) {
+    throw new Error('Código de idioma inválido: longitud máxima de 10 caracteres');
+  }
+
+  return langCode;
+}
+
+// === CLI ===
+const rawLangCode = process.argv[2];
+
+if (!rawLangCode) {
   console.error('❌ Uso: node generate-i18n.js <codigo_idioma>');
   console.error('Ejemplo: node generate-i18n.js es');
+  process.exit(1);
+}
+
+let langCode;
+try {
+  langCode = validateLanguageCode(rawLangCode);
+} catch (error) {
+  console.error(`❌ ${error.message}`);
   process.exit(1);
 }
 
