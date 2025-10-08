@@ -57,19 +57,14 @@
         </div>
       </button>
       <hr />
-      <a
-        [href]="'mailto:' + supportEmail + '?subject=' + supportSubject"
-        target="_blank"
-        matRipple
-        class="ft-list__item"
-      >
+      <button type="button" matRipple #supportButton class="ft-list__item">
         <div class="ft-item">
           <div class="ft-thumbnail">
             <ft-icon name="help" class="ft-icon--2" />
           </div>
           <div class="ft-item__label" i18n>Support</div>
         </div>
-      </a>
+      </button>
       <button
         type="button"
         matRipple

@@ -14,6 +14,13 @@ export class CustomerManager {
       data: {
         customer,
       },
+      panelClass: ['ft-dialog', 'ft-dialog--stacked'],
+      height: '100vh',
+      width: '600px',
+      position: {
+        left: 'auto',
+        right: '0',
+      },
     });
   }
 }

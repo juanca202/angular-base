@@ -5,3 +5,50 @@
     }
   }
 }
+
+.ft-password-field {
+  position: relative;
+
+  &:focus-within {
+    .mat-mdc-form-field-error {
+      visibility: hidden;
+    }
+
+    .ft-password-field__instructions {
+      display: block;
+      margin-top: -1.5rem;
+      padding-bottom: 0.5rem;
+      max-height: 100px;
+    }
+  }
+
+  .mat-mdc-form-field-error {
+    transition: visibility 0.1s linear 0.2s;
+  }
+
+  &__instructions {
+    border-radius: 0.25rem;
+    overflow: hidden;
+    max-height: 0;
+    padding-left: 14px;
+    padding-block: 0;
+    margin: 0;
+    transition:
+      max-height 0.1s linear 0.2s,
+      margin 0.1s linear 0.2s,
+      padding 0.1s linear 0.2s;
+
+    .ft-item {
+      gap: 0.25rem;
+    }
+
+    > div {
+      line-height: 1.5;
+      font-size: 0.75rem;
+
+      &.ft-tc-success {
+        font-weight: bold;
+      }
+    }
+  }
+}

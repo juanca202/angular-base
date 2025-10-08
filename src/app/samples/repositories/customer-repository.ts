@@ -21,6 +21,11 @@ export class CustomerRepository {
         this.httpClient.put<Customer>(`${this.baseUrl}`, customer),
     });
   }
+  public find(): SignalGet<string, Customer> {
+    return getResource<string, Customer>((id: string) => {
+      return this.httpClient.get<Customer>(`${this.baseUrl}/${id}`);
+    });
+  }
   public findByFilter(): SignalGet<void, Customer[]> {
     return getResource<void, Customer[]>(() => {
       return this.httpClient.get<Customer[]>(`${this.baseUrl}`).pipe(delay(2000));
