@@ -1,10 +1,10 @@
-import { Component, OnInit, TemplateRef, signal, inject, HostBinding, input } from '@angular/core';
+import { Component, OnInit, signal, inject, HostBinding, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
 
-import { MatDialogModule, MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { Title } from '@angular/platform-browser';
 
@@ -20,8 +20,7 @@ import { lastValueFrom } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
 
 import { AppManager } from 'app/core/app-manager';
-import { AuthService } from 'app/core/auth.service';
-import { SubscriptionService } from 'app/core/subscription.service';
+import { AuthService } from 'app/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { environment } from 'environments/environment';
 import { LayoutManager } from 'app/core/layout-manager';
@@ -51,7 +50,6 @@ export class Settings implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);
-  private readonly subscriptionService = inject(SubscriptionService);
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -64,7 +62,6 @@ export class Settings implements OnInit {
     code: 'en',
     name: 'English',
   });
-  private subscriptionDialogRef!: MatDialogRef<TemplateRef<any>>;
   public subscribing = signal<boolean>(false);
   public supportSubject!: string;
   public supportEmail: string = environment.supportEmail;

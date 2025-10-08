@@ -16,7 +16,7 @@ import { getToken, isSupported } from 'firebase/messaging';
 
 import { versionInfo } from 'version-info';
 import { environment } from 'environments/environment';
-import { AuthService } from 'app/core/auth.service';
+import { AuthService } from 'app/auth/auth.service';
 import { Router } from '@angular/router';
 import { Page } from './components/page/page';
 import { MatDialog } from '@angular/material/dialog';

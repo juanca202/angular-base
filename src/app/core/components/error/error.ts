@@ -1,11 +1,4 @@
-import {
-  Component,
-  HostBinding,
-  OnInit,
-  signal,
-  inject,
-  input
-} from '@angular/core';
+import { Component, HostBinding, OnInit, signal, inject, input } from '@angular/core';
 
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -14,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { IconComponent } from '@factor_ec/ui';
 import { Error as ErrorModel } from '@factor_ec/utils';
 
-import { AuthService } from 'app/core/auth.service';
+import { AuthService } from 'app/auth/auth.service';
 
 /**
  * Página de genérica de error.
@@ -23,7 +16,7 @@ import { AuthService } from 'app/core/auth.service';
   selector: 'app-error',
   imports: [IconComponent, MatButtonModule, RouterModule],
   templateUrl: './error.html',
-  styleUrl: './error.scss'
+  styleUrl: './error.scss',
 })
 export class Error implements OnInit {
   authService = inject(AuthService);
@@ -47,8 +40,7 @@ export class Error implements OnInit {
 
   async ngOnInit(): Promise<void> {
     if (this.router.getCurrentNavigation()?.extras.state?.['message']) {
-      this.message =
-        this.router.getCurrentNavigation()?.extras.state?.['message'];
+      this.message = this.router.getCurrentNavigation()?.extras.state?.['message'];
     }
     let code = -1;
     if (this.route.snapshot.params['code']) {
@@ -63,7 +55,7 @@ export class Error implements OnInit {
           title: $localize`Connection Error`,
           message:
             this.message ||
-            $localize`Could not connect to the server. Please check your internet connection or try again later.`
+            $localize`Could not connect to the server. Please check your internet connection or try again later.`,
         });
         break;
       case 400:
@@ -72,16 +64,14 @@ export class Error implements OnInit {
           title: $localize`Bad Request`,
           message:
             this.message ||
-            $localize`The request failed, please try again or contact the administrator.`
+            $localize`The request failed, please try again or contact the administrator.`,
         });
         break;
       case 403:
         this.error.set({
           icon: '403',
           title: $localize`Forbidden`,
-          message:
-            this.message ||
-            $localize`You do not have permission to access this content.`
+          message: this.message || $localize`You do not have permission to access this content.`,
         });
         break;
       case 404:
@@ -90,7 +80,7 @@ export class Error implements OnInit {
           title: $localize`Not Found`,
           message:
             this.message ||
-            $localize`The content you are looking for cannot be found on this site.`
+            $localize`The content you are looking for cannot be found on this site.`,
         });
         break;
       case 412:
@@ -99,7 +89,7 @@ export class Error implements OnInit {
           title: $localize`Precondition Failed`,
           message:
             this.message ||
-            $localize`The request could not be completed due to a failed precondition.`
+            $localize`The request could not be completed due to a failed precondition.`,
         });
         break;
       case 503:
@@ -108,14 +98,14 @@ export class Error implements OnInit {
           title: $localize`Service Unavailable`,
           message:
             this.message ||
-            $localize`The server is currently unable to handle the request due to a temporary overload or maintenance of the server.`
+            $localize`The server is currently unable to handle the request due to a temporary overload or maintenance of the server.`,
         });
         break;
       default:
         this.error.set({
           icon: 'unknown',
           title: $localize`Unknown Error`,
-          message: $localize`The server cannot handle the request due to an unknown error.`
+          message: $localize`The server cannot handle the request due to an unknown error.`,
         });
         break;
     }

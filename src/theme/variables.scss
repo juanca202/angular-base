@@ -43,6 +43,7 @@
   --ft-input-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
   --ft-input-focused-bg: color-mix(in srgb, var(--ft-border-color) 50%, transparent);
   --ft-input-disabled-bg: color-mix(in srgb, var(--ft-border-color) 60%, transparent);
+  --ft-input-border-radius: 0.5rem;
 
   // Progress bar
   --ft-progress-bar-color: var(--ft-primary-color);

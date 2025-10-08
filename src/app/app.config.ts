@@ -22,7 +22,7 @@ import { UI_OPTIONS } from '@factor_ec/ui';
 
 import { routes } from 'app/app.routes';
 import { AppManager } from 'app/core/app-manager';
-import { authInterceptor } from 'app/core/auth.interceptor';
+import { authInterceptor } from 'app/auth/auth.interceptor';
 import { environment } from 'environments/environment';
 import { clientInterceptor } from 'app/core/client.interceptor';
 

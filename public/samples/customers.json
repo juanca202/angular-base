@@ -1,0 +1,177 @@
+[
+  {
+    "id": "1",
+    "firstName": "María",
+    "lastName": "García",
+    "phone": "+34 612 345 678",
+    "email": "maria.garcia@email.com"
+  },
+  {
+    "id": "2",
+    "firstName": "Carlos",
+    "lastName": "Rodríguez",
+    "phone": "+34 623 456 789",
+    "email": "carlos.rodriguez@email.com"
+  },
+  {
+    "id": "3",
+    "firstName": "Ana",
+    "lastName": "López",
+    "phone": "+34 634 567 890",
+    "email": "ana.lopez@email.com"
+  },
+  {
+    "id": "4",
+    "firstName": "José",
+    "lastName": "Martín",
+    "phone": "+34 645 678 901",
+    "email": "jose.martin@email.com"
+  },
+  {
+    "id": "5",
+    "firstName": "Carmen",
+    "lastName": "Sánchez",
+    "phone": "+34 656 789 012",
+    "email": "carmen.sanchez@email.com"
+  },
+  {
+    "id": "6",
+    "firstName": "Antonio",
+    "lastName": "Pérez",
+    "phone": "+34 667 890 123",
+    "email": "antonio.perez@email.com"
+  },
+  {
+    "id": "7",
+    "firstName": "Isabel",
+    "lastName": "Gómez",
+    "phone": "+34 678 901 234",
+    "email": "isabel.gomez@email.com"
+  },
+  {
+    "id": "8",
+    "firstName": "Francisco",
+    "lastName": "Jiménez",
+    "phone": "+34 689 012 345",
+    "email": "francisco.jimenez@email.com"
+  },
+  {
+    "id": "9",
+    "firstName": "Laura",
+    "lastName": "Ruiz",
+    "phone": "+34 690 123 456",
+    "email": "laura.ruiz@email.com"
+  },
+  {
+    "id": "10",
+    "firstName": "Miguel",
+    "lastName": "Díaz",
+    "phone": "+34 601 234 567",
+    "email": "miguel.diaz@email.com"
+  },
+  {
+    "id": "11",
+    "firstName": "Elena",
+    "lastName": "Hernández",
+    "phone": "+34 612 345 678",
+    "email": "elena.hernandez@email.com"
+  },
+  {
+    "id": "12",
+    "firstName": "David",
+    "lastName": "Moreno",
+    "phone": "+34 623 456 789",
+    "email": "david.moreno@email.com"
+  },
+  {
+    "id": "13",
+    "firstName": "Sara",
+    "lastName": "Muñoz",
+    "phone": "+34 634 567 890",
+    "email": "sara.munoz@email.com"
+  },
+  {
+    "id": "14",
+    "firstName": "Roberto",
+    "lastName": "Álvarez",
+    "phone": "+34 645 678 901",
+    "email": "roberto.alvarez@email.com"
+  },
+  {
+    "id": "15",
+    "firstName": "Patricia",
+    "lastName": "Romero",
+    "phone": "+34 656 789 012",
+    "email": "patricia.romero@email.com"
+  },
+  {
+    "id": "16",
+    "firstName": "Fernando",
+    "lastName": "Navarro",
+    "phone": "+34 667 890 123",
+    "email": "fernando.navarro@email.com"
+  },
+  {
+    "id": "17",
+    "firstName": "Cristina",
+    "lastName": "Torres",
+    "phone": "+34 678 901 234",
+    "email": "cristina.torres@email.com"
+  },
+  {
+    "id": "18",
+    "firstName": "Alejandro",
+    "lastName": "Domínguez",
+    "phone": "+34 689 012 345",
+    "email": "alejandro.dominguez@email.com"
+  },
+  {
+    "id": "19",
+    "firstName": "Natalia",
+    "lastName": "Vázquez",
+    "phone": "+34 690 123 456",
+    "email": "natalia.vazquez@email.com"
+  },
+  {
+    "id": "20",
+    "firstName": "Pablo",
+    "lastName": "Ramos",
+    "phone": "+34 601 234 567",
+    "email": "pablo.ramos@email.com"
+  },
+  {
+    "id": "21",
+    "firstName": "Beatriz",
+    "lastName": "Gil",
+    "phone": "+34 612 345 678",
+    "email": "beatriz.gil@email.com"
+  },
+  {
+    "id": "22",
+    "firstName": "Raúl",
+    "lastName": "Serrano",
+    "phone": "+34 623 456 789",
+    "email": "raul.serrano@email.com"
+  },
+  {
+    "id": "23",
+    "firstName": "Mónica",
+    "lastName": "Blanco",
+    "phone": "+34 634 567 890",
+    "email": "monica.blanco@email.com"
+  },
+  {
+    "id": "24",
+    "firstName": "Javier",
+    "lastName": "Molina",
+    "phone": "+34 645 678 901",
+    "email": "javier.molina@email.com"
+  },
+  {
+    "id": "25",
+    "firstName": "Teresa",
+    "lastName": "Morales",
+    "phone": "+34 656 789 012",
+    "email": "teresa.morales@email.com"
+  }
+]
