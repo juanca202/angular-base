@@ -69,3 +69,21 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - When testing signals:
   - Validate both initial value and state updates
   - Include tests for computed() to ensure derived state correctness
+
+## CSS & Styling Guidelines
+
+- Follow the BEM (Block Element Modifier) naming convention for all CSS class names.
+  Example: ft-button, ft-button__icon, ft-button--primary
+- All custom classes must start with the prefix ft-.
+  Example: ✅ ft-card__header, ❌ card-header
+- Before creating a new class, always check if an existing one already covers the same use case. Reuse and extend existing classes when possible.
+- Prefer component-level styles (scoped CSS) instead of global styles.
+- Use CSS variables (--ft-color-primary, --ft-spacing-md, etc.) for colors, spacing, and typography to ensure design consistency.
+- Avoid inline styles and ngStyle. Use style bindings or class bindings instead.
+- Use utility classes only for layout adjustments (e.g., spacing, display) and not for component-specific styling.
+- Keep CSS declarations minimal and purposeful — avoid deep nesting and specificity wars.
+- When defining responsive layouts, prefer grid or flex with CSS variables for breakpoints.
+- Use transitions and animations sparingly; performance and accessibility take priority.
+- For icons and images:
+  - Prefer Angular’s NgOptimizedImage
+  - Ensure alt attributes are always set for accessibility
