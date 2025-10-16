@@ -2,6 +2,7 @@
 
 :host {
   display: flex;
+  flex-direction: row-reverse;
   min-height: 100vh;
   min-height: 100svh;
   background-color: var(--ft-body-bg);

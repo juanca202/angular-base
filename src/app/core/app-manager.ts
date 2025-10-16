@@ -40,7 +40,7 @@ export class AppManager {
   private readonly storageService = inject(StorageService);
 
   public readonly allowSignup: boolean = true;
-  public readonly allowAuthFederation: boolean = true;
+  public readonly allowAuthFederation: boolean = false;
   public readonly id = '';
   public readonly name = '';
   public initialized = false;

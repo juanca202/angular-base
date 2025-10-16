@@ -23,7 +23,6 @@ import {
   take,
   tap,
   lastValueFrom,
-  of,
 } from 'rxjs';
 
 import { environment } from 'environments/environment';
@@ -336,7 +335,7 @@ export class AuthService {
   /**
    * Cierra la sesión del usuario
    */
-  public logout(): Observable<boolean> {
+  public logout(): boolean {
     this.storageService.delete(this.tokenKey, 'local');
     this.storageService.delete(this.settingsKey, 'local');
     this.storageService.delete(`${environment.sessionPrefix}_rdi`, 'local');
@@ -346,8 +345,7 @@ export class AuthService {
     this.loggedIn.emit(false);
     location.href =
       window.innerWidth < 1000 ? `${environment.appPath}/auth` : `${environment.appPath}/signin`;
-    //location.reload();
-    return of(true);
+    return true;
   }
   public signup(data: any, options?: any): Promise<unknown> {
     return lastValueFrom(this.restService.post(environment.auth.signupUrl, data, options));
