@@ -29,6 +29,13 @@
   }
 
   > thead {
+    background-color: var(--ft-body-bg);
+
+    &.ft-sticky {
+      position: sticky;
+      top: 0;
+    }
+
     th {
       white-space: nowrap;
       font-size: var(--ft-text-font-size-sm);
@@ -44,15 +51,15 @@
     cursor: pointer;
 
     &:hover td {
-      background-color: var(--ft-item-hover-bg);
+      background-color: var(--ft-list-item-hover-bg);
     }
 
     &:active td {
-      background-color: var(--ft-item-active-bg);
+      background-color: var(--ft-list-item-active-bg);
     }
 
     &:focus td {
-      background-color: var(--ft-item-focus-bg);
+      background-color: var(--ft-list-item-focus-bg);
     }
   }
 

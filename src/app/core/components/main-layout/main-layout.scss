@@ -22,7 +22,7 @@
 .ft-navbar {
   display: flex;
   flex-direction: column;
-  background-color: var(--ft-body-bg);
+  background-color: #ececec;
   position: relative;
   transition: width 0.3s;
 
@@ -80,7 +80,7 @@
       }
 
       &.ft-active {
-        color: var(--ft-primary-color);
+        color: var(--ft-list-item-active-bg);
       }
 
       @include mixins.media-breakpoint-down(md) {
