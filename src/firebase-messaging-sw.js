@@ -30,7 +30,7 @@ messaging.onBackgroundMessage((payload) => {
     });
 });
 /*
-// Enviar un mensaje a la aplicación
+// Send a message to the application
 clients.matchAll().then(clients => {
     clients.forEach(client => {
         client.postMessage({

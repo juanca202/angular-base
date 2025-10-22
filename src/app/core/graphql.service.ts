@@ -85,7 +85,7 @@ export class GraphqlService {
         } else if (query[property]?.node) {
           data[property] = this.parseQuery(query[property].node);
         } else if (Array.isArray(query[property])) {
-          // Si es un arreglo simple no lo parsea
+          // If it is a simple array, do not parse it
           if (typeof query[property][0] === 'object') {
             data[property] = query[property].map((node: any) => {
               return this.parseQuery(node);

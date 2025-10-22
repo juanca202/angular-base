@@ -16,11 +16,11 @@ import { AuthService } from 'app/auth/auth.service';
   },
 })
 export class MainLayout {
-  // Injección de dependencias
+  // Dependency injection
   public readonly authService = inject(AuthService);
   public readonly bottomSheet = inject(MatBottomSheet);
 
-  // Propiedades
+  // Properties
   public navigationOptions = signal([
     {
       url: '/home',

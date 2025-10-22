@@ -16,19 +16,19 @@ import { CustomerRepository } from 'app/samples/repositories/customer-repository
   },
 })
 export class CustomerList implements OnInit {
-  // Injección de dependencias
+  // Dependency injection
   private readonly customerRepository = inject(CustomerRepository);
   public readonly customerManager = inject(CustomerManager);
   public readonly layoutManager = inject(LayoutManager);
 
-  // Propiedades
+  // Properties
   public readonly customers = this.customerRepository.findByFilter();
 
   ngOnInit(): void {
     this.customers.load();
   }
 
-  // Getter para exponer los customers al template
+  // Getter to expose customers to the template
   get customersData() {
     return this.customers.value();
   }

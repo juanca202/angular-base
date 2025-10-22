@@ -4,7 +4,7 @@ const tseslint = require('@typescript-eslint/eslint-plugin');
 const angular = require('@angular-eslint/eslint-plugin');
 
 module.exports = [
-  // Configuración global de ignores
+  // Global ignore configuration
   {
     ignores: [
       '**/node_modules/**',
@@ -30,10 +30,10 @@ module.exports = [
     ],
   },
 
-  // Configuración base
+  // Base configuration
   eslint.configs.recommended,
 
-  // Configuración para archivos TypeScript (excluyendo archivos de prueba)
+  // Configuration for TypeScript files (excluding test files)
   {
     files: ['src/**/*.ts'],
     ignores: [
@@ -63,10 +63,10 @@ module.exports = [
         sourceType: 'module',
       },
       globals: {
-        // Variables globales de Angular
+        // Angular global variables
         $localize: 'readonly',
         ngDevMode: 'readonly',
-        // Variables del navegador
+        // Browser globals
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
@@ -111,12 +111,12 @@ module.exports = [
           style: 'kebab-case',
         },
       ],
-      'no-undef': 'off', // TypeScript maneja esto
-      'no-unused-vars': 'off', // Usamos la regla de TypeScript
+      'no-undef': 'off', // TypeScript handles this
+      'no-unused-vars': 'off', // Use TypeScript rule instead
     },
   },
 
-  // Configuración para archivos de prueba
+  // Configuration for test files
   {
     files: ['**/*.spec.ts', '**/*.test.ts'],
     plugins: {
@@ -138,7 +138,7 @@ module.exports = [
       },
     },
     rules: {
-      // Reglas específicas para tests (opcional)
+      // Test-specific rules (optional)
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },

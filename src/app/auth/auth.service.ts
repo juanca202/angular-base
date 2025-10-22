@@ -44,20 +44,20 @@ interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
 
 interface FedcmCredential {
   token: string;
-  // ... otras propiedades si hay
+  // ... other properties if any
 }
 
 declare let navigator: any;
 
 /**
- * Variables de sesión:
+ * Session variables:
  * [PREFIX]_loc = locale
  * [PREFIX]_cid = client ID
  * [PREFIX]_lus = last user
  *
- * [PREFIX]_jwt = token sessipn
+ * [PREFIX]_jwt = session token
  * [PREFIX]_set = user settings
- * [PREFIX]_rdi = url redirect
+ * [PREFIX]_rdi = redirect url
  * [PREFIX]_cur = default currency
  * [PREFIX]_dce = delete code expires at
  */
@@ -80,23 +80,23 @@ export class AuthService {
   private tokenKey = `${environment.sessionPrefix}_jwt`;
   private settingsKey = `${environment.sessionPrefix}_set`;
   /**
-   * Bandeja que indica si el token de acceso está siendo refrescado
+   * Flag indicating whether the access token is being refreshed
    */
   public refreshTokenInProgress = false;
   /**
-   * Maneja el flujo de refrescar el token de acceso
+   * Manages the access token refresh flow
    */
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   /**
-   * Envia el token de autenticación al servidor
-   * @param request Solicitud HTTP
+   * Sends the authentication token to the server
+   * @param request HTTP request
    * @returns
    */
   public addAuthenticationToken(request: HttpRequest<any>): HttpRequest<any> {
     const token: AuthToken | undefined = this.getToken();
 
-    // Si el token de acceso es nulo, esto significa que el usuario no está logueado y devolvemos la solicitud original
+    // If the access token is null, the user is not logged in; return the original request
     if (
       !token ||
       request.url.includes(environment.auth.tokenUrl) ||
@@ -105,7 +105,7 @@ export class AuthService {
       return request;
     }
 
-    // Clona la petición, porque la petición original es inmutable
+    // Clone the request, because the original request is immutable
     return request.clone({
       setHeaders: {
         Authorization: `Bearer ${token.token}`,
@@ -151,7 +151,7 @@ export class AuthService {
           throw new Error('No credential obtained');
         }
         const fedcmCredential = credential as unknown as FedcmCredential;
-        // Enviar el ID token al backend
+        // Send the ID token to the backend
         const response = await fetch(fedcm.tokenUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -191,7 +191,7 @@ export class AuthService {
     return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
   }
   public async getSettings(networkOnly?: boolean, pushToken?: string): Promise<Settings | false> {
-    // Obtiene configuración remota
+    // Get remote configuration
     let headers = {};
     if (pushToken) {
       headers = {
@@ -217,7 +217,7 @@ export class AuthService {
     if (networkOnly) {
       return networkSettings;
     }
-    // Obtiene configuración local
+    // Get local configuration
     const localSettings = this.storageService.get(this.settingsKey, 'local');
     if (localSettings) {
       this.settings.set(localSettings);
@@ -227,12 +227,12 @@ export class AuthService {
       });
       return localSettings;
     }
-    // Si no es capaz de obtener la configuración debe volver a autenticarse
+    // If configuration cannot be obtained, the user must re-authenticate
     this.logout();
     return false;
   }
   /**
-   * Obtiene el token de autenticación del storage
+   * Gets the authentication token from storage
    */
   public getToken(): AuthToken | undefined {
     const token: AuthToken = this.storageService.get(this.tokenKey, 'local') || '';
@@ -251,10 +251,10 @@ export class AuthService {
     return decodedString ? JSON.parse(decodedString) : undefined;
   }
   /**
-   * Maneja el flujo de refrescar el token de acceso o de redirección al signin
-   * @param err Error HTTP
-   * @param request Petición HTTP enviada
-   * @param next Manejador HTTP
+   * Handles the flow of refreshing the access token or redirecting to sign-in
+   * @param err HTTP error
+   * @param request HTTP request sent
+   * @param next HTTP handler
    */
   public handle401Error(
     err: HttpErrorResponse,
@@ -272,7 +272,7 @@ export class AuthService {
               this.refreshTokenSubject.next(newToken);
               return next(this.addAuthenticationToken(request));
             }
-            // If we don't get a new token, we are in trouble so logout.
+            // If we don't get a new token, logout.
             this.logout();
             return throwError(
               () =>
@@ -286,7 +286,7 @@ export class AuthService {
             );
           }),
           catchError((error) => {
-            // It cant replace access token set error status 401 to continue flow
+            // It can't replace the access token; set error status 401 to continue flow
             return throwError(
               () =>
                 new HttpErrorResponse({
@@ -321,8 +321,8 @@ export class AuthService {
     }
   }
   /**
-   * Envia el signin al servidor y obtiene el token de autenticación
-   * @param data Datos de autenticación
+   * Sends sign-in to the server and obtains the authentication token
+   * @param data Authentication data
    * @returns
    */
   async signin(data: Login): Promise<any> {
@@ -333,7 +333,7 @@ export class AuthService {
     this.loggedIn.emit(true);
   }
   /**
-   * Cierra la sesión del usuario
+   * Logs out the user
    */
   public logout(): boolean {
     this.storageService.delete(this.tokenKey, 'local');
@@ -351,8 +351,8 @@ export class AuthService {
     return lastValueFrom(this.restService.post(environment.auth.signupUrl, data, options));
   }
   /**
-   * En el caso de tener implementado un refresh token, se envia al servidor para obtener un nuevo token de acceso
-   * @returns Token de acceso
+   * If a refresh token is implemented, send it to obtain a new access token
+   * @returns Access token
    */
   public refreshToken(): Observable<AuthToken> {
     const token: AuthToken | undefined = this.getToken();
