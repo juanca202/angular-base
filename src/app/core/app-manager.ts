@@ -114,7 +114,9 @@ export class AppManager {
     // Muestra versión en consola
     console.log(`${versionInfo.npmPackage.name} ${versionInfo.git.raw}`);
     // Inserta código de seguimiento Google Tag Manager
-    this.googleTagManagerService.appendTrackingCode(environment.googleTagManager.trackingCode);
+    if (environment.googleTagManager) {
+      this.googleTagManagerService.appendTrackingCode(environment.googleTagManager.trackingCode);
+    }
     // Comprueba si hay actualizaciones
     this.checkForUpdates();
     // Carga el idioma configurado para la aplicación

@@ -121,7 +121,12 @@ export class AuthService {
   public async connect(client: 'google'): Promise<boolean> {
     const isChrome = navigator.userAgentData.brands.some((b: any) => b.brand === 'Google Chrome');
 
-    if (isChrome && 'credentials' in navigator && 'get' in navigator.credentials) {
+    if (
+      environment.fedcm &&
+      isChrome &&
+      'credentials' in navigator &&
+      'get' in navigator.credentials
+    ) {
       try {
         const fedcm = environment.fedcm[client];
         if (!fedcm) {
@@ -184,11 +189,6 @@ export class AuthService {
       panelClass: 'ft-dialog',
       width: '400px',
     });
-  }
-  public generateNonce(length = 16): string {
-    const array = new Uint8Array(length);
-    crypto.getRandomValues(array);
-    return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
   }
   public async getSettings(networkOnly?: boolean, pushToken?: string): Promise<Settings | false> {
     // Obtiene configuración remota
