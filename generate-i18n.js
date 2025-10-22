@@ -3,10 +3,10 @@ const path = require('path');
 const { pathToFileURL } = require('url');
 
 const i18nDir = path.join(__dirname, 'public', 'i18n');
-const baseJsPath = path.join(i18nDir, 'en.js'); // Base siempre es en.js
+const baseJsPath = path.join(i18nDir, 'en.js'); // Base is always en.js
 
 /**
- * Leer un archivo JS como módulo
+ * Read a JS file as a module
  */
 async function readJsFile(jsFilePath) {
   if (!fs.existsSync(jsFilePath)) return {};
@@ -17,17 +17,17 @@ async function readJsFile(jsFilePath) {
     fs.unlinkSync(tempMjsPath);
     return mod.default || {};
   } catch (err) {
-    console.error(`❌ Error al importar ${tempMjsPath}:`, err);
+    console.error(`❌ Error importing ${tempMjsPath}:`, err);
     return {};
   }
 }
 
 /**
- * Generar o actualizar archivo del idioma destino
+ * Generate or update the target language file
  */
 async function generateLanguage(langCode) {
   if (!fs.existsSync(baseJsPath)) {
-    console.error(`❌ No se encontró el archivo base: ${baseJsPath}`);
+    console.error(`❌ Base file not found: ${baseJsPath}`);
     return;
   }
 
@@ -48,7 +48,7 @@ async function generateLanguage(langCode) {
     }
   });
 
-  // Leer claves faltantes previas
+  // Read previously missing keys
   let completedTranslations = {};
   if (fs.existsSync(missingPath)) {
     try {
@@ -59,11 +59,11 @@ async function generateLanguage(langCode) {
         }
       });
     } catch (err) {
-      console.error(`❌ Error al leer ${missingPath}:`, err);
+      console.error(`❌ Error reading ${missingPath}:`, err);
     }
   }
 
-  // Guardar realmente faltantes
+  // Save keys that are still missing
   const stillMissing = {};
   Object.keys(missingTranslations).forEach((key) => {
     if (!completedTranslations.hasOwnProperty(key)) {
@@ -73,35 +73,35 @@ async function generateLanguage(langCode) {
 
   if (Object.keys(stillMissing).length > 0) {
     fs.writeFileSync(missingPath, JSON.stringify(stillMissing, null, 2), 'utf-8');
-    console.log(`⚠️ Claves faltantes guardadas en ${missingPath}`);
+    console.log(`⚠️ Missing keys saved in ${missingPath}`);
   } else if (fs.existsSync(missingPath)) {
     fs.unlinkSync(missingPath);
-    console.log(`✅ ${missingPath} eliminado porque no hay claves faltantes.`);
+    console.log(`✅ ${missingPath} removed because there are no missing keys.`);
   }
 
-  // Guardar target JS
+  // Save target JS
   const content = `export default ${JSON.stringify(orderedTranslations, null, 2)};`;
   fs.writeFileSync(targetJsPath, content, 'utf-8');
-  console.log(`✅ Archivo ${targetJsPath} actualizado correctamente.`);
+  console.log(`✅ File ${targetJsPath} updated successfully.`);
 }
 
 /**
- * Validar y sanitizar el código de idioma
+ * Validate and sanitize the language code
  */
 function validateLanguageCode(langCode) {
-  // Validar que el código de idioma sea alfanumérico y no contenga caracteres peligrosos
+  // Validate that the language code is alphanumeric and contains no dangerous characters
   if (!langCode || typeof langCode !== 'string') {
-    throw new Error('Código de idioma inválido: debe ser una cadena no vacía');
+    throw new Error('Invalid language code: must be a non-empty string');
   }
 
-  // Solo permitir caracteres alfanuméricos y guiones bajos
+  // Allow only alphanumeric characters and underscores
   if (!/^[a-zA-Z0-9_]+$/.test(langCode)) {
-    throw new Error('Código de idioma inválido: solo se permiten letras, números y guiones bajos');
+    throw new Error('Invalid language code: only letters, numbers and underscores are allowed');
   }
 
-  // Longitud máxima razonable
+  // Reasonable maximum length
   if (langCode.length > 10) {
-    throw new Error('Código de idioma inválido: longitud máxima de 10 caracteres');
+    throw new Error('Invalid language code: maximum length is 10 characters');
   }
 
   return langCode;
@@ -111,8 +111,8 @@ function validateLanguageCode(langCode) {
 const rawLangCode = process.argv[2];
 
 if (!rawLangCode) {
-  console.error('❌ Uso: node generate-i18n.js <codigo_idioma>');
-  console.error('Ejemplo: node generate-i18n.js es');
+  console.error('❌ Usage: node generate-i18n.js <language_code>');
+  console.error('Example: node generate-i18n.js es');
   process.exit(1);
 }
 
@@ -124,4 +124,4 @@ try {
   process.exit(1);
 }
 
-generateLanguage(langCode).catch((err) => console.error('❌ Error en el proceso:', err));
+generateLanguage(langCode).catch((err) => console.error('❌ Process error:', err));

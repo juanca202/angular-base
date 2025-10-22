@@ -1,4 +1,4 @@
-// Clases para text-align
+// Classes for text-align
 .ft-ta-s {
   text-align: start !important;
 }
@@ -11,7 +11,7 @@
   text-align: end !important;
 }
 
-// Clases para font-size
+// Classes for font-size
 .ft-fs-sm,
 small {
   font-size: var(--ft-text-font-size-sm) !important;
@@ -36,7 +36,7 @@ small {
   font-weight: 500;
 }
 
-// Clases de color
+// Color classes
 .ft-tc-muted {
   color: var(--ft-text-muted-color) !important;
 }
@@ -61,22 +61,22 @@ small {
   color: var(--ft-warning-color) !important;
 }
 
-// Clases de transformación
+// Transformation classes
 .ft-tt-capitalize {
   text-transform: capitalize !important;
 }
 
-// Clases de whitepace
+// Whitespace classes
 .ft-wp-nowrap {
   white-space: nowrap !important;
 }
 
-// Clases de alto de linea
+// Line-height classes
 .ft-lh-1 {
   line-height: 1 !important;
 }
 
-// Clases mixtas
+// Mixed classes
 .ft-text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;

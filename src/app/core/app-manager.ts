@@ -111,30 +111,30 @@ export class AppManager {
   }
   public async init(): Promise<void> {
     let timerStart = performance.now();
-    // Muestra versión en consola
+    // Show version in console
     console.log(`${versionInfo.npmPackage.name} ${versionInfo.git.raw}`);
-    // Inserta código de seguimiento Google Tag Manager
+    // Insert Google Tag Manager tracking code
     this.googleTagManagerService.appendTrackingCode(environment.googleTagManager.trackingCode);
-    // Comprueba si hay actualizaciones
+    // Check for updates
     this.checkForUpdates();
-    // Carga el idioma configurado para la aplicación
+    // Load the configured application language
     const locale = await this.setLocale();
     console.log('Current locale: ', locale);
     console.log('init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
-    // Si esta autenticado inicializa con los datos locales
+    // If authenticated, initialize with local data
     if (this.authService.getToken()) {
       timerStart = performance.now();
       await this.initData(false);
       console.log('init local data in:', (performance.now() - timerStart).toFixed(2), 'ms');
     }
-    // Si se autentica es obigatorio una sincronización desde el servidor
+    // Upon authentication, a server synchronization is required
     this.authService.loggedIn
       .pipe(skip(this.authService.getToken() ? 1 : 0))
       .subscribe(async (value) => {
         if (value) {
           timerStart = performance.now();
           await this.initData(true);
-          // Si encuentra una redirección la usa sino carga la pagina inicial
+          // If a redirect is found use it; otherwise load the home page
           const redirect = this.storageService.get(`${environment.sessionPrefix}_rdi`);
           if (redirect) {
             this.router.navigateByUrl(redirect);
@@ -147,11 +147,11 @@ export class AppManager {
       });
   }
   private async initData(networkOnly: boolean): Promise<void> {
-    // Inicializa los mensajes push
+    // Initialize push messages
     if (!this.pushToken) {
       this.pushToken = await this.initMessaging();
     }
-    // Carga configuración inicial
+    // Load initial configuration
     await this.authService.getSettings(networkOnly, this.pushToken);
     this.initialized = true;
   }
@@ -182,7 +182,7 @@ export class AppManager {
         if (currentToken) {
           console.log('Push token', currentToken);
           token = currentToken;
-          // Aquí enviarías el token a tu servidor si es necesario
+          // Here you would send the token to your server if needed
         } else {
           console.log('No registration token available. Request permission to generate one.');
         }
@@ -190,7 +190,7 @@ export class AppManager {
     } catch (err) {
       if (isPlatformBrowser(this.platformId) && !navigator.onLine) {
         console.error('No internet connection. Token generation failed.');
-        // Aquí puedes manejar la falta de conexión, por ejemplo, reintentar más tarde
+        // You can handle lack of connection here, e.g., retry later
       } else {
         console.error('Error obtaining push token:', err);
       }
@@ -235,7 +235,7 @@ export class AppManager {
     // Load translations for the current locale at run-time
     loadTranslations(localeTranslationsModule.default);
 
-    // Internacionalización moment
+    // Moment internationalization
     moment.locale(locale);
 
     return locale;

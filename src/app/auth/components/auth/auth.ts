@@ -174,7 +174,7 @@ export class Auth implements OnInit {
           username: this.signupForm.value.email,
           password: this.signupForm.value.password,
         });
-        // Si encuentra una redirección la usa sino carga la pagina inicial
+        // If a redirect exists, use it; otherwise load the home page
         if (this.storageService.get(`${environment.sessionPrefix}_rdi`)) {
           this.router.navigateByUrl(this.storageService.get(`${environment.sessionPrefix}_rdi`));
           this.storageService.delete(`${environment.sessionPrefix}_rdi`);

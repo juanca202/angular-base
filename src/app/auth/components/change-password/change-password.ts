@@ -69,14 +69,14 @@ export class ChangePassword {
     return (control: AbstractControl): ValidationErrors | null => {
       const value: string = control.value || '';
 
-      // Reglas de validación
+      // Validation rules
       const hasMinLength = value.length >= 8;
       const hasUpperCase = /[A-Z]/.test(value);
       const hasLowerCase = /[a-z]/.test(value);
       const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(value);
       const hasNumber = /\d/.test(value);
 
-      // Si no cumple alguna regla, devolver errores específicos
+      // If any rule fails, return specific errors
       const errors: any = {};
       if (!hasMinLength) errors.minLength = $localize`Must contain at least 8 characters`;
       if (!hasUpperCase) errors.upperCase = $localize`Must contain at least 1 capital letter`;
@@ -85,7 +85,7 @@ export class ChangePassword {
         errors.specialCharacter = $localize`Must contain at least 1 special character`;
       if (!hasNumber) errors.number = $localize`Must contain 1 number`;
 
-      // Retornar errores si hay alguno, o null si todo está bien
+      // Return errors if any, or null if everything is fine
       return Object.keys(errors).length > 0 ? errors : null;
     };
   }

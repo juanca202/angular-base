@@ -8,7 +8,7 @@ export class AutofocusDirective implements AfterViewInit {
   private el = inject(ElementRef);
 
   ngAfterViewInit(): void {
-    // Espera un ciclo de eventos para garantizar que el elemento esté listo
+    // Wait one event loop tick to ensure the element is ready
     setTimeout(() => {
       this.el.nativeElement.focus();
     });
