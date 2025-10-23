@@ -42,10 +42,6 @@ describe('AppManager', () => {
           useValue: { getItem: jest.fn(), setItem: jest.fn(), removeItem: jest.fn() },
         },
         { provide: GoogleTagManagerService, useValue: { push: jest.fn() } },
-        {
-          provide: 'RestService',
-          useValue: { get: jest.fn(), post: jest.fn(), put: jest.fn(), delete: jest.fn() },
-        },
       ],
     });
     service = TestBed.inject(AppManager);

@@ -2,13 +2,13 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AppManager } from 'app/core/app-manager';
 import { environment } from 'environments/environment';
-import { AuthService } from './auth.service';
+import { AuthService } from './auth-service';
 
 export const authGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
   const appManager = inject(AppManager);
   const router = inject(Router);
-  // Verifica authenticación
+  // Check authentication
   if (!authService.getToken() || !authService.settings()) {
     sessionStorage.setItem(`${environment.sessionPrefix}_rdi`, state.url);
     router.navigateByUrl(window.innerWidth < 1000 ? '/auth' : '/signin');

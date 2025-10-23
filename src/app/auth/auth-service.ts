@@ -1,6 +1,11 @@
-import { HttpRequest, HttpErrorResponse, HttpHeaders, HttpHandlerFn } from '@angular/common/http';
+import {
+  HttpRequest,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpHandlerFn,
+  HttpClient,
+} from '@angular/common/http';
 import { EventEmitter, Injectable, signal, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
 import { StorageService } from '@factor_ec/utils';
@@ -10,7 +15,6 @@ import { Login } from 'app/auth/models/login';
 import { AuthToken } from 'app/auth/models/auth-token';
 import { AuthTokenPayload } from 'app/auth/models/auth-token-payload';
 import { Settings } from 'app/core/models/settings';
-import { RestService } from 'app/core/rest.service';
 import {
   BehaviorSubject,
   Observable,
@@ -28,6 +32,7 @@ import {
 import { environment } from 'environments/environment';
 import { DeleteUser } from './components/delete-user/delete-user';
 import { ChangePassword } from './components/change-password/change-password';
+import { getApiUrl } from 'app/core/rest-api';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
   identity: {
@@ -44,20 +49,20 @@ interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
 
 interface FedcmCredential {
   token: string;
-  // ... otras propiedades si hay
+  // ... other properties if any
 }
 
 declare let navigator: any;
 
 /**
- * Variables de sesión:
+ * Session variables:
  * [PREFIX]_loc = locale
  * [PREFIX]_cid = client ID
  * [PREFIX]_lus = last user
  *
- * [PREFIX]_jwt = token sessipn
+ * [PREFIX]_jwt = session token
  * [PREFIX]_set = user settings
- * [PREFIX]_rdi = url redirect
+ * [PREFIX]_rdi = redirect url
  * [PREFIX]_cur = default currency
  * [PREFIX]_dce = delete code expires at
  */
@@ -65,10 +70,9 @@ declare let navigator: any;
   providedIn: 'root',
 })
 export class AuthService {
-  private restService = inject(RestService);
-  private router = inject(Router);
-  private storageService = inject(StorageService);
   private dialog = inject(MatDialog);
+  private httpClient = inject(HttpClient);
+  private storageService = inject(StorageService);
 
   signedIn = new EventEmitter<boolean>(false);
   signedUp = new EventEmitter<boolean>(false);
@@ -80,23 +84,23 @@ export class AuthService {
   private tokenKey = `${environment.sessionPrefix}_jwt`;
   private settingsKey = `${environment.sessionPrefix}_set`;
   /**
-   * Bandeja que indica si el token de acceso está siendo refrescado
+   * Flag indicating whether the access token is being refreshed
    */
   public refreshTokenInProgress = false;
   /**
-   * Maneja el flujo de refrescar el token de acceso
+   * Manages the access token refresh flow
    */
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   /**
-   * Envia el token de autenticación al servidor
-   * @param request Solicitud HTTP
+   * Sends the authentication token to the server
+   * @param request HTTP request
    * @returns
    */
   public addAuthenticationToken(request: HttpRequest<any>): HttpRequest<any> {
     const token: AuthToken | undefined = this.getToken();
 
-    // Si el token de acceso es nulo, esto significa que el usuario no está logueado y devolvemos la solicitud original
+    // If the access token is null, the user is not logged in; return the original request
     if (
       !token ||
       request.url.includes(environment.auth.tokenUrl) ||
@@ -105,14 +109,14 @@ export class AuthService {
       return request;
     }
 
-    // Clona la petición, porque la petición original es inmutable
+    // Clone the request, because the original request is immutable
     return request.clone({
       setHeaders: {
         Authorization: `Bearer ${token.token}`,
       },
     });
   }
-  changePassword(): void {
+  public changePassword(): void {
     this.dialog.open(ChangePassword, {
       panelClass: 'ft-dialog',
       width: '400px',
@@ -156,7 +160,7 @@ export class AuthService {
           throw new Error('No credential obtained');
         }
         const fedcmCredential = credential as unknown as FedcmCredential;
-        // Enviar el ID token al backend
+        // Send the ID token to the backend
         const response = await fetch(fedcm.tokenUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -184,14 +188,14 @@ export class AuthService {
     }
     return true;
   }
-  confirmDeleteUser(): void {
+  public confirmDeleteUser(): void {
     this.dialog.open(DeleteUser, {
       panelClass: 'ft-dialog',
       width: '400px',
     });
   }
   public async getSettings(networkOnly?: boolean, pushToken?: string): Promise<Settings | false> {
-    // Obtiene configuración remota
+    // Get remote configuration
     let headers = {};
     if (pushToken) {
       headers = {
@@ -199,8 +203,8 @@ export class AuthService {
       };
     }
     const networkSettings = lastValueFrom<Settings>(
-      this.restService
-        .get('settings', '', null, {
+      this.httpClient
+        .get<Settings>(getApiUrl('settings'), {
           headers,
         })
         .pipe(
@@ -217,7 +221,7 @@ export class AuthService {
     if (networkOnly) {
       return networkSettings;
     }
-    // Obtiene configuración local
+    // Get local configuration
     const localSettings = this.storageService.get(this.settingsKey, 'local');
     if (localSettings) {
       this.settings.set(localSettings);
@@ -227,12 +231,12 @@ export class AuthService {
       });
       return localSettings;
     }
-    // Si no es capaz de obtener la configuración debe volver a autenticarse
+    // If configuration cannot be obtained, the user must re-authenticate
     this.logout();
     return false;
   }
   /**
-   * Obtiene el token de autenticación del storage
+   * Gets the authentication token from storage
    */
   public getToken(): AuthToken | undefined {
     const token: AuthToken = this.storageService.get(this.tokenKey, 'local') || '';
@@ -251,10 +255,10 @@ export class AuthService {
     return decodedString ? JSON.parse(decodedString) : undefined;
   }
   /**
-   * Maneja el flujo de refrescar el token de acceso o de redirección al signin
-   * @param err Error HTTP
-   * @param request Petición HTTP enviada
-   * @param next Manejador HTTP
+   * Handles the flow of refreshing the access token or redirecting to sign-in
+   * @param err HTTP error
+   * @param request HTTP request sent
+   * @param next HTTP handler
    */
   public handle401Error(
     err: HttpErrorResponse,
@@ -272,7 +276,7 @@ export class AuthService {
               this.refreshTokenSubject.next(newToken);
               return next(this.addAuthenticationToken(request));
             }
-            // If we don't get a new token, we are in trouble so logout.
+            // If we don't get a new token, logout.
             this.logout();
             return throwError(
               () =>
@@ -286,7 +290,7 @@ export class AuthService {
             );
           }),
           catchError((error) => {
-            // It cant replace access token set error status 401 to continue flow
+            // It can't replace the access token; set error status 401 to continue flow
             return throwError(
               () =>
                 new HttpErrorResponse({
@@ -321,19 +325,19 @@ export class AuthService {
     }
   }
   /**
-   * Envia el signin al servidor y obtiene el token de autenticación
-   * @param data Datos de autenticación
+   * Sends sign-in to the server and obtains the authentication token
+   * @param data Authentication data
    * @returns
    */
-  async signin(data: Login): Promise<any> {
+  public async signin(data: Login): Promise<any> {
     const token = await lastValueFrom<AuthToken>(
-      this.restService.post(environment.auth.tokenUrl, data),
+      this.httpClient.post<AuthToken>(environment.auth.tokenUrl, data),
     );
     this.storageService.set(this.tokenKey, token, 'local');
     this.loggedIn.emit(true);
   }
   /**
-   * Cierra la sesión del usuario
+   * Logs out the user
    */
   public logout(): boolean {
     this.storageService.delete(this.tokenKey, 'local');
@@ -348,24 +352,25 @@ export class AuthService {
     return true;
   }
   public signup(data: any, options?: any): Promise<unknown> {
-    return lastValueFrom(this.restService.post(environment.auth.signupUrl, data, options));
+    return lastValueFrom(this.httpClient.post(environment.auth.signupUrl, data, options));
   }
   /**
-   * En el caso de tener implementado un refresh token, se envia al servidor para obtener un nuevo token de acceso
-   * @returns Token de acceso
+   * If a refresh token is implemented, send it to obtain a new access token
+   * @returns Access token
    */
   public refreshToken(): Observable<AuthToken> {
     const token: AuthToken | undefined = this.getToken();
-    const url = `${environment.auth.refreshTokenUrl}`;
-    return this.restService.post(url, { refresh_token: token?.refresh_token }).pipe(
-      tap((token: any) => {
-        this.storageService.set(this.tokenKey, token, 'local');
-        this.loggedIn.emit(true);
-      }),
-      catchError((error) => {
-        this.logout();
-        return throwError(error);
-      }),
-    );
+    return this.httpClient
+      .post(environment.auth.refreshTokenUrl, { refresh_token: token?.refresh_token })
+      .pipe(
+        tap((token: any) => {
+          this.storageService.set(this.tokenKey, token, 'local');
+          this.loggedIn.emit(true);
+        }),
+        catchError((error) => {
+          this.logout();
+          return throwError(error);
+        }),
+      );
   }
 }

@@ -13,17 +13,17 @@ import {
 } from 'rxjs';
 
 /**
- * Extrae los parámetros de una función observable en forma de tupla.
+ * Extracts the parameters of an observable function as a tuple.
  */
 type ObservableFactory<TParams, TResult> = (
   ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
 ) => Observable<TResult>;
 
-/** Extrae el tipo de valor de un Observable */
+/** Extracts the value type of an Observable */
 type UnwrapObservable<T> = T extends Observable<infer U> ? U : T;
 
 /**
- * Estado de un recurso que se obtiene mediante `load` (GET).
+ * State of a resource retrieved via `load` (GET).
  */
 export interface SignalGet<TParams, TResult> {
   readonly value: Signal<TResult | null>;
@@ -36,7 +36,7 @@ export interface SignalGet<TParams, TResult> {
 }
 
 /**
- * Estado de una mutación (POST/PUT/DELETE).
+ * State of a mutation (POST/PUT/DELETE).
  */
 export interface SignalMutate<TParams, TResult> {
   readonly submitting: Signal<boolean>;
@@ -48,7 +48,7 @@ export interface SignalMutate<TParams, TResult> {
 }
 
 /**
- * Función mutación con estado incluido.
+ * Mutation function with included state.
  */
 export interface SignalMutateFn<TArgs extends any[], TResult> {
   (...args: TArgs): Promise<TResult | null>;
@@ -66,14 +66,14 @@ export class MutationException extends Error {
   }
 }
 
-/** Construye la URL base del backend */
+/** Builds the backend base URL */
 export function getApiUrl(path: string): string {
   return `${environment.restEndpoint}/${path}`;
 }
 
 /**
- * Crea un conjunto de mutaciones a partir de una colección de fábricas de observables.
- * Cada mutación tiene su propio estado y se expone un estado global de `submitting` y `error`.
+ * Creates a set of mutations from a collection of observable factories.
+ * Each mutation has its own state and a global `submitting` and `error` state is exposed.
  */
 export function getMutations<T extends Record<string, (...args: any[]) => Observable<any>>>(
   factories: T,
@@ -110,7 +110,7 @@ export function getMutations<T extends Record<string, (...args: any[]) => Observ
           error.set(msg);
           globalError.set(msg);
           messageService.show(msg);
-          // vuelve a lanzar para usar try/catch
+          // Rethrow to allow try/catch
           throw new MutationException(msg, err);
         }),
         finalize(() => {
@@ -136,7 +136,7 @@ export function getMutations<T extends Record<string, (...args: any[]) => Observ
 }
 
 /**
- * Crea un recurso reactivo (GET) que administra su estado y puede destruirse.
+ * Creates a reactive resource (GET) that manages its state and can be destroyed.
  */
 export function getResource<TParams, TResult>(
   observableFactory: ObservableFactory<TParams, TResult>,
@@ -163,7 +163,7 @@ export function getResource<TParams, TResult>(
         const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? 'Error inesperado';
         error.set(msg);
         messageService.show(msg);
-        // vuelve a lanzar para usar try/catch
+        // Rethrow to allow try/catch
         throw new MutationException(msg, err);
       }),
       finalize(() => loading.set(false)),

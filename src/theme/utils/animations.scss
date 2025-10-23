@@ -97,11 +97,11 @@
 
 @keyframes ft-enter-down {
   from {
-    transform: translateX(10%); /* Comienza desplazado hacia abajo */
-    opacity: 0; /* Comienza invisible */
+    transform: translateX(10%); /* Starts shifted down */
+    opacity: 0; /* Starts invisible */
   }
   to {
-    transform: translateX(0); /* Llega a su posición final */
-    opacity: 1; /* Completamente visible */
+    transform: translateX(0); /* Reaches final position */
+    opacity: 1; /* Fully visible */
   }
 }

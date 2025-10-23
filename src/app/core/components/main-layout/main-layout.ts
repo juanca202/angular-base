@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
-import { AuthService } from 'app/auth/auth.service';
+import { AuthService } from 'app/auth/auth-service';
 
 @Component({
   selector: 'app-main-layout',
@@ -16,11 +16,11 @@ import { AuthService } from 'app/auth/auth.service';
   },
 })
 export class MainLayout {
-  // Injección de dependencias
+  // Dependency injection
   public readonly authService = inject(AuthService);
   public readonly bottomSheet = inject(MatBottomSheet);
 
-  // Propiedades
+  // Properties
   public navigationOptions = signal([
     {
       url: '/home',

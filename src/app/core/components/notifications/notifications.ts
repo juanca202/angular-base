@@ -9,7 +9,7 @@ import { IconComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
 import { StringService } from '@factor_ec/utils';
 import { QueryRef, Apollo, gql } from 'apollo-angular';
 
-import { GraphqlService } from 'app/core/graphql.service';
+import { GraphqlUtils } from 'app/core/graphql-utils';
 import { AppManager } from 'app/core/app-manager';
 import { NotificationWrapped } from 'app/core/models/notification-wrapped';
 import { Notification } from 'app/core/models/notification';
@@ -31,7 +31,7 @@ import { LayoutManager } from 'app/core/layout-manager';
 export class Notifications implements OnDestroy {
   private readonly apollo = inject(Apollo);
   public readonly AppManager = inject(AppManager);
-  private readonly graphqlService = inject(GraphqlService);
+  private readonly graphqlUtils = inject(GraphqlUtils);
   public readonly layoutManager = inject(LayoutManager);
   private readonly stringService = inject(StringService);
   private readonly title = inject(Title);
@@ -78,7 +78,7 @@ export class Notifications implements OnDestroy {
     this.queryRef.valueChanges.subscribe({
       next: (query) => {
         this.loading.set(false);
-        const notifications = this.graphqlService
+        const notifications = this.graphqlUtils
           .parseEdges(query.data.notifications.edges)
           .map((notification: Notification) => {
             if (notification.action?.options) {

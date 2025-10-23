@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpInterceptorFn } from '@angular/common/http';
 
-import { languageInterceptor } from './language.interceptor';
+import { languageInterceptor } from './language-interceptor';
 
 describe('languageInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) =>

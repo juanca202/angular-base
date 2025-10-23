@@ -5,24 +5,18 @@ import { lastValueFrom, Observable } from 'rxjs';
 import { StringService } from '@factor_ec/utils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class GraphqlService {
+export class GraphqlUtils {
   private apollo = inject(Apollo);
   private stringService = inject(StringService);
 
-  mutation(
-    operation: 'create' | 'update' | 'delete',
-    type: string,
-    entity: any
-  ): Promise<unknown> {
+  mutation(operation: 'create' | 'update' | 'delete', type: string, entity: any): Promise<unknown> {
     let mutation: Observable<MutationResult<unknown>>;
     const capitalizedType = this.stringService.normalizeName(type);
     switch (operation) {
       case 'create':
-        entity.uuid = entity.id
-          ? entity.id.split('/').pop()
-          : crypto.randomUUID();
+        entity.uuid = entity.id ? entity.id.split('/').pop() : crypto.randomUUID();
         delete entity.createdBy;
         delete entity.updatedBy;
         delete entity.id;
@@ -37,8 +31,8 @@ export class GraphqlService {
           }
         `,
           variables: {
-            entity
-          }
+            entity,
+          },
         });
         break;
       case 'delete':
@@ -51,8 +45,8 @@ export class GraphqlService {
           }
         `,
           variables: {
-            id: entity.id
-          }
+            id: entity.id,
+          },
         });
         break;
       case 'update':
@@ -69,8 +63,8 @@ export class GraphqlService {
           }
         `,
           variables: {
-            entity
-          }
+            entity,
+          },
         });
         break;
     }
@@ -85,7 +79,7 @@ export class GraphqlService {
         } else if (query[property]?.node) {
           data[property] = this.parseQuery(query[property].node);
         } else if (Array.isArray(query[property])) {
-          // Si es un arreglo simple no lo parsea
+          // If it is a simple array, do not parse it
           if (typeof query[property][0] === 'object') {
             data[property] = query[property].map((node: any) => {
               return this.parseQuery(node);

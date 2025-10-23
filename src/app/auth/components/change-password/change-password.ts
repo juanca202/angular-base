@@ -14,11 +14,12 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 
 import { IconComponent, ProgressComponent, MessageService } from '@factor_ec/ui';
+import { lastValueFrom } from 'rxjs';
 
 import { AppManager } from 'app/core/app-manager';
-import { lastValueFrom } from 'rxjs';
-import { RestService } from 'app/core/rest.service';
 import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { HttpClient } from '@angular/common/http';
+import { getApiUrl } from 'app/core/rest-api';
 
 @Component({
   selector: 'app-change-password',
@@ -37,10 +38,10 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 })
 export class ChangePassword {
   public appManager = inject(AppManager);
-  private restService = inject(RestService);
   private dialogRef = inject(MatDialogRef);
   public form: FormGroup = new FormGroup({});
   private formBuilder = inject(FormBuilder);
+  private httpClient = inject(HttpClient);
   private messageService = inject(MessageService);
   public newPasswordVisible = signal<boolean>(false);
   public notEqualMessage = $localize`New password is not the same`;
@@ -69,14 +70,14 @@ export class ChangePassword {
     return (control: AbstractControl): ValidationErrors | null => {
       const value: string = control.value || '';
 
-      // Reglas de validación
+      // Validation rules
       const hasMinLength = value.length >= 8;
       const hasUpperCase = /[A-Z]/.test(value);
       const hasLowerCase = /[a-z]/.test(value);
       const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(value);
       const hasNumber = /\d/.test(value);
 
-      // Si no cumple alguna regla, devolver errores específicos
+      // If any rule fails, return specific errors
       const errors: any = {};
       if (!hasMinLength) errors.minLength = $localize`Must contain at least 8 characters`;
       if (!hasUpperCase) errors.upperCase = $localize`Must contain at least 1 capital letter`;
@@ -85,7 +86,7 @@ export class ChangePassword {
         errors.specialCharacter = $localize`Must contain at least 1 special character`;
       if (!hasNumber) errors.number = $localize`Must contain 1 number`;
 
-      // Retornar errores si hay alguno, o null si todo está bien
+      // Return errors if any, or null if everything is fine
       return Object.keys(errors).length > 0 ? errors : null;
     };
   }
@@ -95,7 +96,7 @@ export class ChangePassword {
         this.submitting.set(true);
         this.form.disable();
         await lastValueFrom(
-          this.restService.post('change-password', {
+          this.httpClient.post(getApiUrl('change-password'), {
             password: this.form.value.password,
             newPassword: this.form.value.newPassword,
           }),

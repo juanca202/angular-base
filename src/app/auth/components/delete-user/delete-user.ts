@@ -11,12 +11,13 @@ import { Subscription, interval, lastValueFrom } from 'rxjs';
 import moment from 'moment';
 import { StorageService } from '@factor_ec/utils';
 import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
-import { RestService } from 'app/core/rest.service';
 
 import { AppManager } from 'app/core/app-manager';
-import { AuthService } from 'app/auth/auth.service';
+import { AuthService } from 'app/auth/auth-service';
 import { environment } from 'environments/environment';
 import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { HttpClient } from '@angular/common/http';
+import { getApiUrl } from 'app/core/rest-api';
 
 @Component({
   selector: 'app-delete-user',
@@ -38,7 +39,7 @@ export class DeleteUser implements OnInit, OnDestroy {
   AppManager = inject(AppManager);
   authService = inject(AuthService);
   private formBuilder = inject(FormBuilder);
-  private restService = inject(RestService);
+  private httpClient = inject(HttpClient);
   private messageService = inject(MessageService);
   private storageService = inject(StorageService);
 
@@ -90,7 +91,9 @@ export class DeleteUser implements OnInit, OnDestroy {
       try {
         this.submitting.set(true);
         this.step1Form.disable();
-        const response = await lastValueFrom(this.restService.post('generate-delete-code', null));
+        const response = await lastValueFrom(
+          this.httpClient.post(getApiUrl('generate-delete-code'), null),
+        );
         this.setCountDown(moment(response));
         this.submitting.set(false);
         this.step1Form.enable();
@@ -108,7 +111,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       try {
         this.step2Form.disable();
         this.submitting.set(true);
-        await lastValueFrom(this.restService.post('delete-user', this.step2Form.value));
+        await lastValueFrom(this.httpClient.post(getApiUrl('delete-user'), this.step2Form.value));
         this.submitting.set(false);
         this.authService.logout();
         this.storageService.delete('lastUser', 'local');

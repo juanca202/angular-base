@@ -4,9 +4,9 @@ import { Notifications } from './core/components/notifications/notifications';
 import { Settings } from './core/components/settings/settings';
 import { Language } from './core/components/language/language';
 import { MainLayout } from './core/components/main-layout/main-layout';
-import { samplesRoutes } from './samples/samples.routes';
+import { samplesRoutes } from './samples/samples-routes';
 import { authGuard } from './auth/auth-guards';
-import { authRoutes } from './auth/auth.routes';
+import { authRoutes } from './auth/auth-routes';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },

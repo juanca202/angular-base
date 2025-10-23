@@ -29,7 +29,7 @@ import { Apollo, gql } from 'apollo-angular';
 import * as Sentry from '@sentry/angular';
 
 import { AppManager } from 'app/core/app-manager';
-import { AuthService } from 'app/auth/auth.service';
+import { AuthService } from 'app/auth/auth-service';
 import { CommonModule } from '@angular/common';
 import { LayoutManager } from 'app/core/layout-manager';
 

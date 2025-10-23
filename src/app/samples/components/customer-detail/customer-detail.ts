@@ -25,7 +25,7 @@ import { CustomerRepository } from 'app/samples/repositories/customer-repository
   styleUrl: './customer-detail.scss',
 })
 export class CustomerDetail implements OnInit {
-  // Injección de dependencias
+  // Dependency injection
   private readonly customerRepository = inject(CustomerRepository);
   public readonly data = inject(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);

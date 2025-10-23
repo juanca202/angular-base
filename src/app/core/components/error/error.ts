@@ -7,10 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { IconComponent } from '@factor_ec/ui';
 import { Error as ErrorModel } from '@factor_ec/utils';
 
-import { AuthService } from 'app/auth/auth.service';
+import { AuthService } from 'app/auth/auth-service';
 
 /**
- * Página de genérica de error.
+ * Generic error page.
  */
 @Component({
   selector: 'app-error',
@@ -25,11 +25,11 @@ export class Error implements OnInit {
   private router = inject(Router);
 
   /**
-   * Objeto que representa el mensaje de error
+   * Object representing the error message
    */
   error = signal<ErrorModel | undefined>(undefined);
   /**
-   * Mensaje de error
+   * Error message
    */
   message!: string;
 
