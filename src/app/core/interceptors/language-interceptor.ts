@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AppManager } from './app-manager';
+import { AppManager } from 'app/core/services/app-manager';
 
 export const languageInterceptor: HttpInterceptorFn = (req, next) => {
   const appManager = inject(AppManager);

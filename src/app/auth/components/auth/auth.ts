@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
 import { ProgressComponent, MessageService, IconComponent } from '@factor_ec/ui';
 
-import { AppManager } from 'app/core/app-manager';
+import { AppManager } from 'app/core/services/app-manager';
 import { AuthService } from 'app/auth/auth-service';
 import { ForgotPassword } from 'app/auth/components/forgot-password/forgot-password';
 import { Page } from 'app/core/components/page/page';

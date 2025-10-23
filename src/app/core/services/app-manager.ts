@@ -19,7 +19,7 @@ import { getToken, isSupported } from 'firebase/messaging';
 import { versionInfo } from 'version-info';
 import { environment } from 'environments/environment';
 import { AuthService } from 'app/auth/auth-service';
-import { Page } from './components/page/page';
+import { Page } from 'app/core/components/page/page';
 
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
@@ -232,7 +232,7 @@ export class AppManager {
     this.storageService.set(this.localeKey, locale, 'local');
 
     // Load translation file
-    const localeTranslationsModule = await import(`../../../public/i18n/${locale}.js`);
+    const localeTranslationsModule = await import(`../../../../public/i18n/${locale}.js`);
 
     // Load translations for the current locale at run-time
     loadTranslations(localeTranslationsModule.default);

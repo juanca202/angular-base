@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormField, MatInputModule } from '@angular/material/input';
 import { IconComponent, ProgressComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
-import { LayoutManager } from 'app/core/layout-manager';
+import { LayoutManager } from 'app/core/services/layout-manager';
 import { CustomerRepository } from 'app/samples/repositories/customer-repository';
 
 @Component({

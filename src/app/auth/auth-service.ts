@@ -30,9 +30,9 @@ import {
 } from 'rxjs';
 
 import { environment } from 'environments/environment';
-import { DeleteUser } from './components/delete-user/delete-user';
-import { ChangePassword } from './components/change-password/change-password';
-import { getApiUrl } from 'app/core/rest-api';
+import { DeleteUser } from 'app/auth/components/delete-user/delete-user';
+import { ChangePassword } from 'app/auth/components/change-password/change-password';
+import { getApiUrl } from 'app/core/services/rest-api';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
   identity: {

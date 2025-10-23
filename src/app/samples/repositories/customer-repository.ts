@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { getMutations, getResource, SignalGet } from 'app/core/rest-api';
+import { getMutations, getResource, SignalGet } from 'app/core/services/rest-api';
 import { Customer, CustomerRequest } from '../models/customer';
 import { delay } from 'rxjs';
 

@@ -16,10 +16,10 @@ import { CommonModule } from '@angular/common';
 import { IconComponent, ProgressComponent, MessageService } from '@factor_ec/ui';
 import { lastValueFrom } from 'rxjs';
 
-import { AppManager } from 'app/core/app-manager';
+import { AppManager } from 'app/core/services/app-manager';
 import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
-import { getApiUrl } from 'app/core/rest-api';
+import { getApiUrl } from 'app/core/services/rest-api';
 
 @Component({
   selector: 'app-change-password',

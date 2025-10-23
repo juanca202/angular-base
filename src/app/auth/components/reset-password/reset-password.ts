@@ -17,7 +17,7 @@ import { Title } from '@angular/platform-browser';
 import { lastValueFrom } from 'rxjs';
 import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui';
 
-import { AppManager } from 'app/core/app-manager';
+import { AppManager } from 'app/core/services/app-manager';
 import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
 import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';

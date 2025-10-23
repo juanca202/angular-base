@@ -9,7 +9,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ProgressComponent, MessageService } from '@factor_ec/ui';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 
-import { AppManager } from 'app/core/app-manager';
+import { AppManager } from 'app/core/services/app-manager';
 import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
 import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';

@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
-import { AppManager } from 'app/core/app-manager';
+import { AppManager } from 'app/core/services/app-manager';
 import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
 jest.mock('version-info', () => ({
   versionInfo: {

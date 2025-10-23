@@ -9,11 +9,11 @@ import { IconComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
 import { StringService } from '@factor_ec/utils';
 import { QueryRef, Apollo, gql } from 'apollo-angular';
 
-import { GraphqlUtils } from 'app/core/graphql-utils';
-import { AppManager } from 'app/core/app-manager';
+import { GraphqlUtils } from 'app/core/services/graphql-utils';
+import { AppManager } from 'app/core/services/app-manager';
 import { NotificationWrapped } from 'app/core/models/notification-wrapped';
 import { Notification } from 'app/core/models/notification';
-import { LayoutManager } from 'app/core/layout-manager';
+import { LayoutManager } from 'app/core/services/layout-manager';
 
 @Component({
   selector: 'app-notifications',

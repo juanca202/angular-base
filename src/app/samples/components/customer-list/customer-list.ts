@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 
 import { ObserveIntersectingDirective } from '@factor_ec/ui';
 
-import { LayoutManager } from 'app/core/layout-manager';
+import { LayoutManager } from 'app/core/services/layout-manager';
 import { CustomerManager } from 'app/samples/managers/customer-manager';
 import { CustomerRepository } from 'app/samples/repositories/customer-repository';
 
