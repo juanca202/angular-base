@@ -84,7 +84,10 @@ git merge upstream/main
 
 - `npm run start`: Genera la versión de Git y inicia el servidor de desarrollo
 - `npm run build`: Genera la versión de Git y compila la aplicación para desplegarla
-- `npm run extract-i18n`: Extrae las cadenas de internacionalización a un archivo JSON en inglés
+- `npm run extract-i18n -- [LOCALE]`: Extrae todas las cadenas de internacionalización desde el código fuente y genera el archivo correspondiente al idioma proporcionado (por ejemplo: `npm run extract-i18n -- es`).  
+  Si existen cadenas sin traducir, se creará también el archivo `[LOCALE]_missing.js` con las claves faltantes.
+- `npm run i18n -- [LOCALE]`: Usa el archivo base `en.js` para generar o actualizar el archivo de idioma indicado, sin volver a extraer las cadenas de la aplicación.  
+  También genera un archivo `[LOCALE]_missing.js` si hay traducciones faltantes.
 - `npm run watch`: Compila la aplicación en modo desarrollo con recarga automática
 - `npm run test`: Ejecuta las pruebas unitarias
 - `npm run prettier`: Formatea automáticamente el código fuente usando Prettier

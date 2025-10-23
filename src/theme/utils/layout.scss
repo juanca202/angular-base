@@ -2,12 +2,12 @@
 @use 'variables-scss' as variables;
 @use 'sass:map';
 
-// Generar clases para gap
+// Generate classes for gap
 @include mixins.generate-space-classes('ft-g', 'gap');
 @include mixins.generate-space-classes('ft-cg', 'column-gap');
 @include mixins.generate-space-classes('ft-rg', 'row-gap');
 
-// Generar clases para padding
+// Generate classes for padding
 @include mixins.generate-space-classes('ft-p', 'padding');
 @include mixins.generate-space-classes('ft-pb', 'padding-block');
 @include mixins.generate-space-classes('ft-pbs', 'padding-block-start');
@@ -16,14 +16,14 @@
 @include mixins.generate-space-classes('ft-pis', 'padding-inline-start');
 @include mixins.generate-space-classes('ft-pie', 'padding-inline-end');
 
-// Generar clases para margin
+// Generate classes for margin
 @include mixins.generate-space-classes(
   'ft-m',
   'margin',
   map.merge(
     variables.$spacers,
     (
-      auto: auto
+      auto: auto,
     )
   )
 );
@@ -33,7 +33,7 @@
   map.merge(
     variables.$spacers,
     (
-      auto: auto
+      auto: auto,
     )
   )
 );
@@ -43,7 +43,7 @@
   map.merge(
     variables.$spacers,
     (
-      auto: auto
+      auto: auto,
     )
   )
 );
@@ -53,7 +53,7 @@
   map.merge(
     variables.$spacers,
     (
-      auto: auto
+      auto: auto,
     )
   )
 );
@@ -63,7 +63,7 @@
   map.merge(
     variables.$spacers,
     (
-      auto: auto
+      auto: auto,
     )
   )
 );
@@ -73,7 +73,7 @@
   map.merge(
     variables.$spacers,
     (
-      auto: auto
+      auto: auto,
     )
   )
 );
@@ -83,39 +83,27 @@
   map.merge(
     variables.$spacers,
     (
-      auto: auto
+      auto: auto,
     )
   )
 );
 
-// Generar clases de display
-@include mixins.generate-responsive-classes(
-  'ft-d',
-  'display',
-  variables.$display-values
-);
+// Generate display classes
+@include mixins.generate-responsive-classes('ft-d', 'display', variables.$display-values);
 @include mixins.generate-responsive-classes(
   'ft-fd',
   'flex-direction',
   variables.$flex-direction-values
 );
-@include mixins.generate-responsive-classes(
-  'ft-fg',
-  'flex-grow',
-  variables.$flex-grow-values
-);
-@include mixins.generate-responsive-classes(
-  'ft-ai',
-  'align-items',
-  variables.$align-values
-);
+@include mixins.generate-responsive-classes('ft-fg', 'flex-grow', variables.$flex-grow-values);
+@include mixins.generate-responsive-classes('ft-ai', 'align-items', variables.$align-values);
 @include mixins.generate-responsive-classes(
   'ft-jc',
   'justify-content',
   map.merge(
     variables.$align-values,
     (
-      sb: space-between
+      sb: space-between,
     )
   )
 );

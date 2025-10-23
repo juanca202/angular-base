@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "node git-version.js && ng serve",
     "build": "node git-version.js && ng build && npm run sentry:sourcemaps",
-    "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json",
+    "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json && node generate-i18n.js",
     "i18n": "node generate-i18n.js",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
