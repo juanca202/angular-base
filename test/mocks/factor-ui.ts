@@ -22,6 +22,7 @@ export class AvatarComponent {}
 export class ProgressComponent {}
 
 export class MessageService {
+  show(_msg: string) {}
   success() {}
   error() {}
   info() {}

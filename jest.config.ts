@@ -1,9 +1,11 @@
 /* eslint-disable */
 import type { Config } from 'jest';
+// jest-preset-angular presets are CommonJS; import default and extract
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { createCjsPreset } = require('jest-preset-angular/presets');
+const presets = require('jest-preset-angular/build/presets/index.js');
+const { createCjsPreset } = presets as { createCjsPreset: (opts?: Record<string, unknown>) => any };
 
-const cjsPreset = createCjsPreset({
+const cjsPreset: any = createCjsPreset({
   tsconfig: '<rootDir>/tsconfig.spec.json',
 });
 
@@ -15,10 +17,9 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs'],
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
-    ...cjsPreset.moduleNameMapper,
     '^app/(.*)$': '<rootDir>/src/app/$1',
     '^environments/(.*)$': '<rootDir>/src/environments/$1',
-    '^version-info$': '<rootDir>/src/version-info.ts',
+    '^version-info$': '<rootDir>/test/mocks/version-info.ts',
     '^@factor_ec/ui$': '<rootDir>/test/mocks/factor-ui.ts',
     '^@factor_ec/utils$': '<rootDir>/test/mocks/factor-utils.ts',
     '^apollo-angular$': '<rootDir>/test/mocks/apollo-angular.ts',

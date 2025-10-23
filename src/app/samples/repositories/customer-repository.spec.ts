@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { CustomerRepository } from './customer-repository';
 
@@ -6,7 +7,9 @@ describe('CustomerRepository', () => {
   let service: CustomerRepository;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClientTesting()],
+    });
     service = TestBed.inject(CustomerRepository);
   });
 
