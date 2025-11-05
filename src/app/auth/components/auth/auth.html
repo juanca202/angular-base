@@ -1,0 +1,283 @@
+@if (mode() === 'signin' || !appManager.allowSignup) {
+  <form
+    [formGroup]="signinForm"
+    (ngSubmit)="submitSignin()"
+    class="ft-auth__signin ft-m-auto ft-p-4"
+  >
+    <div class="ft-mbe-4" [class.ft-anim-shake]="errorMessage()">
+      <div class="ft-logo"></div>
+      <div class="ft-mb-4">
+        <h1 i18n>Sign in</h1>
+        @if (appManager.allowSignup) {
+          <p class="ft-tc-muted" style="font-size: var(--ft-text-font-size-md)">
+            <span i18n>Don't have an account?</span>
+            @if (!submitting()) {
+              <a routerLink="/signup" class="ft-mis-2" i18n>Create an account</a>
+            }
+          </p>
+        }
+      </div>
+      @if (appManager.allowAuthFederation) {
+        <div class="ft-actions">
+          <button
+            type="button"
+            mat-stroked-button
+            class="ft-d-b ft-pb-1"
+            (click)="connect('google')"
+            [disabled]="submitting()"
+          >
+            <div class="ft-item">
+              <img src="images/logo-google.svg" alt="" />
+              <div i18n>Continue with Google</div>
+            </div>
+          </button>
+        </div>
+        <div class="ft-mb-3">
+          <div class="ft-hr-label">
+            <span class="ft-hr-label__text" i18n>or</span>
+          </div>
+        </div>
+      }
+      <mat-form-field appearance="fill" class="ft-mbe-2">
+        <mat-label i18n>Username or email</mat-label>
+        <input
+          type="text"
+          matInput
+          formControlName="username"
+          maxlength="50"
+          autocomplete="username"
+        />
+        @if (signinForm.get('username')?.invalid) {
+          <mat-error>{{ signinForm.get('username') | errorMessage }}</mat-error>
+        }
+      </mat-form-field>
+      @if (!passwordVisible()) {
+        <mat-form-field appearance="fill" class="ft-mbe-2">
+          <mat-label i18n>Password</mat-label>
+          <input
+            type="password"
+            matInput
+            formControlName="password"
+            maxlength="16"
+            autocomplete="current-password"
+          />
+          @if (!submitting()) {
+            <button type="button" matSuffix mat-icon-button (click)="togglePasswordVisible()">
+              <ft-icon name="eye" class="ft-icon--2"></ft-icon>
+            </button>
+          }
+          @if (signinForm.get('password')?.invalid) {
+            <mat-error>{{ signinForm.get('password') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+      }
+      @if (passwordVisible()) {
+        <mat-form-field appearance="fill" class="ft-mbe-2">
+          <mat-label i18n>Password</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="password"
+            maxlength="16"
+            autocomplete="off"
+          />
+          @if (!submitting()) {
+            <button type="button" matSuffix mat-icon-button (click)="togglePasswordVisible()">
+              <ft-icon name="eye--strike-through" class="ft-icon--2"></ft-icon>
+            </button>
+          }
+          @if (signinForm.get('password')?.invalid) {
+            <mat-error>{{ signinForm.get('password') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+      }
+      <div class="ft-d-f ft-fd-cl ft-mbe-3 ft-jc-c ft-g-3">
+        <button
+          type="submit"
+          mat-flat-button
+          color="primary"
+          [disabled]="!signinForm.valid || submitting()"
+        >
+          @if (!submitting()) {
+            <span i18n>Sign in</span>
+          } @else {
+            <ng-container *ngTemplateOutlet="submittingTemplate" />
+          }
+        </button>
+        @if (!submitting()) {
+          <button type="button" mat-button (click)="forgotPassword()" i18n>
+            Forgot your password?
+          </button>
+        }
+      </div>
+      <div class="ft-terms" [class.ft-disabled]="submitting()" i18n>
+        If you continue with the service, you agree to our
+        <a
+          href="javascript://"
+          (click)="
+            openPage('https://factor.ec/es/jsonapi/node/page/8a1b8db9-9d9d-41a3-8ab9-d54771f4a13d')
+          "
+          >Terms and Conditions</a
+        >
+        and
+        <a
+          href="javascript://"
+          (click)="
+            openPage('https://factor.ec/es/jsonapi/node/page/45cc8cfb-8667-44d1-81f4-1c1bdb939cd8')
+          "
+          >Privacy Policies</a
+        >.
+      </div>
+    </div>
+  </form>
+}
+@if (mode() === 'signup') {
+  <form [formGroup]="signupForm" (ngSubmit)="submitSignup()" class="ft-auth__signup">
+    <div [class.ft-anim-shake]="errorMessage()" class="ft-mbe-4 ft-mbe-lg-0">
+      <div class="ft-logo"></div>
+      <div class="ft-mb-4">
+        <h1 i18n>Create an account</h1>
+        <p class="ft-tc-muted">
+          <span i18n>Already have an account?</span>
+          @if (!submitting()) {
+            <a routerLink="/signin" class="ft-mis-2" i18n>Sign in</a>
+          }
+        </p>
+      </div>
+      @if (appManager.allowAuthFederation) {
+        <div class="ft-actions">
+          <button
+            type="button"
+            mat-stroked-button
+            class="ft-d-b ft-pb-1"
+            (click)="connect('google')"
+            [disabled]="submitting()"
+          >
+            <div class="ft-item">
+              <img src="images/logo-google.svg" alt="" />
+              <div i18n>Continue with Google</div>
+            </div>
+          </button>
+        </div>
+        <div class="ft-mb-3">
+          <div class="ft-hr-label">
+            <span class="ft-hr-label__text" i18n>or</span>
+          </div>
+        </div>
+      }
+      <div class="ft-d-sm-f ft-g-3">
+        <mat-form-field appearance="fill" class="ft-mbe-2">
+          <mat-label i18n>First name</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="firstName"
+            maxlength="80"
+            autocomplete="firstName"
+          />
+          @if (signupForm.get('firstName')?.invalid) {
+            <mat-error>{{ signupForm.get('firstName') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="ft-mbe-2">
+          <mat-label i18n>Last name</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="lastName"
+            maxlength="80"
+            autocomplete="lastName"
+          />
+          @if (signupForm.get('lastName')?.invalid) {
+            <mat-error>{{ signupForm.get('lastName') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="fill" class="ft-mbe-2">
+        <mat-label i18n>Email</mat-label>
+        <input type="email" matInput formControlName="email" maxlength="50" autocomplete="email" />
+        @if (signupForm.get('email')?.invalid) {
+          <mat-error>{{ signupForm.get('email') | errorMessage }}</mat-error>
+        }
+      </mat-form-field>
+      @if (!passwordVisible()) {
+        <mat-form-field appearance="fill" class="ft-mbe-2">
+          <mat-label i18n>Password</mat-label>
+          <input
+            type="password"
+            matInput
+            formControlName="password"
+            maxlength="16"
+            autocomplete="current-password"
+          />
+          @if (!submitting()) {
+            <button type="button" matSuffix mat-icon-button (click)="togglePasswordVisible()">
+              <ft-icon name="eye" class="ft-icon--2"></ft-icon>
+            </button>
+          }
+          @if (signupForm.get('password')?.invalid) {
+            <mat-error>{{ signupForm.get('password') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+      }
+      @if (passwordVisible()) {
+        <mat-form-field appearance="fill" class="ft-mbe-2">
+          <mat-label i18n>Password</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="password"
+            maxlength="16"
+            autocomplete="off"
+          />
+          @if (!submitting()) {
+            <button type="button" matSuffix mat-icon-button (click)="togglePasswordVisible()">
+              <ft-icon name="eye--strike-through" class="ft-icon--2"></ft-icon>
+            </button>
+          }
+          @if (signupForm.get('password')?.invalid) {
+            <mat-error>{{ signupForm.get('password') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+      }
+      <div class="ft-ta-c ft-mbe-3">
+        <button
+          type="submit"
+          mat-flat-button
+          color="primary"
+          [disabled]="!signupForm.valid || submitting()"
+          style="min-width: 250px"
+        >
+          @if (!submitting()) {
+            <span i18n>Sign up</span>
+          } @else {
+            <ng-container *ngTemplateOutlet="submittingTemplate" />
+          }
+        </button>
+      </div>
+      <div class="ft-terms" [class.ft-disabled]="submitting()" i18n>
+        If you continue with the service, you agree to our
+        <a
+          href="javascript://"
+          (click)="
+            openPage('https://factor.ec/es/jsonapi/node/page/8a1b8db9-9d9d-41a3-8ab9-d54771f4a13d')
+          "
+          >Terms and Conditions</a
+        >
+        and
+        <a
+          href="javascript://"
+          (click)="
+            openPage('https://factor.ec/es/jsonapi/node/page/45cc8cfb-8667-44d1-81f4-1c1bdb939cd8')
+          "
+          >Privacy Policies</a
+        >.
+      </div>
+    </div>
+  </form>
+}
+<ng-template #submittingTemplate>
+  <div class="ft-ta-c">
+    <ft-progress class="ft-progress--2"></ft-progress>
+  </div>
+</ng-template>

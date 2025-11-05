@@ -20,7 +20,7 @@ export interface Environment {
       google: string;
     };
   };
-  fedcm: Record<string, FedCMProvider>;
+  fedcm?: Record<string, FedCMProvider>;
   sessionPrefix: string;
   iconSettings: {
     path: string;
@@ -33,18 +33,18 @@ export interface Environment {
   serverEndpoint: string;
   apiIdPrefix: string;
   supportEmail: string;
-  googleApi: {
+  googleApi?: {
     clientId: string;
   };
-  googleTagManager: {
+  googleTagManager?: {
     trackingCode: string;
   };
-  sentry: {
+  sentry?: {
     dsn: string;
     tracingOrigins: string[];
     tracesSampleRate: number;
   };
-  firebaseConfig: {
+  firebaseConfig?: {
     apiKey: string;
     authDomain: string;
     databaseURL: string;
@@ -54,5 +54,5 @@ export interface Environment {
     appId: string;
     measurementId: string;
   };
-  vapidKey: string;
+  vapidKey?: string;
 }

@@ -5,8 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { IconComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
 
-import { AppManager } from 'app/core/app-manager';
-import { LayoutManager } from 'app/core/layout-manager';
+import { AppManager } from 'app/core/services/app-manager';
+import { LayoutManager } from 'app/core/services/layout-manager';
 
 @Component({
   selector: 'app-page',

@@ -1,10 +1,18 @@
-import { Component, OnInit, TemplateRef, signal, inject, HostBinding, input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  inject,
+  HostBinding,
+  input,
+  ElementRef,
+  viewChild,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
-
-import { MatDialogModule, MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { Title } from '@angular/platform-browser';
 
@@ -18,13 +26,12 @@ import {
 import { Language } from '@factor_ec/utils';
 import { lastValueFrom } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
+import * as Sentry from '@sentry/angular';
 
-import { AppManager } from 'app/core/app-manager';
-import { AuthService } from 'app/core/auth.service';
-import { SubscriptionService } from 'app/core/subscription.service';
+import { AppManager } from 'app/core/services/app-manager';
+import { AuthService } from 'app/auth/auth-service';
 import { CommonModule } from '@angular/common';
-import { environment } from 'environments/environment';
-import { LayoutManager } from 'app/core/layout-manager';
+import { LayoutManager } from 'app/core/services/layout-manager';
 
 @Component({
   selector: 'app-settings',
@@ -48,10 +55,8 @@ export class Settings implements OnInit {
   public readonly appManager = inject(AppManager);
   public readonly authService = inject(AuthService);
   private readonly apollo = inject(Apollo);
-  private readonly dialog = inject(MatDialog);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);
-  private readonly subscriptionService = inject(SubscriptionService);
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -64,10 +69,9 @@ export class Settings implements OnInit {
     code: 'en',
     name: 'English',
   });
-  private subscriptionDialogRef!: MatDialogRef<TemplateRef<any>>;
   public subscribing = signal<boolean>(false);
-  public supportSubject!: string;
-  public supportEmail: string = environment.supportEmail;
+  public readonly supportButton =
+    viewChild.required<ElementRef<HTMLButtonElement>>('supportButton');
 
   readonly class = input<string>('');
   @HostBinding('class') get hostClasses(): string {
@@ -86,8 +90,6 @@ export class Settings implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const settings = await this.authService.getSettings();
-    this.supportSubject = $localize`Support` + (settings ? `-${settings.user.username}` : '');
     this.getNotifications();
     this.route.paramMap.subscribe(async (paramMap: ParamMap) => {
       const action = paramMap.get('action');
@@ -104,6 +106,8 @@ export class Settings implements OnInit {
         }
       }
     });
+    const feedback = Sentry.getFeedback();
+    feedback?.attachTo(this.supportButton()?.nativeElement);
   }
   async getNotifications(): Promise<void> {
     const query = await lastValueFrom(

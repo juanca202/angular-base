@@ -16,15 +16,15 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 import * as Sentry from '@sentry/angular';
-import { languageInterceptor } from 'app/core/language.interceptor';
-import { graphqlProvider } from 'app/core/graphql-provider';
+import { languageInterceptor } from 'app/core/interceptors/language-interceptor';
+import { graphqlProvider } from 'app/core/services/graphql-provider';
 import { UI_OPTIONS } from '@factor_ec/ui';
 
 import { routes } from 'app/app.routes';
-import { AppManager } from 'app/core/app-manager';
-import { authInterceptor } from 'app/core/auth.interceptor';
+import { AppManager } from 'app/core/services/app-manager';
+import { authInterceptor } from 'app/auth/auth-interceptor';
 import { environment } from 'environments/environment';
-import { clientInterceptor } from 'app/core/client.interceptor';
+import { clientInterceptor } from 'app/core/interceptors/client-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,8 +43,12 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([authInterceptor, clientInterceptor, languageInterceptor]),
     ),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideMessaging(() => getMessaging()),
+    ...(environment.firebaseConfig
+      ? [
+          provideFirebaseApp(() => initializeApp(environment.firebaseConfig!)),
+          provideMessaging(() => getMessaging()),
+        ]
+      : []),
     provideClientHydration(),
     graphqlProvider,
     {
