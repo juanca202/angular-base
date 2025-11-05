@@ -3,7 +3,6 @@ context: true
 priority: high
 scope: project
 ---
-
 You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
 
 ## TypeScript Best Practices
@@ -21,6 +20,32 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
 - Use `NgOptimizedImage` for all static images.
   - `NgOptimizedImage` does not work for inline base64 images.
+
+## Angular Material (MDC) Guidelines
+
+- Always use components from **Angular Material (MDC)** available at [https://material.angular.dev/components/categories](https://material.angular.dev/components/categories).
+- Avoid plain HTML elements or custom CSS when an official Angular Material component provides equivalent functionality.
+- Follow the **latest MDC syntax** and naming conventions (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-icon`, `mat-table`, etc.).
+- Prefer high-level Material components for:
+  - Accessibility (ARIA support)
+  - Consistent design and theme integration
+  - Responsive and maintainable layouts
+- Use **Angular Material directives** (`matInput`, `matSuffix`, `matPrefix`, etc.) instead of hardcoded markup.
+- Do NOT replicate Material styles manually; rely on official theming and typography APIs.
+- Example conversions:
+  - ✅ Use `<mat-form-field>` with `<input matInput>` instead of `<input>` alone
+  - ✅ Use `<mat-card>` for structured content instead of `<div>` with custom classes
+  - ✅ Use `<mat-icon>` for icons instead of `<i>` or `<span class="material-icons">`
+- When creating interactive components, prefer Angular Material options (`mat-button`, `mat-menu`, `mat-dialog`, etc.) before implementing custom versions.
+
+**Example:**
+
+```html
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>Search bank</mat-label>
+  <input matInput placeholder="Type the bank name" />
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
 
 ## Components
 
