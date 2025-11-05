@@ -66,8 +66,16 @@ small {
   text-transform: capitalize !important;
 }
 
+.ft-tt-uppercase {
+  text-transform: uppercase !important;
+}
+
+.ft-tt-lowercase {
+  text-transform: lowercase !important;
+}
+
 // Whitespace classes
-.ft-wp-nowrap {
+.ft-ws-nowrap {
   white-space: nowrap !important;
 }
 
