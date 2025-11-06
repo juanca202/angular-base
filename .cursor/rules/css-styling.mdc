@@ -15,9 +15,9 @@ alwaysApply: true
 
 - Prefer **component-level styles (scoped CSS)** instead of global styles.
 
-- Use **CSS variables** (`--ft-color-primary`, `--ft-spacing-md`, etc.) for colors, spacing, and typography to ensure design consistency.
+- Use **CSS variables** (`--ft-primary-color`, `--ft-spacer`, etc.) for colors, spacing, and typography to ensure design consistency.
 
-- **Do not hardcode** colors, font sizes, or spacing directly in CSS. Instead, use the shared variables defined in **`variables.scss`**, which include:
+- **Do not hardcode** colors, font sizes, or spacing directly in CSS. Instead, use the shared variables defined in **`theme/variables.scss`**, which include:
   - Color variables  
   - Text and typography variables  
   - Spacing and layout variables  
