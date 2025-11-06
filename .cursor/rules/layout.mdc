@@ -90,3 +90,82 @@ Similar to padding utilities but for external spacing.
 - Combine gap, padding, and margin utilities for consistent spacing control.
 - Always prefer the responsive variants (-xs, -sm, -md, -lg, -xl, -xxl) when needed for adaptive layouts.
 - Maintain consistency with existing design tokens and spacing scale.
+
+## Display & Flex Utility Classes
+
+These utility classes control layout behaviors such as display type, flex direction, alignment, and justification.  
+They are **responsive-ready**, meaning you can apply them with breakpoints (e.g., `ft-d-f@md`).
+
+---
+
+### **Display Classes**
+
+Prefix: `ft-d-`
+
+| Class        | Property        | Value  | Description              |
+|---------------|-----------------|---------|--------------------------|
+| `ft-d-n`      | display         | none    | Hides the element        |
+| `ft-d-f`      | display         | flex    | Displays as flex         |
+| `ft-d-b`      | display         | block   | Displays as block        |
+| `ft-d-g`      | display         | grid    | Displays as grid         |
+
+---
+
+### **Flex Direction Classes**
+
+Prefix: `ft-fd-`
+
+| Class          | Property         | Value           | Description                    |
+|----------------|------------------|------------------|--------------------------------|
+| `ft-fd-cl`     | flex-direction   | column          | Flex direction: column         |
+| `ft-fd-clr`    | flex-direction   | column-reverse  | Column reversed                |
+| `ft-fd-ro`     | flex-direction   | row             | Flex direction: row            |
+| `ft-fd-ror`    | flex-direction   | row-reverse     | Row reversed                   |
+
+---
+
+### **Flex Grow Classes**
+
+Prefix: `ft-fg-`
+
+| Class       | Property      | Value | Description                     |
+|--------------|---------------|--------|---------------------------------|
+| `ft-fg-1`    | flex-grow     | 1      | Element grows to fill space     |
+| `ft-fg-0`    | flex-grow     | 0      | Element does not grow           |
+
+---
+
+### **Align Items Classes**
+
+Prefix: `ft-ai-`
+
+| Class       | Property       | Value         | Description                        |
+|--------------|----------------|----------------|------------------------------------|
+| `ft-ai-s`    | align-items    | flex-start    | Align items to the start           |
+| `ft-ai-c`    | align-items    | center        | Align items at the center          |
+| `ft-ai-e`    | align-items    | flex-end      | Align items to the end             |
+
+---
+
+### **Justify Content Classes**
+
+Prefix: `ft-jc-`
+
+| Class        | Property          | Value            | Description                         |
+|---------------|-------------------|------------------|-------------------------------------|
+| `ft-jc-s`     | justify-content   | flex-start       | Justify items at the start          |
+| `ft-jc-c`     | justify-content   | center           | Center items horizontally           |
+| `ft-jc-e`     | justify-content   | flex-end         | Justify items at the end            |
+| `ft-jc-sb`    | justify-content   | space-between    | Distribute items with space between |
+
+---
+
+### **Responsive Usage**
+
+Each class can be used with breakpoints using the `@` suffix.  
+For example:
+
+```html
+<div class="ft-d-f ft-fd-cl ft-ai-c ft-jc-sb@md">
+  ...
+</div>

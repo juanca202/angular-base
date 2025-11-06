@@ -12,6 +12,14 @@
   --ft-secondary-color: #2196f3;
   --ft-tertiary-color: #9c27b0;
 
+  // Spaces
+  --ft-spacer: 1rem;
+  --ft-spacer-1: calc(var(--ft-spacer) * 0.25);
+  --ft-spacer-2: calc(var(--ft-spacer) * 0.5);
+  --ft-spacer-3: calc(var(--ft-spacer) * 1);
+  --ft-spacer-4: calc(var(--ft-spacer) * 1.5);
+  --ft-spacer-5: calc(var(--ft-spacer) * 3);
+
   // Text
   --ft-text-color: var(--ft-dark-color);
   --ft-text-muted-color: color-mix(in srgb, var(--ft-text-color) 50%, transparent);
