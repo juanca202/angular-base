@@ -41,14 +41,27 @@
   @each $class, $value in $value-map {
     // Base class (no breakpoint)
     .#{$prefix}-#{$class} {
-      #{$property}: #{$value} !important;
+      // Grid class: allows specifying columns and minimum column width
+      @if $class == 'g' and $prefix == 'ft-d' {
+        #{$property}: #{$value} !important;
+        grid-template-columns: repeat(var(--ft-cols, 1), minmax(var(--ft-cmin, 0), 1fr)) !important;
+      } @else {
+        #{$property}: #{$value} !important;
+      }
     }
 
     // Classes for each breakpoint
     @each $breakpoint, $min-width in variables.$breakpoints {
       .#{$prefix}-#{$breakpoint}-#{$class} {
         @media (min-width: #{$min-width}) {
-          #{$property}: #{$value} !important;
+          @if $class == 'g' and $prefix == 'ft-d' {
+            grid-template-columns: repeat(
+              var(--ft-grid-cols),
+              minmax(var(--ft-grid-min), 1fr)
+            ) !important;
+          } @else {
+            #{$property}: #{$value} !important;
+          }
         }
       }
     }
