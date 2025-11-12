@@ -1,0 +1,131 @@
+<mat-card class="ft-contact-create__card ft-w-100 ft-d-g ft-g-4">
+  <mat-card-header class="ft-d-g ft-g-1">
+    <mat-card-title class="ft-fs-lg" i18n>Nuevo contacto</mat-card-title>
+    <mat-card-subtitle class="ft-tc-muted" i18n
+      >Completa los datos para registrar un nuevo contacto.</mat-card-subtitle
+    >
+  </mat-card-header>
+
+  <mat-card-content>
+    <form
+      class="ft-contact-create__form ft-d-g ft-g-3"
+      [formGroup]="contactForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+      <mat-form-field appearance="outline" class="ft-w-100">
+        <mat-label i18n>Nombre</mat-label>
+        <input
+          matInput
+          formControlName="firstName"
+          placeholder="Ingresa el nombre"
+          i18n-placeholder
+          autocomplete="given-name"
+        />
+        @if (hasError('firstName', 'required')) {
+          <mat-error i18n>El nombre es obligatorio.</mat-error>
+        }
+        @if (hasError('firstName', 'maxlength')) {
+          <mat-error i18n>El nombre no debe superar 50 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="ft-w-100">
+        <mat-label i18n>Apellido</mat-label>
+        <input
+          matInput
+          formControlName="lastName"
+          placeholder="Ingresa el apellido"
+          i18n-placeholder
+          autocomplete="family-name"
+        />
+        @if (hasError('lastName', 'required')) {
+          <mat-error i18n>El apellido es obligatorio.</mat-error>
+        }
+        @if (hasError('lastName', 'maxlength')) {
+          <mat-error i18n>El apellido no debe superar 50 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="ft-w-100">
+        <mat-label i18n>Correo electrónico</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="Ingresa el correo electrónico"
+          i18n-placeholder
+          autocomplete="email"
+        />
+        @if (hasError('email', 'required')) {
+          <mat-error i18n>El correo electrónico es obligatorio.</mat-error>
+        }
+        @if (hasError('email', 'email')) {
+          <mat-error i18n>Ingresa un correo electrónico válido.</mat-error>
+        }
+        @if (hasError('email', 'maxlength')) {
+          <mat-error i18n>El correo electrónico no debe superar 120 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="ft-w-100">
+        <mat-label i18n>Teléfono</mat-label>
+        <input
+          matInput
+          type="tel"
+          formControlName="phone"
+          placeholder="Ingresa el número de teléfono"
+          i18n-placeholder
+          autocomplete="tel"
+        />
+        @if (hasError('phone', 'required')) {
+          <mat-error i18n>El teléfono es obligatorio.</mat-error>
+        }
+        @if (hasError('phone', 'pattern')) {
+          <mat-error i18n>Ingresa un teléfono válido (solo números, espacios y símbolos + - ()).</mat-error>
+        }
+        @if (hasError('phone', 'maxlength')) {
+          <mat-error i18n>El teléfono no debe superar 25 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="ft-contact-create__actions ft-d-f ft-jc-e ft-g-2">
+        <button
+          type="submit"
+          mat-flat-button
+          color="primary"
+          [disabled]="contactForm.invalid || submitting()"
+          i18n
+        >
+          Guardar contacto
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+
+  @if (createdContact()) {
+    <mat-card-content>
+      <section class="ft-contact-create__summary ft-d-g ft-g-2">
+        <h2 class="ft-fs-md ft-tc-success" i18n>Contacto creado</h2>
+        <div class="ft-contact-create__summary-body ft-d-g ft-g-1">
+          <div class="ft-d-g ft-g-1">
+            <span class="ft-tc-muted" i18n>Nombre:</span>
+            <span class="ft-contact-create__summary-value"> {{ createdContact()!.firstName }} </span>
+          </div>
+          <div class="ft-d-g ft-g-1">
+            <span class="ft-tc-muted" i18n>Apellido:</span>
+            <span class="ft-contact-create__summary-value"> {{ createdContact()!.lastName }} </span>
+          </div>
+          <div class="ft-d-g ft-g-1">
+            <span class="ft-tc-muted" i18n>Correo electrónico:</span>
+            <span class="ft-contact-create__summary-value"> {{ createdContact()!.email }} </span>
+          </div>
+          <div class="ft-d-g ft-g-1">
+            <span class="ft-tc-muted" i18n>Teléfono:</span>
+            <span class="ft-contact-create__summary-value"> {{ createdContact()!.phone }} </span>
+          </div>
+        </div>
+      </section>
+    </mat-card-content>
+  }
+</mat-card>

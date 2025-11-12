@@ -1,0 +1,16 @@
+:host {
+  width: 100%;
+}
+
+.ft-contact-create__card {
+  max-width: calc(var(--ft-spacer) * 40);
+}
+
+.ft-contact-create__summary {
+  border-top: 1px solid var(--ft-border2-color);
+  padding-top: var(--ft-spacer-3);
+}
+
+.ft-contact-create__summary-value {
+  font-weight: var(--ft-text-font-weight);
+}
