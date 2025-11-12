@@ -1,0 +1,171 @@
+---
+alwaysApply: true
+---
+
+## Layout & Spacing Guidelines
+
+These utility classes are automatically generated from the SCSS configuration and are used to manage **layout, spacing, and alignment** throughout the application.
+
+All classes follow the prefix **`ft-`**, and their values are based on the design tokens defined in `variables-scss`.
+
+---
+
+### Responsive Breakpoints
+
+Most layout and display utilities support **responsive variants** for the following breakpoints:
+
+| Breakpoint | Suffix | Example usage              |
+|-------------|---------|----------------------------|
+| Extra small | `xs`    | `ft-d-xs-f`             |
+| Small       | `sm`    | `ft-jc-sm-c`          |
+| Medium      | `md`    | `ft-d-md-g`             |
+| Large       | `lg`    | `ft-ai-lg-c`          |
+| Extra large | `xl`    | `ft-fd-xl-c`          |
+| 2× Extra large | `xxl` | `ft-d-xxl-n`           |
+
+Example:
+
+```html
+<div class="ft-d-f ft-d-md-b ft-jc-lg-c">
+  ...
+</div>
+
+### Gap Utilities
+
+Control spacing between elements in flex or grid layouts.
+
+| Property      | Class Prefix | Example        | Description                        |
+|----------------|---------------|----------------|------------------------------------|
+| `gap`          | `ft-g`        | `ft-g-2`       | Sets uniform gap between elements. |
+| `column-gap`   | `ft-cg`       | `ft-cg-3`      | Controls horizontal gap.           |
+| `row-gap`      | `ft-rg`       | `ft-rg-1`      | Controls vertical gap.             |
+
+---
+
+### Padding Utilities
+
+Use padding classes to control internal spacing.
+
+| Property               | Class Prefix | Example        | Description |
+|--------------------------|--------------|----------------|--------------|
+| `padding`               | `ft-p`       | `ft-p-2`       | All sides padding. |
+| `padding-block`         | `ft-pb`      | `ft-pb-1`      | Top & bottom padding. |
+| `padding-block-start`   | `ft-pbs`     | `ft-pbs-3`     | Top padding only. |
+| `padding-block-end`     | `ft-pbe`     | `ft-pbe-1`     | Bottom padding only. |
+| `padding-inline`        | `ft-pi`      | `ft-pi-4`      | Left & right padding. |
+| `padding-inline-start`  | `ft-pis`     | `ft-pis-2`     | Left padding only. |
+| `padding-inline-end`    | `ft-pie`     | `ft-pie-2`     | Right padding only. |
+
+---
+
+### Margin Utilities
+
+Similar to padding utilities but for external spacing.
+
+| Property               | Class Prefix | Example        | Description |
+|--------------------------|--------------|----------------|--------------|
+| `margin`               | `ft-m`       | `ft-m-2`       | All sides margin. |
+| `margin-block`         | `ft-mb`      | `ft-mb-1`      | Top & bottom margin. |
+| `margin-block-start`   | `ft-mbs`     | `ft-mbs-3`     | Top margin only. |
+| `margin-block-end`     | `ft-mbe`     | `ft-mbe-1`     | Bottom margin only. |
+| `margin-inline`        | `ft-mi`      | `ft-mi-2`      | Left & right margin. |
+| `margin-inline-start`  | `ft-mis`     | `ft-mis-2`     | Left margin only. |
+| `margin-inline-end`    | `ft-mie`     | `ft-mie-2`     | Right margin only. |
+
+💡 You can also use **`auto`** values where supported, e.g.:
+```html
+<div class="ft-mi-auto">...</div>
+
+### Width Utilities
+
+| Class       | Description             |
+|--------------|-------------------------|
+| `ft-w-100`   | Forces width to 100%.   |
+| `ft-h-100`   | Forces height to 100%.   |
+
+### General Rules
+
+- Use layout utilities instead of custom CSS whenever possible.
+- Keep class combinations minimal and semantic.
+- Combine gap, padding, and margin utilities for consistent spacing control.
+- Always prefer the responsive variants (-xs, -sm, -md, -lg, -xl, -xxl) when needed for adaptive layouts.
+- Maintain consistency with existing design tokens and spacing scale.
+
+## Display & Flex Utility Classes
+
+These utility classes control layout behaviors such as display type, flex direction, alignment, and justification.  
+They are **responsive-ready**, meaning you can apply them with breakpoints (e.g., `ft-d-f@md`).
+
+---
+
+### **Display Classes**
+
+Prefix: `ft-d-`
+
+| Class        | Property        | Value  | Description              |
+|---------------|-----------------|---------|--------------------------|
+| `ft-d-n`      | display         | none    | Hides the element        |
+| `ft-d-f`      | display         | flex    | Displays as flex         |
+| `ft-d-b`      | display         | block   | Displays as block        |
+| `ft-d-g`      | display         | grid    | Displays as grid         |
+
+---
+
+### **Flex Direction Classes**
+
+Prefix: `ft-fd-`
+
+| Class          | Property         | Value           | Description                    |
+|----------------|------------------|------------------|--------------------------------|
+| `ft-fd-cl`     | flex-direction   | column          | Flex direction: column         |
+| `ft-fd-clr`    | flex-direction   | column-reverse  | Column reversed                |
+| `ft-fd-ro`     | flex-direction   | row             | Flex direction: row            |
+| `ft-fd-ror`    | flex-direction   | row-reverse     | Row reversed                   |
+
+---
+
+### **Flex Grow Classes**
+
+Prefix: `ft-fg-`
+
+| Class       | Property      | Value | Description                     |
+|--------------|---------------|--------|---------------------------------|
+| `ft-fg-1`    | flex-grow     | 1      | Element grows to fill space     |
+| `ft-fg-0`    | flex-grow     | 0      | Element does not grow           |
+
+---
+
+### **Align Items Classes**
+
+Prefix: `ft-ai-`
+
+| Class       | Property       | Value         | Description                        |
+|--------------|----------------|----------------|------------------------------------|
+| `ft-ai-s`    | align-items    | flex-start    | Align items to the start           |
+| `ft-ai-c`    | align-items    | center        | Align items at the center          |
+| `ft-ai-e`    | align-items    | flex-end      | Align items to the end             |
+
+---
+
+### **Justify Content Classes**
+
+Prefix: `ft-jc-`
+
+| Class        | Property          | Value            | Description                         |
+|---------------|-------------------|------------------|-------------------------------------|
+| `ft-jc-s`     | justify-content   | flex-start       | Justify items at the start          |
+| `ft-jc-c`     | justify-content   | center           | Center items horizontally           |
+| `ft-jc-e`     | justify-content   | flex-end         | Justify items at the end            |
+| `ft-jc-sb`    | justify-content   | space-between    | Distribute items with space between |
+
+---
+
+### **Responsive Usage**
+
+Each class can be used with breakpoints using the `@` suffix.  
+For example:
+
+```html
+<div class="ft-d-f ft-fd-cl ft-ai-c ft-jc-sb@md">
+  ...
+</div>
