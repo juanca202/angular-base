@@ -1,0 +1,106 @@
+@use '../../../../theme/utils/mixins' as mixins;
+
+:host {
+  display: block;
+  min-height: 100%;
+  padding-inline: var(--ft-spacer-3);
+  padding-block: var(--ft-spacer-5);
+  background-color: color-mix(in srgb, var(--ft-body-bg) 96%, var(--ft-text-color) 4%);
+}
+
+.ft-contact-create {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.ft-contact-create__card {
+  width: min(100%, 44rem);
+  box-shadow: var(--ft-overlapped-shadow);
+}
+
+.ft-contact-create__header {
+  padding-inline: var(--ft-spacer-4);
+  padding-block: var(--ft-spacer-3);
+  align-items: flex-start;
+}
+
+.ft-contact-create__title {
+  font-size: var(--ft-h1-font-size);
+  margin: 0;
+}
+
+.ft-contact-create__subtitle {
+  margin-top: var(--ft-spacer-1);
+}
+
+.ft-contact-create__form {
+  padding-inline: var(--ft-spacer-4);
+  padding-block: var(--ft-spacer-3);
+}
+
+.ft-contact-create__row {
+  width: 100%;
+}
+
+.ft-contact-create__field {
+  width: 100%;
+}
+
+.ft-contact-create__actions {
+  align-items: stretch;
+
+  @include mixins.media-breakpoint-up(sm) {
+    align-items: center;
+  }
+}
+
+.ft-contact-create__submit {
+  min-width: 12rem;
+}
+
+.ft-contact-create__confirmation {
+  display: flex;
+  align-items: center;
+  gap: var(--ft-spacer-3);
+  margin: var(--ft-spacer-4) var(--ft-spacer-4) var(--ft-spacer-3);
+  padding: var(--ft-spacer-3);
+  border-radius: 1rem;
+  background-color: color-mix(in srgb, var(--ft-success-color) 12%, transparent);
+  color: var(--ft-success-color);
+}
+
+.ft-contact-create__confirmation-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ft-contact-create__confirmation-title {
+  margin: 0 0 var(--ft-spacer-1);
+  font-size: var(--ft-h2-font-size);
+}
+
+.ft-contact-create__confirmation-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ft-spacer-1);
+  margin: 0;
+}
+
+.ft-contact-create__confirmation-email,
+.ft-contact-create__confirmation-phone {
+  color: var(--ft-text-muted-color);
+  font-size: var(--ft-text-font-size-sm);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ft-contact-create__confirmation {
+    transition: transform 160ms ease, opacity 160ms ease;
+  }
+
+  .ft-contact-create__confirmation:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+  }
+}
