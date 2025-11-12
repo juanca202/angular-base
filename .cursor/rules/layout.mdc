@@ -8,6 +8,8 @@ These utility classes are automatically generated from the SCSS configuration an
 
 All classes follow the prefix **`ft-`**, and their values are based on the design tokens defined in `variables-scss`.
 
+Para principios generales (BEM, prefijo `ft-`, reutilización de utilidades) consulta `css-styling.mdc`. Este documento se centra en cómo aplicar las utilidades de layout disponibles.
+
 ---
 
 ### Responsive Breakpoints
@@ -29,6 +31,7 @@ Example:
 <div class="ft-d-f ft-d-md-b ft-jc-lg-c">
   ...
 </div>
+```
 
 ### Gap Utilities
 
@@ -147,6 +150,7 @@ Example usage:
   <div>Item 2</div>
   <div>Item 3</div>
 </div>
+```
 
 ### **Align Items Classes**
 

@@ -20,6 +20,7 @@ Provide standardized rules for handling reactive form validations and error mess
     <mat-error>{{ form.get('username') | errorMessage }}</mat-error>
   }
 </mat-form-field>
+```
 
 - Use the errorMessage pipe to display the error messages.
 - Prefer native Angular validators or common validators in shared/utils.
@@ -63,6 +64,7 @@ this.form = this.fb.group({
   username: ['', [Validators.required, Validators.email, usernameValidator]],
   phone: ['', [phoneValidator]],
 });
+```
 
 ```html
 <mat-form-field>
@@ -72,6 +74,7 @@ this.form = this.fb.group({
     <mat-error>{{ form.get('phone') | errorMessage }}</mat-error>
   }
 </mat-form-field>
+```
 
 ### 4. Custom Validator Example
 
@@ -84,6 +87,7 @@ export function usernameValidator(control: AbstractControl): ValidationErrors | 
   if (!value) return null;
   return /^[a-zA-Z0-9_-]{3,15}$/.test(value) ? null : { invalidUsername: true };
 }
+```
 
 ### 5. Best Practices
 

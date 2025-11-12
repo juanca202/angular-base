@@ -21,29 +21,31 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Angular Material (MDC) Guidelines
 
-- Always use components from **Angular Material (MDC)** available at [https://material.angular.dev/components/categories](https://material.angular.dev/components/categories).
-- Avoid plain HTML elements or custom CSS when an official Angular Material component provides equivalent functionality.
-- Follow the **latest MDC syntax** and naming conventions (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-icon`, `mat-table`, etc.).
-- Prefer high-level Material components for:
-  - Accessibility (ARIA support)
-  - Consistent design and theme integration
-  - Responsive and maintainable layouts
-- Use **Angular Material directives** (`matInput`, `matSuffix`, `matPrefix`, etc.) instead of hardcoded markup.
-- Do NOT replicate Material styles manually; rely on official theming and typography APIs.
-- Example conversions:
-  - ✅ Use `<mat-form-field>` with `<input matInput>` instead of `<input>` alone
-  - ✅ Use `<mat-card>` for structured content instead of `<div>` with custom classes
-  - ✅ Use `<mat-icon>` for icons instead of `<i>` or `<span class="material-icons">`
-- When creating interactive components, prefer Angular Material options (`mat-button`, `mat-menu`, `mat-dialog`, etc.) before implementing custom versions.
+- Always use components from **Angular Material (MDC)** available en [https://material.angular.dev/components/categories](https://material.angular.dev/components/categories).
+- Evita elementos HTML planos o CSS personalizado cuando exista un componente oficial de Material que cubra la misma funcionalidad.
+- Sigue la sintaxis y nomenclatura MDC más reciente (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-table`, etc.).
+- Prefiere componentes de alto nivel para:
+  - Accesibilidad (soporte ARIA)
+  - Integración consistente con el tema
+  - Layouts responsivos y mantenibles
+- Usa **directivas de Angular Material** (`matInput`, `matSuffix`, `matPrefix`, etc.) en lugar de atributos personalizados.
+- No replique estilos de Material manualmente; apóyate en las APIs oficiales de theming y tipografía.
+- Para iconos utiliza siempre `<ft-icon />`, que se integra con el sistema de diseño del proyecto. Emplea las colecciones documentadas en `icons.mdc`.
+- Ejemplo de sustituciones comunes:
+  - ✅ Usa `<mat-form-field>` con `<input matInput>` en lugar de `<input>` simple
+  - ✅ Usa `<mat-card>` en lugar de `<div>` con clases personalizadas
+  - ✅ Usa `<ft-icon name="search" />` en lugar de `<i>` o `<span class="material-icons">`
+- Cuando crees componentes interactivos, prioriza las opciones de Angular Material (`mat-button`, `mat-menu`, `mat-dialog`, etc.) antes de implementar versiones personalizadas.
 
 **Example:**
 
 ```html
-<mat-form-field appearance="outline" class="w-100">
-  <mat-label>Search bank</mat-label>
-  <input matInput placeholder="Type the bank name" />
-  <mat-icon matSuffix>search</mat-icon>
+<mat-form-field appearance="outline" class="ft-w-100">
+  <mat-label i18n>Buscar banco</mat-label>
+  <input matInput placeholder="Escribe el nombre del banco" />
+  <ft-icon name="search" collection="factoricons-slim" />
 </mat-form-field>
+```
 
 ## Components
 

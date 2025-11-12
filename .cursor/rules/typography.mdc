@@ -7,6 +7,8 @@ alwaysApply: true
 These classes control text alignment, size, color, transformation, spacing, and truncation.  
 All typography utilities use the `ft-` prefix and are designed to maintain consistency across the application.
 
+Para principios globales de BEM, prefijo `ft-` y uso de utilidades revisa `css-styling.mdc`. Aquí se detallan únicamente las utilidades tipográficas y cómo aplicarlas.
+
 ---
 
 ### Text Alignment
@@ -22,6 +24,7 @@ Use these classes to align text within an element.
 Example:
 ```html
 <p class="ft-ta-c">Centered text</p>
+```
 
 ### Font Size
 
@@ -41,6 +44,7 @@ Example:
 <p class="ft-fs-sm">Small text</p>
 <p class="ft-fs-lg">Large text</p>
 <p class="ft-fs-lead">Lead paragraph</p>
+```
 
 ### Text Color
 
@@ -59,6 +63,7 @@ Example:
 ```html
 <span class="ft-tc-success">Success message</span>
 <span class="ft-tc-danger">Error message</span>
+```
 
 ## Text Transformation
 
