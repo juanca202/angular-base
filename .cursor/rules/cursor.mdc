@@ -22,24 +22,26 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 ## Angular Material (MDC) Guidelines
 
 - Always use components from **Angular Material (MDC)** available at [https://material.angular.dev/components/categories](https://material.angular.dev/components/categories).
-- Avoid plain HTML elements or custom CSS when an official Angular Material component provides equivalent functionality.
-- Follow the **latest MDC syntax** and naming conventions (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-table`, etc.).
+- Avoid plain HTML elements or custom CSS when an official Material component provides the same functionality.
+- Follow the latest MDC syntax and naming conventions (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-table`, etc.).
 - Prefer high-level Material components for:
   - Accessibility (ARIA support)
-  - Consistent design and theme integration
-  - Responsive and maintainable layouts
-- Use **Angular Material directives** (`matInput`, `matSuffix`, `matPrefix`, etc.) instead of hardcoded markup.
-- Do NOT replicate Material styles manually; rely on official theming and typography APIs.
-- Example conversions:
-  - ✅ Use `<mat-form-field>` with `<input matInput>` instead of `<input>` alone
-  - ✅ Use `<mat-card>` for structured content instead of `<div>` with custom classes
-- When creating interactive components, prefer Angular Material options (`mat-button`, `mat-menu`, `mat-dialog`, etc.) before implementing custom versions.
+  - Consistent theme integration
+  - Responsive, maintainable layouts
+- Use **Angular Material directives** (`matInput`, `matSuffix`, `matPrefix`, etc.) instead of custom attributes.
+- Do not replicate Material styles manually; rely on the official theming and typography APIs.
+- Always render icons with `<ft-icon />`, which is aligned with the project design system. Use the collections documented in `icons.mdc`.
+- Common substitutions:
+  - ✅ Use `<mat-form-field>` with `<input matInput>` instead of a bare `<input>`
+  - ✅ Use `<mat-card>` instead of bespoke `<div>` wrappers
+  - ✅ Use `<ft-icon name="search" />` instead of `<i>` or `<span class="material-icons">`
+- When you build interactive components, prioritize Angular Material options (`mat-button`, `mat-menu`, `mat-dialog`, etc.) before crafting custom implementations.
 
 **Example:**
 
 ```html
-<mat-form-field appearance="outline" class="w-100">
-  <mat-label>Search bank</mat-label>
+<mat-form-field appearance="outline" class="ft-w-100">
+  <mat-label i18n>Search bank</mat-label>
   <input matInput placeholder="Type the bank name" />
 </mat-form-field>
 ```

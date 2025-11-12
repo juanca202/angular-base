@@ -4,7 +4,7 @@ alwaysApply: true
 
 # Rest Services Guide
 
-A quick reference for **repositories and web service **
+Concise reference for defining **repositories** and consuming REST services within the application.
 
 ---
 
@@ -64,6 +64,7 @@ customerResource.value();   // current value
 customerResource.loading(); // loading state
 customerResource.error();   // error message
 customerResource.destroy(); // cleanup
+```
 
 ## 4. Resource List (GET all or filtered)
 
@@ -78,14 +79,14 @@ customers.value();
 customers.loading();
 customers.error();
 customers.destroy();
+```
 
 ## 5. Best Practices
 
 - One repository per entity: CustomerRepository, OrderRepository, etc.
 - Always use getMutations for write operations.
 - Always use getResource for read operations.
-- Always resolve API endpoints with getApiUrl()
-    Example: getApiUrl('users')
+- Always resolve API endpoints with `getApiUrl()`. Example: `getApiUrl('users')`
 - Signals are read-only outside the repository.
 - Use destroy() in components to prevent memory leaks.
 - MessageService handles errors automatically.
