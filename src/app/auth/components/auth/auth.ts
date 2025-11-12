@@ -37,7 +37,7 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   templateUrl: './auth.html',
   styleUrl: './auth.scss',
   host: {
-    class: 'ft-page--fullscreen ft-auth',
+    class: 'ft-auth',
     '[class.ft-auth--form]': '!!mode()',
   },
 })

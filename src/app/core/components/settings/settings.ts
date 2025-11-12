@@ -42,7 +42,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
   host: {
-    class: 'ft-page ft-page--fullscreen',
+    class: 'ft-page',
   },
 })
 export class Settings implements OnInit {

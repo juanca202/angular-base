@@ -17,7 +17,7 @@ import { environment } from 'environments/environment';
   templateUrl: './language.html',
   styleUrl: './language.scss',
   host: {
-    class: 'ft-page ft-page--fullscreen',
+    class: 'ft-page',
   },
 })
 export class Language {

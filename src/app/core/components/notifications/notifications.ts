@@ -27,7 +27,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
   host: {
-    class: 'ft-page ft-page--fullscreen',
+    class: 'ft-page',
   },
 })
 export class Notifications implements OnDestroy {
