@@ -26,8 +26,8 @@ module.exports = [
       '**/*.js',
       '**/*.mjs',
       '**/firebase-messaging-sw.js',
-      '**/sw-custom.js',
-    ],
+      '**/sw-custom.js'
+    ]
   },
 
   // Base configuration
@@ -50,17 +50,17 @@ module.exports = [
       '**/eslint.config.js',
       '**/generate-i18n.js',
       '**/git-version.js',
-      '**/setup-jest.ts',
+      '**/setup-jest.ts'
     ],
     plugins: {
       '@typescript-eslint': tseslint,
-      '@angular-eslint': angular,
+      '@angular-eslint': angular
     },
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'module',
+        sourceType: 'module'
       },
       globals: {
         // Angular global variables
@@ -89,8 +89,8 @@ module.exports = [
         PaymentRequest: 'readonly',
         CredentialRequestOptions: 'readonly',
         sessionStorage: 'readonly',
-        localStorage: 'readonly',
-      },
+        localStorage: 'readonly'
+      }
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
@@ -100,33 +100,33 @@ module.exports = [
         {
           type: 'attribute',
           prefix: 'app',
-          style: 'camelCase',
-        },
+          style: 'camelCase'
+        }
       ],
       '@angular-eslint/component-selector': [
         'error',
         {
           type: 'element',
           prefix: 'app',
-          style: 'kebab-case',
-        },
+          style: 'kebab-case'
+        }
       ],
       'no-undef': 'off', // TypeScript handles this
-      'no-unused-vars': 'off', // Use TypeScript rule instead
-    },
+      'no-unused-vars': 'off' // Use TypeScript rule instead
+    }
   },
 
   // Configuration for test files
   {
     files: ['**/*.spec.ts', '**/*.test.ts'],
     plugins: {
-      '@typescript-eslint': tseslint,
+      '@typescript-eslint': tseslint
     },
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'module',
+        sourceType: 'module'
       },
       globals: {
         describe: 'readonly',
@@ -135,11 +135,12 @@ module.exports = [
         afterEach: 'readonly',
         expect: 'readonly',
         jest: 'readonly',
-      },
+        HTMLElement: 'readonly'
+      }
     },
     rules: {
       // Test-specific rules (optional)
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    },
-  },
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+    }
+  }
 ];

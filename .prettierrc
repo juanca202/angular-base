@@ -1,8 +1,13 @@
 {
-    "singleQuote": true,
-    "trailingComma": "none",
-    "html.format.templating": [
-        "angular"
-    ],
-    "html.format.indentHandlebars": true
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
 }

@@ -23,6 +23,11 @@
   --ft-text-font-weight: 600;
   --ft-text-line-height: 1.5;
 
+  // Heading
+  --ft-h1-font-size: var(--ft-text-font-size-xl);
+  --ft-h2-font-size: var(--ft-text-font-size-lg);
+  --ft-h3-font-size: var(--ft-text-font-size-md);
+
   // Misc
   --ft-border-color: color-mix(in srgb, var(--ft-text-color) 20%, transparent);
   --ft-border2-color: color-mix(in srgb, var(--ft-text-color) 10%, transparent);
