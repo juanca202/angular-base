@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, signal, inject, input } from '@angular/core';
+import { Component, OnInit, signal, inject, input } from '@angular/core';
 
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -17,7 +17,10 @@ import { environment } from 'environments/environment';
   selector: 'app-error',
   imports: [IconComponent, MatButtonModule, RouterModule],
   templateUrl: './error.html',
-  styleUrl: './error.scss'
+  styleUrl: './error.scss',
+  host: {
+    '[class]': "['ft-error', class()].filter(Boolean).join(' ')",
+  },
 })
 export class Error implements OnInit {
   public readonly authService = inject(AuthService);
@@ -36,9 +39,6 @@ export class Error implements OnInit {
   message!: string;
 
   readonly class = input<string>('');
-  @HostBinding('class') get hostClasses(): string {
-    return ['ft-error', this.class()].join(' ');
-  }
 
   async ngOnInit(): Promise<void> {
     const message = this.storageService.get(`${environment.sessionPrefix}_msg`, 'session');

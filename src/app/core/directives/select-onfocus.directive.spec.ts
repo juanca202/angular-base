@@ -5,7 +5,6 @@ import { SelectOnfocusDirective } from './select-onfocus.directive';
 
 @Component({
   template: `<input type="text" appSelectOnfocus />`,
-  standalone: true,
   imports: [SelectOnfocusDirective],
 })
 class HostComponent {}

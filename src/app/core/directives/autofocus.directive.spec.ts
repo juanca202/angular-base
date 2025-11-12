@@ -5,7 +5,6 @@ import { AutofocusDirective } from './autofocus.directive';
 
 @Component({
   template: `<input type="text" appAutofocus />`,
-  standalone: true,
   imports: [AutofocusDirective],
 })
 class HostComponent {}

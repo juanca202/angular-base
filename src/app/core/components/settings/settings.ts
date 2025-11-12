@@ -3,7 +3,6 @@ import {
   OnInit,
   signal,
   inject,
-  HostBinding,
   input,
   ElementRef,
   viewChild,
@@ -50,6 +49,9 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
+  host: {
+    '[class]': "['ft-page', 'ft-page--fullscreen', class()].filter(Boolean).join(' ')",
+  },
 })
 export class Settings implements OnInit {
   public readonly appManager = inject(AppManager);
@@ -74,9 +76,6 @@ export class Settings implements OnInit {
     viewChild.required<ElementRef<HTMLButtonElement>>('supportButton');
 
   readonly class = input<string>('');
-  @HostBinding('class') get hostClasses(): string {
-    return ['ft-page', 'ft-page--fullscreen', this.class()].join(' ');
-  }
 
   constructor() {
     this.title.setTitle($localize`Settings`);

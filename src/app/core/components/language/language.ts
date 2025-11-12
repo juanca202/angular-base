@@ -1,4 +1,4 @@
-import { Component, signal, inject, HostBinding, input } from '@angular/core';
+import { Component, signal, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -16,7 +16,9 @@ import { environment } from 'environments/environment';
   imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
   templateUrl: './language.html',
   styleUrl: './language.scss',
-  standalone: true,
+  host: {
+    '[class]': "['ft-page', 'ft-page--fullscreen', class()].filter(Boolean).join(' ')",
+  },
 })
 export class Language {
   public readonly appManager = inject(AppManager);
@@ -25,9 +27,6 @@ export class Language {
 
   public locale = signal<string | undefined>(this.appManager.getLocale());
   public readonly class = input<string>('');
-  @HostBinding('class') get hostClasses(): string {
-    return ['ft-page', 'ft-page--fullscreen', this.class()].join(' ');
-  }
 
   constructor() {
     this.title.setTitle($localize`Language`);

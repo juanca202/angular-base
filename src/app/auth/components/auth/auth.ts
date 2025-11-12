@@ -1,5 +1,5 @@
-import { Component, HostBinding, signal, inject, OnInit, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, inject, OnInit, input } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -23,6 +23,7 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   selector: 'app-auth',
   imports: [
     CommonModule,
+    NgOptimizedImage,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormField,
@@ -35,19 +36,15 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   ],
   templateUrl: './auth.html',
   styleUrl: './auth.scss',
+  host: {
+    '[class]':
+      "['ft-page--fullscreen', 'ft-auth', mode() ? 'ft-auth--form' : null, class()].filter(Boolean).join(' ')",
+  },
 })
 export class Auth implements OnInit {
   public appManager = inject(AppManager);
   public authService = inject(AuthService);
   readonly class = input<string>('');
-  @HostBinding('class') get hostClasses(): string {
-    return [
-      'ft-page--fullscreen',
-      'ft-auth',
-      this.mode() ? 'ft-auth--form' : null,
-      this.class(),
-    ].join(' ');
-  }
   private dialog = inject(MatDialog);
   public errorMessage = signal<string>('');
   private formBuilder = inject(FormBuilder);

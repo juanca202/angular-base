@@ -1,4 +1,4 @@
-import { Component, HostBinding, signal, inject } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -37,6 +37,9 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   ],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.scss',
+  host: {
+    '[class]': "['ft-auth', 'ft-auth--form', class].filter(Boolean).join(' ')",
+  },
 })
 export class ResetPassword {
   AppManager = inject(AppManager);
@@ -53,9 +56,6 @@ export class ResetPassword {
   passwordVisible = signal<boolean>(false);
 
   class = '';
-  @HostBinding('class') get hostClasses(): string {
-    return ['ft-auth', 'ft-auth--form', this.class].join(' ');
-  }
 
   constructor() {
     this.form = this.formBuilder.group({
