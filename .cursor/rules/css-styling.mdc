@@ -5,10 +5,13 @@ alwaysApply: true
 ## CSS & Styling Guidelines
 
 - Follow the **BEM (Block Element Modifier)** naming convention for all CSS class names.  
-  **Example:** `ft-button`, `ft-button__icon`, `ft-button--primary`
+  **Example:** `ft-button`, `ft-button__icon`, `ft-button--primary`.
 
 - All custom classes must start with the prefix **`ft-`**.  
-  **Example:** ✅ `ft-card__header`, ❌ `card-header`
+  **Example:** ✅ `ft-card__header`, ❌ `card-header`.
+
+- **Prioritize using existing utility and theme classes** before creating new custom classes.  
+  Only create a custom class if **no existing class or combination of utilities** achieves the required design.
 
 - Before creating a new class, **always check** if an existing one already covers the same use case.  
   Reuse and extend existing classes when possible.
@@ -21,25 +24,27 @@ alwaysApply: true
   - Color variables  
   - Text and typography variables  
   - Spacing and layout variables  
-  These must be used when creating or customizing styles.
 
-- **Always prioritize using existing theme utilities** before creating custom styles.  
+- **Always prioritize existing theme utilities** before creating custom styles.  
   Specifically, use:
   - **Layout classes** (e.g., display, flex, gap, margin, padding)  
   - **Typography classes** (e.g., font size, color, alignment, text transform)  
   - **Theme-related classes** (e.g., text color utilities, background colors)  
-  These ensure consistency across components and reduce redundant CSS.
+  This ensures consistency across components and reduces redundant CSS.
 
 - Avoid inline styles and `ngStyle`. Use **style bindings** or **class bindings** instead.
 
-- Use **utility classes** only for layout adjustments — not for component-specific styling.
+- Use **utility classes** only for layout or spacing adjustments — not for component-specific styling.
 
 - Keep CSS declarations **minimal and purposeful** — avoid deep nesting and excessive specificity.
 
-- When defining responsive layouts, prefer **Grid or Flex** and use defined CSS variables for breakpoints.
+- For responsive layouts, prefer **Grid or Flex** and use defined CSS variables for breakpoints.
 
 - Use **transitions and animations sparingly**; prioritize performance and accessibility.
 
 - For **icons and images**:
   - Prefer Angular’s `NgOptimizedImage`
   - Always include `alt` attributes for accessibility
+
+- **Summary Rule:**  
+  **1️⃣ Use existing utilities first** → **2️⃣ Use existing component classes** → **3️⃣ Create custom `ft-` classes only if strictly necessary.**

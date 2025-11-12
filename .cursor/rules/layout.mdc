@@ -135,6 +135,19 @@ Prefix: `ft-fg-`
 
 ---
 
+### Width & Grid Utilities (Update for ft-d-g)
+
+For elements using **`ft-d-g` (display: grid)**, you can dynamically specify the number of columns using the CSS variable `--ft-cols`.
+
+Example usage:
+
+```html
+<div class="ft-d-g" style="--ft-cols: 3; gap: var(--ft-gap-md);">
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <div>Item 3</div>
+</div>
+
 ### **Align Items Classes**
 
 Prefix: `ft-ai-`
