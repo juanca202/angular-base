@@ -2,8 +2,8 @@ importScripts('./ngsw-worker.js');
 importScripts('./firebase-messaging-sw.js');
 
 self.addEventListener('fetch', async (event) => {
-    console.log(event);
-    /*
+  console.log(event);
+  /*
     const url = new URL(event.request.url);
     if (
         event.request.method === 'GET' &&

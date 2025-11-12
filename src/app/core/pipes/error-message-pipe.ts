@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 @Pipe({
-  name: 'errorMessage',
+  name: 'errorMessage'
 })
 export class ErrorMessagePipe implements PipeTransform {
   getErrorMessage(field: AbstractControl | null, messages?: any): string {

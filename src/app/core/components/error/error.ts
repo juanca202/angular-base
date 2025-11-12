@@ -19,8 +19,8 @@ import { environment } from 'environments/environment';
   templateUrl: './error.html',
   styleUrl: './error.scss',
   host: {
-    class: 'ft-error',
-  },
+    class: 'ft-error'
+  }
 })
 export class Error implements OnInit {
   public readonly authService = inject(AuthService);

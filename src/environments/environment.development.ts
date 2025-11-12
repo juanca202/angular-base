@@ -10,20 +10,20 @@ export const environment: Environment = {
     settingsUrl: 'http://localhost:8000/api/settings',
     allowRefreshToken: true,
     clients: {
-      google: 'http://localhost:8000/connect/google',
-    },
+      google: 'http://localhost:8000/connect/google'
+    }
   },
   fedcm: {
     google: {
       tokenUrl: 'http://localhost:8000/auth/fedcm/google',
       configURL: 'https://accounts.google.com/o/fedcm/config.json',
-      clientId: '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com',
-    },
+      clientId: '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com'
+    }
   },
   sessionPrefix: 'abp',
   iconSettings: {
     path: '/images',
-    collection: 'factoricons-regular',
+    collection: 'factoricons-regular'
   },
   filesPath: 'http://localhost:8000/files',
   appPath: 'http://localhost:4200',
@@ -33,15 +33,15 @@ export const environment: Environment = {
   apiIdPrefix: '/api/',
   supportEmail: 'support@email.com',
   googleApi: {
-    clientId: '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com',
+    clientId: '224754736281-tgu6t0kuf3mgjb621lus8gh54sj607lb.apps.googleusercontent.com'
   },
   googleTagManager: {
-    trackingCode: '',
+    trackingCode: ''
   },
   sentry: {
     dsn: 'https://011a881484abbbc6dd4f1157a93959e1@o498284.ingest.us.sentry.io/4507207222755328',
     tracingOrigins: ['localhost', 'https://factor.ec'],
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 1.0
   },
   firebaseConfig: {
     apiKey: 'AIzaSyD5xyqCqcUXAA4yo8OcR6_tCgxz4RVu7AU',
@@ -51,8 +51,8 @@ export const environment: Environment = {
     storageBucket: 'tripot-5d5c6.appspot.com',
     messagingSenderId: '621788368517',
     appId: '1:621788368517:web:75d886e9d60d68e63a23ec',
-    measurementId: 'G-4Z1QWPCW6B',
+    measurementId: 'G-4Z1QWPCW6B'
   },
   vapidKey:
-    'BPhVK_ylSTCSpDkQd5p1vmI2ImGe_P5-KcWgPzxV-VrGitzNx7yXjFcTJOg2Bdb55hE54Pbs4sGaZDOi_BBxSQo',
+    'BPhVK_ylSTCSpDkQd5p1vmI2ImGe_P5-KcWgPzxV-VrGitzNx7yXjFcTJOg2Bdb55hE54Pbs4sGaZDOi_BBxSQo'
 };

@@ -17,8 +17,8 @@ import { environment } from 'environments/environment';
   templateUrl: './language.html',
   styleUrl: './language.scss',
   host: {
-    class: 'ft-page',
-  },
+    class: 'ft-page'
+  }
 })
 export class Language {
   public readonly appManager = inject(AppManager);

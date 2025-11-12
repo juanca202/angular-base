@@ -3,7 +3,7 @@ import {
   HttpErrorResponse,
   HttpHeaders,
   HttpHandlerFn,
-  HttpClient,
+  HttpClient
 } from '@angular/common/http';
 import { EventEmitter, Injectable, signal, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -26,7 +26,7 @@ import {
   filter,
   take,
   tap,
-  lastValueFrom,
+  lastValueFrom
 } from 'rxjs';
 
 import { environment } from 'environments/environment';
@@ -67,7 +67,7 @@ declare let navigator: any;
  * [PREFIX]_dce = delete code expires at
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   private dialog = inject(MatDialog);
@@ -112,14 +112,14 @@ export class AuthService {
     // Clone the request, because the original request is immutable
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token.token}`,
-      },
+        Authorization: `Bearer ${token.token}`
+      }
     });
   }
   public changePassword(): void {
     this.dialog.open(ChangePassword, {
       panelClass: 'ft-dialog',
-      width: '400px',
+      width: '400px'
     });
   }
   public async connect(client: 'google'): Promise<boolean> {
@@ -149,12 +149,12 @@ export class AuthService {
                   response_type: 'permission id_token',
                   scope: 'email profile openid',
                   include_granted_scopes: true,
-                  nonce: 'notprovided',
-                },
-              },
-            ],
+                  nonce: 'notprovided'
+                }
+              }
+            ]
           },
-          mediation: 'required',
+          mediation: 'required'
         } as FedcmCredentialRequestOptions);
         if (!credential) {
           throw new Error('No credential obtained');
@@ -165,14 +165,14 @@ export class AuthService {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            id_token: JSON.parse(fedcmCredential.token).id_token,
-          }),
+            id_token: JSON.parse(fedcmCredential.token).id_token
+          })
         });
         const data = await response.json();
         this.storageService.set(
           this.tokenKey,
           { token: data.token, refresh_token: data.refreshToken },
-          'local',
+          'local'
         );
         this.storageService.set(this.settingsKey, JSON.parse(data.settings), 'local');
         location.href = environment.appPath;
@@ -191,7 +191,7 @@ export class AuthService {
   public confirmDeleteUser(): void {
     this.dialog.open(DeleteUser, {
       panelClass: 'ft-dialog',
-      width: '400px',
+      width: '400px'
     });
   }
   public async getSettings(networkOnly?: boolean, pushToken?: string): Promise<Settings | false> {
@@ -199,13 +199,13 @@ export class AuthService {
     let headers = {};
     if (pushToken) {
       headers = {
-        'Push-Token': pushToken,
+        'Push-Token': pushToken
       };
     }
     const networkSettings = lastValueFrom<Settings>(
       this.httpClient
         .get<Settings>(getApiUrl('settings'), {
-          headers,
+          headers
         })
         .pipe(
           tap((response: Settings) => {
@@ -213,10 +213,10 @@ export class AuthService {
             this.settings.set(response);
             Sentry.setUser({
               email: response.user.email,
-              username: response.user.username,
+              username: response.user.username
             });
-          }),
-        ),
+          })
+        )
     );
     if (networkOnly) {
       return networkSettings;
@@ -227,7 +227,7 @@ export class AuthService {
       this.settings.set(localSettings);
       Sentry.setUser({
         email: localSettings.user.email,
-        username: localSettings.user.username,
+        username: localSettings.user.username
       });
       return localSettings;
     }
@@ -263,7 +263,7 @@ export class AuthService {
   public handle401Error(
     err: HttpErrorResponse,
     request: HttpRequest<any>,
-    next: HttpHandlerFn,
+    next: HttpHandlerFn
   ): Observable<any> {
     const token: AuthToken | undefined = this.getToken();
     if (token && token.refresh_token && environment.auth.refreshTokenUrl) {
@@ -285,8 +285,8 @@ export class AuthService {
                   headers: new HttpHeaders(),
                   status: 401,
                   statusText: '',
-                  url: undefined,
-                }),
+                  url: undefined
+                })
             );
           }),
           catchError((error) => {
@@ -298,14 +298,14 @@ export class AuthService {
                   headers: error.headers,
                   status: 401,
                   statusText: error.statusText,
-                  url: error.url || undefined,
-                }),
+                  url: error.url || undefined
+                })
             );
           }),
           share(),
           finalize(() => {
             this.refreshTokenInProgress = false;
-          }),
+          })
         );
       } else {
         return this.refreshTokenSubject.pipe(
@@ -313,7 +313,7 @@ export class AuthService {
           take(1),
           switchMap(() => {
             return next(this.addAuthenticationToken(request));
-          }),
+          })
         );
       }
     } else {
@@ -331,7 +331,7 @@ export class AuthService {
    */
   public async signin(data: Login): Promise<any> {
     const token = await lastValueFrom<AuthToken>(
-      this.httpClient.post<AuthToken>(environment.auth.tokenUrl, data),
+      this.httpClient.post<AuthToken>(environment.auth.tokenUrl, data)
     );
     this.storageService.set(this.tokenKey, token, 'local');
     this.loggedIn.emit(true);
@@ -370,7 +370,7 @@ export class AuthService {
         catchError((error) => {
           this.logout();
           return throwError(error);
-        }),
+        })
       );
   }
 }

@@ -18,8 +18,8 @@ describe('Language', () => {
         provideHttpClientTesting(),
         AppManager,
         { provide: Title, useValue: { setTitle: jest.fn() } },
-        { provide: StorageService, useValue: { set: jest.fn() } },
-      ],
+        { provide: StorageService, useValue: { set: jest.fn() } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Language);

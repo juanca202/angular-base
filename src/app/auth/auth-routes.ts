@@ -9,17 +9,17 @@ export const authRoutes: Routes = [
     path: 'signin',
     component: Auth,
     data: { mode: 'signin' },
-    canActivate: [loginGuard],
+    canActivate: [loginGuard]
   },
   {
     path: 'signup',
     component: Auth,
     data: { mode: 'signup' },
-    canActivate: [loginGuard],
+    canActivate: [loginGuard]
   },
   {
     path: 'reset-password',
     component: ResetPassword,
-    canActivate: [resetGuard],
-  },
+    canActivate: [resetGuard]
+  }
 ];

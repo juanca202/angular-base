@@ -124,5 +124,5 @@ export default {
   '5343887197667893879': 'Type your email',
   '4902817035128594900': 'Description',
   '4876773323743748552': "Tell us what problem you're having or how we can help you…",
-  '2418939177197430182': 'Thank you for your message',
+  '2418939177197430182': 'Thank you for your message'
 };

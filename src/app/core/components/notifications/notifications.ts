@@ -22,13 +22,13 @@ import { LayoutManager } from 'app/core/services/layout-manager';
     RouterModule,
     IconComponent,
     MatButtonModule,
-    ObserveIntersectingDirective,
+    ObserveIntersectingDirective
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
   host: {
-    class: 'ft-page',
-  },
+    class: 'ft-page'
+  }
 })
 export class Notifications implements OnDestroy {
   private readonly apollo = inject(Apollo);
@@ -70,7 +70,7 @@ export class Notifications implements OnDestroy {
           }
         }
       `,
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'network-only'
     });
     this.queryRef.valueChanges.subscribe({
       next: (query) => {
@@ -83,13 +83,13 @@ export class Notifications implements OnDestroy {
                 option.queryParams = {
                   action: notification.action?.uuid,
                   actionType: notification.action?.type,
-                  actionValue: option.value,
+                  actionValue: option.value
                 };
               });
             }
             if (notification.action?.selected) {
               notification.action.selectedObject = notification.action.options.find(
-                (a: any) => a.value === notification.action?.selected,
+                (a: any) => a.value === notification.action?.selected
               );
             }
             return { readTimer: null, notification };
@@ -98,7 +98,7 @@ export class Notifications implements OnDestroy {
       },
       error: () => {
         this.loading.set(false);
-      },
+      }
     });
     this.postReadTimer = setInterval(() => {
       this.postReadNotifications(this.readPool);
@@ -136,8 +136,8 @@ export class Notifications implements OnDestroy {
                 }`;
             })}
           }
-        `,
-        }),
+        `
+        })
       );
       this.readPool = ids.filter((n) => !this.readPool.includes(n));
     }

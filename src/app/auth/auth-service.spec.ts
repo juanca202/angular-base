@@ -16,9 +16,9 @@ describe('AuthService', () => {
         { provide: MatDialog, useValue: { open: jest.fn(), closeAll: jest.fn() } },
         {
           provide: StorageService,
-          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() },
-        },
-      ],
+          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
+        }
+      ]
     });
     service = TestBed.inject(AuthService);
   });

@@ -12,8 +12,8 @@ import { CustomerRepository } from 'app/samples/repositories/customer-repository
   templateUrl: './customer-list.html',
   styleUrl: './customer-list.scss',
   host: {
-    class: 'ft-page',
-  },
+    class: 'ft-page'
+  }
 })
 export class CustomerList implements OnInit {
   // Dependency injection
@@ -22,7 +22,7 @@ export class CustomerList implements OnInit {
   public readonly layoutManager = inject(LayoutManager);
 
   // Properties
-  public readonly customers = this.customerRepository.findByFilter();
+  public readonly customers = this.customerRepository.findBy();
 
   ngOnInit(): void {
     this.customers.load();

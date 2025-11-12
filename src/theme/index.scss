@@ -51,16 +51,8 @@
   color: var(--ft-dark-color) !important;
   --ft-text-color: var(--ft-dark-color);
   --ft-border-color: color-mix(in srgb, var(--ft-text-color) 20%, transparent);
-  --ft-thumbnail-bg: color-mix(
-    in srgb,
-    var(--ft-border-color) 40%,
-    transparent
-  );
-  --ft-text-muted-color: color-mix(
-    in srgb,
-    var(--ft-text-color) 50%,
-    transparent
-  );
+  --ft-thumbnail-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+  --ft-text-muted-color: color-mix(in srgb, var(--ft-text-color) 50%, transparent);
 
   .ft-logo {
     margin-inline: auto;

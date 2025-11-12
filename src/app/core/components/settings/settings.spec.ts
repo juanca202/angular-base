@@ -17,13 +17,13 @@ describe('Settings', () => {
         provideHttpClientTesting(),
         {
           provide: StorageService,
-          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() },
+          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
         },
         {
           provide: GoogleTagManagerService,
-          useValue: { addVariable: jest.fn(), appendTrackingCode: jest.fn() },
-        },
-      ],
+          useValue: { addVariable: jest.fn(), appendTrackingCode: jest.fn() }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Settings);

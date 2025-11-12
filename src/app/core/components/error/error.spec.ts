@@ -11,7 +11,7 @@ describe('Error', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Error],
-      providers: [provideHttpClient(), provideHttpClientTesting(), AppManager],
+      providers: [provideHttpClient(), provideHttpClientTesting(), AppManager]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Error);

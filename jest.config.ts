@@ -6,7 +6,7 @@ const presets = require('jest-preset-angular/build/presets/index.js');
 const { createCjsPreset } = presets as { createCjsPreset: (opts?: Record<string, unknown>) => any };
 
 const cjsPreset: any = createCjsPreset({
-  tsconfig: '<rootDir>/tsconfig.spec.json',
+  tsconfig: '<rootDir>/tsconfig.spec.json'
 });
 
 const config: Config = {
@@ -23,14 +23,14 @@ const config: Config = {
     '^@factor_ec/ui$': '<rootDir>/test/mocks/factor-ui.ts',
     '^@factor_ec/utils$': '<rootDir>/test/mocks/factor-utils.ts',
     '^apollo-angular$': '<rootDir>/test/mocks/apollo-angular.ts',
-    '^@sentry/angular$': '<rootDir>/test/mocks/sentry-angular.ts',
+    '^@sentry/angular$': '<rootDir>/test/mocks/sentry-angular.ts'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!jest-preset-angular|@angular|tslib|@factor_ec|apollo-angular|d3|@sentry)',
+    'node_modules/(?!jest-preset-angular|@angular|tslib|@factor_ec|apollo-angular|d3|@sentry)'
   ],
   transform: {
     ...cjsPreset.transform,
-    '^.+\\.(mjs|js)$': 'babel-jest',
+    '^.+\\.(mjs|js)$': 'babel-jest'
   },
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/out-tsc/', '/test/mocks/'],
   collectCoverage: true,
@@ -47,8 +47,8 @@ const config: Config = {
     'jest.config.ts',
     'setup-jest.ts',
     'generate-i18n.js',
-    'git-version.js',
-  ],
+    'git-version.js'
+  ]
 };
 
 export default config;

@@ -10,7 +10,7 @@ describe('Page', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Page],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Page);

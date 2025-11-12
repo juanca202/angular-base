@@ -11,10 +11,10 @@ describe('GraphqlUtils', () => {
       providers: [
         {
           provide: StringService,
-          useValue: { normalizeName: (s: string) => s[0].toUpperCase() + s.slice(1) },
+          useValue: { normalizeName: (s: string) => s[0].toUpperCase() + s.slice(1) }
         },
-        { provide: Apollo, useValue: new Apollo() },
-      ],
+        { provide: Apollo, useValue: new Apollo() }
+      ]
     });
     service = TestBed.inject(GraphqlUtils);
   });

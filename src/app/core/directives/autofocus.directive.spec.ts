@@ -5,7 +5,7 @@ import { AutofocusDirective } from './autofocus.directive';
 
 @Component({
   template: `<input type="text" appAutofocus />`,
-  imports: [AutofocusDirective],
+  imports: [AutofocusDirective]
 })
 class HostComponent {}
 
@@ -14,7 +14,7 @@ describe('AutofocusDirective', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HostComponent],
+      imports: [HostComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);

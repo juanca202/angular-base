@@ -16,9 +16,9 @@ describe('Notifications', () => {
         provideHttpClientTesting(),
         {
           provide: StorageService,
-          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() },
-        },
-      ],
+          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Notifications);

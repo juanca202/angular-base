@@ -12,8 +12,8 @@ import { AuthService } from 'app/auth/auth-service';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
   host: {
-    class: 'ft-main-layout',
-  },
+    class: 'ft-main-layout'
+  }
 })
 export class MainLayout {
   // Dependency injection
@@ -25,12 +25,12 @@ export class MainLayout {
     {
       url: '/home',
       icon: 'home',
-      label: $localize`Home`,
+      label: $localize`Home`
     },
     {
       url: '/customer-list',
       icon: 'task',
-      label: $localize`My tasks`,
+      label: $localize`My tasks`
     },
     {
       url: '/sample1',
@@ -40,14 +40,14 @@ export class MainLayout {
         {
           url: '/sample1',
           icon: 'money',
-          label: $localize`Payment`,
+          label: $localize`Payment`
         },
         {
           url: '/sample3',
           icon: 'money',
-          label: $localize`Collections`,
-        },
-      ],
+          label: $localize`Collections`
+        }
+      ]
     },
     {
       url: '/sample4',
@@ -57,14 +57,14 @@ export class MainLayout {
         {
           url: '/sample4',
           icon: 'building',
-          label: $localize`Business partners`,
+          label: $localize`Business partners`
         },
         {
           url: '/sample6',
           icon: 'building',
-          label: $localize`Business partners`,
-        },
-      ],
+          label: $localize`Business partners`
+        }
+      ]
     },
     {
       url: '/sample7',
@@ -74,9 +74,9 @@ export class MainLayout {
         {
           url: '/sample7',
           icon: 'sales-order',
-          label: $localize`Sales`,
-        },
-      ],
+          label: $localize`Sales`
+        }
+      ]
     },
     {
       url: '/sample9',
@@ -86,9 +86,9 @@ export class MainLayout {
         {
           url: '/sample9',
           icon: 'list',
-          label: $localize`Operations`,
-        },
-      ],
+          label: $localize`Operations`
+        }
+      ]
     },
     {
       url: '/sample11',
@@ -98,10 +98,10 @@ export class MainLayout {
         {
           url: '/sample11',
           icon: 'execute',
-          label: $localize`Tools`,
-        },
-      ],
-    },
+          label: $localize`Tools`
+        }
+      ]
+    }
   ]);
   selectedOption = signal<any>(null);
   collapsed = signal<boolean>(false);

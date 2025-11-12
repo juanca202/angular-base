@@ -25,7 +25,7 @@ registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AppManager {
   private readonly authService = inject(AuthService);
@@ -179,7 +179,7 @@ export class AppManager {
 
         const currentToken = await getToken(messaging, {
           vapidKey: environment.vapidKey,
-          serviceWorkerRegistration: registration,
+          serviceWorkerRegistration: registration
         });
         if (currentToken) {
           console.log('Push token', currentToken);
@@ -210,15 +210,15 @@ export class AppManager {
   public openPage(uuid: string): void {
     this.dialog.open(Page, {
       data: {
-        uuid,
+        uuid
       },
       panelClass: ['ft-dialog', 'ft-dialog--stacked'],
       height: '100vh',
       width: '600px',
       position: {
         left: 'auto',
-        right: '0',
-      },
+        right: '0'
+      }
     });
   }
   private async setLocale(): Promise<string> {
@@ -226,7 +226,7 @@ export class AppManager {
       ? this.languages().find((l) => l.code === navigator.language.split('-')[0])?.code
       : null;
     const userLocale = this.languages().find(
-      (l) => l.code === this.storageService.get(this.localeKey, 'local'),
+      (l) => l.code === this.storageService.get(this.localeKey, 'local')
     )?.code;
     const locale = userLocale || systemLocale || this.defaultLocale;
     this.storageService.set(this.localeKey, locale, 'local');

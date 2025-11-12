@@ -4,7 +4,7 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
@@ -33,13 +33,13 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
     MatInputModule,
     IconComponent,
     ProgressComponent,
-    ErrorMessagePipe,
+    ErrorMessagePipe
   ],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.scss',
   host: {
-    class: 'ft-auth ft-auth--form',
-  },
+    class: 'ft-auth ft-auth--form'
+  }
 })
 export class ResetPassword {
   AppManager = inject(AppManager);
@@ -59,7 +59,7 @@ export class ResetPassword {
     this.form = this.formBuilder.group({
       token: this.route.snapshot.queryParamMap.get('token'),
       password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]],
+      confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]]
     });
     this.title.setTitle($localize`Reset password`);
   }
@@ -79,8 +79,8 @@ export class ResetPassword {
         await lastValueFrom(
           this.httpClient.post(environment.auth.resetPasswordUrl, {
             token: this.form.value.token,
-            password: this.form.value.password,
-          }),
+            password: this.form.value.password
+          })
         );
         this.submitting.set(false);
         this.router.navigateByUrl('/');
@@ -91,7 +91,7 @@ export class ResetPassword {
         this.submitting.set(false);
         this.form.enable();
         this.messageService.show(err.error?.detail || err.error.message || err.message, {
-          type: 'modal',
+          type: 'modal'
         });
       }
     }

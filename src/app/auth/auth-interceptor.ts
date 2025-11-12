@@ -26,6 +26,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       } else {
         return throwError(() => error);
       }
-    }),
+    })
   );
 };

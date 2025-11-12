@@ -5,7 +5,7 @@ import { SelectOnfocusDirective } from './select-onfocus.directive';
 
 @Component({
   template: `<input type="text" appSelectOnfocus />`,
-  imports: [SelectOnfocusDirective],
+  imports: [SelectOnfocusDirective]
 })
 class HostComponent {}
 
@@ -14,7 +14,7 @@ describe('SelectOnfocusDirective', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HostComponent],
+      imports: [HostComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);

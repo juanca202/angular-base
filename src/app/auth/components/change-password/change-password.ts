@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -31,10 +31,10 @@ import { getApiUrl } from 'app/core/services/rest-api';
     MatInputModule,
     IconComponent,
     ProgressComponent,
-    ErrorMessagePipe,
+    ErrorMessagePipe
   ],
   templateUrl: './change-password.html',
-  styleUrl: './change-password.scss',
+  styleUrl: './change-password.scss'
 })
 export class ChangePassword {
   public appManager = inject(AppManager);
@@ -63,7 +63,7 @@ export class ChangePassword {
     this.form = this.formBuilder.group({
       password: ['', Validators.required],
       newPassword: ['', [Validators.required, this.passwordValidator()]],
-      confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]],
+      confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]]
     });
   }
   passwordValidator(): ValidatorFn {
@@ -98,16 +98,16 @@ export class ChangePassword {
         await lastValueFrom(
           this.httpClient.post(getApiUrl('change-password'), {
             password: this.form.value.password,
-            newPassword: this.form.value.newPassword,
-          }),
+            newPassword: this.form.value.newPassword
+          })
         );
         this.dialogRef.close();
         this.messageService.show($localize`Your password was updated successfully.`, {
-          verticalPosition: 'top',
+          verticalPosition: 'top'
         });
       } catch (err: any) {
         this.messageService.show(err.error?.detail || err.message, {
-          type: 'modal',
+          type: 'modal'
         });
       } finally {
         this.form.enable();

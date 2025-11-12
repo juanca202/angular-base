@@ -9,7 +9,7 @@ import {
   Observable,
   Subject,
   takeUntil,
-  tap,
+  tap
 } from 'rxjs';
 
 /**
@@ -76,7 +76,7 @@ export function getApiUrl(path: string): string {
  * Each mutation has its own state and a global `submitting` and `error` state is exposed.
  */
 export function getMutations<T extends Record<string, (...args: any[]) => Observable<any>>>(
-  factories: T,
+  factories: T
 ): {
   [K in keyof T]: SignalMutateFn<Parameters<T[K]>, UnwrapObservable<ReturnType<T[K]>>>;
 } & {
@@ -116,7 +116,7 @@ export function getMutations<T extends Record<string, (...args: any[]) => Observ
         finalize(() => {
           submitting.set(false);
           globalSubmitting.set(submittingSignals.some((s) => s()));
-        }),
+        })
       );
 
       return firstValueFrom(request$);
@@ -139,7 +139,7 @@ export function getMutations<T extends Record<string, (...args: any[]) => Observ
  * Creates a reactive resource (GET) that manages its state and can be destroyed.
  */
 export function getResource<TParams, TResult>(
-  observableFactory: ObservableFactory<TParams, TResult>,
+  observableFactory: ObservableFactory<TParams, TResult>
 ): SignalGet<TParams, TResult> {
   const messageService = inject(MessageService);
   const loading = signal(false);
@@ -156,7 +156,7 @@ export function getResource<TParams, TResult>(
 
     const request$ = observableFactory(...(params as any)).pipe(
       map((response) =>
-        response && 'payload' in (response as any) ? (response as any).payload : response,
+        response && 'payload' in (response as any) ? (response as any).payload : response
       ),
       tap((result) => value.set((result ?? null) as TResult | null)),
       catchError((err) => {
@@ -167,7 +167,7 @@ export function getResource<TParams, TResult>(
         throw new MutationException(msg, err);
       }),
       finalize(() => loading.set(false)),
-      takeUntil(destroy$),
+      takeUntil(destroy$)
     );
 
     return firstValueFrom(request$);
@@ -181,6 +181,6 @@ export function getResource<TParams, TResult>(
     destroy: () => {
       destroy$.next();
       destroy$.complete();
-    },
+    }
   };
 }

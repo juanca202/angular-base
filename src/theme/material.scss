@@ -9,12 +9,14 @@
 
 html {
   color-scheme: light dark;
-  @include mat.theme((
-    color: theme-colors.$primary-palette,
-    typography: var(--ft-text-font-family),
-    density: 0
-  ));
-  
+  @include mat.theme(
+    (
+      color: theme-colors.$primary-palette,
+      typography: var(--ft-text-font-family),
+      density: 0
+    )
+  );
+
   --mat-button-filled-container-color: var(--ft-primary-color);
   --mat-button-filled-container-shape: 0.5rem;
   --mat-button-filled-container-height: 40px;

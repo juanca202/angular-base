@@ -5,7 +5,7 @@ import { lastValueFrom, Observable } from 'rxjs';
 import { StringService } from '@factor_ec/utils';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class GraphqlUtils {
   private apollo = inject(Apollo);
@@ -31,8 +31,8 @@ export class GraphqlUtils {
           }
         `,
           variables: {
-            entity,
-          },
+            entity
+          }
         });
         break;
       case 'delete':
@@ -45,8 +45,8 @@ export class GraphqlUtils {
           }
         `,
           variables: {
-            id: entity.id,
-          },
+            id: entity.id
+          }
         });
         break;
       case 'update':
@@ -63,8 +63,8 @@ export class GraphqlUtils {
           }
         `,
           variables: {
-            entity,
-          },
+            entity
+          }
         });
         break;
     }

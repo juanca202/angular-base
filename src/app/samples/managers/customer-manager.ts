@@ -4,7 +4,7 @@ import { CustomerDetail } from '../components/customer-detail/customer-detail';
 import { Customer } from '../models/customer';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CustomerManager {
   private readonly dialog = inject(MatDialog);
@@ -12,15 +12,15 @@ export class CustomerManager {
   public open(customer: Customer) {
     this.dialog.open(CustomerDetail, {
       data: {
-        customer,
+        customer
       },
       panelClass: ['ft-dialog', 'ft-dialog--stacked'],
       height: '100vh',
       width: '600px',
       position: {
         left: 'auto',
-        right: '0',
-      },
+        right: '0'
+      }
     });
   }
 }

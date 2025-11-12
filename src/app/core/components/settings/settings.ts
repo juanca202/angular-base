@@ -12,7 +12,7 @@ import {
   IconComponent,
   AvatarComponent,
   ObserveIntersectingDirective,
-  ProgressComponent,
+  ProgressComponent
 } from '@factor_ec/ui';
 import { Language } from '@factor_ec/utils';
 import { lastValueFrom } from 'rxjs';
@@ -37,13 +37,13 @@ import { LayoutManager } from 'app/core/services/layout-manager';
     MatRippleModule,
     RouterModule,
     AvatarComponent,
-    ObserveIntersectingDirective,
+    ObserveIntersectingDirective
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
   host: {
-    class: 'ft-page',
-  },
+    class: 'ft-page'
+  }
 })
 export class Settings implements OnInit {
   public readonly appManager = inject(AppManager);
@@ -61,7 +61,7 @@ export class Settings implements OnInit {
   public tags = signal<number>(0);
   public language = signal<Language>({
     code: 'en',
-    name: 'English',
+    name: 'English'
   });
   public subscribing = signal<boolean>(false);
   public readonly supportButton =
@@ -89,7 +89,7 @@ export class Settings implements OnInit {
             break;
           default:
             this.router.navigateByUrl('error/404', {
-              skipLocationChange: true,
+              skipLocationChange: true
             });
             break;
         }
@@ -108,8 +108,8 @@ export class Settings implements OnInit {
             }
           }
         `,
-        fetchPolicy: 'network-only',
-      }),
+        fetchPolicy: 'network-only'
+      })
     );
     this.notificationsCount.set(query.data.notifications.totalCount);
   }
@@ -119,18 +119,18 @@ export class Settings implements OnInit {
         .share({
           title: $localize`Check out this amazing app!`,
           text: $localize`Discover this app I love. You can download it here:`,
-          url: '',
+          url: ''
         })
         .then(() =>
           this.googleTagManagerService.addVariable({
-            event: 'share_app_success',
-          }),
+            event: 'share_app_success'
+          })
         )
         .catch((error) =>
           this.googleTagManagerService.addVariable({
             event: 'share_app_error',
-            message: error.message,
-          }),
+            message: error.message
+          })
         );
     }
   }
