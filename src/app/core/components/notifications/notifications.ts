@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal, inject, input } from '@angular/core';
+import { Component, OnDestroy, signal, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -27,7 +27,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
   host: {
-    '[class]': "['ft-page', 'ft-page--fullscreen', class()].filter(Boolean).join(' ')",
+    class: 'ft-page ft-page--fullscreen',
   },
 })
 export class Notifications implements OnDestroy {
@@ -45,8 +45,6 @@ export class Notifications implements OnDestroy {
   readPool: string[] = [];
   postReadTimer!: ReturnType<typeof setInterval> | null;
   notificationsTimer!: ReturnType<typeof setInterval> | null;
-
-  readonly class = input<string>('');
 
   constructor() {
     this.title.setTitle($localize`Notifications`);

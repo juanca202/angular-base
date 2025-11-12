@@ -38,7 +38,7 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.scss',
   host: {
-    '[class]': "['ft-auth', 'ft-auth--form', class].filter(Boolean).join(' ')",
+    class: 'ft-auth ft-auth--form',
   },
 })
 export class ResetPassword {
@@ -54,8 +54,6 @@ export class ResetPassword {
   submitting = signal<boolean>(false);
   notEqualMessage = $localize`New password is not the same`;
   passwordVisible = signal<boolean>(false);
-
-  class = '';
 
   constructor() {
     this.form = this.formBuilder.group({

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, input } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -19,7 +19,7 @@ import { environment } from 'environments/environment';
   templateUrl: './error.html',
   styleUrl: './error.scss',
   host: {
-    '[class]': "['ft-error', class()].filter(Boolean).join(' ')",
+    class: 'ft-error',
   },
 })
 export class Error implements OnInit {
@@ -37,8 +37,6 @@ export class Error implements OnInit {
    * Error message
    */
   message!: string;
-
-  readonly class = input<string>('');
 
   async ngOnInit(): Promise<void> {
     const message = this.storageService.get(`${environment.sessionPrefix}_msg`, 'session');

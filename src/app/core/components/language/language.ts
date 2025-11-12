@@ -1,4 +1,4 @@
-import { Component, signal, inject, input } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -17,7 +17,7 @@ import { environment } from 'environments/environment';
   templateUrl: './language.html',
   styleUrl: './language.scss',
   host: {
-    '[class]': "['ft-page', 'ft-page--fullscreen', class()].filter(Boolean).join(' ')",
+    class: 'ft-page ft-page--fullscreen',
   },
 })
 export class Language {
@@ -26,8 +26,6 @@ export class Language {
   private readonly title = inject(Title);
 
   public locale = signal<string | undefined>(this.appManager.getLocale());
-  public readonly class = input<string>('');
-
   constructor() {
     this.title.setTitle($localize`Language`);
   }

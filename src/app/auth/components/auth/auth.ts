@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, input } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -37,14 +37,13 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   templateUrl: './auth.html',
   styleUrl: './auth.scss',
   host: {
-    '[class]':
-      "['ft-page--fullscreen', 'ft-auth', mode() ? 'ft-auth--form' : null, class()].filter(Boolean).join(' ')",
+    class: 'ft-page--fullscreen ft-auth',
+    '[class.ft-auth--form]': '!!mode()',
   },
 })
 export class Auth implements OnInit {
   public appManager = inject(AppManager);
   public authService = inject(AuthService);
-  readonly class = input<string>('');
   private dialog = inject(MatDialog);
   public errorMessage = signal<string>('');
   private formBuilder = inject(FormBuilder);
