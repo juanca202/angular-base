@@ -60,6 +60,7 @@ Use text color utilities to apply predefined theme colors.
 | `ft-tc-warning`   | Warning or attention color.        |
 
 Example:
+
 ```html
 <span class="ft-tc-success">Success message</span>
 <span class="ft-tc-danger">Error message</span>

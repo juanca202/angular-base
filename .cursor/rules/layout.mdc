@@ -76,8 +76,10 @@ Similar to padding utilities but for external spacing.
 | `margin-inline-end`    | `ft-mie`     | `ft-mie-2`     | Right margin only. |
 
 💡 You can also use **`auto`** values where supported, e.g.:
+
 ```html
 <div class="ft-mi-auto">...</div>
+```
 
 ### Width Utilities
 
@@ -186,3 +188,4 @@ For example:
 <div class="ft-d-f ft-fd-cl ft-ai-c ft-jc-sb@md">
   ...
 </div>
+```

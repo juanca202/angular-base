@@ -43,7 +43,6 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 <mat-form-field appearance="outline" class="ft-w-100">
   <mat-label i18n>Search bank</mat-label>
   <input matInput placeholder="Type the bank name" />
-  <ft-icon name="search" collection="factoricons-slim" />
 </mat-form-field>
 ```
 

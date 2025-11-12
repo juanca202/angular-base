@@ -28,6 +28,7 @@ The `ft-list` component provides a flexible layout for displaying grouped items,
   <button class="ft-list__item ft-active">Item 2 (Active)</button>
   <a href="#" class="ft-list__item">Item 3 (Link)</a>
 </div>
+```
 
 ### Main Elements
 
@@ -52,6 +53,7 @@ Each `ft-list` is composed of a container (`.ft-list`) and its internal elements
   <a href="#" class="ft-list__item">Invoices</a>
   <button class="ft-list__item ft-active">Receipts</button>
 </div>
+```
 
 ### Notes
 
