@@ -4,7 +4,7 @@ alwaysApply: true
 
 # Rest Services Guide
 
-Referencia concisa para definir **repositories** y consumir servicios REST dentro de la aplicación.
+Concise reference for defining **repositories** and consuming REST services within the application.
 
 ---
 
@@ -84,7 +84,7 @@ customers.destroy();
 - One repository per entity: CustomerRepository, OrderRepository, etc.
 - Always use getMutations for write operations.
 - Always use getResource for read operations.
-- Always resolve API endpoints con `getApiUrl()`. Ejemplo: `getApiUrl('users')`
+- Always resolve API endpoints with `getApiUrl()`. Example: `getApiUrl('users')`
 - Signals are read-only outside the repository.
 - Use destroy() in components to prevent memory leaks.
 - MessageService handles errors automatically.

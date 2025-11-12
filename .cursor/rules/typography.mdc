@@ -7,7 +7,7 @@ alwaysApply: true
 These classes control text alignment, size, color, transformation, spacing, and truncation.  
 All typography utilities use the `ft-` prefix and are designed to maintain consistency across the application.
 
-Para principios globales de BEM, prefijo `ft-` y uso de utilidades revisa `css-styling.mdc`. Aquí se detallan únicamente las utilidades tipográficas y cómo aplicarlas.
+For global principles (BEM, `ft-` prefix, utility usage) review `css-styling.mdc`. This guide focuses on the typography utilities and how to apply them.
 
 ---
 

@@ -8,7 +8,7 @@ These utility classes are automatically generated from the SCSS configuration an
 
 All classes follow the prefix **`ft-`**, and their values are based on the design tokens defined in `variables-scss`.
 
-Para principios generales (BEM, prefijo `ft-`, reutilización de utilidades) consulta `css-styling.mdc`. Este documento se centra en cómo aplicar las utilidades de layout disponibles.
+For global principles (BEM, `ft-` prefix, utility reuse) refer to `css-styling.mdc`. This document focuses on how to apply the available layout utilities.
 
 ---
 
