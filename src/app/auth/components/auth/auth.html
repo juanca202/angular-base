@@ -17,21 +17,21 @@
           </p>
         }
       </div>
-      @if (appManager.allowAuthFederation) {
-        <div class="ft-actions">
-          <button
-            type="button"
-            mat-stroked-button
-            class="ft-d-b ft-pb-1"
-            (click)="connect('google')"
-            [disabled]="submitting()"
-          >
-            <div class="ft-item">
-              <img src="images/logo-google.svg" alt="" />
-              <div i18n>Continue with Google</div>
-            </div>
-          </button>
-        </div>
+        @if (appManager.allowAuthFederation) {
+          <div class="ft-actions">
+            <button
+              type="button"
+              mat-stroked-button
+              class="ft-d-b ft-pb-1"
+              (click)="connect('google')"
+              [disabled]="submitting()"
+            >
+              <div class="ft-item">
+                <img ngSrc="images/logo-google.svg" alt="Google" width="20" height="20" />
+                <div i18n>Continue with Google</div>
+              </div>
+            </button>
+          </div>
         <div class="ft-mb-3">
           <div class="ft-hr-label">
             <span class="ft-hr-label__text" i18n>or</span>
@@ -144,21 +144,21 @@
           }
         </p>
       </div>
-      @if (appManager.allowAuthFederation) {
-        <div class="ft-actions">
-          <button
-            type="button"
-            mat-stroked-button
-            class="ft-d-b ft-pb-1"
-            (click)="connect('google')"
-            [disabled]="submitting()"
-          >
-            <div class="ft-item">
-              <img src="images/logo-google.svg" alt="" />
-              <div i18n>Continue with Google</div>
-            </div>
-          </button>
-        </div>
+        @if (appManager.allowAuthFederation) {
+          <div class="ft-actions">
+            <button
+              type="button"
+              mat-stroked-button
+              class="ft-d-b ft-pb-1"
+              (click)="connect('google')"
+              [disabled]="submitting()"
+            >
+              <div class="ft-item">
+                <img ngSrc="images/logo-google.svg" alt="Google" width="20" height="20" />
+                <div i18n>Continue with Google</div>
+              </div>
+            </button>
+          </div>
         <div class="ft-mb-3">
           <div class="ft-hr-label">
             <span class="ft-hr-label__text" i18n>or</span>
