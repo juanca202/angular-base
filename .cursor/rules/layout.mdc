@@ -29,6 +29,7 @@ Example:
 <div class="ft-d-f ft-d-md-b ft-jc-lg-c">
   ...
 </div>
+```
 
 ### Gap Utilities
 
@@ -73,8 +74,10 @@ Similar to padding utilities but for external spacing.
 | `margin-inline-end`    | `ft-mie`     | `ft-mie-2`     | Right margin only. |
 
 💡 You can also use **`auto`** values where supported, e.g.:
+
 ```html
 <div class="ft-mi-auto">...</div>
+```
 
 ### Width Utilities
 
@@ -147,6 +150,7 @@ Example usage:
   <div>Item 2</div>
   <div>Item 3</div>
 </div>
+```
 
 ### **Align Items Classes**
 
@@ -182,3 +186,4 @@ For example:
 <div class="ft-d-f ft-fd-cl ft-ai-c ft-jc-sb@md">
   ...
 </div>
+```

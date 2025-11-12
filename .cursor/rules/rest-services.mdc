@@ -25,6 +25,7 @@ export class CustomerRepository {
   public find(): SignalGet<string, Customer> { /* see below */ }
   public findBy(): SignalGet<void, Customer[]> { /* see below */ }
 }
+```
 
 ## 2. Mutations (POST, PUT, DELETE)
 
@@ -44,6 +45,7 @@ mutations.update({ id: 123, name: 'Juan Updated' })
 // Signals
 mutations.submitting(); // true if any mutation is running
 mutations.error();      // error message if any
+```
 
 ## 3. Single Resource (GET by ID)
 
@@ -55,6 +57,7 @@ const customerResource = customerRepo.find();
 customerResource.load('123').then(customer => {
   console.log('Customer:', customer);
 });
+```
 
 // Reactive signals
 customerResource.value();   // current value
@@ -68,6 +71,7 @@ customerResource.destroy(); // cleanup
 const customers = customerRepo.findBy();
 
 customers.load().then(list => console.log('Customers list:', list));
+```
 
 // Signals
 customers.value();

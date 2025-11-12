@@ -22,6 +22,7 @@ Use these classes to align text within an element.
 Example:
 ```html
 <p class="ft-ta-c">Centered text</p>
+```
 
 ### Font Size
 
@@ -41,6 +42,7 @@ Example:
 <p class="ft-fs-sm">Small text</p>
 <p class="ft-fs-lg">Large text</p>
 <p class="ft-fs-lead">Lead paragraph</p>
+```
 
 ### Text Color
 
@@ -56,9 +58,11 @@ Use text color utilities to apply predefined theme colors.
 | `ft-tc-warning`   | Warning or attention color.        |
 
 Example:
+
 ```html
 <span class="ft-tc-success">Success message</span>
 <span class="ft-tc-danger">Error message</span>
+```
 
 ## Text Transformation
 
