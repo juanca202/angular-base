@@ -13,7 +13,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier \"**/*.{ts,js,html,scss,json,md}\" --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "compodoc:build": "compodoc -p tsconfig.doc.json",
+    "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
+    "compodoc:serve": "compodoc -s"
   },
   "lint-staged": {
     "*.{ts,js,html,scss,json,md}": [
@@ -56,6 +59,7 @@
     "@babel/preset-env": "^7.26.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@compodoc/compodoc": "^1.1.32",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.44.1",
     "@typescript-eslint/parser": "^8.44.1",
