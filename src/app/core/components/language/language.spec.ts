@@ -6,6 +6,9 @@ import { AppManager } from 'app/app/core/services/app-manager';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
+/**
+ *
+ */
 describe('Language', () => {
   let component: Language;
   let fixture: ComponentFixture<Language>;

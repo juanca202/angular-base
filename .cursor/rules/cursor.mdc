@@ -76,3 +76,30 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
 
+## Language & Localization 
+
+- **All textual content must be written in English.**
+- This requirement applies to:
+  - Code comments
+  - Test descriptions (`describe`, `it`, `test`, etc.)
+  - Documentation
+  - Commit messages
+  - Variable, function, and class names
+  - Error messages
+  - Log messages
+  - Any embedded text in data or configuration files
+
+- **UI-visible text must NOT be hardcoded.**
+  - Any string displayed in the user interface must use **Angular localization (`i18n`)**.
+  - Correct example:
+    ```html
+    <button i18n>Save</button>
+    ```
+  - Incorrect example:
+    ```html
+    <button>Save</button>
+    ```
+
+- If the system receives content in a different language, it must automatically **translate it into natural English** while preserving meaning.
+
+- If hardcoded UI strings are detected, they must be replaced with proper Angular `i18n` usage and an appropriate i18n ID suggested if missing.
