@@ -19,7 +19,7 @@
     "compodoc:serve": "compodoc -s"
   },
   "lint-staged": {
-    "*.{ts,js,html,scss,json,md}": [
+    "src/**/*.{ts,js,html,scss,json,md}": [
       "prettier --write",
       "eslint --fix"
     ]
