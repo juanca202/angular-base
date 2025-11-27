@@ -1,13 +1,8 @@
-interface FedCMProvider {
-  tokenUrl: string;
-  configURL: string;
-  clientId: string;
-}
-
 /**
- * Modelo de variables de ambiente
+ * Environment variables model
  */
 export interface Environment {
+  // Authentication
   auth: {
     signupUrl: string;
     tokenUrl: string;
@@ -20,7 +15,15 @@ export interface Environment {
       google: string;
     };
   };
-  fedcm?: Record<string, FedCMProvider>;
+  // Federated Credential Management
+  fedcm?: Record<
+    string,
+    {
+      tokenUrl: string;
+      configURL: string;
+      clientId: string;
+    }
+  >;
   sessionPrefix: string;
   iconSettings: {
     path: string;
@@ -28,22 +31,24 @@ export interface Environment {
   };
   filesPath: string;
   appPath: string;
-  graphqlEndpoint: string;
+  graphqlEndpoint?: string;
   restEndpoint: string;
-  serverEndpoint: string;
-  apiIdPrefix: string;
-  supportEmail: string;
+  apiIdPrefix?: string;
+  // Google APIs
   googleApi?: {
     clientId: string;
   };
+  // Google TagManager
   googleTagManager?: {
     trackingCode: string;
   };
+  // Sentry
   sentry?: {
     dsn: string;
     tracingOrigins: string[];
     tracesSampleRate: number;
   };
+  // Firebase
   firebaseConfig?: {
     apiKey: string;
     authDomain: string;
@@ -53,6 +58,10 @@ export interface Environment {
     messagingSenderId: string;
     appId: string;
     measurementId: string;
+  };
+  // Microsoft Application Insights
+  appInsights?: {
+    instrumentationKey: string;
   };
   vapidKey?: string;
 }

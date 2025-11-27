@@ -17,7 +17,7 @@ import {
 import { Language } from '@factor_ec/utils';
 import { lastValueFrom } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
-import * as Sentry from '@sentry/angular';
+// import * as Sentry from '@sentry/angular';
 
 import { AppManager } from 'app/core/services/app-manager';
 import { AuthService } from 'app/auth/auth-service';
@@ -95,8 +95,10 @@ export class Settings implements OnInit {
         }
       }
     });
+    /*
     const feedback = Sentry.getFeedback();
     feedback?.attachTo(this.supportButton()?.nativeElement);
+    */
   }
   async getNotifications(): Promise<void> {
     const query = await lastValueFrom(

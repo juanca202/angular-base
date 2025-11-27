@@ -1,7 +1,7 @@
 @use 'variables-scss' as variables;
 @use 'sass:map';
 
-// Mixin responsivo
+// Responsive mixin
 @mixin media-breakpoint-up($breakpoint) {
   $min-width: map.get(variables.$breakpoints, $breakpoint);
 
@@ -10,7 +10,7 @@
       @content;
     }
   } @else {
-    @warn "Punto de quiebre '#{$breakpoint}' no definido en \$breakpoints.";
+    @warn "Breakpoint '#{$breakpoint}' not defined in \$breakpoints.";
   }
 }
 
@@ -23,7 +23,7 @@
       @content;
     }
   } @else {
-    @warn "Punto de quiebre '#{$breakpoint}' no definido en \$breakpoints.";
+    @warn "Breakpoint '#{$breakpoint}' not defined in \$breakpoints.";
   }
 }
 
@@ -36,10 +36,10 @@
   }
 }
 
-// Mixin para generar clases responsivas
+// Mixin to generate responsive classes
 @mixin generate-responsive-classes($prefix, $property, $value-map) {
   @each $class, $value in $value-map {
-    // Clase base (sin punto de quiebre)
+    // Base class (no breakpoint)
     .#{$prefix}-#{$class} {
       // Grid class: allows specifying columns and minimum column width
       @if $class == 'g' and $prefix == 'ft-d' {
@@ -50,7 +50,7 @@
       }
     }
 
-    // Clases para cada punto de quiebre
+    // Classes for each breakpoint
     @each $breakpoint, $min-width in variables.$breakpoints {
       .#{$prefix}-#{$breakpoint}-#{$class} {
         @media (min-width: #{$min-width}) {

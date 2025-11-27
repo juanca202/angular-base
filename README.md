@@ -9,6 +9,7 @@ Este proyecto ofrece una base sólida con:
 - **Calidad de código** con ESLint, Prettier y Husky (hooks para validación).
 - **Pruebas unitarias y E2E** con Jest y Playwright.
 - **Monitoreo de errores** mediante Sentry.
+- **Documentación** JSDoc/TSDoc con Compodoc.
 - **Manejo de errores y mensajes** notificaciones, modales, páginas, validaciones, solicitudes http.
 - **Internacionalización (i18n)** con Localize.
 - **Despliegue en la nube** configuracion para despliegue en Azure, AWS y Google Cloud.
@@ -82,6 +83,16 @@ git fetch upstream
 git checkout main
 git merge upstream/main
 ```
+
+## Monitoreo de errores
+
+Puedes usar Sentry asi:
+
+npm i @sentry/cli @sentry/angular
+
+Microsoft Application Insights asi:
+
+npm i @microsoft/applicationinsights-web
 
 ## Scripts Disponibles
 

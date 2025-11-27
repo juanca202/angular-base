@@ -53,7 +53,7 @@ button:not(:disabled),
   cursor: pointer;
 }
 
-// Evita que el navegador fuerce el modo oscuro
+// Prevent the browser from forcing dark mode
 meta[name='color-scheme'][content='dark light'],
 meta[name='supported-color-schemes'][content='dark light'] {
   --samsung-invert-colors: 0 !important;

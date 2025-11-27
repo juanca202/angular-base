@@ -9,7 +9,7 @@ import { EventEmitter, Injectable, signal, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { StorageService } from '@factor_ec/utils';
-import * as Sentry from '@sentry/angular';
+// import * as Sentry from '@sentry/angular';
 
 import { Login } from 'app/auth/models/login';
 import { AuthToken } from 'app/auth/models/auth-token';
@@ -211,10 +211,12 @@ export class AuthService {
           tap((response: Settings) => {
             this.storageService.set(this.settingsKey, response, 'local');
             this.settings.set(response);
+            /*
             Sentry.setUser({
               email: response.user.email,
               username: response.user.username
             });
+            */
           })
         )
     );
@@ -225,10 +227,12 @@ export class AuthService {
     const localSettings = this.storageService.get(this.settingsKey, 'local');
     if (localSettings) {
       this.settings.set(localSettings);
+      /*
       Sentry.setUser({
         email: localSettings.user.email,
         username: localSettings.user.username
       });
+      */
       return localSettings;
     }
     // If configuration cannot be obtained, the user must re-authenticate

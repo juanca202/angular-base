@@ -13,13 +13,6 @@ export const environment: Environment = {
       google: ''
     }
   },
-  fedcm: {
-    google: {
-      tokenUrl: '',
-      configURL: '',
-      clientId: ''
-    }
-  },
   sessionPrefix: '',
   iconSettings: {
     path: '/images',
@@ -27,11 +20,17 @@ export const environment: Environment = {
   },
   filesPath: '',
   appPath: '',
-  graphqlEndpoint: '',
-  restEndpoint: '',
-  serverEndpoint: '',
+  restEndpoint: ''
+  /*
   apiIdPrefix: '',
-  supportEmail: 'support@email.com',
+  graphqlEndpoint: '',
+  fedcm: {
+    google: {
+      tokenUrl: '',
+      configURL: '',
+      clientId: ''
+    }
+  },
   googleApi: {
     clientId: ''
   },
@@ -54,4 +53,5 @@ export const environment: Environment = {
     measurementId: ''
   },
   vapidKey: ''
+  */
 };

@@ -8,14 +8,14 @@ import {
   isDevMode,
   provideAppInitializer
 } from '@angular/core';
-import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
-import * as Sentry from '@sentry/angular';
+// import * as Sentry from '@sentry/angular';
 import { languageInterceptor } from 'app/core/interceptors/language-interceptor';
 import { graphqlProvider } from 'app/core/services/graphql-provider';
 import { UI_OPTIONS } from '@factor_ec/ui';
@@ -25,6 +25,7 @@ import { AppManager } from 'app/core/services/app-manager';
 import { authInterceptor } from 'app/auth/auth-interceptor';
 import { environment } from 'environments/environment';
 import { clientInterceptor } from 'app/core/interceptors/client-interceptor';
+import { AilErrorHandler } from './core/services/ail-error-handler';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -51,6 +52,7 @@ export const appConfig: ApplicationConfig = {
       : []),
     provideClientHydration(),
     graphqlProvider,
+    /*
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({
@@ -61,6 +63,11 @@ export const appConfig: ApplicationConfig = {
     {
       provide: Sentry.TraceService,
       deps: [Router]
+    },
+    */
+    {
+      provide: ErrorHandler,
+      useClass: AilErrorHandler
     },
     {
       provide: UI_OPTIONS,
