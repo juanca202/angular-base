@@ -3,6 +3,7 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { IconComponent } from '@factor_ec/ui';
 import { Error as ErrorModel, StorageService } from '@factor_ec/utils';
@@ -15,7 +16,7 @@ import { environment } from 'environments/environment';
  */
 @Component({
   selector: 'app-error',
-  imports: [IconComponent, MatButtonModule, RouterModule],
+  imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
   styleUrl: './error.scss',
   host: {

@@ -1,44 +1,38 @@
 @if (mode() === 'signin' || !appManager.allowSignup) {
-  <form
-    [formGroup]="signinForm"
-    (ngSubmit)="submitSignin()"
-    class="ft-auth__signin ft-m-auto ft-p-4"
-  >
-    <div class="ft-mbe-4" [class.ft-anim-shake]="errorMessage()">
+  <form [formGroup]="signinForm" (ngSubmit)="submitSignin()" class="ft-auth__signin m-auto p-4">
+    <div class="mb-4" [class.ft-anim-shake]="errorMessage()">
       <div class="ft-logo"></div>
-      <div class="ft-mb-4">
+      <div class="mb-4">
         <h1 i18n>Sign in</h1>
         @if (appManager.allowSignup) {
-          <p class="ft-tc-muted" style="font-size: var(--ft-text-font-size-md)">
+          <p class="text-gray-500">
             <span i18n>Don't have an account?</span>
             @if (!submitting()) {
-              <a routerLink="/signup" class="ft-mis-2" i18n>Create an account</a>
+              <a routerLink="/signup" class="ml-2" i18n>Create an account</a>
             }
           </p>
         }
       </div>
       @if (appManager.allowAuthFederation) {
-        <div class="ft-actions">
-          <button
-            type="button"
-            mat-stroked-button
-            class="ft-d-b ft-pb-1"
-            (click)="connect('google')"
-            [disabled]="submitting()"
-          >
-            <div class="ft-item">
-              <img ngSrc="images/logo-google.svg" alt="Google" width="20" height="20" />
-              <div i18n>Continue with Google</div>
-            </div>
-          </button>
-        </div>
-        <div class="ft-mb-3">
+        <button
+          type="button"
+          mat-stroked-button
+          class="block pb-1"
+          (click)="connect('google')"
+          [disabled]="submitting()"
+        >
+          <div class="flex gap-4 items-center">
+            <img src="images/logo-google.svg" alt="" />
+            <div i18n>Continue with Google</div>
+          </div>
+        </button>
+        <div class="mb-4">
           <div class="ft-hr-label">
             <span class="ft-hr-label__text" i18n>or</span>
           </div>
         </div>
       }
-      <mat-form-field appearance="fill" class="ft-mbe-2">
+      <mat-form-field appearance="fill" class="mb-2">
         <mat-label i18n>Username or email</mat-label>
         <input
           type="text"
@@ -52,7 +46,7 @@
         }
       </mat-form-field>
       @if (!passwordVisible()) {
-        <mat-form-field appearance="fill" class="ft-mbe-2">
+        <mat-form-field appearance="fill" class="mb-2">
           <mat-label i18n>Password</mat-label>
           <input
             type="password"
@@ -72,7 +66,7 @@
         </mat-form-field>
       }
       @if (passwordVisible()) {
-        <mat-form-field appearance="fill" class="ft-mbe-2">
+        <mat-form-field appearance="fill" class="mb-2">
           <mat-label i18n>Password</mat-label>
           <input
             type="text"
@@ -91,7 +85,7 @@
           }
         </mat-form-field>
       }
-      <div class="ft-d-f ft-fd-cl ft-mbe-3 ft-jc-c ft-g-3">
+      <div class="flex flex-col mb-4 justify-center gap-4">
         <button
           type="submit"
           mat-flat-button
@@ -133,40 +127,38 @@
 }
 @if (mode() === 'signup') {
   <form [formGroup]="signupForm" (ngSubmit)="submitSignup()" class="ft-auth__signup">
-    <div [class.ft-anim-shake]="errorMessage()" class="ft-mbe-4 ft-mbe-lg-0">
+    <div [class.ft-anim-shake]="errorMessage()" class="mb-4 lg:mb-0">
       <div class="ft-logo"></div>
-      <div class="ft-mb-4">
+      <div class="mb-4">
         <h1 i18n>Create an account</h1>
-        <p class="ft-tc-muted">
+        <p class="text-gray-500">
           <span i18n>Already have an account?</span>
           @if (!submitting()) {
-            <a routerLink="/signin" class="ft-mis-2" i18n>Sign in</a>
+            <a routerLink="/signin" class="ml-2" i18n>Sign in</a>
           }
         </p>
       </div>
       @if (appManager.allowAuthFederation) {
-        <div class="ft-actions">
-          <button
-            type="button"
-            mat-stroked-button
-            class="ft-d-b ft-pb-1"
-            (click)="connect('google')"
-            [disabled]="submitting()"
-          >
-            <div class="ft-item">
-              <img ngSrc="images/logo-google.svg" alt="Google" width="20" height="20" />
-              <div i18n>Continue with Google</div>
-            </div>
-          </button>
-        </div>
-        <div class="ft-mb-3">
+        <button
+          type="button"
+          mat-stroked-button
+          class="block pb-1"
+          (click)="connect('google')"
+          [disabled]="submitting()"
+        >
+          <div class="flex gap-4 items-center">
+            <img src="images/logo-google.svg" alt="" />
+            <div i18n>Continue with Google</div>
+          </div>
+        </button>
+        <div class="mb-4">
           <div class="ft-hr-label">
             <span class="ft-hr-label__text" i18n>or</span>
           </div>
         </div>
       }
-      <div class="ft-d-sm-f ft-g-3">
-        <mat-form-field appearance="fill" class="ft-mbe-2">
+      <div class="sm:flex gap-4">
+        <mat-form-field appearance="fill" class="mb-2">
           <mat-label i18n>First name</mat-label>
           <input
             type="text"
@@ -179,7 +171,7 @@
             <mat-error>{{ signupForm.get('firstName') | errorMessage }}</mat-error>
           }
         </mat-form-field>
-        <mat-form-field appearance="fill" class="ft-mbe-2">
+        <mat-form-field appearance="fill" class="mb-2">
           <mat-label i18n>Last name</mat-label>
           <input
             type="text"
@@ -193,7 +185,7 @@
           }
         </mat-form-field>
       </div>
-      <mat-form-field appearance="fill" class="ft-mbe-2">
+      <mat-form-field appearance="fill" class="mb-2">
         <mat-label i18n>Email</mat-label>
         <input type="email" matInput formControlName="email" maxlength="50" autocomplete="email" />
         @if (signupForm.get('email')?.invalid) {
@@ -201,7 +193,7 @@
         }
       </mat-form-field>
       @if (!passwordVisible()) {
-        <mat-form-field appearance="fill" class="ft-mbe-2">
+        <mat-form-field appearance="fill" class="mb-2">
           <mat-label i18n>Password</mat-label>
           <input
             type="password"
@@ -221,7 +213,7 @@
         </mat-form-field>
       }
       @if (passwordVisible()) {
-        <mat-form-field appearance="fill" class="ft-mbe-2">
+        <mat-form-field appearance="fill" class="mb-2">
           <mat-label i18n>Password</mat-label>
           <input
             type="text"
@@ -240,7 +232,7 @@
           }
         </mat-form-field>
       }
-      <div class="ft-ta-c ft-mbe-3">
+      <div class="text-center mb-4">
         <button
           type="submit"
           mat-flat-button
@@ -277,7 +269,7 @@
   </form>
 }
 <ng-template #submittingTemplate>
-  <div class="ft-ta-c">
+  <div class="text-center">
     <ft-progress class="ft-progress--2"></ft-progress>
   </div>
 </ng-template>

@@ -4,8 +4,8 @@ alwaysApply: true
 
 ## CSS & Styling Guidelines
 
-- Follow the **BEM (Block Element Modifier)** naming convention for all CSS class names.  
-  **Example:** `ft-button`, `ft-button__icon`, `ft-button--primary`.
+- Follow the **BEM (Block Element Modifier)** naming convention for all custom CSS class names.  
+  **Example:** `ft-button`, `ft-button__icon`, `ft-button--primary`
 
 - All custom classes must start with the prefix **`ft-`**.  
   **Example:** ✅ `ft-card__header`, ❌ `card-header`.
@@ -25,25 +25,30 @@ alwaysApply: true
   - Text and typography variables  
   - Spacing and layout variables  
 
-- **Always prioritize existing theme utilities** before creating custom styles.  
-  Specifically, use:
-  - **Layout classes** (e.g., display, flex, gap, margin, padding)  
-  - **Typography classes** (e.g., font size, color, alignment, text transform)  
-  - **Theme-related classes** (e.g., text color utilities, background colors)  
-  This ensures consistency across components and reduces redundant CSS.
+- **Always prioritize using Tailwind CSS utility classes** before creating custom styles.  
+  Use Tailwind utilities for:
+  - **Layout** (display, flex, grid, positioning)
+  - **Spacing** (margin, padding, gap)
+  - **Typography** (font size, weight, alignment, text transform, colors)
+  - **Responsive design** (breakpoint variants: `sm:`, `md:`, `lg:`, `xl:`, `xxl:`)
+  - **Other utilities** (width, height, colors, borders, shadows, etc.)
+  
+  These ensure consistency across components and reduce redundant CSS.
 
-- Avoid inline styles and `ngStyle`. Use **style bindings** or **class bindings** instead.
+- Avoid inline styles and `ngStyle`. Use **Tailwind utility classes**, **style bindings**, or **class bindings** instead.
 
-- Use **utility classes** only for layout or spacing adjustments — not for component-specific styling.
+- Use **Tailwind utility classes** for layout adjustments and common styling needs — not for component-specific styling.
+
+- For **component-specific styling**, create custom classes following BEM convention with the `ft-` prefix.
 
 - Keep CSS declarations **minimal and purposeful** — avoid deep nesting and excessive specificity.
 
-- For responsive layouts, prefer **Grid or Flex** and use defined CSS variables for breakpoints.
+- When defining responsive layouts, use **Tailwind responsive breakpoints** (`sm:`, `md:`, `lg:`, `xl:`, `xxl:`).
 
 - Use **transitions and animations sparingly**; prioritize performance and accessibility.
 
 - For **icons and images**:
-  - Prefer Angular’s `NgOptimizedImage`
+  - Prefer Angular's `NgOptimizedImage`
   - Always include `alt` attributes for accessibility
 
 - **Summary Rule:**  

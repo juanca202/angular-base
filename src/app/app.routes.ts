@@ -14,19 +14,16 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayout,
-    canActivate: [authGuard],
     children: [...samplesRoutes]
   },
   { path: 'settings', component: Settings, canActivate: [authGuard] },
   {
     path: 'settings/language',
-    component: Language,
-    canActivate: [authGuard]
+    component: Language
   },
   {
     path: 'notifications',
-    component: Notifications,
-    canActivate: [authGuard]
+    component: Notifications
   },
   { path: 'error/:code', component: Error, title: $localize`Error` },
   { path: '**', component: Error, data: { code: 404 } }

@@ -9,7 +9,7 @@
           mat-button
           (click)="selectedOption.set(option)"
         >
-          <div class="ft-item">
+          <div class="flex gap-4 items-center">
             <ft-icon [name]="option.icon" class="ft-icon--2" />
             <div class="ft-label" i18n>{{ option.label }}</div>
           </div>
@@ -20,7 +20,7 @@
       <div class="ft-navbar__actions">
         @for (option of selectedOption()?.children; track option.url) {
           <button type="button" [routerLink]="option.url" routerLinkActive="ft-active" mat-button>
-            <div class="ft-item">
+            <div class="flex gap-4 items-center">
               <div class="ft-label" i18n>{{ option.label }}</div>
             </div>
           </button>
@@ -28,8 +28,8 @@
       </div>
     }
   </div>
-  <button type="button" routerLink="/settings" class="ft-profile ft-d-n ft-d-md-b" mat-button>
-    <div class="ft-item">
+  <button type="button" routerLink="/settings" class="ft-profile hidden md:block" mat-button>
+    <div class="flex gap-4 items-center">
       <ft-avatar
         [label]="
           authService.settings()?.user?.firstName + ' ' + authService.settings()?.user?.lastName
@@ -40,7 +40,7 @@
         <div>
           {{ authService.settings()?.user?.firstName }} {{ authService.settings()?.user?.lastName }}
         </div>
-        <div class="ft-tc-muted">{{ authService.settings()?.user?.email }}</div>
+        <div class="text-gray-500">{{ authService.settings()?.user?.email }}</div>
       </div>
     </div>
   </button>
