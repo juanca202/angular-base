@@ -1,10 +1,10 @@
-<div #titleElement mat-dialog-title class="ft-pis-1">
+<div #titleElement mat-dialog-title class="pl-1">
   <button mat-dialog-close="" mat-icon-button i18n-title title="Back">
     <ft-icon name="arrow-left" class="ft-icon--2" />
   </button>
   <div class="ft-header__title">{{ page()?.data?.attributes?.title }}</div>
 </div>
-<div mat-dialog-content class="ft-pbs-4">
+<div mat-dialog-content class="pt-4">
   <div
     class="ft-observe-interseting"
     (ftObserveIntersecting)="layoutManager.setOverlapped($event, titleElement)"

@@ -182,6 +182,10 @@ html {
   --mat-bottom-sheet-container-text-tracking: 0;
   --mat-bottom-sheet-container-background-color: var(--ft-body-bg);
   --mat-bottom-sheet-container-shape: 1rem;
+
+  .mat-mdc-form-field {
+    display: flex;
+  }
 }
 
 .mat-mdc-icon-button {

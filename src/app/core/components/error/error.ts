@@ -3,6 +3,7 @@ import { Component, HostBinding, OnInit, signal, inject, input } from '@angular/
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { IconComponent } from '@factor_ec/ui';
 import { Error as ErrorModel } from '@factor_ec/utils';
@@ -14,7 +15,7 @@ import { AuthService } from 'app/auth/auth-service';
  */
 @Component({
   selector: 'app-error',
-  imports: [IconComponent, MatButtonModule, RouterModule],
+  imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
   styleUrl: './error.scss',
 })

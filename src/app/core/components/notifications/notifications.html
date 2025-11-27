@@ -29,30 +29,30 @@
               threshold: 1.0,
             }"
           >
-            <div class="ft-item align-items-start ft-g-3">
+            <div class="flex items-start gap-4">
               <div class="ft-thumbnail">
                 <ft-icon name="comment" class="ft-icon--2" />
                 @if (!notification.notification.seen) {
                   <div class="ft-marked"></div>
                 }
               </div>
-              <div class="ft-fg-1">
+              <div class="flex-1">
                 <div class="ft-body" [innerHTML]="notification.notification.body"></div>
                 @if (notification.notification.action?.selected) {
-                  <div class="ft-mb-1">
+                  <div class="mb-1">
                     <div class="ft-badge ft-badge--tag">
                       {{ notification.notification.action?.selectedObject.label }}
                     </div>
                   </div>
                 }
-                <small class="ft-tc-muted">{{
+                <small class="text-gray-500">{{
                   notification.notification.createdAt | date: 'd MMM y, h:mm a'
                 }}</small>
                 @if (
                   (notification.notification.action?.options?.length || 0) > 0 &&
                   !notification.notification.action?.selected
                 ) {
-                  <div class="ft-d-f ft-g-2 ft-mbs-2 ft-mbe-3">
+                  <div class="flex gap-2 mt-2 mb-4">
                     @for (option of notification.notification.action?.options; track option.label) {
                       <a
                         routerLink="/home"
@@ -77,7 +77,7 @@
       <div class="ft-list">
         @for (notification of [1, 2, 3, 4, 5]; track notification) {
           <div class="ft-list__item">
-            <div class="ft-item ft-g-2">
+            <div class="flex gap-2 items-center">
               <div
                 class="ft-avatar ft-ph"
                 style="
@@ -86,7 +86,7 @@
                   border-radius: 100vh;
                 "
               ></div>
-              <div class="ft-fg-1 ft-d-f ft-fd-cl ft-g-1">
+              <div class="flex-1 flex flex-col gap-1">
                 <div class="ft-ph" style="width: 120px; height: 18px"></div>
                 <div class="ft-ph" style="width: 50px; height: 13px"></div>
               </div>
@@ -95,7 +95,6 @@
         }
       </div>
     } @else {
-      <div class="ft-image ft-image--nodata"></div>
       <p i18n>You have no notifications available.</p>
     }
   </div>

@@ -16,7 +16,7 @@
     <div class="ft-list">
       @if (authService.settings()) {
         <div class="ft-list__item">
-          <div class="ft-item">
+          <div class="flex gap-4 items-center">
             <ft-avatar
               [label]="
                 authService.settings()?.user?.firstName +
@@ -30,7 +30,7 @@
                 {{ authService.settings()?.user?.firstName }}
                 {{ authService.settings()?.user?.lastName }}
               </div>
-              <div class="ft-item__note">
+              <div class="text-sm text-gray-500">
                 {{ authService.settings()?.user?.email }}
               </div>
             </div>
@@ -38,18 +38,18 @@
         </div>
       }
       <a routerLink="/settings/language" matRipple class="ft-list__item">
-        <div class="ft-item">
+        <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="globe" class="ft-icon--2" />
           </div>
           <div>
             <div class="ft-item__label" i18n>Language</div>
-            <div class="ft-item__note">{{ language().name }}</div>
+            <div class="text-sm text-gray-500">{{ language().name }}</div>
           </div>
         </div>
       </a>
       <button type="button" matRipple class="ft-list__item" (click)="authService.changePassword()">
-        <div class="ft-item">
+        <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="password-edit" class="ft-icon--2" />
           </div>
@@ -58,7 +58,7 @@
       </button>
       <hr />
       <button type="button" matRipple #supportButton class="ft-list__item">
-        <div class="ft-item">
+        <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="help" class="ft-icon--2" />
           </div>
@@ -71,7 +71,7 @@
         class="ft-list__item"
         (click)="appManager.openPage('8a1b8db9-9d9d-41a3-8ab9-d54771f4a13d')"
       >
-        <div class="ft-item">
+        <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="document--text" class="ft-icon--2" />
           </div>
@@ -84,7 +84,7 @@
         class="ft-list__item"
         (click)="appManager.openPage('45cc8cfb-8667-44d1-81f4-1c1bdb939cd8')"
       >
-        <div class="ft-item">
+        <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="document--text" class="ft-icon--2" />
           </div>
@@ -93,7 +93,7 @@
       </button>
       <hr />
       <button type="button" matRipple class="ft-list__item" (click)="authService.logout()">
-        <div class="ft-item">
+        <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="sign-out" class="ft-icon--2" />
           </div>
@@ -103,42 +103,42 @@
       <button
         type="button"
         matRipple
-        class="ft-list__item ft-tc-danger"
+        class="ft-list__item text-red-500"
         (click)="authService.confirmDeleteUser()"
       >
-        <div class="ft-item">
-          <div class="ft-thumbnail" style="background-color: var(--ft-body-bg)">
-            <ft-icon name="error" class="ft-icon--2 ft-tc-danger" />
+        <div class="flex gap-4 items-center">
+          <div class="ft-thumbnail">
+            <ft-icon name="error" class="ft-icon--2 text-red-500" />
           </div>
           <div class="ft-item__label" i18n>Delete account</div>
         </div>
       </button>
     </div>
-    <div class="ft-card ft-m-2">
-      <div class="ft-card__body ft-item">
+    <div class="ft-card m-2">
+      <div class="ft-card__body flex items-center gap-4">
         @if (appManager.updateStatus() === 'done') {
-          <div class="ft-thumbnail" style="background-color: var(--ft-body-bg)">
-            <ft-icon name="check--circle" class="ft-icon--2 ft-tc-success" />
+          <div class="ft-thumbnail">
+            <ft-icon name="check--circle" class="ft-icon--2 text-green-500" />
           </div>
-          <div class="ft-fg-1">
+          <div class="flex-1">
             <div class="ft-item__label" i18n>{{ appManager.name }} is up to date</div>
-            <div class="ft-item__note" i18n>Version {{ appManager.version }}</div>
+            <div class="text-sm text-gray-500" i18n>Version {{ appManager.version }}</div>
           </div>
         } @else if (appManager.updateStatus() === 'checking') {
-          <div class="ft-thumbnail" style="background-color: var(--ft-body-bg)">
+          <div class="ft-thumbnail">
             <ft-progress class="ft-progress--2"></ft-progress>
           </div>
-          <div class="ft-fg-1">
+          <div class="flex-1">
             <div class="ft-item__label" i18n>Looking for updates</div>
-            <div class="ft-item__note" i18n>Version {{ appManager.version }}</div>
+            <div class="text-sm text-gray-500" i18n>Version {{ appManager.version }}</div>
           </div>
         } @else if (appManager.updateStatus() === 'failed') {
-          <div class="ft-thumbnail" style="background-color: var(--ft-body-bg)">
-            <ft-icon name="warning" class="ft-icon--2 ft-tc-warning" />
+          <div class="ft-thumbnail">
+            <ft-icon name="warning" class="ft-icon--2 text-yellow-500" />
           </div>
-          <div class="ft-fg-1">
+          <div class="flex-1">
             <div class="ft-item__label" i18n>Error checking for updates</div>
-            <div class="ft-item__note" i18n>Version {{ appManager.version }}</div>
+            <div class="text-sm text-gray-500" i18n>Version {{ appManager.version }}</div>
           </div>
         }
       </div>
@@ -146,7 +146,7 @@
   </div>
 </div>
 <ng-template #submittingTemplate>
-  <div class="ft-ta-c">
+  <div class="text-center">
     <ft-progress class="ft-progress--2"></ft-progress>
   </div>
 </ng-template>

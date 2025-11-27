@@ -1,28 +1,16 @@
 @if (error()) {
-  <div class="ft-page__content--nodata ft-d-f ft-fd-cl ft-ai-c ft-pi-4">
+<div class="flex flex-col items-center px-6 gap-4">
+  <div>
     <ft-icon name="warning" collection="factoricons-slim" class="ft-icon--4" />
-    <h1 class="ft-mbe-3">{{ error()?.title }}</h1>
-    <p class="ft-tc-muted ft-mbs-0">{{ error()?.message }}</p>
-    @if (error()?.icon === '404' || !authService.getToken()) {
-      <div class="ft-ta-c">
-        <a
-          routerLink="/"
-          mat-flat-button
-          extended
-          color="primary"
-          class="ft-pis-3 ft-pie-4 ft-controlbar__item"
-          i18n
-          >Go home</a
-        >
-      </div>
-    } @else if (error()?.icon === '403') {
-      <div class="ft-ta-c">
-        <button mat-flat-button color="primary" (click)="authService.logout()" i18n>Logout</button>
-      </div>
-    } @else if (error()?.icon === 'unknown') {
-      <div class="ft-ta-c">
-        <button mat-flat-button color="primary" (click)="reload()" i18n>Reload</button>
-      </div>
-    }
+    <h1 class="mb-4">{{ error()?.title }}</h1>
+    <p class="text-gray-500 mt-0">{{ error()?.message }}</p>
   </div>
+  @if (error()?.icon === '404' || !authService.getToken()) {
+  <a routerLink="/" mat-flat-button color="primary" i18n>Go home</a>
+  } @else if (error()?.icon === '403') {
+  <button mat-flat-button color="primary" (click)="authService.logout()" i18n>Logout</button>
+  } @else if (error()?.icon === 'unknown') {
+  <button mat-flat-button color="primary" (click)="reload()" i18n>Reload</button>
+  }
+</div>
 }
