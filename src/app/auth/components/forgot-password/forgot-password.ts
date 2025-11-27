@@ -23,10 +23,10 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
     MatDialogModule,
     MatInputModule,
     ProgressComponent,
-    ErrorMessagePipe,
+    ErrorMessagePipe
   ],
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.scss',
+  styleUrl: './forgot-password.scss'
 })
 export class ForgotPassword {
   AppManager = inject(AppManager);
@@ -41,7 +41,7 @@ export class ForgotPassword {
 
   constructor() {
     this.form = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
@@ -53,13 +53,13 @@ export class ForgotPassword {
         () => {
           this.submitting.set(false);
           this.googleTagManagerService.addVariable({
-            event: 'forgot_password',
+            event: 'forgot_password'
           });
           this.messageService.show(
             $localize`If your email is registered, then check your email for instructions to recover your password. If it doesn't arrive, be sure to check your spam folder.`,
             {
-              type: 'modal',
-            },
+              type: 'modal'
+            }
           );
           this.dialogRef.close();
         },
@@ -67,9 +67,9 @@ export class ForgotPassword {
           this.submitting.set(false);
           this.form.enable();
           this.messageService.show(err.error?.detail || err.message, {
-            type: 'modal',
+            type: 'modal'
           });
-        },
+        }
       );
     }
   }

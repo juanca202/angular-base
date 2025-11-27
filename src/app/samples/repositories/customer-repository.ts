@@ -6,7 +6,7 @@ import { Customer, CustomerRequest } from '../models/customer';
 import { delay } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CustomerRepository {
   private readonly httpClient = inject(HttpClient);
@@ -18,7 +18,7 @@ export class CustomerRepository {
       create: (customer: CustomerRequest) =>
         this.httpClient.post<Customer>(`${this.baseUrl}`, customer),
       update: (customer: CustomerRequest) =>
-        this.httpClient.put<Customer>(`${this.baseUrl}`, customer),
+        this.httpClient.put<Customer>(`${this.baseUrl}`, customer)
     });
   }
   public find(): SignalGet<string, Customer> {
@@ -26,7 +26,7 @@ export class CustomerRepository {
       return this.httpClient.get<Customer>(`${this.baseUrl}/${id}`);
     });
   }
-  public findByFilter(): SignalGet<void, Customer[]> {
+  public findBy(): SignalGet<void, Customer[]> {
     return getResource<void, Customer[]>(() => {
       return this.httpClient.get<Customer[]>(`${this.baseUrl}`).pipe(delay(2000));
     });

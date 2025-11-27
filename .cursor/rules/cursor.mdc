@@ -22,28 +22,29 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 ## Angular Material (MDC) Guidelines
 
 - Always use components from **Angular Material (MDC)** available at [https://material.angular.dev/components/categories](https://material.angular.dev/components/categories).
-- Avoid plain HTML elements or custom CSS when an official Angular Material component provides equivalent functionality.
-- Follow the **latest MDC syntax** and naming conventions (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-icon`, `mat-table`, etc.).
+- Avoid plain HTML elements or custom CSS when an official Material component provides the same functionality.
+- Follow the latest MDC syntax and naming conventions (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-table`, etc.).
 - Prefer high-level Material components for:
   - Accessibility (ARIA support)
-  - Consistent design and theme integration
-  - Responsive and maintainable layouts
-- Use **Angular Material directives** (`matInput`, `matSuffix`, `matPrefix`, etc.) instead of hardcoded markup.
-- Do NOT replicate Material styles manually; rely on official theming and typography APIs.
-- Example conversions:
-  - ✅ Use `<mat-form-field>` with `<input matInput>` instead of `<input>` alone
-  - ✅ Use `<mat-card>` for structured content instead of `<div>` with custom classes
-  - ✅ Use `<mat-icon>` for icons instead of `<i>` or `<span class="material-icons">`
-- When creating interactive components, prefer Angular Material options (`mat-button`, `mat-menu`, `mat-dialog`, etc.) before implementing custom versions.
+  - Consistent theme integration
+  - Responsive, maintainable layouts
+- Use **Angular Material directives** (`matInput`, `matSuffix`, `matPrefix`, etc.) instead of custom attributes.
+- Do not replicate Material styles manually; rely on the official theming and typography APIs.
+- Always render icons with `<ft-icon />`, which is aligned with the project design system. Use the collections documented in `icons.mdc`.
+- Common substitutions:
+  - ✅ Use `<mat-form-field>` with `<input matInput>` instead of a bare `<input>`
+  - ✅ Use `<mat-card>` instead of bespoke `<div>` wrappers
+  - ✅ Use `<ft-icon name="search" />` instead of `<i>` or `<span class="material-icons">`
+- When you build interactive components, prioritize Angular Material options (`mat-button`, `mat-menu`, `mat-dialog`, etc.) before crafting custom implementations.
 
 **Example:**
 
 ```html
-<mat-form-field appearance="outline" class="w-100">
-  <mat-label>Search bank</mat-label>
+<mat-form-field appearance="outline" class="ft-w-100">
+  <mat-label i18n>Search bank</mat-label>
   <input matInput placeholder="Type the bank name" />
-  <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
+```
 
 ## Components
 
@@ -75,41 +76,3 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
 
-## Unit testing
-
-- All tests must be written using Jest
-- Follow the AAA pattern: Arrange, Act, Assert
-- Each test must validate a single behavior
-- Use descriptive test names in it() / test() that describe the expected behavior
-- Always include both:
-  - Positive scenarios (expected correct behavior)
-  - Negative scenarios (edge cases, invalid inputs, error handling)
-- Prefer test doubles (mocks, spies, stubs) for external dependencies
-- Avoid relying on implementation details; test public APIs
-- Keep tests isolated and deterministic (no shared state, no network/file system dependencies)
-- Aim for a balance between unit tests (fast, isolated) and integration tests (components + services)
-- Ensure branch coverage ≥ 80% and focus on critical paths
-- When testing components:
-  - Use Angular’s ComponentFixture only when necessary; prefer testing logic in isolation
-  - Use Harnesses for Angular Material components instead of querying DOM directly
-- When testing signals:
-  - Validate both initial value and state updates
-  - Include tests for computed() to ensure derived state correctness
-
-## CSS & Styling Guidelines
-
-- Follow the BEM (Block Element Modifier) naming convention for all CSS class names.
-  Example: ft-button, ft-button__icon, ft-button--primary
-- All custom classes must start with the prefix ft-.
-  Example: ✅ ft-card__header, ❌ card-header
-- Before creating a new class, always check if an existing one already covers the same use case. Reuse and extend existing classes when possible.
-- Prefer component-level styles (scoped CSS) instead of global styles.
-- Use CSS variables (--ft-color-primary, --ft-spacing-md, etc.) for colors, spacing, and typography to ensure design consistency.
-- Avoid inline styles and ngStyle. Use style bindings or class bindings instead.
-- Use utility classes only for layout adjustments (e.g., spacing, display) and not for component-specific styling.
-- Keep CSS declarations minimal and purposeful — avoid deep nesting and specificity wars.
-- When defining responsive layouts, prefer grid or flex with CSS variables for breakpoints.
-- Use transitions and animations sparingly; performance and accessibility take priority.
-- For icons and images:
-  - Prefer Angular’s NgOptimizedImage
-  - Ensure alt attributes are always set for accessibility

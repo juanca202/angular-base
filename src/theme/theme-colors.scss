@@ -22,7 +22,7 @@ $_palettes: (
     95: #ffeee1,
     98: #fff8f5,
     99: #fffbff,
-    100: #ffffff,
+    100: #ffffff
   ),
   secondary: (
     0: #000000,
@@ -40,7 +40,7 @@ $_palettes: (
     95: #ffeee1,
     98: #fff8f5,
     99: #fffbff,
-    100: #ffffff,
+    100: #ffffff
   ),
   tertiary: (
     0: #000000,
@@ -58,7 +58,7 @@ $_palettes: (
     95: #eafc5b,
     98: #f8ffb7,
     99: #fdffd9,
-    100: #ffffff,
+    100: #ffffff
   ),
   neutral: (
     0: #000000,
@@ -86,7 +86,7 @@ $_palettes: (
     87: #e9d7c9,
     92: #f7e5d7,
     94: #fdebdc,
-    96: #fff1e7,
+    96: #fff1e7
   ),
   neutral-variant: (
     0: #000000,
@@ -104,7 +104,7 @@ $_palettes: (
     95: #ffeee1,
     98: #fff8f5,
     99: #fffbff,
-    100: #ffffff,
+    100: #ffffff
   ),
   error: (
     0: #000000,
@@ -122,15 +122,15 @@ $_palettes: (
     95: #ffedea,
     98: #fff8f7,
     99: #fffbff,
-    100: #ffffff,
-  ),
+    100: #ffffff
+  )
 );
 
 $_rest: (
   secondary: map.get($_palettes, secondary),
   neutral: map.get($_palettes, neutral),
-  neutral-variant: map.get($_palettes,  neutral-variant),
-  error: map.get($_palettes, error),
+  neutral-variant: map.get($_palettes, neutral-variant),
+  error: map.get($_palettes, error)
 );
 
 $primary-palette: map.merge(map.get($_palettes, primary), $_rest);

@@ -26,7 +26,7 @@
             (ftObserveIntersecting)="setAsRead(notification, $event)"
             [ftObserveIntersectingOptions]="{
               rootMargin: '0px',
-              threshold: 1.0,
+              threshold: 1.0
             }"
           >
             <div class="flex items-start gap-4">
@@ -59,7 +59,7 @@
                         [queryParams]="{
                           action: notification.notification.action?.type,
                           actionValue: option.value,
-                          uuid: notification.notification.action?.uuid,
+                          uuid: notification.notification.action?.uuid
                         }"
                         [skipLocationChange]="true"
                         mat-stroked-button

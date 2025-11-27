@@ -9,13 +9,16 @@ Este proyecto ofrece una base sólida con:
 - **Calidad de código** con ESLint, Prettier y Husky (hooks para validación).
 - **Pruebas unitarias y E2E** con Jest y Playwright.
 - **Monitoreo de errores** mediante Sentry.
-- **Marketing y analítica** con Google Tag Manager y Firebase (Analytics, Messaging).
+- **Manejo de errores y mensajes** notificaciones, modales, páginas, validaciones, solicitudes http.
 - **Internacionalización (i18n)** con Localize.
+- **Despliegue en la nube** configuracion para despliegue en Azure, AWS y Google Cloud.
+- **IA Friendly** para facilitar el desarrollo y que se ajuste a las reglas del proyecto.
+- **Marketing y analítica** con Google Tag Manager y Firebase (Analytics, Messaging).
 - **Notificaciones Push** integradas.
 - **UI moderna** con Angular Material, theming, soporte de modo oscuro y basado en la guía de estilos de [Angular 20 Style Guide](https://angular.dev/style-guide).
-- **Autenticación completa**: login, signup, reset/change password y eliminación de cuenta.
+- **Autenticación completa**: login, signup, reset/change password y eliminación de cuenta, integracion con autenticación federada.
 - **Gestión de configuración y páginas legales**: settings, privacy, terms.
-- **Contenedores y notificaciones** para estructurar la aplicación.
+- **Contenedores** para estructurar la aplicación.
 
 Este repositorio busca servir como **punto de partida** para proyectos que requieren una base confiable, estructurada y lista para escalar.
 
@@ -129,6 +132,14 @@ npm run i18n -- fr        # Genera o actualiza francés
 - Genera también el archivo JS del idioma base (`en.js`) a partir del JSON.
 
 > Esto permite que la aplicación pueda cambiar de idioma fácilmente y mantener todas las traducciones sincronizadas con la versión en inglés.
+
+### Manejo de mensajes y errores
+
+MessageService
+Error (component)
+Error 404
+getResource(errores http globales)
+ErrorPipe (errores de validacion)
 
 ## 📝 Convención para nombres de commits
 

@@ -17,11 +17,7 @@
     transition: background-color 0.2s;
 
     &:disabled {
-      background-color: color-mix(
-        in srgb,
-        var(--ft-border-color) 80%,
-        transparent
-      );
+      background-color: color-mix(in srgb, var(--ft-border-color) 80%, transparent);
     }
   }
 }

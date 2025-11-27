@@ -6,7 +6,7 @@ import {
   LOCALE_ID,
   inject,
   isDevMode,
-  provideAppInitializer,
+  provideAppInitializer
 } from '@angular/core';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -37,16 +37,16 @@ export const appConfig: ApplicationConfig = {
     }),
     provideServiceWorker('sw-custom.js', {
       enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000',
+      registrationStrategy: 'registerWhenStable:30000'
     }),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, clientInterceptor, languageInterceptor]),
+      withInterceptors([authInterceptor, clientInterceptor, languageInterceptor])
     ),
     ...(environment.firebaseConfig
       ? [
           provideFirebaseApp(() => initializeApp(environment.firebaseConfig!)),
-          provideMessaging(() => getMessaging()),
+          provideMessaging(() => getMessaging())
         ]
       : []),
     provideClientHydration(),
@@ -55,35 +55,35 @@ export const appConfig: ApplicationConfig = {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({
         logErrors: true,
-        showDialog: false,
-      }),
+        showDialog: false
+      })
     },
     {
       provide: Sentry.TraceService,
-      deps: [Router],
+      deps: [Router]
     },
     {
       provide: UI_OPTIONS,
       useValue: {
         iconSettings: {
           path: 'images',
-          collection: 'factoricons-regular',
-        },
-      },
+          collection: 'factoricons-regular'
+        }
+      }
     },
     {
       provide: 'FactorUiConfiguration',
       useValue: {
         icon: {
           collection: 'factoricons-regular',
-          mode: null,
-        },
-      },
+          mode: null
+        }
+      }
     },
     {
       provide: LOCALE_ID,
       useFactory: (appManager: AppManager) => appManager.getLocale(),
-      deps: [AppManager],
-    },
-  ],
+      deps: [AppManager]
+    }
+  ]
 };

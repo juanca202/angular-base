@@ -13,9 +13,9 @@ jest.mock('version-info', () => ({
     version: 'test',
     hash: 'abc',
     git: {
-      raw: 'test-version',
-    },
-  },
+      raw: 'test-version'
+    }
+  }
 }));
 
 describe('AppManager', () => {
@@ -36,8 +36,8 @@ describe('AppManager', () => {
           useValue: {
             available: { subscribe: jest.fn() },
             activated: { subscribe: jest.fn() },
-            versionUpdates: { subscribe: jest.fn() },
-          },
+            versionUpdates: { subscribe: jest.fn() }
+          }
         },
         {
           provide: StorageService,
@@ -47,11 +47,11 @@ describe('AppManager', () => {
             delete: jest.fn(),
             getItem: jest.fn(),
             setItem: jest.fn(),
-            removeItem: jest.fn(),
-          },
+            removeItem: jest.fn()
+          }
         },
-        { provide: GoogleTagManagerService, useValue: { push: jest.fn() } },
-      ],
+        { provide: GoogleTagManagerService, useValue: { push: jest.fn() } }
+      ]
     });
     service = TestBed.inject(AppManager);
   });

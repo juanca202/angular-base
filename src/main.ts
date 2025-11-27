@@ -29,12 +29,12 @@ if (environment.sentry) {
         isRequiredLabel: '*',
         messageLabel: $localize`Description`,
         messagePlaceholder: $localize`Tell us what problem you're having or how we can help you…`,
-        successMessageText: $localize`Thank you for your message`,
-      }),
+        successMessageText: $localize`Thank you for your message`
+      })
     ],
     tracesSampleRate: 1,
     replaysSessionSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1,
+    replaysOnErrorSampleRate: 1
   });
 }
 

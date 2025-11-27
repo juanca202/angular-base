@@ -12,7 +12,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   selector: 'app-page',
   imports: [MatButtonModule, MatDialogModule, IconComponent, ObserveIntersectingDirective],
   templateUrl: './page.html',
-  styleUrl: './page.scss',
+  styleUrl: './page.scss'
 })
 export class Page implements OnInit {
   public readonly appManager = inject(AppManager);

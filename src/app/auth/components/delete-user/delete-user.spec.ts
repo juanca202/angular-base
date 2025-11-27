@@ -8,7 +8,7 @@ describe('DeleteUser', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeleteUser],
+      imports: [DeleteUser]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteUser);

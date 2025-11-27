@@ -19,10 +19,10 @@ describe('authInterceptor', () => {
             handle401Error: jest.fn((e: any) => {
               throw e;
             }),
-            logout: jest.fn(),
-          },
-        },
-      ],
+            logout: jest.fn()
+          }
+        }
+      ]
     });
   });
 

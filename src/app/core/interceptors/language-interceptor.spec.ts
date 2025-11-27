@@ -12,7 +12,7 @@ describe('languageInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), AppManager],
+      providers: [provideHttpClient(), provideHttpClientTesting(), AppManager]
     });
   });
 

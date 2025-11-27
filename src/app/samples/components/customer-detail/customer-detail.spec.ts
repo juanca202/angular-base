@@ -15,8 +15,8 @@ describe('CustomerDetail', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: MAT_DIALOG_DATA, useValue: { customer: null } },
-      ],
+        { provide: MAT_DIALOG_DATA, useValue: { customer: null } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomerDetail);

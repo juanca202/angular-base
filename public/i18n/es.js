@@ -90,5 +90,5 @@ export default {
   '853174293478346674': 'Ingresa al menos {$PH} caracteres',
   '6650429541355157038': 'Ingresa un máximo de {$PH} caracteres',
   '4240684274750737249': 'Este nombre ya está en uso',
-  '2330577642930707695': ' Cancelar ',
+  '2330577642930707695': ' Cancelar '
 };

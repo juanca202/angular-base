@@ -9,8 +9,8 @@ export const clientInterceptor: HttpInterceptorFn = (req, next) => {
     setHeaders: {
       'Client-Id': appManager.getClientId(),
       'App-Id': appManager.id,
-      'App-Version': appManager.version,
-    },
+      'App-Version': appManager.version
+    }
   });
   return next(clientReq);
 };

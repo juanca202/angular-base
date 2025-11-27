@@ -8,7 +8,7 @@ describe('ChangePassword', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChangePassword],
+      imports: [ChangePassword]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChangePassword);

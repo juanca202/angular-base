@@ -16,7 +16,7 @@ export const routes: Routes = [
     component: MainLayout,
     children: [...samplesRoutes],
   },
-  { path: 'settings', component: Settings },
+  { path: 'settings', component: Settings, canActivate: [authGuard] },
   {
     path: 'settings/language',
     component: Language,
@@ -26,5 +26,5 @@ export const routes: Routes = [
     component: Notifications,
   },
   { path: 'error/:code', component: Error, title: $localize`Error` },
-  { path: '**', component: Error, data: { code: 404 } },
+  { path: '**', component: Error, data: { code: 404 } }
 ];

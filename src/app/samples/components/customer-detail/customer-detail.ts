@@ -19,10 +19,10 @@ import { CustomerRepository } from 'app/samples/repositories/customer-repository
     MatButtonModule,
     MatDialogModule,
     MatFormField,
-    MatInputModule,
+    MatInputModule
   ],
   templateUrl: './customer-detail.html',
-  styleUrl: './customer-detail.scss',
+  styleUrl: './customer-detail.scss'
 })
 export class CustomerDetail implements OnInit {
   // Dependency injection
@@ -48,7 +48,7 @@ export class CustomerDetail implements OnInit {
       firstName: [''],
       lastName: [''],
       email: [''],
-      phone: [''],
+      phone: ['']
     });
   }
 

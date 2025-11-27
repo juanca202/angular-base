@@ -17,5 +17,5 @@ export const samplesRoutes: Routes = [
   { path: 'sample9', component: Home },
   { path: 'sample10', component: CustomerList },
   { path: 'sample11', component: Home },
-  { path: 'sample12', component: CustomerList },
+  { path: 'sample12', component: CustomerList }
 ];

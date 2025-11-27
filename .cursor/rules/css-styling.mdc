@@ -8,7 +8,10 @@ alwaysApply: true
   **Example:** `ft-button`, `ft-button__icon`, `ft-button--primary`
 
 - All custom classes must start with the prefix **`ft-`**.  
-  **Example:** ✅ `ft-card__header`, ❌ `card-header`
+  **Example:** ✅ `ft-card__header`, ❌ `card-header`.
+
+- **Prioritize using existing utility and theme classes** before creating new custom classes.  
+  Only create a custom class if **no existing class or combination of utilities** achieves the required design.
 
 - Before creating a new class, **always check** if an existing one already covers the same use case.  
   Reuse and extend existing classes when possible.
@@ -21,7 +24,6 @@ alwaysApply: true
   - Color variables  
   - Text and typography variables  
   - Spacing and layout variables  
-  These must be used when creating or customizing styles.
 
 - **Always prioritize using Tailwind CSS utility classes** before creating custom styles.  
   Use Tailwind utilities for:
@@ -48,3 +50,6 @@ alwaysApply: true
 - For **icons and images**:
   - Prefer Angular's `NgOptimizedImage`
   - Always include `alt` attributes for accessibility
+
+- **Summary Rule:**  
+  **1️⃣ Use existing utilities first** → **2️⃣ Use existing component classes** → **3️⃣ Create custom `ft-` classes only if strictly necessary.**

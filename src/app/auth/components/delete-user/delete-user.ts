@@ -30,10 +30,10 @@ import { getApiUrl } from 'app/core/services/rest-api';
     MatInputModule,
     IconComponent,
     ProgressComponent,
-    ErrorMessagePipe,
+    ErrorMessagePipe
   ],
   templateUrl: './delete-user.html',
-  styleUrl: './delete-user.scss',
+  styleUrl: './delete-user.scss'
 })
 export class DeleteUser implements OnInit, OnDestroy {
   AppManager = inject(AppManager);
@@ -60,12 +60,12 @@ export class DeleteUser implements OnInit, OnDestroy {
         [
           Validators.required,
           Validators.email,
-          Validators.pattern(`^${this.authService.settings()?.user.email}$`),
-        ],
-      ],
+          Validators.pattern(`^${this.authService.settings()?.user.email}$`)
+        ]
+      ]
     });
     this.step2Form = this.formBuilder.group({
-      code: ['', Validators.required],
+      code: ['', Validators.required]
     });
   }
 
@@ -80,7 +80,7 @@ export class DeleteUser implements OnInit, OnDestroy {
   initCode(): void {
     const deleteCodeExpiresAt = this.storageService.get(
       `${environment.sessionPrefix}_dce`,
-      'local',
+      'local'
     );
     if (deleteCodeExpiresAt) {
       this.setCountDown(moment(deleteCodeExpiresAt));
@@ -92,7 +92,7 @@ export class DeleteUser implements OnInit, OnDestroy {
         this.submitting.set(true);
         this.step1Form.disable();
         const response = await lastValueFrom(
-          this.httpClient.post(getApiUrl('generate-delete-code'), null),
+          this.httpClient.post(getApiUrl('generate-delete-code'), null)
         );
         this.setCountDown(moment(response));
         this.submitting.set(false);
@@ -100,7 +100,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       } catch (err: any) {
         this.submitting.set(false);
         this.messageService.show(err.error?.detail || err.error.message || err.message, {
-          type: 'modal',
+          type: 'modal'
         });
         this.step1Form.enable();
       }
@@ -117,7 +117,7 @@ export class DeleteUser implements OnInit, OnDestroy {
         this.storageService.delete('lastUser', 'local');
       } catch (err: any) {
         this.messageService.show(err.error?.detail || err.message, {
-          type: 'modal',
+          type: 'modal'
         });
         this.submitting.set(false);
         this.step2Form.enable();

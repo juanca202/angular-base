@@ -13,8 +13,8 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: jest.fn(), // deprecated
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
+    dispatchEvent: jest.fn()
+  }))
 });
 
 // Mock para localStorage
@@ -23,9 +23,9 @@ Object.defineProperty(window, 'localStorage', {
     getItem: jest.fn(),
     setItem: jest.fn(),
     removeItem: jest.fn(),
-    clear: jest.fn(),
+    clear: jest.fn()
   },
-  writable: true,
+  writable: true
 });
 
 // Mock para sessionStorage
@@ -34,22 +34,22 @@ Object.defineProperty(window, 'sessionStorage', {
     getItem: jest.fn(),
     setItem: jest.fn(),
     removeItem: jest.fn(),
-    clear: jest.fn(),
+    clear: jest.fn()
   },
-  writable: true,
+  writable: true
 });
 
 // Mock para navigator
 Object.defineProperty(navigator, 'userAgent', {
   writable: true,
-  value: 'Mozilla/5.0 (compatible; Test Browser)',
+  value: 'Mozilla/5.0 (compatible; Test Browser)'
 });
 
 // Mock para crypto
 Object.defineProperty(window, 'crypto', {
   value: {
     getRandomValues: jest.fn(),
-    randomUUID: jest.fn(() => 'mock-uuid'),
+    randomUUID: jest.fn(() => 'mock-uuid')
   },
-  writable: true,
+  writable: true
 });

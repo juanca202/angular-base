@@ -35,6 +35,7 @@ src/
 └── sales/ # Example feature folder (sample domain)
   ├── components/ # Components specific to the sample feature
   ├── directives/ # Common attribute or structural directives
+  ├── guards/ # Route guards for authentication or permissions
   ├── managers/ # Business logic or state management classes
   ├── enums/ # Shared enumerations (e.g., UserRole, HttpStatus)
   ├── constants/ # Global constants and configuration objects
@@ -44,7 +45,7 @@ src/
   ├── services/ # Global singleton services (e.g., HttpClient, Logger)
   ├── managers/ # Business logic or state management classes
   ├── repositories/ # Data access or persistence logic
-  └── sales-routes.ts # Routes for the sample feature
+  └── sales-routes.ts # Routes for the sales feature
 
 ### Notes
 - Feature folders follow a **flat structure** under `app/` (not nested modules).  

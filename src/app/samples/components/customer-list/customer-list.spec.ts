@@ -15,8 +15,8 @@ describe('CustomerList', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: MessageService, useValue: { show: jest.fn() } },
-      ],
+        { provide: MessageService, useValue: { show: jest.fn() } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomerList);

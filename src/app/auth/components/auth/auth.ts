@@ -1,5 +1,5 @@
-import { Component, HostBinding, signal, inject, OnInit, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, inject, OnInit } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -23,6 +23,7 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   selector: 'app-auth',
   imports: [
     CommonModule,
+    NgOptimizedImage,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormField,
@@ -31,23 +32,18 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
     RouterModule,
     IconComponent,
     ProgressComponent,
-    ErrorMessagePipe,
+    ErrorMessagePipe
   ],
   templateUrl: './auth.html',
   styleUrl: './auth.scss',
+  host: {
+    class: 'ft-auth',
+    '[class.ft-auth--form]': '!!mode()'
+  }
 })
 export class Auth implements OnInit {
   public appManager = inject(AppManager);
   public authService = inject(AuthService);
-  readonly class = input<string>('');
-  @HostBinding('class') get hostClasses(): string {
-    return [
-      'ft-page--fullscreen',
-      'ft-auth',
-      this.mode() ? 'ft-auth--form' : null,
-      this.class(),
-    ].join(' ');
-  }
   private dialog = inject(MatDialog);
   public errorMessage = signal<string>('');
   private formBuilder = inject(FormBuilder);
@@ -67,13 +63,13 @@ export class Auth implements OnInit {
   constructor() {
     this.signinForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
     this.signupForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
     this.lastUser = this.storageService.get(`${environment.sessionPrefix}_lus`, 'local');
   }
@@ -103,7 +99,7 @@ export class Auth implements OnInit {
   forgotPassword(): void {
     this.dialog.open(ForgotPassword, {
       panelClass: 'ft-dialog',
-      width: '400px',
+      width: '400px'
     });
   }
   openPage(url: string): void {
@@ -114,8 +110,8 @@ export class Auth implements OnInit {
       width: '600px',
       position: {
         left: 'auto',
-        right: '0',
-      },
+        right: '0'
+      }
     });
   }
   setMode(mode: string): void {
@@ -133,7 +129,7 @@ export class Auth implements OnInit {
     }
     this.googleTagManagerService.addVariable({
       event: 'page_view',
-      page_title: this.title.getTitle(),
+      page_title: this.title.getTitle()
     });
   }
   async submitSignin(): Promise<void> {
@@ -146,13 +142,13 @@ export class Auth implements OnInit {
         this.googleTagManagerService.addVariable({
           event: 'login',
           user_id: this.signinForm.value.username,
-          app_id: this.appManager.name,
+          app_id: this.appManager.name
         });
       } catch (err: any) {
         this.signinForm.enable();
         this.submitting.set(false);
         this.errorMessage.set(
-          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`,
+          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`
         );
         this.messageService.show(this.errorMessage());
       }
@@ -168,11 +164,11 @@ export class Auth implements OnInit {
         this.googleTagManagerService.addVariable({
           event: 'sign_up',
           user_id: this.signupForm.value.username,
-          app_id: this.appManager.name,
+          app_id: this.appManager.name
         });
         await this.authService.signin({
           username: this.signupForm.value.email,
-          password: this.signupForm.value.password,
+          password: this.signupForm.value.password
         });
         // If a redirect exists, use it; otherwise load the home page
         if (this.storageService.get(`${environment.sessionPrefix}_rdi`)) {
@@ -185,7 +181,7 @@ export class Auth implements OnInit {
         this.signupForm.enable();
         this.submitting.set(false);
         this.errorMessage.set(
-          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`,
+          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`
         );
         this.messageService.show(this.errorMessage());
       }
