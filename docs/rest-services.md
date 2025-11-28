@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Rest Services Guide
 
 Concise reference for defining **repositories** and consuming REST services within the application.
@@ -27,7 +23,7 @@ export class CustomerRepository {
 }
 ```
 
-## 2. Mutations (POST, PUT, DELETE)
+## 2. Mutations (POST, PUT, PATCH, DELETE)
 
 Use getMutations to handle create/update/delete operations with automatic signals for submitting and error.
 

@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Form Field Validation Rules - Cursor
 
 ## Objective

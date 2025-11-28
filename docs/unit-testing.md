@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 ## Unit testing
 
 - All tests must be written using Jest

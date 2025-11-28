@@ -7,13 +7,19 @@ Este proyecto es una aplicación base desarrollada con **Angular**, diseñada si
 ### Características Principales
 
 - **Arquitectura modular**: Separación clara de responsabilidades entre Core, Shared y Features
+- **PWA (Web App Progresiva)**: Lista para instalar y usar offline
 - **Angular Material (MDC)**: Componentes UI basados en Material Design
 - **Tailwind CSS**: Utilidades CSS para layout y estilos comunes
 - **BEM con prefijo `ft-`**: Convención de nombres para estilos de componentes
 - **Formularios reactivos**: Validación estandarizada con pipes personalizados
 - **Servicios REST**: Patrón de repositorios para comunicación con APIs
-- **Testing con Jest**: Estrategias de testing unitario e integración
-- **Localización (i18n)**: Soporte para múltiples idiomas
+- **Calidad de código**: ESLint, Prettier y Husky (hooks para validación)
+- **Pruebas unitarias y E2E**: Jest y Playwright
+- **Monitoreo de errores**: Sentry, Azure Application Insights
+- **Documentación**: JSDoc/TSDoc con Compodoc
+- **Internacionalización (i18n)**: Localize
+- **Despliegue en la nube**: Configuración para despliegue en Azure, AWS y Google Cloud
+- **Marketing y analítica**: Google Tag Manager y Firebase (Analytics, Messaging)
 - **Desarrollo asistido por IA**: Reglas documentadas para mantener consistencia
 
 ### Tecnologías Clave
@@ -23,7 +29,93 @@ Este proyecto es una aplicación base desarrollada con **Angular**, diseñada si
 - Angular Material (MDC)
 - Tailwind CSS
 - Jest (testing)
-- RxJS (programación reactiva)
+
+### Scripts Disponibles
+
+- **`npm run start`**: Genera la versión de Git y inicia el servidor de desarrollo
+- **`npm run build`**: Genera la versión de Git y compila la aplicación para desplegarla
+- **`npm run extract-i18n -- [LOCALE]`**: Extrae todas las cadenas de internacionalización desde el código fuente y genera el archivo correspondiente al idioma proporcionado (por ejemplo: `npm run extract-i18n -- es`). Si existen cadenas sin traducir, se creará también el archivo `[LOCALE]_missing.js` con las claves faltantes
+- **`npm run i18n -- [LOCALE]`**: Usa el archivo base `en.js` para generar o actualizar el archivo de idioma indicado, sin volver a extraer las cadenas de la aplicación. También genera un archivo `[LOCALE]_missing.js` si hay traducciones faltantes
+- **`npm run watch`**: Compila la aplicación en modo desarrollo con recarga automática
+- **`npm run test`**: Ejecuta las pruebas unitarias
+- **`npm run prettier`**: Formatea automáticamente el código fuente usando Prettier
+
+### Internacionalización (i18n)
+
+Este proyecto incluye soporte para múltiples idiomas utilizando archivos JSON como base y archivos JS para cada idioma.
+
+El idioma base siempre es inglés (`en.json`) y los idiomas adicionales se generan o actualizan mediante el script `generate-i18n.js`.
+
+#### Uso del script generate-i18n.js
+
+Para generar o actualizar los archivos de traducción de un idioma específico, ejecuta:
+
+```bash
+npm run extract-i18n     # Extrae la base en en.json
+npm run i18n -- es        # Genera o actualiza español
+npm run i18n -- fr        # Genera o actualiza francés
+```
+
+#### Funcionamiento
+
+El script toma el JSON base en inglés (`en.json`) y lo compara con el archivo JS del idioma destino (`es.js`, `fr.js`, etc.).
+
+- Ordena las claves según el archivo base
+- Crea un archivo de claves faltantes (`<lang>_missing.json`) para que puedas completar traducciones que aún no existan
+- Genera o actualiza el archivo JS del idioma destino
+- Genera también el archivo JS del idioma base (`en.js`) a partir del JSON
+
+Esto permite que la aplicación pueda cambiar de idioma fácilmente y mantener todas las traducciones sincronizadas con la versión en inglés.
+
+### Convención para nombres de commits
+
+Este proyecto utiliza la convención de **Conventional Commits**.
+
+Todos los mensajes de commit deben seguir el siguiente formato:
+
+```
+<tipo>(alcance opcional): descripción breve
+```
+
+#### Tipos permitidos
+
+- **`feat`** → una nueva funcionalidad
+- **`fix`** → una corrección de error
+- **`docs`** → cambios en documentación
+- **`style`** → cambios de formato/estilo (no afectan el código)
+- **`refactor`** → cambios en el código que no corrigen errores ni agregan funciones
+- **`test`** → agregar o corregir pruebas
+- **`chore`** → tareas varias (build, herramientas, dependencias)
+
+#### Ejemplos válidos
+
+- `feat(auth): agregar login con Google`
+- `fix(api): corregir error en el endpoint de usuarios`
+- `docs(readme): actualizar instrucciones de instalación`
+- `style(app): aplicar prettier a los componentes`
+- `refactor(core): optimizar servicio de notificaciones`
+- `test(auth): agregar pruebas para flujo de login`
+- `chore(deps): actualizar Angular a v16`
+
+#### Reglas
+
+- La descripción debe ser corta y en tiempo presente
+- Usa inglés para los commits (recomendado en proyectos abiertos)
+- Los mensajes serán validados automáticamente por commitlint en el hook `commit-msg`
+
+---
+
+## Acceso Rápido a la Documentación
+
+Enlaces directos a toda la documentación disponible:
+
+- 📐 [Arquitectura](./architecture.md) - Estructura general y decisiones de diseño
+- 📁 [Estructura del Proyecto](./project-structure.md) - Organización de carpetas y archivos
+- 🎨 [Guías de Estilos CSS](./css-styling.md) - Reglas y convenciones de CSS
+- ✅ [Validación de Formularios](./form-field-validation.md) - Estándares de formularios reactivos
+- 🎯 [Uso de Iconos](./icons.md) - Guía para el uso de iconos
+- 🌐 [Servicios REST](./rest-services.md) - Patrón de repositorios para APIs
+- 🧪 [Testing Unitario](./unit-testing.md) - Estrategias y mejores prácticas de testing
 
 ---
 
@@ -139,4 +231,10 @@ Al agregar nueva documentación:
 - Incluye ejemplos de código cuando sea relevante
 - Actualiza este índice con enlaces y descripciones
 - Sigue las convenciones establecidas en los documentos existentes
+
+## Enlaces
+
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0)
+- [Semantic Versioning](https://semver.org/)
+- [Angular Material](https://material.angular.dev/)
 

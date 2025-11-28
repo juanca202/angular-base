@@ -151,16 +151,6 @@ Registra decisiones clave:
 - Las reglas incluyen: estructura de proyecto, estilos CSS (Tailwind + BEM), validación de formularios, uso de iconos, servicios REST, testing, y más
 - Las reglas se aplican automáticamente cuando se usa Cursor para desarrollo asistido por IA
 
-**Reglas disponibles:**
-- `project-structure.mdc` - Estructura de carpetas y organización
-- `css-styling.mdc` - Guías de estilos (Tailwind + BEM)
-- `form-field-validation.mdc` - Validación de formularios reactivos
-- `icons.mdc` - Uso de iconos con `<ft-icon />`
-- `rest-services.mdc` - Patrones para servicios REST
-- `unit-testing.mdc` - Estrategias de testing
-- `cursor.mdc` - Mejores prácticas de Angular y TypeScript
-- Y más...
-
 **Beneficios:**
 - Consistencia automática en el código generado
 - Onboarding más rápido para nuevos desarrolladores

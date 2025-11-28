@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 ## Icon Usage Guidelines
 
 - Always use the `<ft-icon />` component for all icons in the application.

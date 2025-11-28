@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 ## CSS & Styling Guidelines
 
 - Follow the **BEM (Block Element Modifier)** naming convention for all custom CSS class names.  
