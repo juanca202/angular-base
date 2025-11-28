@@ -1,4 +1,4 @@
-## Icon Usage Guidelines
+## Icon Usage Guide
 
 - Always use the `<ft-icon />` component for all icons in the application.
 - The `<ft-icon />` component accepts two main properties:

@@ -1,24 +1,24 @@
-Este proyecto es una aplicación base desarrollada con **Angular**, diseñada siguiendo una arquitectura modular y escalable. El proyecto implementa las mejores prácticas de Angular, utilizando componentes standalone, signals para el manejo de estado, y una estructura organizada en capas (Core, Shared, Features).
+This project is a base application developed with **Angular**, designed following a modular and scalable architecture. The project implements Angular best practices, using standalone components, signals for state management, and an organized layered structure (Core, Shared, Features).
 
-### Características Principales
+### Main Features
 
-- **Arquitectura modular**: Separación clara de responsabilidades entre Core, Shared y Features
-- **PWA (Web App Progresiva)**: Lista para instalar y usar offline
-- **Angular Material (MDC)**: Componentes UI basados en Material Design
-- **Tailwind CSS**: Utilidades CSS para layout y estilos comunes
-- **BEM con prefijo `ft-`**: Convención de nombres para estilos de componentes
-- **Formularios reactivos**: Validación estandarizada con pipes personalizados
-- **Servicios REST**: Patrón de repositorios para comunicación con APIs
-- **Calidad de código**: ESLint, Prettier y Husky (hooks para validación)
-- **Pruebas unitarias y E2E**: Jest y Playwright
-- **Monitoreo de errores**: Sentry, Azure Application Insights
-- **Documentación**: JSDoc/TSDoc con Compodoc
-- **Internacionalización (i18n)**: Localize
-- **Despliegue en la nube**: Configuración para despliegue en Azure, AWS y Google Cloud
-- **Marketing y analítica**: Google Tag Manager y Firebase (Analytics, Messaging)
-- **Desarrollo asistido por IA**: Reglas documentadas para mantener consistencia
+- **Modular architecture**: Clear separation of responsibilities between Core, Shared, and Features
+- **PWA (Progressive Web App)**: Ready to install and use offline
+- **Angular Material (MDC)**: UI components based on Material Design
+- **Tailwind CSS**: CSS utilities for layout and common styles
+- **BEM with `ft-` prefix**: Naming convention for component styles
+- **Reactive forms**: Standardized validation with custom pipes
+- **REST services**: Repository pattern for API communication
+- **Code quality**: ESLint, Prettier, and Husky (hooks for validation)
+- **Unit and E2E testing**: Jest and Playwright
+- **Error monitoring**: Sentry, Azure Application Insights
+- **Documentation**: JSDoc/TSDoc with Compodoc
+- **Internationalization (i18n)**: Localize
+- **Cloud deployment**: Configuration for deployment on Azure, AWS, and Google Cloud
+- **Marketing and analytics**: Google Tag Manager and Firebase (Analytics, Messaging)
+- **AI-assisted development**: Documented rules to maintain consistency
 
-### Tecnologías Clave
+### Key Technologies
 
 - Angular (standalone components, signals)
 - TypeScript (strict mode)
@@ -26,189 +26,189 @@ Este proyecto es una aplicación base desarrollada con **Angular**, diseñada si
 - Tailwind CSS
 - Jest (testing)
 
-### Scripts Disponibles
+### Available Scripts
 
-- **`npm run start`**: Genera la versión de Git y inicia el servidor de desarrollo
-- **`npm run build`**: Genera la versión de Git y compila la aplicación para desplegarla
-- **`npm run extract-i18n -- [LOCALE]`**: Extrae todas las cadenas de internacionalización desde el código fuente y genera el archivo correspondiente al idioma proporcionado (por ejemplo: `npm run extract-i18n -- es`). Si existen cadenas sin traducir, se creará también el archivo `[LOCALE]_missing.js` con las claves faltantes
-- **`npm run i18n -- [LOCALE]`**: Usa el archivo base `en.js` para generar o actualizar el archivo de idioma indicado, sin volver a extraer las cadenas de la aplicación. También genera un archivo `[LOCALE]_missing.js` si hay traducciones faltantes
-- **`npm run watch`**: Compila la aplicación en modo desarrollo con recarga automática
-- **`npm run test`**: Ejecuta las pruebas unitarias
-- **`npm run prettier`**: Formatea automáticamente el código fuente usando Prettier
+- **`npm run start`**: Generates the Git version and starts the development server
+- **`npm run build`**: Generates the Git version and compiles the application for deployment
+- **`npm run extract-i18n -- [LOCALE]`**: Extracts all internationalization strings from the source code and generates the corresponding file for the provided language (e.g., `npm run extract-i18n -- es`). If there are untranslated strings, it will also create the `[LOCALE]_missing.js` file with the missing keys
+- **`npm run i18n -- [LOCALE]`**: Uses the base `en.js` file to generate or update the indicated language file, without re-extracting strings from the application. Also generates a `[LOCALE]_missing.js` file if there are missing translations
+- **`npm run watch`**: Compiles the application in development mode with automatic reload
+- **`npm run test`**: Runs unit tests
+- **`npm run prettier`**: Automatically formats source code using Prettier
 
-### Internacionalización (i18n)
+### Internationalization (i18n)
 
-Este proyecto incluye soporte para múltiples idiomas utilizando archivos JSON como base y archivos JS para cada idioma.
+This project includes support for multiple languages using JSON files as base and JS files for each language.
 
-El idioma base siempre es inglés (`en.json`) y los idiomas adicionales se generan o actualizan mediante el script `generate-i18n.js`.
+The base language is always English (`en.json`) and additional languages are generated or updated through the `generate-i18n.js` script.
 
-#### Uso del script generate-i18n.js
+#### Using the generate-i18n.js script
 
-Para generar o actualizar los archivos de traducción de un idioma específico, ejecuta:
+To generate or update translation files for a specific language, run:
 
 ```bash
-npm run extract-i18n     # Extrae la base en en.json
-npm run i18n -- es        # Genera o actualiza español
-npm run i18n -- fr        # Genera o actualiza francés
+npm run extract-i18n     # Extracts the base in en.json
+npm run i18n -- es        # Generates or updates Spanish
+npm run i18n -- fr        # Generates or updates French
 ```
 
-#### Funcionamiento
+#### How it works
 
-El script toma el JSON base en inglés (`en.json`) y lo compara con el archivo JS del idioma destino (`es.js`, `fr.js`, etc.).
+The script takes the base English JSON (`en.json`) and compares it with the target language JS file (`es.js`, `fr.js`, etc.).
 
-- Ordena las claves según el archivo base
-- Crea un archivo de claves faltantes (`<lang>_missing.json`) para que puedas completar traducciones que aún no existan
-- Genera o actualiza el archivo JS del idioma destino
-- Genera también el archivo JS del idioma base (`en.js`) a partir del JSON
+- Sorts keys according to the base file
+- Creates a missing keys file (`<lang>_missing.json`) so you can complete translations that don't exist yet
+- Generates or updates the target language JS file
+- Also generates the base language JS file (`en.js`) from the JSON
 
-Esto permite que la aplicación pueda cambiar de idioma fácilmente y mantener todas las traducciones sincronizadas con la versión en inglés.
+This allows the application to easily change languages and keep all translations synchronized with the English version.
 
-### Convención para nombres de commits
+### Commit Message Convention
 
-Este proyecto utiliza la convención de **Conventional Commits**.
+This project uses the **Conventional Commits** convention.
 
-Todos los mensajes de commit deben seguir el siguiente formato:
+All commit messages must follow this format:
 
 ```
-<tipo>(alcance opcional): descripción breve
+<type>(optional scope): brief description
 ```
 
-#### Tipos permitidos
+#### Allowed types
 
-- **`feat`** → una nueva funcionalidad
-- **`fix`** → una corrección de error
-- **`docs`** → cambios en documentación
-- **`style`** → cambios de formato/estilo (no afectan el código)
-- **`refactor`** → cambios en el código que no corrigen errores ni agregan funciones
-- **`test`** → agregar o corregir pruebas
-- **`chore`** → tareas varias (build, herramientas, dependencias)
+- **`feat`** → a new feature
+- **`fix`** → a bug fix
+- **`docs`** → documentation changes
+- **`style`** → formatting/style changes (don't affect code)
+- **`refactor`** → code changes that don't fix bugs or add features
+- **`test`** → adding or fixing tests
+- **`chore`** → miscellaneous tasks (build, tools, dependencies)
 
-#### Ejemplos válidos
+#### Valid examples
 
-- `feat(auth): agregar login con Google`
-- `fix(api): corregir error en el endpoint de usuarios`
-- `docs(readme): actualizar instrucciones de instalación`
-- `style(app): aplicar prettier a los componentes`
-- `refactor(core): optimizar servicio de notificaciones`
-- `test(auth): agregar pruebas para flujo de login`
-- `chore(deps): actualizar Angular a v16`
+- `feat(auth): add Google login`
+- `fix(api): fix error in users endpoint`
+- `docs(readme): update installation instructions`
+- `style(app): apply prettier to components`
+- `refactor(core): optimize notifications service`
+- `test(auth): add tests for login flow`
+- `chore(deps): update Angular to v16`
 
-#### Reglas
+#### Rules
 
-- La descripción debe ser corta y en tiempo presente
-- Usa inglés para los commits (recomendado en proyectos abiertos)
-- Los mensajes serán validados automáticamente por commitlint en el hook `commit-msg`
-
----
-
-## Acceso Rápido a la Documentación
-
-Enlaces directos a toda la documentación disponible:
-
-- 📐 [Arquitectura](./docs/architecture.md) - Estructura general y decisiones de diseño
-- 📁 [Estructura del Proyecto](./docs/project-structure.md) - Organización de carpetas y archivos
-- 🎨 [Guías de Estilos CSS](./docs/css-styling.md) - Reglas y convenciones de CSS
-- ✅ [Validación de Formularios](./docs/form-field-validation.md) - Estándares de formularios reactivos
-- 🎯 [Uso de Iconos](./docs/icons.md) - Guía para el uso de iconos
-- 🌐 [Servicios REST](./docs/rest-services.md) - Patrón de repositorios para APIs
-- 🧪 [Testing Unitario](./docs/unit-testing.md) - Estrategias y mejores prácticas de testing
+- The description should be short and in present tense
+- Use English for commits (recommended in open projects)
+- Messages will be automatically validated by commitlint in the `commit-msg` hook
 
 ---
 
-## Índice de Documentación
+## Quick Access to Documentation
 
-### 📐 [Arquitectura](./docs/architecture.md)
+Direct links to all available documentation:
 
-Documentación completa de la arquitectura del proyecto, incluyendo:
-- Objetivos arquitectónicos y alcance
-- Diagramas C4 (Componentes y módulos internos)
-- Decisiones arquitectónicas (ADRs)
-- Estructura de capas (Core, Shared, Features)
-- Seguridad, performance y optimizaciones
-
-**Útil para:** Entender la estructura general del proyecto, decisiones de diseño y cómo se organizan los componentes.
-
----
-
-### 📁 [Estructura del Proyecto](./docs/project-structure.md)
-
-Guía detallada de la organización de carpetas y archivos en `src/app`:
-- Estructura de Core, Shared y Features
-- Convenciones de nomenclatura
-- Organización de componentes, servicios, modelos y más
-
-**Útil para:** Navegar el código, ubicar archivos y entender dónde colocar nuevos componentes.
+- 📐 [Architecture](./docs/architecture.md) - General structure and design decisions
+- 📁 [Project Structure](./docs/project-structure.md) - Folder and file organization
+- 🎨 [CSS Styling](./docs/css-styling.md) - CSS rules and conventions
+- ✅ [Form Field Validation](./docs/form-field-validation.md) - Reactive forms standards
+- 🎯 [Icon Usage](./docs/icons.md) - Guide for using icons
+- 🌐 [REST Services](./docs/rest-services.md) - Repository pattern for APIs
+- 🧪 [Unit Testing](./docs/unit-testing.md) - Testing strategies and best practices
 
 ---
 
-### 🎨 [Guías de Estilos CSS](./docs/css-styling.md)
+## Documentation Index
 
-Reglas y convenciones para el uso de CSS en el proyecto:
-- BEM con prefijo `ft-` para clases personalizadas
-- Priorización de Tailwind CSS para utilidades
-- Variables CSS para temas y consistencia
-- Responsive design con breakpoints de Tailwind
+### 📐 [Architecture](./docs/architecture.md)
 
-**Útil para:** Aplicar estilos consistentes, decidir cuándo usar Tailwind vs. clases personalizadas.
+Complete documentation of the project architecture, including:
+- Architectural objectives and scope
+- C4 diagrams (Components and internal modules)
+- Architectural decisions (ADRs)
+- Layer structure (Core, Shared, Features)
+- Security, performance, and optimizations
 
----
-
-### ✅ [Validación de Formularios](./docs/form-field-validation.md)
-
-Estándares para manejo de formularios reactivos y validaciones:
-- Estructura de campos con `mat-form-field`
-- Uso del pipe `errorMessage` para mensajes de error
-- Orden de resolución de validadores (Angular → Shared → Feature)
-- Ejemplos de validadores personalizados
-
-**Útil para:** Implementar formularios con validación consistente y mensajes de error estandarizados.
+**Useful for:** Understanding the general project structure, design decisions, and how components are organized.
 
 ---
 
-### 🎯 [Uso de Iconos](./docs/icons.md)
+### 📁 [Project Structure](./docs/project-structure.md)
 
-Guía para el uso de iconos en la aplicación:
-- Componente `<ft-icon />` y sus propiedades
-- Colecciones disponibles (factoricons-slim, factoricons-regular, factoricons-solid)
-- Iconos personalizados en `public/images/icons.svg`
-- Modificadores de tamaño
+Detailed guide to folder and file organization in `src/app`:
+- Core, Shared, and Features structure
+- Naming conventions
+- Organization of components, services, models, and more
 
-**Útil para:** Agregar iconos a componentes, crear iconos personalizados y mantener consistencia visual.
-
----
-
-### 🌐 [Servicios REST](./docs/rest-services.md)
-
-Patrón de repositorios para comunicación con APIs:
-- Estructura de repositorios
-- Mutaciones (POST, PUT, DELETE) con `getMutations`
-- Recursos individuales y listas con `getResource`
-- Manejo de estados (loading, error) con signals
-
-**Útil para:** Implementar servicios que consumen APIs REST, manejar estados de carga y errores.
+**Useful for:** Navigating code, locating files, and understanding where to place new components.
 
 ---
 
-### 🧪 [Testing Unitario](./docs/unit-testing.md)
+### 🎨 [CSS Styling](./docs/css-styling.md)
 
-Estrategias y mejores prácticas para testing:
-- Configuración con Jest
-- Patrón AAA (Arrange, Act, Assert)
-- Testing de componentes y servicios
-- Testing de signals y computed values
-- Cobertura y casos de prueba (positivos y negativos)
+Rules and conventions for CSS usage in the project:
+- BEM with `ft-` prefix for custom classes
+- Tailwind CSS prioritization for utilities
+- CSS variables for themes and consistency
+- Responsive design with Tailwind breakpoints
 
-**Útil para:** Escribir tests efectivos, mantener cobertura de código y validar comportamientos.
+**Useful for:** Applying consistent styles, deciding when to use Tailwind vs. custom classes.
 
 ---
 
-## Contribuir
+### ✅ [Form Field Validation](./docs/form-field-validation.md)
 
-Al agregar nueva documentación:
-- Mantén el formato Markdown consistente
-- Incluye ejemplos de código cuando sea relevante
-- Actualiza este índice con enlaces y descripciones
-- Sigue las convenciones establecidas en los documentos existentes
+Standards for handling reactive forms and validations:
+- Field structure with `mat-form-field`
+- Using the `errorMessage` pipe for error messages
+- Validator resolution order (Angular → Shared → Feature)
+- Custom validator examples
+
+**Useful for:** Implementing forms with consistent validation and standardized error messages.
+
+---
+
+### 🎯 [Icon Usage](./docs/icons.md)
+
+Guide for using icons in the application:
+- `<ft-icon />` component and its properties
+- Available collections (factoricons-slim, factoricons-regular, factoricons-solid)
+- Custom icons in `public/images/icons.svg`
+- Size modifiers
+
+**Useful for:** Adding icons to components, creating custom icons, and maintaining visual consistency.
+
+---
+
+### 🌐 [REST Services](./docs/rest-services.md)
+
+Repository pattern for API communication:
+- Repository structure
+- Mutations (POST, PUT, DELETE) with `getMutations`
+- Individual resources and lists with `getResource`
+- State handling (loading, error) with signals
+
+**Useful for:** Implementing services that consume REST APIs, handling loading and error states.
+
+---
+
+### 🧪 [Unit Testing](./docs/unit-testing.md)
+
+Strategies and best practices for testing:
+- Configuration with Jest
+- AAA pattern (Arrange, Act, Assert)
+- Component and service testing
+- Testing signals and computed values
+- Coverage and test cases (positive and negative)
+
+**Useful for:** Writing effective tests, maintaining code coverage, and validating behaviors.
+
+---
+
+## Contributing
+
+When adding new documentation:
+- Keep Markdown format consistent
+- Include code examples when relevant
+- Update this index with links and descriptions
+- Follow conventions established in existing documents
 
 ## Enlaces
 

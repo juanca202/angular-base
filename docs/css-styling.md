@@ -1,4 +1,4 @@
-## CSS & Styling Guidelines
+## CSS & Styling Guide
 
 - Follow the **BEM (Block Element Modifier)** naming convention for all custom CSS class names.  
   **Example:** `ft-button`, `ft-button__icon`, `ft-button--primary`

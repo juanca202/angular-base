@@ -1,4 +1,4 @@
-# Form Field Validation Rules - Cursor
+# Form Field Validation Guide
 
 ## Objective
 Provide standardized rules for handling reactive form validations and error messages in Angular forms using `mat-form-field`.

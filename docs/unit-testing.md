@@ -1,4 +1,4 @@
-## Unit testing
+## Unit Testing Guide
 
 - All tests must be written using Jest
 - Follow the AAA pattern: Arrange, Act, Assert

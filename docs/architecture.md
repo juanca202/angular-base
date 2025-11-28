@@ -35,21 +35,7 @@ La arquitectura sigue el C4 Model, que describe el sistema desde mayor a menor n
 
 Este diagrama muestra los principales componentes internos del sistema y cómo interactúan entre sí.
 
-```mermaid
-C4Component
-    Container_Boundary(app, "Frontend Angular") {
-        Component(appShell, "App Shell", "Angular", "Bootstrap del proyecto, layout principal")
-        Component(core, "Core", "Angular Library", "Servicios globales, guards, interceptors")
-        Component(shared, "Shared", "Angular Library", "Componentes UI reutilizables, pipes, directivas")
-        Component(featureX, "Feature Modules", "Angular", "Funcionalidades específicas")
-        Component(api, "API Services", "TS", "Comunicación HTTP con backend")
-    }
-
-    Rel(appShell, featureX, "Carga módulos a través de rutas")
-    Rel(featureX, shared, "Usa componentes, pipes y directivas")
-    Rel(featureX, core, "Usa servicios globales")
-    Rel(core, api, "Encapsula acceso a API")
-```
+![C4 Level 3 - Component Diagram](./images/c4-level-3.png)
 
 # C4 Level 4 – Diagrama Interno de Módulos y Clases
 
