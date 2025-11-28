@@ -1,53 +1,53 @@
-# Introducción
+# Introduction
 
-Este documento describe la arquitectura del proyecto, incluyendo sus decisiones clave, componentes principales, estructuras internas y diagramas C4.
+This document describes the project architecture, including its key decisions, main components, internal structures, and C4 diagrams.
 
-El objetivo es proporcionar una referencia clara para desarrolladores actuales y futuros, facilitar el onboarding y mejorar la mantenibilidad del sistema.
+The goal is to provide a clear reference for current and future developers, facilitate onboarding, and improve system maintainability.
 
-# Objetivos Arquitectónicos
+# Architectural Objectives
 
-- Mantener una arquitectura modular, escalable y fácil de mantener.
-- Separar responsabilidades en capas (Core, Shared, Features, App Shell) siguiendo principios de separación de concerns.
-- Asegurar que la comunicación con APIs y servicios externos esté centralizada.
-- Mantener un diseño consistente basado en reglas de desarrollo documentadas.
-- Permitir incorporación de nuevas funcionalidades sin afectar las existentes.
-- Seguir el [Angular Style Guide oficial](https://angular.dev/style-guide) para mantener consistencia en el código.
-- Utilizar Tailwind CSS para utilidades y mantener BEM con prefijo `ft-` para estilos de componentes.
-- Establecer reglas claras para desarrollo asistido por IA que garanticen la aplicación consistente de las decisiones arquitectónicas.
+- Maintain a modular, scalable, and easy-to-maintain architecture.
+- Separate responsibilities into layers (Core, Shared, Features, App Shell) following separation of concerns principles.
+- Ensure that communication with APIs and external services is centralized.
+- Maintain a consistent design based on documented development rules.
+- Allow incorporation of new features without affecting existing ones.
+- Follow the [official Angular Style Guide](https://angular.dev/style-guide) to maintain code consistency.
+- Use Tailwind CSS for utilities and maintain BEM with `ft-` prefix for component styles.
+- Establish clear rules for AI-assisted development that ensure consistent application of architectural decisions.
 
-# Alcance
+# Scope
 
-Este documento describe la arquitectura del frontend, incluyendo:
+This document describes the frontend architecture, including:
 
-- Estructura del proyecto Angular  
-- Capas internas (Core, Shared, Feature Modules)  
-- Comunicación con APIs  
-- Librerías internas  
-- Diagramas C4
+- Angular project structure  
+- Internal layers (Core, Shared, Feature Modules)  
+- API communication  
+- Internal libraries  
+- C4 diagrams
 
-# Visión General de la Arquitectura
+# Architecture Overview
 
-El proyecto está basado en Angular, estructurado mediante módulos funcionales y carpetas que separan responsabilidades.
+The project is based on Angular, structured through functional modules and folders that separate responsibilities.
 
-La arquitectura sigue el C4 Model, que describe el sistema desde mayor a menor nivel de detalle.
+The architecture follows the C4 Model, which describes the system from highest to lowest level of detail.
 
-# C4 Level 3 – Diagrama de Componentes (Frontend)
+# C4 Level 3 – Component Diagram (Frontend)
 
-Este diagrama muestra los principales componentes internos del sistema y cómo interactúan entre sí.
+This diagram shows the main internal components of the system and how they interact with each other.
 
 ![C4 Level 3 - Component Diagram](./images/c4-level-3.png)
 
-# C4 Level 4 – Diagrama Interno de Módulos y Clases
+# C4 Level 4 – Internal Modules and Classes Diagram
 
-Aquí se detalla la estructura interna real del código, útil para desarrolladores.
+This section details the actual internal code structure, useful for developers.
 
-Puedes mostrar:
+You can show:
 
-- Jerarquía de carpetas  
-- Componentes internos  
-- Servicios  
+- Folder hierarchy  
+- Internal components  
+- Services  
 - Interfaces  
-- Comunicación entre módulos  
+- Inter-module communication  
 
 ```mermaid
 flowchart TD
@@ -79,83 +79,83 @@ flowchart TD
     D1 --> C1
 ```
 
-# Decisiones Arquitectónicas (ADRs)
+# Architectural Decisions (ADRs)
 
-Registra decisiones clave:
+Records key decisions:
 
-### ADR-001 — Separación de responsabilidades: Core, Shared y Features
+### ADR-001 — Separation of responsibilities: Core, Shared, and Features
 
-**Estado:** aceptada
-**Motivo:** mantener una arquitectura modular, escalable y fácil de mantener con separación clara de responsabilidades.
+**Status:** accepted
+**Reason:** maintain a modular, scalable, and easy-to-maintain architecture with clear separation of responsibilities.
 
-**Estructura:**
-- **Core:** servicios globales, guards, interceptors, modelos globales, utilidades compartidas
-- **Shared:** componentes UI reutilizables, pipes, directivas, validadores comunes
-- **Features:** funcionalidades específicas del dominio (ej: `auth/`, `samples/`)
+**Structure:**
+- **Core:** global services, guards, interceptors, global models, shared utilities
+- **Shared:** reusable UI components, pipes, directives, common validators
+- **Features:** domain-specific functionalities (e.g., `auth/`, `samples/`)
 
-**Reglas:**
-- Cada feature es independiente y puede contener sus propios componentes, servicios, modelos, repositorios y managers
-- Las features no deben depender entre sí directamente
-- Las features pueden usar Core y Shared, pero no al revés
-- Cada feature define sus propias rutas en un archivo `*-routes.ts`
+**Rules:**
+- Each feature is independent and can contain its own components, services, models, repositories, and managers
+- Features should not depend on each other directly
+- Features can use Core and Shared, but not the other way around
+- Each feature defines its own routes in a `*-routes.ts` file
 
-**Referencia:** Ver estructura detallada en `.cursor/rules/project-structure.mdc`
+**Reference:** See detailed structure in `.cursor/rules/project-structure.mdc`
 
-### ADR-002 — Adopción del Angular Style Guide oficial
+### ADR-002 — Adoption of the official Angular Style Guide
 
-**Estado:** aceptada
-**Motivo:** mantener consistencia en el código, facilitar el onboarding y seguir las mejores prácticas recomendadas por el equipo de Angular.
+**Status:** accepted
+**Reason:** maintain code consistency, facilitate onboarding, and follow best practices recommended by the Angular team.
 
-**Referencia:** [Angular Style Guide](https://angular.dev/style-guide)
+**Reference:** [Angular Style Guide](https://angular.dev/style-guide)
 
-**Aspectos clave aplicados:**
-- **Nomenclatura de archivos:** usar guiones para separar palabras (ej: `user-profile.ts`)
-- **Nomenclatura de clases:** usar PascalCase para clases (ej: `UserProfile`)
-- **Estructura de proyecto:** organizar por features, no por tipo de archivo
-- **Inyección de dependencias:** preferir `inject()` sobre inyección por constructor
-- **Componentes:** usar `input()`, `output()`, `computed()` en lugar de decoradores
-- **Templates:** usar control flow nativo (`@if`, `@for`, `@switch`) en lugar de directivas estructurales
-- **Bindings:** preferir `class` y `style` bindings sobre `ngClass` y `ngStyle`
-- **Selectores:** usar prefijo de aplicación consistente para componentes y directivas
-- **Un concepto por archivo:** mantener archivos enfocados en una sola responsabilidad
+**Key aspects applied:**
+- **File naming:** use hyphens to separate words (e.g., `user-profile.ts`)
+- **Class naming:** use PascalCase for classes (e.g., `UserProfile`)
+- **Project structure:** organize by features, not by file type
+- **Dependency injection:** prefer `inject()` over constructor injection
+- **Components:** use `input()`, `output()`, `computed()` instead of decorators
+- **Templates:** use native control flow (`@if`, `@for`, `@switch`) instead of structural directives
+- **Bindings:** prefer `class` and `style` bindings over `ngClass` and `ngStyle`
+- **Selectors:** use consistent application prefix for components and directives
+- **One concept per file:** keep files focused on a single responsibility
 
-**Impacto:** Todas las reglas del Angular Style Guide están documentadas en `.cursor/rules/` para ser aplicadas automáticamente por herramientas de IA.
+**Impact:** All Angular Style Guide rules are documented in `.cursor/rules/` to be automatically applied by AI tools.
 
-### ADR-003 — Uso de Tailwind CSS para clases utilitarias y para crear componentes
+### ADR-003 — Use of Tailwind CSS for utility classes and component creation
 
-**Estado:** aceptada
-**Motivo:** mejora velocidad de desarrollo, elimina CSS muerto, mantiene consistencia y reduce mantenimiento.  
-**Impacto:** Todas las utilidades de layout, spacing y tipografía deben usar clases de Tailwind CSS. Las clases personalizadas con prefijo `ft-` se reservan únicamente para estilos específicos de componentes siguiendo BEM.
+**Status:** accepted
+**Reason:** improves development speed, eliminates dead CSS, maintains consistency, and reduces maintenance.  
+**Impact:** All layout, spacing, and typography utilities must use Tailwind CSS classes. Custom classes with `ft-` prefix are reserved solely for component-specific styles following BEM.
 
-### ADR-004 — Reglas de desarrollo asistido por IA (Cursor)
+### ADR-004 — AI-assisted development rules (Cursor)
 
-**Estado:** aceptada
-**Motivo:** estandarizar el desarrollo asistido por IA para mantener consistencia, calidad y seguir las decisiones arquitectónicas del proyecto.
+**Status:** accepted
+**Reason:** standardize AI-assisted development to maintain consistency, quality, and follow the project's architectural decisions.
 
-**Implementación:**
-- Todas las decisiones arquitectónicas y reglas de estilo están documentadas en `.cursor/rules/`
-- Las reglas incluyen: estructura de proyecto, estilos CSS (Tailwind + BEM), validación de formularios, uso de iconos, servicios REST, testing, y más
-- Las reglas se aplican automáticamente cuando se usa Cursor para desarrollo asistido por IA
+**Implementation:**
+- All architectural decisions and style rules are documented in `.cursor/rules/`
+- Rules include: project structure, CSS styles (Tailwind + BEM), form validation, icon usage, REST services, testing, and more
+- Rules are automatically applied when using Cursor for AI-assisted development
 
-**Beneficios:**
-- Consistencia automática en el código generado
-- Onboarding más rápido para nuevos desarrolladores
-- Reducción de errores y desviaciones del estilo
-- Documentación viva y ejecutable
+**Benefits:**
+- Automatic consistency in generated code
+- Faster onboarding for new developers
+- Reduction of errors and style deviations
+- Living and executable documentation
 
-# Seguridad y Privacidad
+# Security and Privacy
 
-- Sanitización de datos  
-- Autenticación JWT (si aplica)  
-- Guards de ruta  
-- HTTPS obligatorio  
+- Data sanitization  
+- JWT authentication (if applicable)  
+- Route guards  
+- Mandatory HTTPS  
 
-# Performance y Optimización
+# Performance and Optimization
 
-- Lazy Loading de módulos  
-- OnPush Change Detection  
-- Caché en servicios  
+- Module lazy loading  
+- OnPush change detection  
+- Service caching  
 
-# Conclusiones
+# Conclusions
 
-Este documento establece la estructura base y las dependencias del proyecto, sirviendo como guía para mantener la coherencia del código y facilitar escalar el sistema.
+This document establishes the base structure and dependencies of the project, serving as a guide to maintain code coherence and facilitate system scaling.
