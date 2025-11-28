@@ -1,7 +1,3 @@
-# Documentación del Proyecto
-
-## Resumen General
-
 Este proyecto es una aplicación base desarrollada con **Angular**, diseñada siguiendo una arquitectura modular y escalable. El proyecto implementa las mejores prácticas de Angular, utilizando componentes standalone, signals para el manejo de estado, y una estructura organizada en capas (Core, Shared, Features).
 
 ### Características Principales
