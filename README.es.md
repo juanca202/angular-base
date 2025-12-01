@@ -49,6 +49,7 @@ Este proyecto usa la convención **Conventional Commits**. Para más detalles so
 
 Enlaces directos a toda la documentación disponible:
 
+- 🚀 [Comenzando](./docs/es/getting-started.md) - Cómo usar este proyecto base
 - 📐 [Arquitectura](./docs/es/architecture.md) - Estructura general y decisiones de diseño
 - 🎨 [Estilos CSS](./docs/es/css-styling.md) - Reglas y convenciones CSS
 - 📋 [Registros de Decisiones Arquitectónicas (ADRs)](./docs/es/decisions/README.md) - Decisiones arquitectónicas documentadas

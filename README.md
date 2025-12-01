@@ -49,6 +49,7 @@ This project uses the **Conventional Commits** convention. For more details on a
 
 Direct links to all available documentation:
 
+- 🚀 [Getting Started](./docs/en/getting-started.md) - How to use this base project
 - 📐 [Architecture](./docs/en/architecture.md) - General structure and design decisions
 - 🎨 [CSS Styling](./docs/en/css-styling.md) - CSS rules and conventions
 - 📋 [Architectural Decision Records (ADRs)](./docs/en/decisions/README.md) - Documented architectural decisions
