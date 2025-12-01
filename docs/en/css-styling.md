@@ -1,6 +1,6 @@
 ## CSS & Styling Guide
 
-**📖 [English](./css-styling.md) | [Español](../../es/css-styling.md)**
+**📖 [English](./css-styling.md) | [Español](../es/css-styling.md)**
 
 - Follow the **BEM (Block Element Modifier)** naming convention for all custom CSS class names.  
   **Example:** `ft-button`, `ft-button__icon`, `ft-button--primary`
