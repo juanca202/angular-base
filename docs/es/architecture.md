@@ -96,7 +96,7 @@ Este proyecto sigue el formato de Architectural Decision Records (ADR) para docu
 - **[ADR-003: Uso de Tailwind CSS para Clases Utilitarias y Creación de Componentes](./decisions/ADR-003.md)**  
   Establece el uso de Tailwind CSS para clases utilitarias mientras reserva CSS personalizado con prefijo `ft-` para estilos específicos de componentes siguiendo BEM.
 
-- **[ADR-004: Reglas de Desarrollo Asistido por IA (Cursor)](./decisions/ADR-004.md)**  
+- **[ADR-004: Reglas de Desarrollo Asistido por IA](./decisions/ADR-004.md)**  
   Documenta reglas para desarrollo asistido por IA para asegurar generación de código consistente alineada con decisiones arquitectónicas.
 
 - **[ADR-005: Estrategia de Internacionalización (i18n)](./decisions/ADR-005.md)**  

@@ -96,7 +96,7 @@ This project follows the Architectural Decision Records (ADR) format to document
 - **[ADR-003: Use of Tailwind CSS for Utility Classes and Component Creation](./decisions/ADR-003.md)**  
   Mandates Tailwind CSS for utility classes while reserving custom CSS with `ft-` prefix for component-specific styles following BEM.
 
-- **[ADR-004: AI-Assisted Development Rules (Cursor)](./decisions/ADR-004.md)**  
+- **[ADR-004: AI-Assisted Development Rules](./decisions/ADR-004.md)**  
   Documents rules for AI-assisted development to ensure consistent code generation aligned with architectural decisions.
 
 - **[ADR-005: Internationalization (i18n) Strategy](./decisions/ADR-005.md)**  

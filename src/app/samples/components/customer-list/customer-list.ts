@@ -7,7 +7,7 @@ import { CustomerManager } from 'app/samples/managers/customer-manager';
 import { CustomerRepository } from 'app/samples/repositories/customer-repository';
 
 @Component({
-  selector: 'app-customer-list',
+  selector: 'ft-customer-list',
   imports: [ObserveIntersectingDirective],
   templateUrl: './customer-list.html',
   styleUrl: './customer-list.scss',

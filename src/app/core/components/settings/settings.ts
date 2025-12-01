@@ -25,7 +25,7 @@ import { CommonModule } from '@angular/common';
 import { LayoutManager } from 'app/core/services/layout-manager';
 
 @Component({
-  selector: 'app-settings',
+  selector: 'ft-settings',
   imports: [
     CommonModule,
     IconComponent,

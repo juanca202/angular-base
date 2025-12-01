@@ -9,7 +9,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
 import { CustomerRepository } from 'app/samples/repositories/customer-repository';
 
 @Component({
-  selector: 'app-customer-detail',
+  selector: 'ft-customer-detail',
   imports: [
     CommonModule,
     IconComponent,

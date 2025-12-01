@@ -20,7 +20,7 @@ import { HttpClient } from '@angular/common/http';
 import { getApiUrl } from 'app/core/services/rest-api';
 
 @Component({
-  selector: 'app-delete-user',
+  selector: 'ft-delete-user',
   imports: [
     CommonModule,
     ReactiveFormsModule,

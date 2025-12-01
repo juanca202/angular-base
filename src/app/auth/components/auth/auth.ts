@@ -20,7 +20,7 @@ import { environment } from 'environments/environment';
 import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
-  selector: 'app-auth',
+  selector: 'ft-auth',
   imports: [
     CommonModule,
     NgOptimizedImage,

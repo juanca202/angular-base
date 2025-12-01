@@ -22,7 +22,7 @@ import { HttpClient } from '@angular/common/http';
 import { getApiUrl } from 'app/core/services/rest-api';
 
 @Component({
-  selector: 'app-change-password',
+  selector: 'ft-change-password',
   imports: [
     CommonModule,
     ReactiveFormsModule,

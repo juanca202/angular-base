@@ -79,7 +79,7 @@ Este proyecto documenta todas las decisiones arquitectónicas importantes en ADR
 - **[ADR-001: Separación de Responsabilidades](./docs/es/decisions/ADR-001.md)** - Arquitectura de tres capas (Core, Shared, Features)
 - **[ADR-002: Adopción de la Guía de Estilo de Angular](./docs/es/decisions/ADR-002.md)** - Convenciones y mejores prácticas
 - **[ADR-003: Uso de Tailwind CSS](./docs/es/decisions/ADR-003.md)** - Estrategia de estilos CSS
-- **[ADR-004: Reglas de Desarrollo Asistido por IA](./docs/es/decisions/ADR-004.md)** - Reglas para Cursor
+- **[ADR-004: Reglas de Desarrollo Asistido por IA](./docs/es/decisions/ADR-004.md)** - Reglas de desarrollo asistido por IA
 - **[ADR-005: Estrategia de Internacionalización](./docs/es/decisions/ADR-005.md)** - i18n y gestión de traducciones
 - **[ADR-006: Patrón Repository para REST](./docs/es/decisions/ADR-006.md)** - Comunicación con APIs
 - **[ADR-007: Estrategia de Testing](./docs/es/decisions/ADR-007.md)** - Jest y Playwright

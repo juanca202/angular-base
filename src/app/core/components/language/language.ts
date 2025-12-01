@@ -12,7 +12,7 @@ import { AppManager } from 'app/core/services/app-manager';
 import { environment } from 'environments/environment';
 
 @Component({
-  selector: 'app-language',
+  selector: 'ft-language',
   imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
   templateUrl: './language.html',
   styleUrl: './language.scss',

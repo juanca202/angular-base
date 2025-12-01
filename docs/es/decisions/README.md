@@ -29,7 +29,7 @@ Cada ADR sigue un formato estándar:
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001.md)
 - [ADR-002: Adopción de la Guía de Estilo Oficial de Angular](./ADR-002.md)
 - [ADR-003: Uso de Tailwind CSS para Clases Utilitarias y Creación de Componentes](./ADR-003.md)
-- [ADR-004: Reglas de Desarrollo Asistido por IA (Cursor)](./ADR-004.md)
+- [ADR-004: Reglas de Desarrollo Asistido por IA](./ADR-004.md)
 - [ADR-005: Estrategia de Internacionalización (i18n)](./ADR-005.md)
 - [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006.md)
 - [ADR-007: Estrategia de Testing](./ADR-007.md)

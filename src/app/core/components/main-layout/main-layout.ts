@@ -7,7 +7,7 @@ import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 import { AuthService } from 'app/auth/auth-service';
 
 @Component({
-  selector: 'app-main-layout',
+  selector: 'ft-main-layout',
   imports: [AvatarComponent, IconComponent, MatButtonModule, RouterModule, RouterOutlet],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',

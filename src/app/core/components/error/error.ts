@@ -15,7 +15,7 @@ import { environment } from 'environments/environment';
  * Generic error page.
  */
 @Component({
-  selector: 'app-error',
+  selector: 'ft-error',
   imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
   styleUrl: './error.scss',

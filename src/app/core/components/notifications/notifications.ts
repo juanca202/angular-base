@@ -16,7 +16,7 @@ import { Notification } from 'app/core/models/notification';
 import { LayoutManager } from 'app/core/services/layout-manager';
 
 @Component({
-  selector: 'app-notifications',
+  selector: 'ft-notifications',
   imports: [
     CommonModule,
     RouterModule,

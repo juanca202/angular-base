@@ -9,7 +9,7 @@ import { AppManager } from 'app/core/services/app-manager';
 import { LayoutManager } from 'app/core/services/layout-manager';
 
 @Component({
-  selector: 'app-page',
+  selector: 'ft-page',
   imports: [MatButtonModule, MatDialogModule, IconComponent, ObserveIntersectingDirective],
   templateUrl: './page.html',
   styleUrl: './page.scss'

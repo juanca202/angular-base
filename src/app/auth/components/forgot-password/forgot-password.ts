@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
-  selector: 'app-forgot-password',
+  selector: 'ft-forgot-password',
   imports: [
     CommonModule,
     ReactiveFormsModule,
