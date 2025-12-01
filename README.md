@@ -8,9 +8,6 @@ This project is a base application developed with **Angular**, designed followin
 - **PWA (Progressive Web App)**: Ready to install and use offline
 - **Angular Material (MDC)**: UI components based on Material Design
 - **Tailwind CSS**: CSS utilities for layout and common styles
-- **BEM with `ft-` prefix**: Naming convention for component styles
-- **Reactive forms**: Standardized validation with custom pipes
-- **REST services**: Repository pattern for API communication
 - **Code quality**: ESLint, Prettier, and Husky (hooks for validation)
 - **Unit and E2E testing**: Jest and Playwright
 - **Error monitoring**: Sentry, Azure Application Insights
