@@ -193,7 +193,7 @@ If conflicts occur during merge:
 
 ## Next Steps
 
-1. **Review Architecture**: Read [Architecture Documentation](./architecture.md) to understand the project structure
+1. **Review Architecture**: Read [Architecture Documentation](./README.md) to understand the project structure
 2. **Read ADRs**: Review [Architectural Decision Records](./decisions/README.md) to understand design decisions
 3. **Set Up CI/CD**: Configure your CI/CD pipeline
 4. **Configure Environments**: Set up development, staging, and production environments
@@ -249,7 +249,7 @@ If you encounter build errors:
 
 ## References
 
-- [Architecture Documentation](./architecture.md)
+- [Architecture Documentation](./README.md)
 - [Architectural Decision Records (ADRs)](./decisions/README.md)
 - [Angular Documentation](https://angular.dev)
 - [Project README](../README.md)

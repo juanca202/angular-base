@@ -46,7 +46,7 @@ When making a significant architectural decision:
 2. **Use the template:** Follow the format of existing ADRs
 3. **Be thorough:** Include context, decision rationale, and consequences
 4. **Add examples:** Include code examples when relevant
-5. **Update the index:** Add a link in `architecture.md` and this README
+5. **Update the index:** Add a link in `README.md` and this README
 
 ## ADR Statuses
 
@@ -59,5 +59,5 @@ When making a significant architectural decision:
 
 - [ADR GitHub Repository](https://github.com/joelparkerhenderson/architecture-decision-record)
 - [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
-- [Architecture Documentation](../architecture.md)
+- [Architecture Documentation](../README.md)
 

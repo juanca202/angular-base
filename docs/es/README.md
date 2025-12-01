@@ -1,6 +1,6 @@
 # Introducción
 
-**📖 [English](../en/architecture.md) | [Español](./architecture.md)**
+**📖 [English](../en/README.md) | [Español](./README.md)**
 
 Este documento describe la arquitectura del proyecto, incluyendo sus decisiones clave, componentes principales, estructuras internas y diagramas C4.
 

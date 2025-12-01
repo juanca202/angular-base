@@ -193,7 +193,7 @@ Si ocurren conflictos durante la fusión:
 
 ## Próximos Pasos
 
-1. **Revisar Arquitectura**: Lee la [Documentación de Arquitectura](./architecture.md) para entender la estructura del proyecto
+1. **Revisar Arquitectura**: Lee la [Documentación de Arquitectura](./README.md) para entender la estructura del proyecto
 2. **Leer ADRs**: Revisa los [Registros de Decisiones Arquitectónicas](./decisions/README.md) para entender las decisiones de diseño
 3. **Configurar CI/CD**: Configura tu pipeline de CI/CD
 4. **Configurar Entornos**: Configura entornos de desarrollo, staging y producción
@@ -249,7 +249,7 @@ Si encuentras errores de compilación:
 
 ## Referencias
 
-- [Documentación de Arquitectura](./architecture.md)
+- [Documentación de Arquitectura](./README.md)
 - [Registros de Decisiones Arquitectónicas (ADRs)](./decisions/README.md)
 - [Documentación de Angular](https://angular.dev)
 - [README del Proyecto](../README.md)

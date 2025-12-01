@@ -46,7 +46,7 @@ Al tomar una decisión arquitectónica significativa:
 2. **Usa la plantilla:** Sigue el formato de los ADRs existentes
 3. **Sé exhaustivo:** Incluye contexto, justificación de la decisión y consecuencias
 4. **Agrega ejemplos:** Incluye ejemplos de código cuando sea relevante
-5. **Actualiza el índice:** Agrega un enlace en `architecture.md` y este README
+5. **Actualiza el índice:** Agrega un enlace en `README.md` y este README
 
 ## Estados de ADR
 
@@ -59,5 +59,5 @@ Al tomar una decisión arquitectónica significativa:
 
 - [Repositorio ADR en GitHub](https://github.com/joelparkerhenderson/architecture-decision-record)
 - [Documentando Decisiones Arquitectónicas](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
-- [Documentación de Arquitectura](../architecture.md)
+- [Documentación de Arquitectura](../README.md)
 
