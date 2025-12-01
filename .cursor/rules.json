@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Base architecture docs",
+    "description": "Load all architecture documentation for better suggestions.",
+    "priority": "high",
+    "match": ["**/*"],
+    "paths": ["docs/**/*.md"]
+  }
+]
