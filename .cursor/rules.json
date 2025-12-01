@@ -4,6 +4,6 @@
     "description": "Load all architecture documentation for better suggestions.",
     "priority": "high",
     "match": ["**/*"],
-    "paths": ["docs/**/*.md"]
+    "paths": ["docs/en/**/*.md"]
   }
 ]

@@ -1,3 +1,5 @@
+**📖 [English](./README.md) | [Español](./README.es.md)**
+
 This project is a base application developed with **Angular**, designed following a modular and scalable architecture. The project implements Angular best practices, using standalone components, signals for state management, and an organized layered structure (Core, Shared, Features).
 
 ### Main Features
@@ -30,74 +32,19 @@ This project is a base application developed with **Angular**, designed followin
 
 - **`npm run start`**: Generates the Git version and starts the development server
 - **`npm run build`**: Generates the Git version and compiles the application for deployment
-- **`npm run extract-i18n -- [LOCALE]`**: Extracts all internationalization strings from the source code and generates the corresponding file for the provided language (e.g., `npm run extract-i18n -- es`). If there are untranslated strings, it will also create the `[LOCALE]_missing.js` file with the missing keys
-- **`npm run i18n -- [LOCALE]`**: Uses the base `en.js` file to generate or update the indicated language file, without re-extracting strings from the application. Also generates a `[LOCALE]_missing.js` file if there are missing translations
+- **`npm run extract-i18n -- [LOCALE]`**: Extracts all internationalization strings from the source code (see [ADR-005](./docs/en/decisions/ADR-005.md))
+- **`npm run i18n -- [LOCALE]`**: Generates or updates translation files for the indicated language (see [ADR-005](./docs/en/decisions/ADR-005.md))
 - **`npm run watch`**: Compiles the application in development mode with automatic reload
 - **`npm run test`**: Runs unit tests
 - **`npm run prettier`**: Automatically formats source code using Prettier
 
 ### Internationalization (i18n)
 
-This project includes support for multiple languages using JSON files as base and JS files for each language.
-
-The base language is always English (`en.json`) and additional languages are generated or updated through the `generate-i18n.js` script.
-
-#### Using the generate-i18n.js script
-
-To generate or update translation files for a specific language, run:
-
-```bash
-npm run extract-i18n     # Extracts the base in en.json
-npm run i18n -- es        # Generates or updates Spanish
-npm run i18n -- fr        # Generates or updates French
-```
-
-#### How it works
-
-The script takes the base English JSON (`en.json`) and compares it with the target language JS file (`es.js`, `fr.js`, etc.).
-
-- Sorts keys according to the base file
-- Creates a missing keys file (`<lang>_missing.json`) so you can complete translations that don't exist yet
-- Generates or updates the target language JS file
-- Also generates the base language JS file (`en.js`) from the JSON
-
-This allows the application to easily change languages and keep all translations synchronized with the English version.
+This project includes support for multiple languages. For more details on the internationalization strategy, workflow, and script usage, see [ADR-005: Internationalization Strategy](./docs/en/decisions/ADR-005.md).
 
 ### Commit Message Convention
 
-This project uses the **Conventional Commits** convention.
-
-All commit messages must follow this format:
-
-```
-<type>(optional scope): brief description
-```
-
-#### Allowed types
-
-- **`feat`** → a new feature
-- **`fix`** → a bug fix
-- **`docs`** → documentation changes
-- **`style`** → formatting/style changes (don't affect code)
-- **`refactor`** → code changes that don't fix bugs or add features
-- **`test`** → adding or fixing tests
-- **`chore`** → miscellaneous tasks (build, tools, dependencies)
-
-#### Valid examples
-
-- `feat(auth): add Google login`
-- `fix(api): fix error in users endpoint`
-- `docs(readme): update installation instructions`
-- `style(app): apply prettier to components`
-- `refactor(core): optimize notifications service`
-- `test(auth): add tests for login flow`
-- `chore(deps): update Angular to v16`
-
-#### Rules
-
-- The description should be short and in present tense
-- Use English for commits (recommended in open projects)
-- Messages will be automatically validated by commitlint in the `commit-msg` hook
+This project uses the **Conventional Commits** convention. For more details on allowed types, format, and rules, see [ADR-009: Code Quality & Tooling](./docs/en/decisions/ADR-009.md).
 
 ---
 
@@ -105,19 +52,17 @@ All commit messages must follow this format:
 
 Direct links to all available documentation:
 
-- 📐 [Architecture](./docs/architecture.md) - General structure and design decisions
-- 📁 [Project Structure](./docs/project-structure.md) - Folder and file organization
-- 🎨 [CSS Styling](./docs/css-styling.md) - CSS rules and conventions
-- ✅ [Form Field Validation](./docs/form-field-validation.md) - Reactive forms standards
-- 🎯 [Icon Usage](./docs/icons.md) - Guide for using icons
-- 🌐 [REST Services](./docs/rest-services.md) - Repository pattern for APIs
-- 🧪 [Unit Testing](./docs/unit-testing.md) - Testing strategies and best practices
+- 📐 [Architecture](./docs/en/architecture.md) - General structure and design decisions
+- 🎨 [CSS Styling](./docs/en/css-styling.md) - CSS rules and conventions
+- 📋 [Architectural Decision Records (ADRs)](./docs/en/decisions/README.md) - Documented architectural decisions
+
+**📖 [View documentation in Spanish](./README.es.md)**
 
 ---
 
 ## Documentation Index
 
-### 📐 [Architecture](./docs/architecture.md)
+### 📐 [Architecture](./docs/en/architecture.md)
 
 Complete documentation of the project architecture, including:
 - Architectural objectives and scope
@@ -130,18 +75,27 @@ Complete documentation of the project architecture, including:
 
 ---
 
-### 📁 [Project Structure](./docs/project-structure.md)
+### 📋 [Architectural Decision Records (ADRs)](./docs/en/decisions/README.md)
 
-Detailed guide to folder and file organization in `src/app`:
-- Core, Shared, and Features structure
-- Naming conventions
-- Organization of components, services, models, and more
+This project documents all significant architectural decisions in ADRs:
 
-**Useful for:** Navigating code, locating files, and understanding where to place new components.
+- **[ADR-001: Separation of Responsibilities](./docs/en/decisions/ADR-001.md)** - Three-layer architecture (Core, Shared, Features)
+- **[ADR-002: Adoption of Angular Style Guide](./docs/en/decisions/ADR-002.md)** - Conventions and best practices
+- **[ADR-003: Use of Tailwind CSS](./docs/en/decisions/ADR-003.md)** - CSS styling strategy
+- **[ADR-004: AI-Assisted Development Rules](./docs/en/decisions/ADR-004.md)** - Rules for Cursor
+- **[ADR-005: Internationalization Strategy](./docs/en/decisions/ADR-005.md)** - i18n and translation management
+- **[ADR-006: Repository Pattern for REST](./docs/en/decisions/ADR-006.md)** - API communication
+- **[ADR-007: Testing Strategy](./docs/en/decisions/ADR-007.md)** - Jest and Playwright
+- **[ADR-008: Form Validation Strategy](./docs/en/decisions/ADR-008.md)** - Reactive forms
+- **[ADR-009: Code Quality & Tooling](./docs/en/decisions/ADR-009.md)** - ESLint, Prettier, Husky
+- **[ADR-010: Icon Usage Strategy](./docs/en/decisions/ADR-010.md)** - `<ft-icon />` component
+- **[ADR-011: Documentation Strategy](./docs/en/decisions/ADR-011.md)** - JSDoc/TSDoc, Compodoc
+
+**Useful for:** Understanding the project's architectural decisions and the reasoning behind them.
 
 ---
 
-### 🎨 [CSS Styling](./docs/css-styling.md)
+### 🎨 [CSS Styling](./docs/en/css-styling.md)
 
 Rules and conventions for CSS usage in the project:
 - BEM with `ft-` prefix for custom classes
@@ -150,55 +104,6 @@ Rules and conventions for CSS usage in the project:
 - Responsive design with Tailwind breakpoints
 
 **Useful for:** Applying consistent styles, deciding when to use Tailwind vs. custom classes.
-
----
-
-### ✅ [Form Field Validation](./docs/form-field-validation.md)
-
-Standards for handling reactive forms and validations:
-- Field structure with `mat-form-field`
-- Using the `errorMessage` pipe for error messages
-- Validator resolution order (Angular → Shared → Feature)
-- Custom validator examples
-
-**Useful for:** Implementing forms with consistent validation and standardized error messages.
-
----
-
-### 🎯 [Icon Usage](./docs/icons.md)
-
-Guide for using icons in the application:
-- `<ft-icon />` component and its properties
-- Available collections (factoricons-slim, factoricons-regular, factoricons-solid)
-- Custom icons in `public/images/icons.svg`
-- Size modifiers
-
-**Useful for:** Adding icons to components, creating custom icons, and maintaining visual consistency.
-
----
-
-### 🌐 [REST Services](./docs/rest-services.md)
-
-Repository pattern for API communication:
-- Repository structure
-- Mutations (POST, PUT, DELETE) with `getMutations`
-- Individual resources and lists with `getResource`
-- State handling (loading, error) with signals
-
-**Useful for:** Implementing services that consume REST APIs, handling loading and error states.
-
----
-
-### 🧪 [Unit Testing](./docs/unit-testing.md)
-
-Strategies and best practices for testing:
-- Configuration with Jest
-- AAA pattern (Arrange, Act, Assert)
-- Component and service testing
-- Testing signals and computed values
-- Coverage and test cases (positive and negative)
-
-**Useful for:** Writing effective tests, maintaining code coverage, and validating behaviors.
 
 ---
 
