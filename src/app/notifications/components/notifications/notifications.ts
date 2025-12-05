@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, signal, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -26,6 +26,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-page'
   }
@@ -42,10 +43,9 @@ export class Notifications implements OnDestroy {
   // Properties
   public readonly notifications = signal<NotificationWrapped[]>([]);
   public readonly loading = signal<boolean>(false);
-  public queryRef: QueryRef<any>;
-  public readPool: string[] = [];
-  public postReadTimer!: ReturnType<typeof setInterval> | null;
-  public notificationsTimer!: ReturnType<typeof setInterval> | null;
+  public readonly queryRef: QueryRef<any>;
+  public readonly readPool: string[] = [];
+  private postReadTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     this.title.setTitle($localize`Notifications`);
@@ -110,6 +110,7 @@ export class Notifications implements OnDestroy {
     if (this.postReadTimer) {
       clearInterval(this.postReadTimer);
       this.postReadNotifications(this.readPool);
+      this.postReadTimer = null;
     }
   }
   public setAsRead(item: NotificationWrapped, visible: boolean): void {

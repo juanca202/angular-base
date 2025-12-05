@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -34,7 +34,8 @@ import { getApiUrl } from 'app/core/utils/async-repository';
     ErrorMessagePipe
   ],
   templateUrl: './change-password.html',
-  styleUrl: './change-password.scss'
+  styleUrl: './change-password.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangePassword {
   // Dependency injection
@@ -45,7 +46,7 @@ export class ChangePassword {
   private readonly messageService = inject(MessageService);
 
   // Properties
-  public form: FormGroup = new FormGroup({});
+  public readonly form: FormGroup;
   public readonly newPasswordVisible = signal<boolean>(false);
   public readonly notEqualMessage = $localize`New password is not the same`;
   public readonly passwordVisible = signal<boolean>(false);

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -12,7 +12,8 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   selector: 'ft-page',
   imports: [MatButtonModule, MatDialogModule, IconComponent, ObserveIntersectingDirective],
   templateUrl: './page.html',
-  styleUrl: './page.scss'
+  styleUrl: './page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Page implements OnInit {
   // Dependency injection

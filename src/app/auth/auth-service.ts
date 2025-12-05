@@ -70,19 +70,19 @@ declare let navigator: any;
   providedIn: 'root'
 })
 export class AuthService {
-  private dialog = inject(MatDialog);
-  private httpClient = inject(HttpClient);
-  private storageService = inject(StorageService);
+  private readonly dialog = inject(MatDialog);
+  private readonly httpClient = inject(HttpClient);
+  private readonly storageService = inject(StorageService);
 
-  signedIn = new EventEmitter<boolean>(false);
-  signedUp = new EventEmitter<boolean>(false);
-  loggedIn = new EventEmitter<boolean>(false);
-  settings = signal<Settings | undefined>(undefined);
+  public readonly signedIn = new EventEmitter<boolean>(false);
+  public readonly signedUp = new EventEmitter<boolean>(false);
+  public readonly loggedIn = new EventEmitter<boolean>(false);
+  public readonly settings = signal<Settings | undefined>(undefined);
   /**
    * Auth keys
    */
-  private tokenKey = `${environment.sessionPrefix}_jwt`;
-  private settingsKey = `${environment.sessionPrefix}_set`;
+  private readonly tokenKey = `${environment.sessionPrefix}_jwt`;
+  private readonly settingsKey = `${environment.sessionPrefix}_set`;
   /**
    * Flag indicating whether the access token is being refreshed
    */
@@ -90,7 +90,7 @@ export class AuthService {
   /**
    * Manages the access token refresh flow
    */
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   /**
    * Sends the authentication token to the server

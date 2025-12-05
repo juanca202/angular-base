@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, RouterOutlet } from '@angular/router';
@@ -11,6 +11,7 @@ import { AuthService } from 'app/auth/auth-service';
   imports: [AvatarComponent, IconComponent, MatButtonModule, RouterModule, RouterOutlet],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-main-layout'
   }

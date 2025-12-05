@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -16,6 +16,7 @@ import { environment } from 'environments/environment';
   imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
   templateUrl: './language.html',
   styleUrl: './language.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-page'
   }

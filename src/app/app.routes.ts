@@ -1,22 +1,44 @@
 import { Routes } from '@angular/router';
-import { Error } from './core/components/error/error';
-import { Notifications } from './core/components/notifications/notifications';
-import { Settings } from './core/components/settings/settings';
-import { Language } from './core/components/language/language';
+
 import { MainLayout } from './core/components/main-layout/main-layout';
 import { authGuard } from './auth/auth-guards';
-import { authRoutes } from './auth/auth-routes';
 
 export const routes: Routes = [
-  ...authRoutes,
+  {
+    path: '',
+    loadChildren: () => import('./auth/auth-routes').then((m) => m.authRoutes)
+  },
   {
     path: '',
     component: MainLayout,
-    children: []
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'settings'
+      },
+      {
+        path: 'settings',
+        loadChildren: () => import('./settings/settings-routes').then((m) => m.settingsRoutes)
+      },
+      {
+        path: 'notifications',
+        loadChildren: () =>
+          import('./notifications/notifications-routes').then((m) => m.notificationsRoutes)
+      },
+      {
+        path: 'samples',
+        loadChildren: () => import('./templates/templates-routes').then((m) => m.samplesRoutes)
+      }
+    ]
   },
-  { path: 'settings', component: Settings, canActivate: [authGuard] },
-  { path: 'settings/language', component: Language },
-  { path: 'notifications', component: Notifications },
-  { path: 'error/:code', component: Error, title: $localize`Error` },
-  { path: '**', component: Error, data: { code: 404 } }
+  {
+    path: 'error',
+    loadChildren: () => import('./error/error-routes').then((m) => m.errorRoutes)
+  },
+  {
+    path: '**',
+    redirectTo: 'error/404'
+  }
 ];

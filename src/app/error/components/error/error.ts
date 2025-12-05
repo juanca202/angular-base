@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from '@angular/core';
 
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -19,6 +19,7 @@ import { environment } from 'environments/environment';
   imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
   styleUrl: './error.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-error'
   }

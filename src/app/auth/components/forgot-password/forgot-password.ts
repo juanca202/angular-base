@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,7 +25,8 @@ import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
     ErrorMessagePipe
   ],
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.scss'
+  styleUrl: './forgot-password.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForgotPassword {
   // Dependency injection
@@ -36,7 +37,7 @@ export class ForgotPassword {
   private readonly messageService = inject(MessageService);
 
   // Properties
-  public form: FormGroup;
+  public readonly form: FormGroup;
   public readonly submitting = signal<boolean>(false);
 
   constructor() {

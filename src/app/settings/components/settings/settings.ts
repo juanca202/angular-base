@@ -1,4 +1,12 @@
-import { Component, OnInit, signal, inject, ElementRef, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+  inject,
+  ElementRef,
+  viewChild
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -41,6 +49,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-page'
   }
