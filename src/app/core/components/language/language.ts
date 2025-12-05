@@ -21,16 +21,19 @@ import { environment } from 'environments/environment';
   }
 })
 export class Language {
+  // Dependency injection
   public readonly appManager = inject(AppManager);
   private readonly storageService = inject(StorageService);
   private readonly title = inject(Title);
 
-  public locale = signal<string | undefined>(this.appManager.getLocale());
+  // Properties
+  public readonly locale = signal<string | undefined>(this.appManager.getLocale());
+
   constructor() {
     this.title.setTitle($localize`Language`);
   }
 
-  async select(language: LanguageModel): Promise<void> {
+  public async select(language: LanguageModel): Promise<void> {
     this.storageService.set(`${environment.sessionPrefix}_loc`, language.code, 'local');
     location.reload();
   }

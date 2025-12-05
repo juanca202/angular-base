@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CustomerDetail } from '../components/customer-detail/customer-detail';
-import { Customer } from '../models/customer';
+
+import { EntityDetail } from '../components/entity-detail/entity-detail';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CustomerManager {
+export class EntityManager {
   private readonly dialog = inject(MatDialog);
 
-  public open(customer: Customer) {
-    this.dialog.open(CustomerDetail, {
+  public open(id: string) {
+    this.dialog.open(EntityDetail, {
       data: {
-        customer
+        id
       },
       panelClass: ['ft-dialog', 'ft-dialog--stacked'],
       height: '100vh',

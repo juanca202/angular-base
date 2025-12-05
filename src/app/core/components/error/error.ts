@@ -24,22 +24,25 @@ import { environment } from 'environments/environment';
   }
 })
 export class Error implements OnInit {
+  // Dependency injection
   public readonly authService = inject(AuthService);
   private readonly storageService = inject(StorageService);
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  /**
-   * Object representing the error message
-   */
-  error = signal<ErrorModel | undefined>(undefined);
-  /**
-   * Error message
-   */
-  message!: string;
+  // Properties
+  public readonly error = signal<ErrorModel | undefined>(undefined);
+  public message!: string;
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    this.setError();
+    this.title.setTitle(this.error()?.title ?? 'Error');
+  }
+  public reload(): void {
+    location.reload();
+  }
+  private setError(): void {
     const message = this.storageService.get(`${environment.sessionPrefix}_msg`, 'session');
     this.storageService.delete(`${environment.sessionPrefix}_msg`, 'session');
     if (this.router.currentNavigation()?.extras.state?.['message']) {
@@ -113,9 +116,5 @@ export class Error implements OnInit {
         });
         break;
     }
-    this.title.setTitle(this.error()?.title ?? 'Error');
-  }
-  reload(): void {
-    location.reload();
   }
 }

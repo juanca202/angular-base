@@ -9,10 +9,9 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ProgressComponent, MessageService } from '@factor_ec/ui';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 
-import { AppManager } from 'app/core/services/app-manager';
 import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 
 @Component({
   selector: 'ft-forgot-password',
@@ -29,15 +28,16 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   styleUrl: './forgot-password.scss'
 })
 export class ForgotPassword {
-  AppManager = inject(AppManager);
-  private dialogRef = inject<MatDialogRef<ForgotPassword>>(MatDialogRef);
-  private formBuilder = inject(FormBuilder);
-  private googleTagManagerService = inject(GoogleTagManagerService);
-  private httpClient = inject(HttpClient);
-  private messageService = inject(MessageService);
+  // Dependency injection
+  private readonly dialogRef = inject<MatDialogRef<ForgotPassword>>(MatDialogRef);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  private readonly httpClient = inject(HttpClient);
+  private readonly messageService = inject(MessageService);
 
-  form: FormGroup;
-  submitting = signal<boolean>(false);
+  // Properties
+  public form: FormGroup;
+  public readonly submitting = signal<boolean>(false);
 
   constructor() {
     this.form = this.formBuilder.group({
@@ -45,7 +45,7 @@ export class ForgotPassword {
     });
   }
 
-  submit(): void {
+  public submit(): void {
     if (this.form.valid) {
       this.submitting.set(true);
       this.form.disable();

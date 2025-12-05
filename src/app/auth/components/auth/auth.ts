@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -17,13 +17,12 @@ import { AuthService } from 'app/auth/auth-service';
 import { ForgotPassword } from 'app/auth/components/forgot-password/forgot-password';
 import { Page } from 'app/core/components/page/page';
 import { environment } from 'environments/environment';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 
 @Component({
   selector: 'ft-auth',
   imports: [
     CommonModule,
-    NgOptimizedImage,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormField,
@@ -42,23 +41,26 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   }
 })
 export class Auth implements OnInit {
-  public appManager = inject(AppManager);
-  public authService = inject(AuthService);
-  private dialog = inject(MatDialog);
-  public errorMessage = signal<string>('');
-  private formBuilder = inject(FormBuilder);
-  private googleTagManagerService = inject(GoogleTagManagerService);
-  private messageService = inject(MessageService);
-  public mode = signal<string>('');
-  public lastUser = signal<any>(undefined);
-  public passwordVisible = signal<boolean>(false);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  // Dependency injection
+  public readonly appManager = inject(AppManager);
+  public readonly authService = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  private readonly messageService = inject(MessageService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly storageService = inject(StorageService);
+  private readonly title = inject(Title);
+
+  // Properties
+  public readonly errorMessage = signal<string>('');
+  public readonly mode = signal<string>('');
+  public readonly lastUser = signal<any>(undefined);
+  public readonly passwordVisible = signal<boolean>(false);
   public signinForm: FormGroup;
   public signupForm: FormGroup;
-  public submitting = signal<boolean>(false);
-  private storageService = inject(StorageService);
-  private title = inject(Title);
+  public readonly submitting = signal<boolean>(false);
 
   constructor() {
     this.signinForm = this.formBuilder.group({
@@ -80,7 +82,7 @@ export class Auth implements OnInit {
       this.signinForm.patchValue({ email: this.lastUser().email });
     }
   }
-  async connect(client: 'google'): Promise<void> {
+  public async connect(client: 'google'): Promise<void> {
     this.submitting.set(true);
     this.signinForm.disable();
     this.signupForm.disable();
@@ -91,18 +93,18 @@ export class Auth implements OnInit {
       this.signupForm.enable();
     }
   }
-  forgetUser(): void {
+  public forgetUser(): void {
     this.storageService.delete(`${environment.sessionPrefix}_lus`, 'local');
     this.lastUser.set(undefined);
     this.signinForm.patchValue({ email: '', password: '' });
   }
-  forgotPassword(): void {
+  public forgotPassword(): void {
     this.dialog.open(ForgotPassword, {
       panelClass: 'ft-dialog',
       width: '400px'
     });
   }
-  openPage(url: string): void {
+  public openPage(url: string): void {
     this.dialog.open(Page, {
       data: { url },
       panelClass: ['ft-dialog', 'ft-dialog--stacked'],
@@ -114,7 +116,7 @@ export class Auth implements OnInit {
       }
     });
   }
-  setMode(mode: string): void {
+  public setMode(mode: string): void {
     this.mode.set(mode);
     switch (mode) {
       case 'signin':
@@ -187,7 +189,7 @@ export class Auth implements OnInit {
       }
     }
   }
-  togglePasswordVisible(): void {
+  public togglePasswordVisible(): void {
     this.passwordVisible.set(!this.passwordVisible());
   }
 }

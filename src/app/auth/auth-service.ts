@@ -32,7 +32,7 @@ import {
 import { environment } from 'environments/environment';
 import { DeleteUser } from 'app/auth/components/delete-user/delete-user';
 import { ChangePassword } from 'app/auth/components/change-password/change-password';
-import { getApiUrl } from 'app/core/services/rest-api';
+import { getApiUrl } from 'app/core/utils/async-repository';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
   identity: {

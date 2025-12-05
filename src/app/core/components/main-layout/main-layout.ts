@@ -21,7 +21,7 @@ export class MainLayout {
   public readonly bottomSheet = inject(MatBottomSheet);
 
   // Properties
-  public navigationOptions = signal([
+  public readonly navigationOptions = signal([
     {
       url: '/home',
       icon: 'home',
@@ -103,10 +103,10 @@ export class MainLayout {
       ]
     }
   ]);
-  selectedOption = signal<any>(null);
-  collapsed = signal<boolean>(false);
+  public readonly selectedOption = signal<any>(null);
+  public readonly collapsed = signal<boolean>(false);
 
-  toggleCollapse(): void {
+  public toggleCollapse(): void {
     this.collapsed.set(!this.collapsed());
   }
 }

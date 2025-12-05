@@ -1,0 +1,29 @@
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Entity, EntityRequest } from '../models/entity';
+import { getApiUrl, getMutations, getResource, SignalGet } from 'app/core/utils/async-repository';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class EntityRepository {
+  private readonly httpClient = inject(HttpClient);
+  private readonly baseUrl = getApiUrl('v1/entities');
+
+  public mutations() {
+    return getMutations({
+      create: (Entity: EntityRequest) => this.httpClient.post<Entity>(`${this.baseUrl}`, Entity),
+      update: (Entity: EntityRequest) => this.httpClient.put<Entity>(`${this.baseUrl}`, Entity)
+    });
+  }
+  public find(): SignalGet<string, Entity> {
+    return getResource<string, Entity>((id: string) => {
+      return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);
+    });
+  }
+  public findBy(): SignalGet<void, Entity[]> {
+    return getResource<void, Entity[]>(() => {
+      return this.httpClient.get<Entity[]>(`${this.baseUrl}`);
+    });
+  }
+}

@@ -1,0 +1,41 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div #headerElement mat-dialog-title>
+    <div class="ft-actions">
+      <button type="button" mat-icon-button i18n-title title="Close" mat-dialog-close>
+        <ft-icon name="arrow-left" class="ft-icon--2" />
+      </button>
+    </div>
+    <div class="ft-title" i18n>Entity</div>
+    <div class="ft-actions"></div>
+  </div>
+  <div mat-dialog-content>
+    <div
+      class="ft-observe-interseting"
+      (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), headerElement)"
+    ></div>
+    <div class="ft-container"></div>
+  </div>
+  <div #actionsElement mat-dialog-actions>
+    <button
+      type="button"
+      mat-button
+      [disabled]="entityMutations.submitting()"
+      mat-dialog-close
+      i18n
+    >
+      Cancel
+    </button>
+    <button type="submit" mat-flat-button color="primary" [disabled]="entityMutations.submitting()">
+      @if (!entityMutations.submitting()) {
+        <span i18n>Submit</span>
+      } @else {
+        <ng-container *ngTemplateOutlet="submittingTemplate"></ng-container>
+      }
+    </button>
+  </div>
+</form>
+<ng-template #submittingTemplate>
+  <div class="text-center">
+    <ft-progress class="ft-progress--2"></ft-progress>
+  </div>
+</ng-template>

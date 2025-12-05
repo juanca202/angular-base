@@ -37,6 +37,7 @@ Cada ADR sigue un formato estándar:
 - [ADR-009: Calidad de Código y Herramientas](./ADR-009.md)
 - [ADR-010: Estrategia de Uso de Iconos](./ADR-010.md)
 - [ADR-011: Estrategia de Documentación](./ADR-011.md)
+- [ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./ADR-012.md)
 
 ## Crear un Nuevo ADR
 

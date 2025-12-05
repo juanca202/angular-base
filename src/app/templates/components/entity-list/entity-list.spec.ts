@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Modal } from './modal';
+import { EntityList } from './entity-list';
 
-describe('Modal', () => {
-  let component: Modal;
-  let fixture: ComponentFixture<Modal>;
+describe('EntityList', () => {
+  let component: EntityList;
+  let fixture: ComponentFixture<EntityList>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Modal]
+      imports: [EntityList]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Modal);
+    fixture = TestBed.createComponent(EntityList);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

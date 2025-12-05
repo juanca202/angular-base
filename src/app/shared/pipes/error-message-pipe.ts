@@ -6,7 +6,7 @@ import { AbstractControl } from '@angular/forms';
   pure: false
 })
 export class ErrorMessagePipe implements PipeTransform {
-  getErrorMessage(field: AbstractControl | null, messages?: any): string {
+  private getErrorMessage(field: AbstractControl | null, messages?: any): string {
     let error = '';
     const keys: string[] = Object.keys(field?.errors || {});
     if (keys && keys.length > 0) {
@@ -47,7 +47,7 @@ export class ErrorMessagePipe implements PipeTransform {
     }
     return error;
   }
-  transform(errors: any, fieldName?: any): string {
+  public transform(errors: any, fieldName?: any): string {
     return this.getErrorMessage(errors, fieldName);
   }
 }

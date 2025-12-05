@@ -17,7 +17,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 
 // import * as Sentry from '@sentry/angular';
 import { languageInterceptor } from 'app/core/interceptors/language-interceptor';
-import { graphqlProvider } from 'app/core/services/graphql-provider';
+import { graphqlProvider } from 'app/core/utils/graphql-provider';
 import { UI_OPTIONS } from '@factor_ec/ui';
 
 import { routes } from 'app/app.routes';

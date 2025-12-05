@@ -15,13 +15,15 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   styleUrl: './page.scss'
 })
 export class Page implements OnInit {
+  // Dependency injection
   public readonly appManager = inject(AppManager);
   public readonly data = inject(MAT_DIALOG_DATA);
   private readonly httpClient = inject(HttpClient);
   public readonly layoutManager = inject(LayoutManager);
 
-  page = signal<any>(undefined);
-  loading = signal<boolean>(false);
+  // Properties
+  public readonly page = signal<any>(undefined);
+  public readonly loading = signal<boolean>(false);
 
   ngOnInit(): void {
     this.httpClient.get(this.data.url).subscribe((response) => {

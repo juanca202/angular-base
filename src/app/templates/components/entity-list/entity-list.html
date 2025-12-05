@@ -1,0 +1,43 @@
+<div #headerElement class="ft-page__header">
+  <div class="ft-actions"></div>
+  <div class="ft-title" i18n>Entities</div>
+  <div class="ft-actions"></div>
+</div>
+<div class="ft-page__content ft-anim-enter">
+  <div class="ft-container">
+    @if (entities.loading()) {
+      <div i18n>Loading...</div>
+    } @else if (!entities.loading() && entities.value()?.length) {
+      <div
+        class="ft-observe-interseting"
+        (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), datagridHeaderElement)"
+      ></div>
+      <table class="ft-table">
+        <thead class="ft-sticky" #datagridHeaderElement>
+          <tr>
+            <th i18n>Id</th>
+            <th i18n>Firstname</th>
+            <th i18n>Lastname</th>
+            <th i18n>Phone</th>
+            <th i18n>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entity of entities.value(); track entity.id) {
+            <tr class="ft-tr-action" (click)="entityManager.open(entity.id)">
+              <td>{{ entity.id }}</td>
+              <td>{{ entity.firstName }}</td>
+              <td>{{ entity.lastName }}</td>
+              <td>{{ entity.phone }}</td>
+              <td>{{ entity.email }}</td>
+              <td></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else if (!entities.value()?.length) {
+      <div i18n>No records</div>
+    }
+  </div>
+</div>

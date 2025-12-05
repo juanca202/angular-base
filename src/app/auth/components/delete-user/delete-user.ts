@@ -15,9 +15,9 @@ import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui'
 import { AppManager } from 'app/core/services/app-manager';
 import { AuthService } from 'app/auth/auth-service';
 import { environment } from 'environments/environment';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
-import { getApiUrl } from 'app/core/services/rest-api';
+import { getApiUrl } from 'app/core/utils/async-repository';
 
 @Component({
   selector: 'ft-delete-user',
@@ -36,22 +36,24 @@ import { getApiUrl } from 'app/core/services/rest-api';
   styleUrl: './delete-user.scss'
 })
 export class DeleteUser implements OnInit, OnDestroy {
-  AppManager = inject(AppManager);
-  authService = inject(AuthService);
-  private formBuilder = inject(FormBuilder);
-  private httpClient = inject(HttpClient);
-  private messageService = inject(MessageService);
-  private storageService = inject(StorageService);
+  // Dependency injection
+  public readonly appManager = inject(AppManager);
+  public readonly authService = inject(AuthService);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly httpClient = inject(HttpClient);
+  private readonly messageService = inject(MessageService);
+  private readonly storageService = inject(StorageService);
 
-  step1Form: FormGroup;
-  step2Form: FormGroup;
-  passwordVisible = signal<boolean>(false);
-  submitting = signal<boolean>(false);
-  submitted = signal<boolean>(false);
+  // Properties
+  public step1Form: FormGroup;
+  public step2Form: FormGroup;
+  public readonly passwordVisible = signal<boolean>(false);
+  public readonly submitting = signal<boolean>(false);
+  public readonly submitted = signal<boolean>(false);
 
-  codeExpiresIn = signal<string>('');
-  codeTimeInterval!: Subscription;
-  invalidUserEmail = $localize`Type the email registered in your account`;
+  public readonly codeExpiresIn = signal<string>('');
+  public codeTimeInterval!: Subscription;
+  public readonly invalidUserEmail = $localize`Type the email registered in your account`;
 
   constructor() {
     this.step1Form = this.formBuilder.group({
@@ -72,12 +74,12 @@ export class DeleteUser implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initCode();
   }
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.codeTimeInterval) {
       this.codeTimeInterval.unsubscribe();
     }
   }
-  initCode(): void {
+  private initCode(): void {
     const deleteCodeExpiresAt = this.storageService.get(
       `${environment.sessionPrefix}_dce`,
       'local'
@@ -86,7 +88,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       this.setCountDown(moment(deleteCodeExpiresAt));
     }
   }
-  async generateCode(): Promise<void> {
+  public async generateCode(): Promise<void> {
     if (this.step1Form.valid) {
       try {
         this.submitting.set(true);
@@ -106,7 +108,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       }
     }
   }
-  async requestDelete(): Promise<void> {
+  public async requestDelete(): Promise<void> {
     if (this.step2Form.valid) {
       try {
         this.step2Form.disable();
@@ -124,7 +126,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       }
     }
   }
-  setCountDown(codeExpiresAt: moment.Moment): void {
+  private setCountDown(codeExpiresAt: moment.Moment): void {
     this.storageService.set(`${environment.sessionPrefix}_dce`, codeExpiresAt.toString(), 'local');
     const diff: number = codeExpiresAt.diff(moment());
     const codeExpired = diff <= 0;
@@ -142,7 +144,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       }
     });
   }
-  submit(): void {
+  public submit(): void {
     this.submitted.set(true);
     if (this.codeExpiresIn()) {
       this.requestDelete();

@@ -20,7 +20,7 @@ import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui'
 import { AppManager } from 'app/core/services/app-manager';
 import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 
 @Component({
   selector: 'ft-reset-password',
@@ -42,18 +42,20 @@ import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
   }
 })
 export class ResetPassword {
-  AppManager = inject(AppManager);
-  private formBuilder = inject(FormBuilder);
-  private httpClient = inject(HttpClient);
-  private messageService = inject(MessageService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private title = inject(Title);
+  // Dependency injection
+  public readonly appManager = inject(AppManager);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly httpClient = inject(HttpClient);
+  private readonly messageService = inject(MessageService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly title = inject(Title);
 
-  form: FormGroup;
-  submitting = signal<boolean>(false);
-  notEqualMessage = $localize`New password is not the same`;
-  passwordVisible = signal<boolean>(false);
+  // Properties
+  public form: FormGroup;
+  public readonly submitting = signal<boolean>(false);
+  public readonly notEqualMessage = $localize`New password is not the same`;
+  public readonly passwordVisible = signal<boolean>(false);
 
   constructor() {
     this.form = this.formBuilder.group({
@@ -64,14 +66,14 @@ export class ResetPassword {
     this.title.setTitle($localize`Reset password`);
   }
 
-  confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {
+  private confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {
     let value: Record<string, any> | null = null;
     if (control && control.parent && control.parent.get('password')?.value !== control.value) {
       value = { notEqual: true, fieldName: $localize`New password` };
     }
     return value;
   }
-  async submit(): Promise<void> {
+  public async submit(): Promise<void> {
     if (this.form.valid) {
       try {
         this.submitting.set(true);
@@ -96,7 +98,7 @@ export class ResetPassword {
       }
     }
   }
-  togglePasswordVisible(): void {
+  public togglePasswordVisible(): void {
     this.passwordVisible.set(!this.passwordVisible());
   }
 }

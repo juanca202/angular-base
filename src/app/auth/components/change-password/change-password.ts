@@ -17,9 +17,9 @@ import { IconComponent, ProgressComponent, MessageService } from '@factor_ec/ui'
 import { lastValueFrom } from 'rxjs';
 
 import { AppManager } from 'app/core/services/app-manager';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
-import { getApiUrl } from 'app/core/services/rest-api';
+import { getApiUrl } from 'app/core/utils/async-repository';
 
 @Component({
   selector: 'ft-change-password',
@@ -37,36 +37,36 @@ import { getApiUrl } from 'app/core/services/rest-api';
   styleUrl: './change-password.scss'
 })
 export class ChangePassword {
-  public appManager = inject(AppManager);
-  private dialogRef = inject(MatDialogRef);
+  // Dependency injection
+  public readonly appManager = inject(AppManager);
+  private readonly dialogRef = inject(MatDialogRef);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly httpClient = inject(HttpClient);
+  private readonly messageService = inject(MessageService);
+
+  // Properties
   public form: FormGroup = new FormGroup({});
-  private formBuilder = inject(FormBuilder);
-  private httpClient = inject(HttpClient);
-  private messageService = inject(MessageService);
-  public newPasswordVisible = signal<boolean>(false);
-  public notEqualMessage = $localize`New password is not the same`;
-  public passwordVisible = signal<boolean>(false);
-  public submitting = signal<boolean>(false);
+  public readonly newPasswordVisible = signal<boolean>(false);
+  public readonly notEqualMessage = $localize`New password is not the same`;
+  public readonly passwordVisible = signal<boolean>(false);
+  public readonly submitting = signal<boolean>(false);
 
   constructor() {
-    this.initForm();
-  }
-
-  confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {
-    let value: Record<string, any> | null = null;
-    if (control && control.parent && control.parent.get('newPassword')?.value !== control.value) {
-      value = { notEqual: true, fieldName: $localize`New password` };
-    }
-    return value;
-  }
-  private initForm(): void {
     this.form = this.formBuilder.group({
       password: ['', Validators.required],
       newPassword: ['', [Validators.required, this.passwordValidator()]],
       confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]]
     });
   }
-  passwordValidator(): ValidatorFn {
+
+  private confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {
+    let value: Record<string, any> | null = null;
+    if (control && control.parent && control.parent.get('newPassword')?.value !== control.value) {
+      value = { notEqual: true, fieldName: $localize`New password` };
+    }
+    return value;
+  }
+  private passwordValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value: string = control.value || '';
 
@@ -90,7 +90,7 @@ export class ChangePassword {
       return Object.keys(errors).length > 0 ? errors : null;
     };
   }
-  async submit(): Promise<void> {
+  public async submit(): Promise<void> {
     if (this.form.valid) {
       try {
         this.submitting.set(true);
@@ -115,10 +115,10 @@ export class ChangePassword {
       }
     }
   }
-  toggleNewPasswordVisible(): void {
+  public toggleNewPasswordVisible(): void {
     this.newPasswordVisible.set(!this.newPasswordVisible());
   }
-  togglePasswordVisible(): void {
+  public togglePasswordVisible(): void {
     this.passwordVisible.set(!this.passwordVisible());
   }
 }

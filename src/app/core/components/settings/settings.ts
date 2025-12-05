@@ -46,6 +46,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   }
 })
 export class Settings implements OnInit {
+  // Dependency injection
   public readonly appManager = inject(AppManager);
   public readonly authService = inject(AuthService);
   private readonly apollo = inject(Apollo);
@@ -55,15 +56,16 @@ export class Settings implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  public notificationsCount = signal<number>(0);
-  public spaces = signal<number>(0);
-  public categories = signal<number>(0);
-  public tags = signal<number>(0);
-  public language = signal<Language>({
+  // Properties
+  public readonly notificationsCount = signal<number>(0);
+  public readonly spaces = signal<number>(0);
+  public readonly categories = signal<number>(0);
+  public readonly tags = signal<number>(0);
+  public readonly language = signal<Language>({
     code: 'en',
     name: 'English'
   });
-  public subscribing = signal<boolean>(false);
+  public readonly subscribing = signal<boolean>(false);
   public readonly supportButton =
     viewChild.required<ElementRef<HTMLButtonElement>>('supportButton');
 
@@ -78,7 +80,7 @@ export class Settings implements OnInit {
     }
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.getNotifications();
     this.route.paramMap.subscribe(async (paramMap: ParamMap) => {
       const action = paramMap.get('action');
@@ -100,7 +102,7 @@ export class Settings implements OnInit {
     feedback?.attachTo(this.supportButton()?.nativeElement);
     */
   }
-  async getNotifications(): Promise<void> {
+  private async getNotifications(): Promise<void> {
     const query = await lastValueFrom(
       this.apollo.query<any>({
         query: gql`
@@ -115,7 +117,7 @@ export class Settings implements OnInit {
     );
     this.notificationsCount.set(query.data.notifications.totalCount);
   }
-  shareApp() {
+  public shareApp(): void {
     if (navigator.share) {
       navigator
         .share({

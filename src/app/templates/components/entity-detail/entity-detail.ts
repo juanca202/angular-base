@@ -1,0 +1,51 @@
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { IconComponent, ProgressComponent } from '@factor_ec/ui';
+import { LayoutManager } from 'app/core/services/layout-manager';
+import { EntityRepository } from 'app/templates/repositories/entity-repository';
+
+@Component({
+  selector: 'ft-entity-detail',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    IconComponent,
+    MatFormFieldModule,
+    ProgressComponent
+  ],
+  templateUrl: './entity-detail.html',
+  styleUrl: './entity-detail.scss'
+})
+export class EntityDetail {
+  // Dependency injection
+  private readonly entityRepository = inject(EntityRepository);
+  public readonly data = inject(MAT_DIALOG_DATA);
+  private readonly formBuilder = inject(FormBuilder);
+  public readonly layoutManager = inject(LayoutManager);
+
+  // Properties
+  public readonly entity = this.entityRepository.find();
+  public readonly entityMutations = this.entityRepository.mutations();
+  public form: FormGroup = new FormGroup({});
+
+  ngOnInit(): void {
+    if (this.data.id) {
+      this.entity.load(this.data.id);
+    }
+  }
+  public onSubmit(): void {
+    if (this.form.valid) {
+      const formData = this.form.value;
+      if (this.data.id) {
+        // Update existing entity
+        this.entityMutations.update(formData);
+      } else {
+        // Create new entity
+        this.entityMutations.create(formData);
+      }
+    }
+  }
+}

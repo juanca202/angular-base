@@ -31,20 +31,21 @@ import { LayoutManager } from 'app/core/services/layout-manager';
   }
 })
 export class Notifications implements OnDestroy {
+  // Dependency injection
   private readonly apollo = inject(Apollo);
-  public readonly AppManager = inject(AppManager);
+  public readonly appManager = inject(AppManager);
   private readonly graphqlUtils = inject(GraphqlUtils);
   public readonly layoutManager = inject(LayoutManager);
   private readonly stringService = inject(StringService);
   private readonly title = inject(Title);
 
-  notifications = signal<NotificationWrapped[]>([]);
-  loading = signal<boolean>(false);
-  queryRef: QueryRef<any>;
-
-  readPool: string[] = [];
-  postReadTimer!: ReturnType<typeof setInterval> | null;
-  notificationsTimer!: ReturnType<typeof setInterval> | null;
+  // Properties
+  public readonly notifications = signal<NotificationWrapped[]>([]);
+  public readonly loading = signal<boolean>(false);
+  public queryRef: QueryRef<any>;
+  public readPool: string[] = [];
+  public postReadTimer!: ReturnType<typeof setInterval> | null;
+  public notificationsTimer!: ReturnType<typeof setInterval> | null;
 
   constructor() {
     this.title.setTitle($localize`Notifications`);
@@ -105,13 +106,13 @@ export class Notifications implements OnDestroy {
     }, 5000);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.postReadTimer) {
       clearInterval(this.postReadTimer);
       this.postReadNotifications(this.readPool);
     }
   }
-  setAsRead(item: NotificationWrapped, visible: boolean): void {
+  public setAsRead(item: NotificationWrapped, visible: boolean): void {
     if (visible && !item.readTimer && !item.notification.seen) {
       item.readTimer = setTimeout(() => {
         this.readPool.push(item.notification.id);
@@ -122,7 +123,7 @@ export class Notifications implements OnDestroy {
       item.readTimer = null;
     }
   }
-  async postReadNotifications(ids: string[]): Promise<void> {
+  public async postReadNotifications(ids: string[]): Promise<void> {
     if (this.readPool.length > 0) {
       await lastValueFrom(
         this.apollo.mutate<any>({
