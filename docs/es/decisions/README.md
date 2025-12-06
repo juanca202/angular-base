@@ -1,6 +1,6 @@
 # Registros de Decisiones Arquitectónicas (ADRs)
 
-**📖 [English](../en/decisions/README.md) | [Español](./README.md)**
+**📖 [English](../../en/decisions/README.md) | [Español](./README.md)**
 
 Este directorio contiene Registros de Decisiones Arquitectónicas (ADRs) que documentan decisiones arquitectónicas significativas tomadas en este proyecto.
 
