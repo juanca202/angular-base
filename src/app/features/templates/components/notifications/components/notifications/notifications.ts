@@ -9,12 +9,16 @@ import { IconComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
 import { StringService } from '@factor_ec/utils';
 import { QueryRef, Apollo, gql } from 'apollo-angular';
 
-import { GraphqlUtils } from 'app/core/services/graphql-utils';
-import { AppManager } from 'app/core/services/app-manager';
-import { NotificationWrapped } from 'app/features/templates/models/notification-wrapped';
-import { Notification } from 'app/features/templates/models/notification';
-import { LayoutManager } from 'app/core/services/layout-manager';
+import { GraphqlUtils } from '@/core/services/graphql-utils';
+import { AppManager } from '@/core/services/app-manager';
+import { NotificationWrapped } from '@/features/templates/models/notification-wrapped';
+import { Notification } from '@/features/templates/models/notification';
+import { LayoutManager } from '@/core/services/layout-manager';
 
+/**
+ * Demo showcase component for notifications within the templates area,
+ * mirroring the main notification workflow for documentation purposes.
+ */
 @Component({
   selector: 'ft-notifications',
   imports: [

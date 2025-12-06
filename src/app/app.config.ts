@@ -16,15 +16,15 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 // import * as Sentry from '@sentry/angular';
-import { languageInterceptor } from 'app/core/interceptors/language-interceptor';
-import { graphqlProvider } from 'app/core/utils/graphql-provider';
+import { languageInterceptor } from '@/core/interceptors/language-interceptor';
+import { graphqlProvider } from '@/core/utils/graphql-provider';
 import { UI_OPTIONS } from '@factor_ec/ui';
 
-import { routes } from 'app/app.routes';
-import { AppManager } from 'app/core/services/app-manager';
-import { authInterceptor } from 'app/cross/auth/auth-interceptor';
-import { environment } from 'environments/environment';
-import { clientInterceptor } from 'app/core/interceptors/client-interceptor';
+import { routes } from '@/app.routes';
+import { AppManager } from '@/core/services/app-manager';
+import { authInterceptor } from '@/cross/auth/auth-interceptor';
+import { environment } from '@/environments/environment';
+import { clientInterceptor } from '@/core/interceptors/client-interceptor';
 import { AilErrorHandler } from './core/services/ail-error-handler';
 import { AuthService } from './cross/auth/auth-service';
 import { AuthProvider } from './core/services/auth.provider';

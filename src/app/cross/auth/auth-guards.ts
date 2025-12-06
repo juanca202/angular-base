@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 
-import { AppManager } from 'app/core/services/app-manager';
-import { environment } from 'environments/environment';
-import { Session } from 'app/core/services/session';
+import { AppManager } from '@/core/services/app-manager';
+import { environment } from '@/environments/environment';
+import { Session } from '@/core/services/session';
 
 export const authGuard: CanActivateFn = async (route, state) => {
   //Dependency injection

@@ -17,11 +17,19 @@ import { Title } from '@angular/platform-browser';
 import { lastValueFrom } from 'rxjs';
 import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui';
 
-import { AppManager } from 'app/core/services/app-manager';
-import { environment } from 'environments/environment';
+import { AppManager } from '@/core/services/app-manager';
+import { environment } from '@/environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 
+/**
+ * Allows users to define a new password after following a reset link that
+ * includes a short-lived token.
+ *
+ * @remarks
+ * The component enforces validation rules, provides usability helpers, and
+ * communicates success or failure via {@link MessageService}.
+ */
 @Component({
   selector: 'ft-reset-password',
   imports: [

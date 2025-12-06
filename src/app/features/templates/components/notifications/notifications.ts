@@ -9,12 +9,20 @@ import { IconComponent, ObserveIntersectingDirective } from '@factor_ec/ui';
 import { StringService } from '@factor_ec/utils';
 import { QueryRef, Apollo, gql } from 'apollo-angular';
 
-import { GraphqlUtils } from 'app/core/services/graphql-utils';
-import { AppManager } from 'app/core/services/app-manager';
-import { NotificationWrapped } from 'app/features/templates/models/notification-wrapped';
-import { Notification } from 'app/features/templates/models/notification';
-import { LayoutManager } from 'app/core/services/layout-manager';
+import { GraphqlUtils } from '@/core/services/graphql-utils';
+import { AppManager } from '@/core/services/app-manager';
+import { NotificationWrapped } from '@/features/templates/models/notification-wrapped';
+import { Notification } from '@/features/templates/models/notification';
+import { LayoutManager } from '@/core/services/layout-manager';
 
+/**
+ * Lists user notifications and tracks which ones have been read, syncing state
+ * with the backend.
+ *
+ * @remarks
+ * The component leverages Apollo watch queries and the {@link GraphqlUtils}
+ * helper to keep the UI reactive and outbox read confirmations in batches.
+ */
 @Component({
   selector: 'ft-notifications',
   imports: [

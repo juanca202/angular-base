@@ -1,6 +1,6 @@
 import { inject, signal, Signal } from '@angular/core';
 import { MessageService } from '@factor_ec/ui';
-import { environment } from 'environments/environment';
+import { environment } from '@/environments/environment';
 import {
   catchError,
   finalize,

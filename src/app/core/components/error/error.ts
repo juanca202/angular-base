@@ -7,11 +7,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { IconComponent } from '@factor_ec/ui';
 import { Error as ErrorModel, StorageService } from '@factor_ec/utils';
 
-import { AuthProvider } from 'app/core/services/auth.provider';
-import { environment } from 'environments/environment';
+import { AuthProvider } from '@/core/services/auth.provider';
+import { environment } from '@/environments/environment';
 
 /**
- * Generic error page.
+ * Generic error page used for unmatched routes and server-side failures.
+ *
+ * @remarks
+ * The component reads contextual information from navigation state or storage
+ * and displays the corresponding localized message and recovery action.
  */
 @Component({
   selector: 'ft-error',

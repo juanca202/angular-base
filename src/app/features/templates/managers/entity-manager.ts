@@ -3,6 +3,13 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { EntityDetail } from '../components/entity-detail/entity-detail';
 
+/**
+ * Coordinates the experience for opening entity detail dialogs.
+ *
+ * @remarks
+ * Centralizing the dialog logic keeps components lightweight and allows us to
+ * tweak presentation rules in a single place.
+ */
 @Injectable({
   providedIn: 'root'
 })

@@ -18,7 +18,15 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["app/*"],
+      "@/core/*": ["app/core/*"],
+      "@/shared/*": ["app/shared/*"],
+      "@/cross/*": ["app/cross/*"],
+      "@/features/*": ["app/features/*"],
+      "@/environments/*": ["environments/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

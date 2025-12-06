@@ -1,6 +1,6 @@
 import { EventEmitter, Signal } from '@angular/core';
 
-import { Settings } from 'app/core/models/settings';
+import { Settings } from '@/core/models/settings';
 
 export abstract class AuthProvider {
   public abstract readonly settings: Signal<Settings | undefined>;

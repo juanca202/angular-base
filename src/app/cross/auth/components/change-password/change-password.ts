@@ -16,11 +16,19 @@ import { CommonModule } from '@angular/common';
 import { IconComponent, ProgressComponent, MessageService } from '@factor_ec/ui';
 import { lastValueFrom } from 'rxjs';
 
-import { AppManager } from 'app/core/services/app-manager';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { AppManager } from '@/core/services/app-manager';
+import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
-import { getApiUrl } from 'app/core/utils/async-repository';
+import { getApiUrl } from '@/core/utils/async-repository';
 
+/**
+ * Renders the password change dialog, validating strong password requirements
+ * and coordinating the mutation that persists the new credential.
+ *
+ * @remarks
+ * The component exposes helper validators to keep the template declarative and
+ * communicates status updates via {@link MessageService}.
+ */
 @Component({
   selector: 'ft-change-password',
   imports: [

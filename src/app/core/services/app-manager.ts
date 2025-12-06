@@ -15,14 +15,22 @@ import { skip } from 'rxjs';
 import moment from 'moment';
 import { getToken, isSupported } from 'firebase/messaging';
 
-import { versionInfo } from 'version-info';
-import { environment } from 'environments/environment';
-import { AuthProvider } from 'app/core/services/auth.provider';
+import { versionInfo } from '../../../version-info';
+import { environment } from '@/environments/environment';
+import { AuthProvider } from '@/core/services/auth.provider';
 import { Session } from './session';
 
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
 
+/**
+ * Coordinates application-wide concerns such as localization, PWA updates,
+ * push messaging, and analytics initialization.
+ *
+ * @remarks
+ * This singleton is bootstrapped through an app initializer so that routing
+ * and session restoration happen before the UI renders.
+ */
 @Injectable({
   providedIn: 'root'
 })

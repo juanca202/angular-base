@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { languageInterceptor } from './language-interceptor';
-import { AppManager } from 'app/core/services/app-manager';
+import { AppManager } from '@/core/services/app-manager';
 
 describe('languageInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) =>

@@ -8,9 +8,12 @@ import { Title } from '@angular/platform-browser';
 import { IconComponent } from '@factor_ec/ui';
 import { Language as LanguageModel, StorageService } from '@factor_ec/utils';
 
-import { AppManager } from 'app/core/services/app-manager';
-import { environment } from 'environments/environment';
+import { AppManager } from '@/core/services/app-manager';
+import { environment } from '@/environments/environment';
 
+/**
+ * Lets the user review and change the active locale for the application.
+ */
 @Component({
   selector: 'ft-language',
   imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],

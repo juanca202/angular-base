@@ -9,10 +9,17 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ProgressComponent, MessageService } from '@factor_ec/ui';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 
-import { environment } from 'environments/environment';
+import { environment } from '@/environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
+import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 
+/**
+ * Presents the dialog that lets the user request password reset instructions.
+ *
+ * @remarks
+ * The component validates the input email and triggers the backend workflow while
+ * surfacing UX feedback via {@link MessageService}.
+ */
 @Component({
   selector: 'ft-forgot-password',
   imports: [
