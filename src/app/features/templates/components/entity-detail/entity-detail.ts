@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
 import { LayoutManager } from 'app/core/services/layout-manager';
-import { EntityRepository } from 'app/templates/repositories/entity-repository';
+import { EntityRepository } from 'app/features/templates/repositories/entity-repository';
 
 @Component({
   selector: 'ft-entity-detail',

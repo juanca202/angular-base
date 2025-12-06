@@ -14,24 +14,20 @@
   ></div>
   <div class="ft-container">
     <div class="ft-list">
-      @if (authService.settings()) {
+      @if (session.settings()) {
         <div class="ft-list__item">
           <div class="flex gap-4 items-center">
             <ft-avatar
-              [label]="
-                authService.settings()?.user?.firstName +
-                ' ' +
-                authService.settings()?.user?.lastName
-              "
-              [src]="authService.settings()?.user?.picture"
+              [label]="session.user()?.firstName + ' ' + session.user()?.lastName"
+              [src]="session.user()?.picture"
             />
             <div>
               <div class="ft-item__label">
-                {{ authService.settings()?.user?.firstName }}
-                {{ authService.settings()?.user?.lastName }}
+                {{ session.user()?.firstName }}
+                {{ session.user()?.lastName }}
               </div>
               <div class="text-sm text-gray-500">
-                {{ authService.settings()?.user?.email }}
+                {{ session.user()?.email }}
               </div>
             </div>
           </div>
@@ -65,12 +61,7 @@
           <div class="ft-item__label" i18n>Support</div>
         </div>
       </button>
-      <button
-        type="button"
-        matRipple
-        class="ft-list__item"
-        (click)="appManager.openPage('8a1b8db9-9d9d-41a3-8ab9-d54771f4a13d')"
-      >
+      <button type="button" matRipple class="ft-list__item">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="document--text" class="ft-icon--2" />
@@ -78,12 +69,7 @@
           <div class="ft-item__label" i18n>Terms and Conditions</div>
         </div>
       </button>
-      <button
-        type="button"
-        matRipple
-        class="ft-list__item"
-        (click)="appManager.openPage('45cc8cfb-8667-44d1-81f4-1c1bdb939cd8')"
-      >
+      <button type="button" matRipple class="ft-list__item">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="document--text" class="ft-icon--2" />

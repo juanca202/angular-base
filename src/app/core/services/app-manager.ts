@@ -9,7 +9,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Messaging } from '@angular/fire/messaging';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 
 import { GoogleTagManagerService, StorageService, Language } from '@factor_ec/utils';
 import { skip } from 'rxjs';
@@ -18,8 +17,8 @@ import { getToken, isSupported } from 'firebase/messaging';
 
 import { versionInfo } from 'version-info';
 import { environment } from 'environments/environment';
-import { AuthService } from 'app/auth/auth-service';
-import { Page } from 'app/core/components/page/page';
+import { AuthService } from 'app/cross/auth/auth-service';
+import { Session } from './session';
 
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
@@ -29,14 +28,14 @@ registerLocaleData(localeEs, 'es');
 })
 export class AppManager {
   private readonly authService = inject(AuthService);
-  private readonly dialog = inject(MatDialog);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly injector = inject(Injector);
+  private readonly location = inject(Location);
   private readonly platformId = inject<object>(PLATFORM_ID);
   private readonly router = inject(Router);
+  private readonly session = inject(Session);
   private readonly snackbar = inject(MatSnackBar);
   private readonly swUpdate = inject(SwUpdate);
-  private readonly location = inject(Location);
   private readonly storageService = inject(StorageService);
 
   public readonly allowSignup: boolean = true;
@@ -124,29 +123,27 @@ export class AppManager {
     console.log('Current locale: ', locale);
     console.log('init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
     // If authenticated, initialize with local data
-    if (this.authService.getToken()) {
+    if (this.session.isLoggedIn()) {
       timerStart = performance.now();
       await this.initData(false);
       console.log('init local data in:', (performance.now() - timerStart).toFixed(2), 'ms');
     }
     // Upon authentication, a server synchronization is required
-    this.authService.loggedIn
-      .pipe(skip(this.authService.getToken() ? 1 : 0))
-      .subscribe(async (value) => {
-        if (value) {
-          timerStart = performance.now();
-          await this.initData(true);
-          // If a redirect is found use it; otherwise load the home page
-          const redirect = this.storageService.get(`${environment.sessionPrefix}_rdi`);
-          if (redirect) {
-            this.router.navigateByUrl(redirect);
-            this.storageService.delete(`${environment.sessionPrefix}_rdi`);
-          } else {
-            this.router.navigateByUrl('/');
-          }
-          console.log('init network data in:', (performance.now() - timerStart).toFixed(2), 'ms');
+    this.session.loggedIn.pipe(skip(this.session.isLoggedIn() ? 1 : 0)).subscribe(async (value) => {
+      if (value) {
+        timerStart = performance.now();
+        await this.initData(true);
+        // If a redirect is found use it; otherwise load the home page
+        const redirect = this.storageService.get(`${environment.sessionPrefix}_rdi`);
+        if (redirect) {
+          this.router.navigateByUrl(redirect);
+          this.storageService.delete(`${environment.sessionPrefix}_rdi`);
+        } else {
+          this.router.navigateByUrl('/');
         }
-      });
+        console.log('init network data in:', (performance.now() - timerStart).toFixed(2), 'ms');
+      }
+    });
   }
   private async initData(networkOnly: boolean): Promise<void> {
     // Initialize push messages
@@ -204,20 +201,6 @@ export class AppManager {
     this.installPrompt.userChoice.then((result: any) => {
       if (result.outcome !== 'dismissed') {
         //this.googleTagManagerService.addVariable({ event: 'install', user_id: this.settings.user?.username, app_id: this.id });
-      }
-    });
-  }
-  public openPage(uuid: string): void {
-    this.dialog.open(Page, {
-      data: {
-        uuid
-      },
-      panelClass: ['ft-dialog', 'ft-dialog--stacked'],
-      height: '100vh',
-      width: '600px',
-      position: {
-        left: 'auto',
-        right: '0'
       }
     });
   }

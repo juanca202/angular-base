@@ -13,11 +13,12 @@ import { StorageService } from '@factor_ec/utils';
 import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
 
 import { AppManager } from 'app/core/services/app-manager';
-import { AuthService } from 'app/auth/auth-service';
+import { AuthService } from 'app/cross/auth/auth-service';
 import { environment } from 'environments/environment';
 import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
 import { getApiUrl } from 'app/core/utils/async-repository';
+import { Session } from 'app/core/services/session';
 
 @Component({
   selector: 'ft-delete-user',
@@ -42,6 +43,7 @@ export class DeleteUser implements OnInit, OnDestroy {
   private readonly formBuilder = inject(FormBuilder);
   private readonly httpClient = inject(HttpClient);
   private readonly messageService = inject(MessageService);
+  public readonly session = inject(Session);
   private readonly storageService = inject(StorageService);
 
   // Properties
@@ -62,7 +64,7 @@ export class DeleteUser implements OnInit, OnDestroy {
         [
           Validators.required,
           Validators.email,
-          Validators.pattern(`^${this.authService.settings()?.user.email}$`)
+          Validators.pattern(`^${this.session.user()?.email}$`)
         ]
       ]
     });

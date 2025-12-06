@@ -20,9 +20,10 @@ import { Apollo, gql } from 'apollo-angular';
 // import * as Sentry from '@sentry/angular';
 
 import { AppManager } from 'app/core/services/app-manager';
-import { AuthService } from 'app/auth/auth-service';
+import { AuthService } from 'app/cross/auth/auth-service';
 import { CommonModule } from '@angular/common';
 import { LayoutManager } from 'app/core/services/layout-manager';
+import { Session } from 'app/core/services/session';
 
 @Component({
   selector: 'ft-settings',
@@ -55,6 +56,7 @@ export class Settings implements OnInit {
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  public readonly session = inject(Session);
 
   // Properties
   public readonly notificationsCount = signal<number>(0);

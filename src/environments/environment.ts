@@ -3,7 +3,7 @@ import { Environment } from '../app/core/models/environment';
 export const environment: Environment = {
   auth: {
     signupUrl: '',
-    tokenUrl: '',
+    signinUrl: '',
     refreshTokenUrl: '',
     forgotPasswordUrl: '',
     resetPasswordUrl: '',

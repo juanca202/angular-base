@@ -25,7 +25,7 @@
   @if (codeExpiresIn()) {
     <p class="text-sm text-gray-500" i18n>
       You have <strong>{{ codeExpiresIn() }} minutes</strong> to enter verification code sent to
-      <strong>{{ authService.settings()?.user?.email }}</strong> to confirm deletion.
+      <strong>{{ session.user()?.email }}</strong> to confirm deletion.
     </p>
     <form id="step2Form" [formGroup]="step2Form" (ngSubmit)="submit()" class="mt-4">
       <mat-form-field appearance="fill">

@@ -1,5 +1,5 @@
-import { Action } from './action';
 import { User } from '@factor_ec/utils';
+import { Action } from 'app/shared/models/action';
 
 export interface Notification {
   id: string;
