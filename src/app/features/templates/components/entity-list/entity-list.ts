@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { LayoutManager } from 'app/core/services/layout-manager';
 import { EntityManager } from 'app/features/templates/managers/entity-manager';
 import { EntityRepository } from 'app/features/templates/repositories/entity-repository';
@@ -10,7 +10,7 @@ import { EntityRepository } from 'app/features/templates/repositories/entity-rep
   styleUrl: './entity-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityList {
+export class EntityList implements OnInit, OnDestroy {
   // Dependency injection
   private readonly entityRepository = inject(EntityRepository);
   public readonly entityManager = inject(EntityManager);
@@ -21,5 +21,8 @@ export class EntityList {
 
   ngOnInit(): void {
     this.entities.load();
+  }
+  ngOnDestroy(): void {
+    this.entities.destroy();
   }
 }

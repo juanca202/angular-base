@@ -11,7 +11,7 @@ import { GoogleTagManagerService } from '@factor_ec/utils';
 
 import { environment } from 'environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
+import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
   selector: 'ft-forgot-password',

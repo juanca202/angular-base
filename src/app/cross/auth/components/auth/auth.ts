@@ -16,7 +16,7 @@ import { AppManager } from 'app/core/services/app-manager';
 import { AuthService } from 'app/cross/auth/auth-service';
 import { ForgotPassword } from 'app/cross/auth/components/forgot-password/forgot-password';
 import { environment } from 'environments/environment';
-import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
+import { ErrorMessagePipe } from 'app/core/pipes/error-message-pipe';
 
 @Component({
   selector: 'ft-auth',

@@ -37,7 +37,7 @@ export class Error implements OnInit {
 
   ngOnInit(): void {
     this.setError();
-    this.title.setTitle(this.error()?.title ?? 'Error');
+    this.title.setTitle(this.error()?.title ?? $localize`Error`);
   }
   public reload(): void {
     location.reload();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,7 +20,7 @@ import { EntityRepository } from 'app/features/templates/repositories/entity-rep
   styleUrl: './entity-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityDetail {
+export class EntityDetail implements OnInit, OnDestroy {
   // Dependency injection
   private readonly entityRepository = inject(EntityRepository);
   public readonly data = inject(MAT_DIALOG_DATA);
@@ -36,6 +36,9 @@ export class EntityDetail {
     if (this.data.id) {
       this.entity.load(this.data.id);
     }
+  }
+  ngOnDestroy(): void {
+    this.entity.destroy();
   }
   public onSubmit(): void {
     if (this.form.valid) {
