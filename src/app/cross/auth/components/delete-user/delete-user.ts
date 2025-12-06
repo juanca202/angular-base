@@ -20,7 +20,7 @@ import { StorageService } from '@factor_ec/utils';
 import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
 
 import { AppManager } from 'app/core/services/app-manager';
-import { AuthService } from 'app/auth/auth-service';
+import { AuthService } from 'app/cross/auth/auth-service';
 import { environment } from 'environments/environment';
 import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
@@ -146,7 +146,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       const codeExpired = diff <= 0;
       if (codeExpired) {
         this.codeExpiresIn.set('');
-        this.codeTimeInterval.unsubscribe();
+        this.codeTimeInterval?.unsubscribe();
       } else {
         this.codeExpiresIn.set(moment.utc(diff).format('mm:ss'));
       }

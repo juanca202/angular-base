@@ -11,9 +11,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { StorageService } from '@factor_ec/utils';
 // import * as Sentry from '@sentry/angular';
 
-import { Login } from 'app/auth/models/login';
-import { AuthToken } from 'app/auth/models/auth-token';
-import { AuthTokenPayload } from 'app/auth/models/auth-token-payload';
+import { Login } from 'app/cross/auth/models/login';
+import { AuthToken } from 'app/cross/auth/models/auth-token';
+import { AuthTokenPayload } from 'app/cross/auth/models/auth-token-payload';
 import { Settings } from 'app/core/models/settings';
 import { AuthProvider } from 'app/core/services/auth.provider';
 import {
@@ -31,8 +31,8 @@ import {
 } from 'rxjs';
 
 import { environment } from 'environments/environment';
-import { DeleteUser } from 'app/auth/components/delete-user/delete-user';
-import { ChangePassword } from 'app/auth/components/change-password/change-password';
+import { DeleteUser } from 'app/cross/auth/components/delete-user/delete-user';
+import { ChangePassword } from 'app/cross/auth/components/change-password/change-password';
 import { getApiUrl } from 'app/core/utils/async-repository';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {

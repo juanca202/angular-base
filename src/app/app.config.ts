@@ -22,11 +22,11 @@ import { UI_OPTIONS } from '@factor_ec/ui';
 
 import { routes } from 'app/app.routes';
 import { AppManager } from 'app/core/services/app-manager';
-import { authInterceptor } from 'app/auth/auth-interceptor';
+import { authInterceptor } from 'app/cross/auth/auth-interceptor';
 import { environment } from 'environments/environment';
 import { clientInterceptor } from 'app/core/interceptors/client-interceptor';
 import { AilErrorHandler } from './core/services/ail-error-handler';
-import { AuthService } from './auth/auth-service';
+import { AuthService } from './cross/auth/auth-service';
 import { AuthProvider } from './core/services/auth.provider';
 
 export const appConfig: ApplicationConfig = {

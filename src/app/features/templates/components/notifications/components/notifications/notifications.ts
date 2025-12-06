@@ -44,7 +44,7 @@ export class Notifications implements OnDestroy {
   public readonly notifications = signal<NotificationWrapped[]>([]);
   public readonly loading = signal<boolean>(false);
   public readonly queryRef: QueryRef<any>;
-  public readonly readPool: string[] = [];
+  public readPool: string[] = [];
   private postReadTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
