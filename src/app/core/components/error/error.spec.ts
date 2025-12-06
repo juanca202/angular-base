@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventEmitter, signal } from '@angular/core';
-import { Settings } from './settings';
+import { Error } from './error';
+import { AppManager } from 'app/core/services/app-manager';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { StorageService } from '@factor_ec/utils';
-import { GoogleTagManagerService } from '@factor_ec/utils';
-import { AUTH_CONTEXT } from 'app/core/services/auth-context.token';
+import { AuthProvider } from 'app/core/services/auth.provider';
 
 const createAuthContextStub = () => ({
   settings: signal(undefined),
@@ -17,32 +16,22 @@ const createAuthContextStub = () => ({
   loggedIn: new EventEmitter<boolean>()
 });
 
-describe('Settings', () => {
-  let component: Settings;
-  let fixture: ComponentFixture<Settings>;
+describe('Error', () => {
+  let component: Error;
+  let fixture: ComponentFixture<Error>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Settings],
+      imports: [Error],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        {
-          provide: StorageService,
-          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
-        },
-        {
-          provide: GoogleTagManagerService,
-          useValue: { addVariable: jest.fn(), appendTrackingCode: jest.fn() }
-        },
-        {
-          provide: AUTH_CONTEXT,
-          useValue: createAuthContextStub()
-        }
+        AppManager,
+        { provide: AuthProvider, useValue: createAuthContextStub() }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Settings);
+    fixture = TestBed.createComponent(Error);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

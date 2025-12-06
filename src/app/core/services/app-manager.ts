@@ -18,7 +18,7 @@ import { getToken, isSupported } from 'firebase/messaging';
 
 import { versionInfo } from 'version-info';
 import { environment } from 'environments/environment';
-import { AUTH_CONTEXT, AuthContext } from 'app/core/services/auth-context.token';
+import { AuthProvider } from 'app/core/services/auth.provider';
 import { Page } from 'app/core/components/page/page';
 
 registerLocaleData(localeEn, 'en');
@@ -28,7 +28,7 @@ registerLocaleData(localeEs, 'es');
   providedIn: 'root'
 })
 export class AppManager {
-  private readonly authService = inject<AuthContext>(AUTH_CONTEXT);
+  private readonly authService = inject(AuthProvider);
   private readonly dialog = inject(MatDialog);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly injector = inject(Injector);

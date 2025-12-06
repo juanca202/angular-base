@@ -4,7 +4,7 @@ import { MainLayout } from './main-layout';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { StorageService } from '@factor_ec/utils';
-import { AUTH_CONTEXT } from 'app/core/services/auth-context.token';
+import { AuthProvider } from 'app/core/services/auth.provider';
 
 const createAuthContextStub = () => ({
   settings: signal(undefined),
@@ -31,7 +31,7 @@ describe('MainLayout', () => {
           useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
         },
         {
-          provide: AUTH_CONTEXT,
+          provide: AuthProvider,
           useValue: createAuthContextStub()
         }
       ]

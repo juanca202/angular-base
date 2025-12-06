@@ -26,8 +26,8 @@ import { authInterceptor } from 'app/auth/auth-interceptor';
 import { environment } from 'environments/environment';
 import { clientInterceptor } from 'app/core/interceptors/client-interceptor';
 import { AilErrorHandler } from './core/services/ail-error-handler';
-import { AUTH_CONTEXT } from './core/services/auth-context.token';
 import { AuthService } from './auth/auth-service';
+import { AuthProvider } from './core/services/auth.provider';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -95,8 +95,8 @@ export const appConfig: ApplicationConfig = {
       deps: [AppManager]
     },
     {
-      provide: AUTH_CONTEXT,
-      useExisting: AuthService
+      provide: AuthProvider,
+      useClass: AuthService
     }
   ]
 };

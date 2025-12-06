@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Language } from './language';
 import { Title } from '@angular/platform-browser';
 import { StorageService } from '@factor_ec/utils';
-import { AppManager } from 'app/app/core/services/app-manager';
+import { AppManager } from 'app/core/services/app-manager';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 

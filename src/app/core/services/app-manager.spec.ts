@@ -9,7 +9,7 @@ import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
 import { AppManager } from 'app/core/services/app-manager';
 import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
-import { AUTH_CONTEXT } from 'app/core/services/auth-context.token';
+import { AuthProvider } from 'app/core/services/auth.provider';
 
 const createAuthContextStub = () => ({
   settings: signal(undefined),
@@ -63,7 +63,7 @@ describe('AppManager', () => {
           }
         },
         { provide: GoogleTagManagerService, useValue: { push: jest.fn() } },
-        { provide: AUTH_CONTEXT, useValue: createAuthContextStub() }
+        { provide: AuthProvider, useValue: createAuthContextStub() }
       ]
     });
     service = TestBed.inject(AppManager);

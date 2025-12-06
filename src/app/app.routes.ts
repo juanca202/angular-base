@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 
 import { MainLayout } from './core/components/main-layout/main-layout';
+import { Language } from './core/components/language/language';
+import { Settings } from './core/components/settings/settings';
+import { Error } from './core/components/error/error';
 import { authGuard } from './auth/auth-guards';
 
 export const routes: Routes = [
@@ -20,7 +23,11 @@ export const routes: Routes = [
       },
       {
         path: 'settings',
-        loadChildren: () => import('./settings/settings-routes').then((m) => m.settingsRoutes)
+        component: Settings
+      },
+      {
+        path: 'settings/language',
+        component: Language
       },
       {
         path: 'notifications',
@@ -34,8 +41,9 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'error',
-    loadChildren: () => import('./error/error-routes').then((m) => m.errorRoutes)
+    path: 'error/:code',
+    component: Error,
+    title: $localize`Error`
   },
   {
     path: '**',

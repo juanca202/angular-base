@@ -30,7 +30,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { AppManager } from 'app/core/services/app-manager';
 import { CommonModule } from '@angular/common';
 import { LayoutManager } from 'app/core/services/layout-manager';
-import { AUTH_CONTEXT, AuthContext } from 'app/core/services/auth-context.token';
+import { AuthProvider } from 'app/core/services/auth.provider';
 
 @Component({
   selector: 'ft-settings',
@@ -57,7 +57,7 @@ import { AUTH_CONTEXT, AuthContext } from 'app/core/services/auth-context.token'
 export class Settings implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  public readonly authService = inject<AuthContext>(AUTH_CONTEXT);
+  public readonly authService = inject(AuthProvider);
   private readonly apollo = inject(Apollo);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);

@@ -15,7 +15,7 @@ import { Login } from 'app/auth/models/login';
 import { AuthToken } from 'app/auth/models/auth-token';
 import { AuthTokenPayload } from 'app/auth/models/auth-token-payload';
 import { Settings } from 'app/core/models/settings';
-import { AuthContext } from 'app/core/services/auth-context.token';
+import { AuthProvider } from 'app/core/services/auth.provider';
 import {
   BehaviorSubject,
   Observable,
@@ -70,10 +70,13 @@ declare let navigator: any;
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements AuthContext {
+export class AuthService extends AuthProvider {
   private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
   private readonly storageService = inject(StorageService);
+  constructor() {
+    super();
+  }
 
   public readonly signedIn = new EventEmitter<boolean>(false);
   public readonly signedUp = new EventEmitter<boolean>(false);
