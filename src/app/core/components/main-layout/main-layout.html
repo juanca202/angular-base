@@ -11,7 +11,7 @@
         >
           <div class="flex gap-4 items-center">
             <ft-icon [name]="option.icon" class="ft-icon--2" />
-            <div class="ft-label" i18n>{{ option.label }}</div>
+            <div class="ft-label">{{ option.label }}</div>
           </div>
         </button>
       }
@@ -21,7 +21,7 @@
         @for (option of selectedOption()?.children; track option.url) {
           <button type="button" [routerLink]="option.url" routerLinkActive="ft-active" mat-button>
             <div class="flex gap-4 items-center">
-              <div class="ft-label" i18n>{{ option.label }}</div>
+              <div class="ft-label">{{ option.label }}</div>
             </div>
           </button>
         }

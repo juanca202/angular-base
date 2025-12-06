@@ -11,6 +11,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { GoogleTagManagerService, StorageService, Language } from '@factor_ec/utils';
+import { LANGUAGES } from '../constants/languages';
 import { skip } from 'rxjs';
 import moment from 'moment';
 import { getToken, isSupported } from 'firebase/messaging';
@@ -55,7 +56,7 @@ export class AppManager {
   public readonly version = versionInfo.git.raw;
   public readonly updateStatus = signal<string | null>('done');
   private readonly defaultLocale = 'en';
-  public readonly languages = signal<Language[]>([{ code: 'es', name: 'Español' }]);
+  public readonly languages = signal<Language[]>(LANGUAGES);
   private pushToken: string | undefined;
 
   // Storage keys

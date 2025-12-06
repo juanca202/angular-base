@@ -1,0 +1,60 @@
+/* theme/components.css */
+
+/* Borders */
+:root {
+  --ft-border-color: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
+  --ft-border-color-light: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
+
+  /* Shadows */
+  --ft-shadow-overlapped: 0 0 1px rgba(0, 0, 0, 0.14), 0 0 6px rgba(0, 0, 0, 0.12);
+}
+
+/* Avatar */
+:root {
+  --ft-avatar-size: 2.5rem;
+  --ft-avatar-bg: var(--ft-border-color);
+  --ft-avatar-color: var(--ft-color-light);
+}
+
+/* Thumbnail */
+:root {
+  --ft-thumbnail-size: 2.5rem;
+  --ft-thumbnail-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+}
+
+/* Inputs */
+:root {
+  --ft-input-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+  --ft-input-bg-focused: color-mix(in srgb, var(--ft-border-color) 50%, transparent);
+  --ft-input-bg-disabled: color-mix(in srgb, var(--ft-border-color) 60%, transparent);
+  --ft-input-radius: var(--ft-radius-md);
+}
+
+/* Progress bar */
+:root {
+  --ft-progress-color: var(--ft-color-primary);
+  --ft-progress-track-color: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
+}
+
+/* Messages */
+:root {
+  --ft-message-warning-color: #664d03;
+  --ft-message-warning-bg: #fff3cd;
+  --ft-message-info-color: #055160;
+  --ft-message-info-bg: #cff4fc;
+}
+
+/* List Items */
+:root {
+  --ft-list-hover-bg: color-mix(in srgb, var(--ft-color-primary) 10%, transparent);
+  --ft-list-focus-bg: color-mix(in srgb, var(--ft-color-primary) 15%, transparent);
+  --ft-list-active-bg: color-mix(in srgb, var(--ft-color-primary) 20%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ft-avatar-bg: #000;
+    --ft-thumbnail-bg: #000;
+    --ft-shadow-overlapped: 0 0 1px rgba(0, 0, 0, 0.54), 0 0 6px rgba(0, 0, 0, 0.52);
+  }
+}
