@@ -2,9 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, RouterOutlet } from '@angular/router';
+
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
 import { AuthProvider } from 'app/core/services/auth.provider';
+import { Session } from 'app/core/services/session';
 
 @Component({
   selector: 'ft-main-layout',
@@ -20,6 +22,7 @@ export class MainLayout {
   // Dependency injection
   public readonly authService = inject(AuthProvider);
   public readonly bottomSheet = inject(MatBottomSheet);
+  public readonly session = inject(Session);
 
   // Properties
   public readonly navigationOptions = signal([

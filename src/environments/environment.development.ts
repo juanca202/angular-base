@@ -3,7 +3,7 @@ import { Environment } from '../app/core/models/environment';
 export const environment: Environment = {
   auth: {
     signupUrl: 'http://localhost:8000/authentication_signup',
-    tokenUrl: 'http://localhost:8000/authentication_token',
+    signinUrl: 'http://localhost:8000/authentication_token',
     refreshTokenUrl: 'http://localhost:8000/authentication_refresh_token',
     forgotPasswordUrl: 'http://localhost:8000/authentication_forgot-password',
     resetPasswordUrl: 'http://localhost:8000/authentication_reset-password',
@@ -29,7 +29,7 @@ export const environment: Environment = {
   graphqlEndpoint: 'http://localhost:8000/api/graphql',
   fedcm: {
     google: {
-      tokenUrl: 'http://localhost:8000/auth/fedcm/google',
+      signinUrl: 'http://localhost:8000/auth/fedcm/google',
       configURL: 'https://accounts.google.com/o/fedcm/config.json',
       clientId: ''
     }

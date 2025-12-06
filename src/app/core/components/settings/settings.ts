@@ -31,6 +31,7 @@ import { AppManager } from 'app/core/services/app-manager';
 import { CommonModule } from '@angular/common';
 import { LayoutManager } from 'app/core/services/layout-manager';
 import { AuthProvider } from 'app/core/services/auth.provider';
+import { Session } from 'app/core/services/session';
 
 @Component({
   selector: 'ft-settings',
@@ -64,6 +65,7 @@ export class Settings implements OnInit {
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  public readonly session = inject(Session);
 
   // Properties
   public readonly notificationsCount = signal<number>(0);

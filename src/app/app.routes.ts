@@ -1,9 +1,8 @@
 import { Routes } from '@angular/router';
-
-import { MainLayout } from './core/components/main-layout/main-layout';
-import { Language } from './core/components/language/language';
-import { Settings } from './core/components/settings/settings';
 import { Error } from './core/components/error/error';
+import { Settings } from './core/components/settings/settings';
+import { Language } from './core/components/language/language';
+import { MainLayout } from './core/components/main-layout/main-layout';
 import { authGuard } from './cross/auth/auth-guards';
 
 export const routes: Routes = [
@@ -26,13 +25,8 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: 'error/:code',
-    component: Error,
-    title: $localize`Error`
-  },
-  {
-    path: '**',
-    redirectTo: 'error/404'
-  }
+  { path: 'settings', component: Settings, canActivate: [authGuard] },
+  { path: 'settings/language', component: Language },
+  { path: 'error/:code', component: Error, title: $localize`Error` },
+  { path: '**', component: Error, data: { code: 404 } }
 ];

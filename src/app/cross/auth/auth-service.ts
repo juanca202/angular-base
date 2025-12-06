@@ -107,7 +107,7 @@ export class AuthService extends AuthProvider {
     // If the access token is null, the user is not logged in; return the original request
     if (
       !token ||
-      request.url.includes(environment.auth.tokenUrl) ||
+      request.url.includes(environment.auth.signinUrl) ||
       (environment.auth.refreshTokenUrl && request.url.includes(environment.auth.refreshTokenUrl))
     ) {
       return request;
@@ -339,7 +339,7 @@ export class AuthService extends AuthProvider {
    */
   public async signin(data: Login): Promise<any> {
     const token = await lastValueFrom<AuthToken>(
-      this.httpClient.post<AuthToken>(environment.auth.tokenUrl, data)
+      this.httpClient.post<AuthToken>(environment.auth.signinUrl, data)
     );
     this.storageService.set(this.tokenKey, token, 'local');
     this.loggedIn.emit(true);

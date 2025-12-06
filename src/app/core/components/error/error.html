@@ -5,7 +5,7 @@
       <h1 class="mb-4">{{ error()?.title }}</h1>
       <p class="text-gray-500 mt-0">{{ error()?.message }}</p>
     </div>
-    @if (error()?.icon === '404' || !authService.getToken()) {
+    @if (error()?.icon === '404' || !authService.logout()) {
       <a routerLink="/" mat-flat-button color="primary" i18n>Go home</a>
     } @else if (error()?.icon === '403') {
       <button mat-flat-button color="primary" (click)="authService.logout()" i18n>Logout</button>

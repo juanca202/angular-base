@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from '@angular/core';
-
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';

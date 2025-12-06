@@ -5,7 +5,7 @@ export interface Environment {
   // Authentication
   auth: {
     signupUrl: string;
-    tokenUrl: string;
+    signinUrl: string;
     refreshTokenUrl: string;
     forgotPasswordUrl: string;
     resetPasswordUrl: string;

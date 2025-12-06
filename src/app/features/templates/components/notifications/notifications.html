@@ -1,0 +1,101 @@
+<div #headerElement class="ft-page__header">
+  <div class="ft-actions">
+    <button type="button" mat-icon-button i18n-title title="Back" routerLink="/settings">
+      <ft-icon name="arrow-left" class="ft-icon--2" />
+    </button>
+  </div>
+  <div class="ft-title" i18n>Notifications</div>
+  <div class="ft-actions"></div>
+</div>
+<div
+  #content
+  class="ft-page__content ft-anim-enter"
+  [class.ft-page__content--nodata]="notifications().length === 0 && !loading()"
+>
+  <div
+    class="ft-observe-interseting"
+    (ftObserveIntersecting)="layoutManager.setOverlapped($event, headerElement)"
+  ></div>
+  <div class="ft-container">
+    @if (notifications().length > 0) {
+      <div class="ft-list">
+        @for (notification of notifications(); track notification.notification.id) {
+          <div
+            class="ft-list__item"
+            [class.ft-read]="notification.notification.seen"
+            (ftObserveIntersecting)="setAsRead(notification, $event)"
+            [ftObserveIntersectingOptions]="{
+              rootMargin: '0px',
+              threshold: 1.0
+            }"
+          >
+            <div class="flex items-start gap-4">
+              <div class="ft-thumbnail">
+                <ft-icon name="comment" class="ft-icon--2" />
+                @if (!notification.notification.seen) {
+                  <div class="ft-marked"></div>
+                }
+              </div>
+              <div class="flex-1">
+                <div class="ft-body" [innerHTML]="notification.notification.body"></div>
+                @if (notification.notification.action?.selected) {
+                  <div class="mb-1">
+                    <div class="ft-badge ft-badge--tag">
+                      {{ notification.notification.action?.selectedObject.label }}
+                    </div>
+                  </div>
+                }
+                <small class="text-gray-500">{{
+                  notification.notification.createdAt | date: 'd MMM y, h:mm a'
+                }}</small>
+                @if (
+                  (notification.notification.action?.options?.length || 0) > 0 &&
+                  !notification.notification.action?.selected
+                ) {
+                  <div class="flex gap-2 mt-2 mb-4">
+                    @for (option of notification.notification.action?.options; track option.label) {
+                      <a
+                        routerLink="/home"
+                        [queryParams]="{
+                          action: notification.notification.action?.type,
+                          actionValue: option.value,
+                          uuid: notification.notification.action?.uuid
+                        }"
+                        [skipLocationChange]="true"
+                        mat-stroked-button
+                        >{{ option.label }}</a
+                      >
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (loading()) {
+      <div class="ft-list">
+        @for (notification of [1, 2, 3, 4, 5]; track notification) {
+          <div class="ft-list__item">
+            <div class="flex gap-2 items-center">
+              <div
+                class="ft-avatar ft-ph"
+                style="
+                  width: var(--ft-avatar-size);
+                  height: var(--ft-avatar-size);
+                  border-radius: 100vh;
+                "
+              ></div>
+              <div class="flex-1 flex flex-col gap-1">
+                <div class="ft-ph" style="width: 120px; height: 18px"></div>
+                <div class="ft-ph" style="width: 50px; height: 13px"></div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p i18n>You have no notifications available.</p>
+    }
+  </div>
+</div>

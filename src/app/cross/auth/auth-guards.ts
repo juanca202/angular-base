@@ -3,14 +3,16 @@ import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 
 import { AppManager } from 'app/core/services/app-manager';
 import { environment } from 'environments/environment';
-import { AuthService } from 'app/cross/auth/auth-service';
+import { Session } from 'app/core/services/session';
 
 export const authGuard: CanActivateFn = async (route, state) => {
-  const authService = inject(AuthService);
+  //Dependency injection
   const appManager = inject(AppManager);
   const router = inject(Router);
+  const session = inject(Session);
+
   // Check authentication
-  if (!authService.getToken() || !authService.settings()) {
+  if (!session.isLoggedIn() || !session.settings()) {
     sessionStorage.setItem(`${environment.sessionPrefix}_rdi`, state.url);
     router.navigateByUrl(window.innerWidth < 1000 ? '/auth' : '/signin');
     return false;
@@ -22,18 +24,18 @@ export const authGuard: CanActivateFn = async (route, state) => {
 };
 
 export const loginGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  return !authService.getToken();
+  const session = inject(Session);
+  return !session.isLoggedIn();
 };
 
 export const resetGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-  const authService = inject(AuthService);
+  const session = inject(Session);
   const router = inject(Router);
   const token = route.queryParamMap.get('token');
 
-  if (token && !authService.getToken()) {
+  if (token && !session.isLoggedIn()) {
     return true;
-  } else if (authService.getToken()) {
+  } else if (session.isLoggedIn()) {
     router.navigateByUrl(`/`);
     return false;
   } else {

@@ -15,7 +15,6 @@ import { ProgressComponent, MessageService, IconComponent } from '@factor_ec/ui'
 import { AppManager } from 'app/core/services/app-manager';
 import { AuthService } from 'app/cross/auth/auth-service';
 import { ForgotPassword } from 'app/cross/auth/components/forgot-password/forgot-password';
-import { Page } from 'app/core/components/page/page';
 import { environment } from 'environments/environment';
 import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
 
@@ -103,18 +102,6 @@ export class Auth implements OnInit {
     this.dialog.open(ForgotPassword, {
       panelClass: 'ft-dialog',
       width: '400px'
-    });
-  }
-  public openPage(url: string): void {
-    this.dialog.open(Page, {
-      data: { url },
-      panelClass: ['ft-dialog', 'ft-dialog--stacked'],
-      height: '100vh',
-      width: '600px',
-      position: {
-        left: 'auto',
-        right: '0'
-      }
     });
   }
   public setMode(mode: string): void {
