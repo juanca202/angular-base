@@ -4,9 +4,17 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
-import { LayoutManager } from 'app/core/services/layout-manager';
-import { EntityRepository } from 'app/features/templates/repositories/entity-repository';
+import { LayoutManager } from '@/core/services/layout-manager';
+import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 
+/**
+ * Presents the entity detail drawer, enabling both edition and creation flows
+ * backed by {@link EntityRepository}.
+ *
+ * @remarks
+ * The component keeps track of the active resource signal and submits mutations
+ * depending on whether an identifier is provided through dialog data.
+ */
 @Component({
   selector: 'ft-entity-detail',
   imports: [

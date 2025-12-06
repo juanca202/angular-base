@@ -1,8 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LayoutManager } from 'app/core/services/layout-manager';
-import { EntityManager } from 'app/features/templates/managers/entity-manager';
-import { EntityRepository } from 'app/features/templates/repositories/entity-repository';
+import { LayoutManager } from '@/core/services/layout-manager';
+import { EntityManager } from '@/features/templates/managers/entity-manager';
+import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 
+/**
+ * Displays the sample entity catalog using the reusable table layout.
+ *
+ * @remarks
+ * The component loads data through {@link EntityRepository} and delegates detail
+ * presentation to {@link EntityManager}, keeping the template free of business logic.
+ */
 @Component({
   selector: 'ft-entity-list',
   imports: [],

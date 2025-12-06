@@ -3,8 +3,8 @@ import { inject } from '@angular/core';
 
 import { catchError, throwError } from 'rxjs';
 
-import { AuthService } from 'app/cross/auth/auth-service';
-import { environment } from 'environments/environment';
+import { AuthService } from '@/cross/auth/auth-service';
+import { environment } from '@/environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);

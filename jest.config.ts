@@ -1,5 +1,8 @@
 /* eslint-disable */
 import type { Config } from 'jest';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 // jest-preset-angular presets are CommonJS; import default and extract
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const presets = require('jest-preset-angular/build/presets/index.js');
@@ -19,6 +22,8 @@ const config: Config = {
     '^src/(.*)$': '<rootDir>/src/$1',
     '^app/(.*)$': '<rootDir>/src/app/$1',
     '^environments/(.*)$': '<rootDir>/src/environments/$1',
+    '^@/environments/(.*)$': '<rootDir>/src/environments/$1',
+    '^@/(.*)$': '<rootDir>/src/app/$1',
     '^version-info$': '<rootDir>/test/mocks/version-info.ts',
     '^@factor_ec/ui$': '<rootDir>/test/mocks/factor-ui.ts',
     '^@factor_ec/utils$': '<rootDir>/test/mocks/factor-utils.ts',

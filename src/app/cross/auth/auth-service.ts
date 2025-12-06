@@ -11,11 +11,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { StorageService } from '@factor_ec/utils';
 // import * as Sentry from '@sentry/angular';
 
-import { Login } from 'app/cross/auth/models/login';
-import { AuthToken } from 'app/cross/auth/models/auth-token';
-import { AuthTokenPayload } from 'app/cross/auth/models/auth-token-payload';
-import { Settings } from 'app/core/models/settings';
-import { AuthProvider } from 'app/core/services/auth.provider';
+import { Login } from '@/cross/auth/models/login';
+import { AuthToken } from '@/cross/auth/models/auth-token';
+import { AuthTokenPayload } from '@/cross/auth/models/auth-token-payload';
+import { Settings } from '@/core/models/settings';
+import { AuthProvider } from '@/core/services/auth.provider';
 import {
   BehaviorSubject,
   Observable,
@@ -30,10 +30,10 @@ import {
   lastValueFrom
 } from 'rxjs';
 
-import { environment } from 'environments/environment';
-import { DeleteUser } from 'app/cross/auth/components/delete-user/delete-user';
-import { ChangePassword } from 'app/cross/auth/components/change-password/change-password';
-import { getApiUrl } from 'app/core/utils/async-repository';
+import { environment } from '@/environments/environment';
+import { DeleteUser } from '@/cross/auth/components/delete-user/delete-user';
+import { ChangePassword } from '@/cross/auth/components/change-password/change-password';
+import { getApiUrl } from '@/core/utils/async-repository';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
   identity: {
@@ -66,6 +66,14 @@ declare let navigator: any;
  * [PREFIX]_rdi = redirect url
  * [PREFIX]_cur = default currency
  * [PREFIX]_dce = delete code expires at
+ */
+/**
+ * Concrete authentication provider responsible for handling session lifecycle,
+ * secure token refresh, and profile management concerns across the app.
+ *
+ * @remarks
+ * The service extends {@link AuthProvider} to leverage core session helpers while
+ * adding stateful logic for dialogs, social login, and settings synchronization.
  */
 @Injectable({
   providedIn: 'root'

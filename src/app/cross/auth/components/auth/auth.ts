@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -12,16 +12,25 @@ import { MatDialog } from '@angular/material/dialog';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
 import { ProgressComponent, MessageService, IconComponent } from '@factor_ec/ui';
 
-import { AppManager } from 'app/core/services/app-manager';
-import { AuthService } from 'app/cross/auth/auth-service';
-import { ForgotPassword } from 'app/cross/auth/components/forgot-password/forgot-password';
-import { environment } from 'environments/environment';
-import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
+import { AppManager } from '@/core/services/app-manager';
+import { AuthService } from '@/cross/auth/auth-service';
+import { ForgotPassword } from '@/cross/auth/components/forgot-password/forgot-password';
+import { environment } from '@/environments/environment';
+import { ErrorMessagePipe } from '@/shared/pipes/error-message-pipe';
 
+/**
+ * Hosts the authentication experience, exposing sign-in and sign-up forms,
+ * and orchestrating supporting flows such as password recovery and social login.
+ *
+ * @remarks
+ * The component relies on signals for state management and delegates business logic
+ * to {@link AuthService} while keeping UI rendering declarative.
+ */
 @Component({
   selector: 'ft-auth',
   imports: [
     CommonModule,
+    NgOptimizedImage,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormField,

@@ -19,14 +19,22 @@ import moment from 'moment';
 import { StorageService } from '@factor_ec/utils';
 import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
 
-import { AppManager } from 'app/core/services/app-manager';
-import { AuthService } from 'app/cross/auth/auth-service';
-import { environment } from 'environments/environment';
-import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
+import { AppManager } from '@/core/services/app-manager';
+import { AuthService } from '@/cross/auth/auth-service';
+import { environment } from '@/environments/environment';
+import { ErrorMessagePipe } from '@/shared/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
-import { getApiUrl } from 'app/core/utils/async-repository';
-import { Session } from 'app/core/services/session';
+import { getApiUrl } from '@/core/utils/async-repository';
+import { Session } from '@/core/services/session';
 
+/**
+ * Handles the two-step account deletion flow, including code generation,
+ * countdown management, and confirmation submission.
+ *
+ * @remarks
+ * The dialog enforces a verification code delivered externally and coordinates
+ * backend requests to ensure the user explicitly confirms the operation.
+ */
 @Component({
   selector: 'ft-delete-user',
   imports: [

@@ -22,7 +22,7 @@
           [disabled]="submitting()"
         >
           <div class="flex gap-4 items-center">
-            <img src="images/logo-google.svg" alt="" />
+            <img ngSrc="images/logo-google.svg" width="24" height="24" alt="" loading="lazy" />
             <div i18n>Continue with Google</div>
           </div>
         </button>
@@ -135,7 +135,7 @@
           [disabled]="submitting()"
         >
           <div class="flex gap-4 items-center">
-            <img src="images/logo-google.svg" alt="" />
+            <img ngSrc="images/logo-google.svg" width="24" height="24" alt="" loading="lazy" />
             <div i18n>Continue with Google</div>
           </div>
         </button>
@@ -226,7 +226,7 @@
           mat-flat-button
           color="primary"
           [disabled]="!signupForm.valid || submitting()"
-          style="min-width: 250px"
+          class="min-w-[250px]"
         >
           @if (!submitting()) {
             <span i18n>Sign up</span>

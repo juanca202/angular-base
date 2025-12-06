@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-icon',
+  selector: 'ft-icon',
   template: '<span></span>',
   standalone: true
 })
 export class IconComponent {}
 
 @Component({
-  selector: 'app-avatar',
+  selector: 'ft-avatar',
   template: '<div></div>',
   standalone: true
 })
 export class AvatarComponent {}
 
 @Component({
-  selector: 'app-progress',
+  selector: 'ft-progress',
   template: '<div></div>',
   standalone: true
 })
@@ -31,7 +31,7 @@ export class MessageService {
 import { Directive } from '@angular/core';
 
 @Directive({
-  selector: '[appObserveIntersecting]',
+  selector: '[ftObserveIntersecting]',
   standalone: true
 })
 export class ObserveIntersectingDirective {}

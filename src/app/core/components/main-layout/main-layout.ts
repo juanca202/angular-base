@@ -5,9 +5,13 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
-import { AuthProvider } from 'app/core/services/auth.provider';
-import { Session } from 'app/core/services/session';
+import { AuthProvider } from '@/core/services/auth.provider';
+import { Session } from '@/core/services/session';
 
+/**
+ * Provides the primary shell layout, handling navigation links and user profile
+ * affordances across the authenticated experience.
+ */
 @Component({
   selector: 'ft-main-layout',
   imports: [AvatarComponent, IconComponent, MatButtonModule, RouterModule, RouterOutlet],

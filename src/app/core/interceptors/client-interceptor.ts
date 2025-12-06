@@ -1,7 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 
-import { AppManager } from 'app/core/services/app-manager';
+import { AppManager } from '@/core/services/app-manager';
 
 export const clientInterceptor: HttpInterceptorFn = (req, next) => {
   const appManager = inject(AppManager);

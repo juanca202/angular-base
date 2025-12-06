@@ -1,6 +1,6 @@
 import { inject, signal, Signal } from '@angular/core';
 import { MessageService } from '@factor_ec/ui';
-import { environment } from 'environments/environment';
+import { environment } from '@/environments/environment';
 import {
   catchError,
   finalize,
@@ -106,7 +106,8 @@ export function getMutations<T extends Record<string, (...args: any[]) => Observ
       const request$ = factories[key](...args).pipe(
         tap((result) => value.set(result ?? null)),
         catchError((err) => {
-          const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? 'Error inesperado';
+          const msg =
+            err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
           error.set(msg);
           globalError.set(msg);
           messageService.show(msg);
@@ -160,7 +161,7 @@ export function getResource<TParams, TResult>(
       ),
       tap((result) => value.set((result ?? null) as TResult | null)),
       catchError((err) => {
-        const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? 'Error inesperado';
+        const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
         error.set(msg);
         messageService.show(msg);
         // Rethrow to allow try/catch

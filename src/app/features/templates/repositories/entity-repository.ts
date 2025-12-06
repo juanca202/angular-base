@@ -1,8 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Entity, EntityRequest } from '../models/entity';
-import { getApiUrl, getMutations, getResource, SignalGet } from 'app/core/utils/async-repository';
+import { getApiUrl, getMutations, getResource, SignalGet } from '@/core/utils/async-repository';
 
+/**
+ * Repository that encapsulates all data access required by the demo entity feature.
+ *
+ * @remarks
+ * The class uses the shared async repository helpers to expose signals that
+ * components can bind to without manually handling HTTP state.
+ */
 @Injectable({
   providedIn: 'root'
 })

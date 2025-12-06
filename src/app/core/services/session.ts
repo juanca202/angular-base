@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, effect, inject, EventEmitter } from '@angular/core';
-import { environment } from 'environments/environment';
+import { environment } from '@/environments/environment';
 import { SessionState } from '../models/session-state';
 import { User } from '../models/user';
 import { Settings } from '../models/settings';

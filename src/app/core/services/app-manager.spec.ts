@@ -7,9 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
-import { AppManager } from 'app/core/services/app-manager';
+import { AppManager } from '@/core/services/app-manager';
 import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
-import { AuthProvider } from 'app/core/services/auth.provider';
+import { AuthProvider } from '@/core/services/auth.provider';
 
 const createAuthContextStub = () => ({
   settings: signal(undefined),

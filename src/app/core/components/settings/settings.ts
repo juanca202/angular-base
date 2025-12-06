@@ -27,12 +27,20 @@ import { lastValueFrom } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
 // import * as Sentry from '@sentry/angular';
 
-import { AppManager } from 'app/core/services/app-manager';
+import { AppManager } from '@/core/services/app-manager';
 import { CommonModule } from '@angular/common';
-import { LayoutManager } from 'app/core/services/layout-manager';
-import { AuthProvider } from 'app/core/services/auth.provider';
-import { Session } from 'app/core/services/session';
+import { LayoutManager } from '@/core/services/layout-manager';
+import { AuthProvider } from '@/core/services/auth.provider';
+import { Session } from '@/core/services/session';
 
+/**
+ * Renders the settings hub, exposing contextual actions such as sharing,
+ * password management, and locale switching.
+ *
+ * @remarks
+ * The component consumes signals from {@link AppManager} and {@link Session}
+ * to present personalized data and system status.
+ */
 @Component({
   selector: 'ft-settings',
   imports: [

@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventEmitter, signal } from '@angular/core';
 import { Error } from './error';
-import { AppManager } from 'app/core/services/app-manager';
+import { AppManager } from '@/core/services/app-manager';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { AuthProvider } from 'app/core/services/auth.provider';
+import { AuthProvider } from '@/core/services/auth.provider';
 
 const createAuthContextStub = () => ({
   settings: signal(undefined),
