@@ -16,7 +16,7 @@ import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
 import { ForgotPassword } from '@/cross/auth/components/forgot-password/forgot-password';
 import { environment } from '@/environments/environment';
-import { ErrorMessagePipe } from '@/shared/pipes/error-message-pipe';
+import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 
 /**
  * Hosts the authentication experience, exposing sign-in and sign-up forms,

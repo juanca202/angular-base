@@ -22,7 +22,7 @@ import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui'
 import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
 import { environment } from '@/environments/environment';
-import { ErrorMessagePipe } from '@/shared/pipes/error-message-pipe';
+import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { HttpClient } from '@angular/common/http';
 import { getApiUrl } from '@/core/utils/async-repository';
 import { Session } from '@/core/services/session';

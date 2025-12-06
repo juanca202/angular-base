@@ -11,7 +11,7 @@ import { GoogleTagManagerService } from '@factor_ec/utils';
 
 import { environment } from '@/environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from '@/shared/pipes/error-message-pipe';
+import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 
 /**
  * Presents the dialog that lets the user request password reset instructions.

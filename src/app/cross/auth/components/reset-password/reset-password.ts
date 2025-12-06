@@ -20,7 +20,7 @@ import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui'
 import { AppManager } from '@/core/services/app-manager';
 import { environment } from '@/environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from '@/shared/pipes/error-message-pipe';
+import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 
 /**
  * Allows users to define a new password after following a reset link that
