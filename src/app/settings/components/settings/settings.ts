@@ -28,9 +28,9 @@ import { Apollo, gql } from 'apollo-angular';
 // import * as Sentry from '@sentry/angular';
 
 import { AppManager } from 'app/core/services/app-manager';
-import { AuthService } from 'app/auth/auth-service';
 import { CommonModule } from '@angular/common';
 import { LayoutManager } from 'app/core/services/layout-manager';
+import { AUTH_CONTEXT, AuthContext } from 'app/core/services/auth-context.token';
 
 @Component({
   selector: 'ft-settings',
@@ -57,7 +57,7 @@ import { LayoutManager } from 'app/core/services/layout-manager';
 export class Settings implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  public readonly authService = inject(AuthService);
+  public readonly authService = inject<AuthContext>(AUTH_CONTEXT);
   private readonly apollo = inject(Apollo);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);

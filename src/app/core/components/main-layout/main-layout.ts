@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
-import { AuthService } from 'app/auth/auth-service';
+import { AUTH_CONTEXT, AuthContext } from 'app/core/services/auth-context.token';
 
 @Component({
   selector: 'ft-main-layout',
@@ -18,7 +18,7 @@ import { AuthService } from 'app/auth/auth-service';
 })
 export class MainLayout {
   // Dependency injection
-  public readonly authService = inject(AuthService);
+  public readonly authService = inject<AuthContext>(AUTH_CONTEXT);
   public readonly bottomSheet = inject(MatBottomSheet);
 
   // Properties

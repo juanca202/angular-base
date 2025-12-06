@@ -1,8 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { EventEmitter, signal } from '@angular/core';
 import { MainLayout } from './main-layout';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { StorageService } from '@factor_ec/utils';
+import { AUTH_CONTEXT } from 'app/core/services/auth-context.token';
+
+const createAuthContextStub = () => ({
+  settings: signal(undefined),
+  getToken: jest.fn(),
+  logout: jest.fn(),
+  changePassword: jest.fn(),
+  confirmDeleteUser: jest.fn(),
+  getSettings: jest.fn(),
+  loggedIn: new EventEmitter<boolean>()
+});
 
 describe('MainLayout', () => {
   let component: MainLayout;
@@ -17,6 +29,10 @@ describe('MainLayout', () => {
         {
           provide: StorageService,
           useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
+        },
+        {
+          provide: AUTH_CONTEXT,
+          useValue: createAuthContextStub()
         }
       ]
     }).compileComponents();

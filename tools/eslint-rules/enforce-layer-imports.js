@@ -1,7 +1,5 @@
 const FEATURE_PREFIX = 'feature:';
 
-const CORE_AUTH_EXPORTS = new Set(['auth-service', 'auth-guards', 'auth-interceptor']);
-
 const describeLayer = (layer) => {
   if (!layer) {
     return 'unknown layer';
@@ -24,45 +22,37 @@ const extractLayer = (filename) => {
   if (!segment) {
     return null;
   }
-  const hasSubPath = relativePath.includes('/');
-  if (!hasSubPath) {
+  if (!relativePath.includes('/')) {
+    if (relativePath.startsWith('app.')) {
+      return 'bootstrap';
+    }
     return 'core';
   }
   if (segment === 'core' || segment === 'shared') {
     return segment;
   }
-  if (segment === 'auth') {
-    const remainder = relativePath.split('/').slice(1);
-    const nextSegment = remainder[0];
-    if (CORE_AUTH_EXPORTS.has(nextSegment)) {
-      return 'core';
-    }
-  }
   return `${FEATURE_PREFIX}${segment}`;
 };
 
 const extractLayerFromImport = (importPath) => {
-  if (typeof importPath !== 'string' || !importPath.startsWith('app/')) {
+  if (typeof importPath !== 'string') {
     return null;
   }
-  const [, segment] = importPath.split('/');
-  if (!segment) {
-    return null;
-  }
-  const remainder = importPath.split('/').slice(2);
-  if (!remainder.length) {
-    return segment === 'core' || segment === 'shared' ? segment : 'core';
-  }
-  if (segment === 'core' || segment === 'shared') {
-    return segment;
-  }
-  if (segment === 'auth') {
-    const nextSegment = remainder[0];
-    if (CORE_AUTH_EXPORTS.has(nextSegment)) {
+  if (importPath.startsWith('app/')) {
+    const [, ...rest] = importPath.split('/');
+    const [segment] = rest;
+    if (!segment) {
       return 'core';
     }
+    if (segment.includes('.')) {
+      return 'core';
+    }
+    if (segment === 'core' || segment === 'shared') {
+      return segment;
+    }
+    return `${FEATURE_PREFIX}${segment}`;
   }
-  return `${FEATURE_PREFIX}${segment}`;
+  return null;
 };
 
 module.exports = {
@@ -82,7 +72,7 @@ module.exports = {
     return {
       ImportDeclaration(node) {
         const fromLayer = extractLayer(context.getFilename());
-        if (!fromLayer) {
+        if (!fromLayer || fromLayer === 'bootstrap') {
           return;
         }
         const targetLayer = extractLayerFromImport(node.source.value);

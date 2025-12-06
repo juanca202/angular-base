@@ -26,6 +26,8 @@ import { authInterceptor } from 'app/auth/auth-interceptor';
 import { environment } from 'environments/environment';
 import { clientInterceptor } from 'app/core/interceptors/client-interceptor';
 import { AilErrorHandler } from './core/services/ail-error-handler';
+import { AUTH_CONTEXT } from './core/services/auth-context.token';
+import { AuthService } from './auth/auth-service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -91,6 +93,10 @@ export const appConfig: ApplicationConfig = {
       provide: LOCALE_ID,
       useFactory: (appManager: AppManager) => appManager.getLocale(),
       deps: [AppManager]
+    },
+    {
+      provide: AUTH_CONTEXT,
+      useExisting: AuthService
     }
   ]
 };

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { EventEmitter, signal } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
@@ -8,6 +9,17 @@ import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
 import { AppManager } from 'app/core/services/app-manager';
 import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
+import { AUTH_CONTEXT } from 'app/core/services/auth-context.token';
+
+const createAuthContextStub = () => ({
+  settings: signal(undefined),
+  getToken: jest.fn(),
+  logout: jest.fn(),
+  changePassword: jest.fn(),
+  confirmDeleteUser: jest.fn(),
+  getSettings: jest.fn().mockResolvedValue(false),
+  loggedIn: new EventEmitter<boolean>()
+});
 jest.mock('version-info', () => ({
   versionInfo: {
     version: 'test',
@@ -50,7 +62,8 @@ describe('AppManager', () => {
             removeItem: jest.fn()
           }
         },
-        { provide: GoogleTagManagerService, useValue: { push: jest.fn() } }
+        { provide: GoogleTagManagerService, useValue: { push: jest.fn() } },
+        { provide: AUTH_CONTEXT, useValue: createAuthContextStub() }
       ]
     });
     service = TestBed.inject(AppManager);
