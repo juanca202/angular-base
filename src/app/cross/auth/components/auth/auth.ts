@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -34,6 +34,7 @@ import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
   ],
   templateUrl: './auth.html',
   styleUrl: './auth.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-auth',
     '[class.ft-auth--form]': '!!mode()'
@@ -57,8 +58,8 @@ export class Auth implements OnInit {
   public readonly mode = signal<string>('');
   public readonly lastUser = signal<any>(undefined);
   public readonly passwordVisible = signal<boolean>(false);
-  public signinForm: FormGroup;
-  public signupForm: FormGroup;
+  public readonly signinForm: FormGroup;
+  public readonly signupForm: FormGroup;
   public readonly submitting = signal<boolean>(false);
 
   constructor() {
@@ -121,7 +122,7 @@ export class Auth implements OnInit {
       page_title: this.title.getTitle()
     });
   }
-  async submitSignin(): Promise<void> {
+  public async submitSignin(): Promise<void> {
     if (this.signinForm.valid) {
       this.errorMessage.set('');
       this.signinForm.disable();
@@ -143,7 +144,7 @@ export class Auth implements OnInit {
       }
     }
   }
-  async submitSignup(): Promise<void> {
+  public async submitSignup(): Promise<void> {
     if (this.signupForm.valid) {
       try {
         this.errorMessage.set('');

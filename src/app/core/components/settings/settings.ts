@@ -1,4 +1,12 @@
-import { Component, OnInit, signal, inject, ElementRef, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+  inject,
+  ElementRef,
+  viewChild
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,9 +28,9 @@ import { Apollo, gql } from 'apollo-angular';
 // import * as Sentry from '@sentry/angular';
 
 import { AppManager } from 'app/core/services/app-manager';
-import { AuthService } from 'app/cross/auth/auth-service';
 import { CommonModule } from '@angular/common';
 import { LayoutManager } from 'app/core/services/layout-manager';
+import { AuthProvider } from 'app/core/services/auth.provider';
 import { Session } from 'app/core/services/session';
 
 @Component({
@@ -42,6 +50,7 @@ import { Session } from 'app/core/services/session';
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-page'
   }
@@ -49,7 +58,7 @@ import { Session } from 'app/core/services/session';
 export class Settings implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  public readonly authService = inject(AuthService);
+  public readonly authService = inject(AuthProvider);
   private readonly apollo = inject(Apollo);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);

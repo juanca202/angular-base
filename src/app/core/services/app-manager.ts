@@ -17,7 +17,7 @@ import { getToken, isSupported } from 'firebase/messaging';
 
 import { versionInfo } from 'version-info';
 import { environment } from 'environments/environment';
-import { AuthService } from 'app/cross/auth/auth-service';
+import { AuthProvider } from 'app/core/services/auth.provider';
 import { Session } from './session';
 
 registerLocaleData(localeEn, 'en');
@@ -27,7 +27,7 @@ registerLocaleData(localeEs, 'es');
   providedIn: 'root'
 })
 export class AppManager {
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AuthProvider);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly injector = inject(Injector);
   private readonly location = inject(Location);
@@ -43,16 +43,16 @@ export class AppManager {
   public readonly id = '';
   public readonly name = '';
   public initialized = false;
-  private installPrompt: any; // BeforeInstallPromptEvent;
+  private installPrompt: any = null; // BeforeInstallPromptEvent;
   public readonly version = versionInfo.git.raw;
-  public updateStatus = signal<string | null>('done');
-  private defaultLocale = 'en';
-  public languages = signal<Language[]>([{ code: 'es', name: 'Español' }]);
+  public readonly updateStatus = signal<string | null>('done');
+  private readonly defaultLocale = 'en';
+  public readonly languages = signal<Language[]>([{ code: 'es', name: 'Español' }]);
   private pushToken: string | undefined;
 
   // Storage keys
-  private clientKey = `${environment.sessionPrefix}_cid`;
-  private localeKey = `${environment.sessionPrefix}_loc`;
+  private readonly clientKey = `${environment.sessionPrefix}_cid`;
+  private readonly localeKey = `${environment.sessionPrefix}_loc`;
 
   constructor() {
     this.swUpdate.versionUpdates.subscribe((evt) => {
@@ -80,6 +80,12 @@ export class AppManager {
           break;
       }
     });
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('beforeinstallprompt', (event: Event) => {
+        event.preventDefault();
+        this.installPrompt = event as any;
+      });
+    }
   }
 
   public checkForUpdates(): void {
@@ -197,9 +203,12 @@ export class AppManager {
     return token;
   }
   public install(): void {
+    if (!this.installPrompt) {
+      return;
+    }
     this.installPrompt.prompt();
-    this.installPrompt.userChoice.then((result: any) => {
-      if (result.outcome !== 'dismissed') {
+    this.installPrompt.userChoice?.then((result: any) => {
+      if (result?.outcome !== 'dismissed') {
         //this.googleTagManagerService.addVariable({ event: 'install', user_id: this.settings.user?.username, app_id: this.id });
       }
     });

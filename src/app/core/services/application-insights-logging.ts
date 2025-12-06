@@ -6,7 +6,7 @@ import { environment } from 'environments/environment';
   providedIn: 'root'
 })
 export class ApplicationInsightsLogging {
-  appInsights: ApplicationInsights;
+  private readonly appInsights: ApplicationInsights;
   constructor() {
     this.appInsights = new ApplicationInsights({
       config: {
@@ -17,7 +17,7 @@ export class ApplicationInsightsLogging {
     this.appInsights.loadAppInsights();
   }
 
-  logPageView(name?: string, url?: string) {
+  public logPageView(name?: string, url?: string) {
     // option to call manually
     this.appInsights.trackPageView({
       name: name,
@@ -25,19 +25,19 @@ export class ApplicationInsightsLogging {
     });
   }
 
-  logEvent(name: string, properties?: { [key: string]: any }) {
+  public logEvent(name: string, properties?: { [key: string]: any }) {
     this.appInsights.trackEvent({ name: name }, properties);
   }
 
-  logMetric(name: string, average: number, properties?: { [key: string]: any }) {
+  public logMetric(name: string, average: number, properties?: { [key: string]: any }) {
     this.appInsights.trackMetric({ name: name, average: average }, properties);
   }
 
-  logException(exception: Error, severityLevel?: number) {
+  public logException(exception: Error, severityLevel?: number) {
     this.appInsights.trackException({ exception: exception, severityLevel: severityLevel });
   }
 
-  logTrace(message: string, properties?: { [key: string]: any }) {
+  public logTrace(message: string, properties?: { [key: string]: any }) {
     this.appInsights.trackTrace({ message: message }, properties);
   }
 }

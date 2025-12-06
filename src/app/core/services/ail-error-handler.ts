@@ -5,9 +5,9 @@ import { ApplicationInsightsLogging } from './application-insights-logging';
   providedIn: 'root'
 })
 export class AilErrorHandler implements ErrorHandler {
-  private ail = inject(ApplicationInsightsLogging);
+  private readonly ail = inject(ApplicationInsightsLogging);
 
-  handleError(error: any): void {
+  public handleError(error: any): void {
     let severity = 3; // Error por defecto
 
     if (error instanceof TypeError) {

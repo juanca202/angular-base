@@ -15,6 +15,7 @@ import { Login } from 'app/cross/auth/models/login';
 import { AuthToken } from 'app/cross/auth/models/auth-token';
 import { AuthTokenPayload } from 'app/cross/auth/models/auth-token-payload';
 import { Settings } from 'app/core/models/settings';
+import { AuthProvider } from 'app/core/services/auth.provider';
 import {
   BehaviorSubject,
   Observable,
@@ -69,20 +70,23 @@ declare let navigator: any;
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
-  private dialog = inject(MatDialog);
-  private httpClient = inject(HttpClient);
-  private storageService = inject(StorageService);
+export class AuthService extends AuthProvider {
+  private readonly dialog = inject(MatDialog);
+  private readonly httpClient = inject(HttpClient);
+  private readonly storageService = inject(StorageService);
+  constructor() {
+    super();
+  }
 
-  signedIn = new EventEmitter<boolean>(false);
-  signedUp = new EventEmitter<boolean>(false);
-  loggedIn = new EventEmitter<boolean>(false);
-  settings = signal<Settings | undefined>(undefined);
+  public readonly signedIn = new EventEmitter<boolean>(false);
+  public readonly signedUp = new EventEmitter<boolean>(false);
+  public readonly loggedIn = new EventEmitter<boolean>(false);
+  public readonly settings = signal<Settings | undefined>(undefined);
   /**
    * Auth keys
    */
-  private tokenKey = `${environment.sessionPrefix}_jwt`;
-  private settingsKey = `${environment.sessionPrefix}_set`;
+  private readonly tokenKey = `${environment.sessionPrefix}_jwt`;
+  private readonly settingsKey = `${environment.sessionPrefix}_set`;
   /**
    * Flag indicating whether the access token is being refreshed
    */
@@ -90,7 +94,7 @@ export class AuthService {
   /**
    * Manages the access token refresh flow
    */
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   /**
    * Sends the authentication token to the server

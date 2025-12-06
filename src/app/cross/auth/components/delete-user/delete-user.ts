@@ -1,4 +1,11 @@
-import { Component, OnInit, signal, inject, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+  inject,
+  OnDestroy
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +41,8 @@ import { Session } from 'app/core/services/session';
     ErrorMessagePipe
   ],
   templateUrl: './delete-user.html',
-  styleUrl: './delete-user.scss'
+  styleUrl: './delete-user.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeleteUser implements OnInit, OnDestroy {
   // Dependency injection
@@ -47,14 +55,14 @@ export class DeleteUser implements OnInit, OnDestroy {
   private readonly storageService = inject(StorageService);
 
   // Properties
-  public step1Form: FormGroup;
-  public step2Form: FormGroup;
+  public readonly step1Form: FormGroup;
+  public readonly step2Form: FormGroup;
   public readonly passwordVisible = signal<boolean>(false);
   public readonly submitting = signal<boolean>(false);
   public readonly submitted = signal<boolean>(false);
 
   public readonly codeExpiresIn = signal<string>('');
-  public codeTimeInterval!: Subscription;
+  private codeTimeInterval: Subscription | null = null;
   public readonly invalidUserEmail = $localize`Type the email registered in your account`;
 
   constructor() {
@@ -140,7 +148,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       const codeExpired = diff <= 0;
       if (codeExpired) {
         this.codeExpiresIn.set('');
-        this.codeTimeInterval.unsubscribe();
+        this.codeTimeInterval?.unsubscribe();
       } else {
         this.codeExpiresIn.set(moment.utc(diff).format('mm:ss'));
       }

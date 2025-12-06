@@ -4,14 +4,26 @@ import { Settings } from './core/components/settings/settings';
 import { Language } from './core/components/language/language';
 import { MainLayout } from './core/components/main-layout/main-layout';
 import { authGuard } from './cross/auth/auth-guards';
-import { authRoutes } from './cross/auth/auth-routes';
 
 export const routes: Routes = [
-  ...authRoutes,
+  {
+    path: '',
+    loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
+  },
   {
     path: '',
     component: MainLayout,
-    children: []
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'settings',
+        component: Settings
+      },
+      {
+        path: 'settings/language',
+        component: Language
+      }
+    ]
   },
   { path: 'settings', component: Settings, canActivate: [authGuard] },
   { path: 'settings/language', component: Language },

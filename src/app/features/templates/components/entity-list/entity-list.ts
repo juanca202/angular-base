@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LayoutManager } from 'app/core/services/layout-manager';
 import { EntityManager } from 'app/features/templates/managers/entity-manager';
 import { EntityRepository } from 'app/features/templates/repositories/entity-repository';
@@ -7,7 +7,8 @@ import { EntityRepository } from 'app/features/templates/repositories/entity-rep
   selector: 'ft-entity-list',
   imports: [],
   templateUrl: './entity-list.html',
-  styleUrl: './entity-list.scss'
+  styleUrl: './entity-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityList {
   // Dependency injection

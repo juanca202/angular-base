@@ -2,6 +2,19 @@
 const eslint = require('@eslint/js');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const angular = require('@angular-eslint/eslint-plugin');
+const angularTemplate = require('@angular-eslint/eslint-plugin-template');
+
+const projectRules = {
+  rules: {
+    'enforce-layer-imports': require('./tools/eslint-rules/enforce-layer-imports')
+  }
+};
+
+const projectTemplateRules = {
+  rules: {
+    'no-ngclass': require('./tools/eslint-rules/no-ngclass')
+  }
+};
 
 module.exports = [
   // Global ignore configuration
@@ -20,14 +33,36 @@ module.exports = [
       '**/generate-i18n.js',
       '**/git-version.js',
       '**/setup-jest.ts',
-      '**/*.html',
-      '**/*.scss',
       '**/*.css',
       '**/*.js',
       '**/*.mjs',
       '**/firebase-messaging-sw.js',
       '**/sw-custom.js'
     ]
+  },
+
+  // Configuration for Angular templates
+  {
+    files: ['src/app/**/*.html'],
+    plugins: {
+      '@angular-eslint/template': angularTemplate,
+      'project-template-rules': projectTemplateRules
+    },
+    languageOptions: {
+      parser: require('@angular-eslint/template-parser')
+    },
+    rules: {
+      '@angular-eslint/template/i18n': [
+        'error',
+        {
+          checkId: false,
+          checkText: true,
+          checkAttributes: false
+        }
+      ],
+      '@angular-eslint/template/prefer-control-flow': 'error',
+      'project-template-rules/no-ngclass': 'error'
+    }
   },
 
   // Base configuration
@@ -54,13 +89,16 @@ module.exports = [
     ],
     plugins: {
       '@typescript-eslint': tseslint,
-      '@angular-eslint': angular
+      '@angular-eslint': angular,
+      'project-rules': projectRules
     },
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'module'
+        sourceType: 'module',
+        project: ['./tsconfig.app.json', './tsconfig.spec.json'],
+        tsconfigRootDir: __dirname
       },
       globals: {
         // Angular global variables
@@ -95,6 +133,30 @@ module.exports = [
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/explicit-member-accessibility': [
+        'error',
+        {
+          accessibility: 'explicit',
+          overrides: {
+            accessors: 'explicit',
+            constructors: 'no-public',
+            methods: 'explicit',
+            properties: 'explicit',
+            parameterProperties: 'explicit'
+          },
+          ignoredMethodNames: [
+            'ngOnInit',
+            'ngOnChanges',
+            'ngOnDestroy',
+            'ngAfterViewInit',
+            'ngAfterViewChecked',
+            'ngAfterContentInit',
+            'ngAfterContentChecked'
+          ]
+        }
+      ],
+      '@typescript-eslint/prefer-readonly': ['error', { onlyInlineLambdas: false }],
+      '@angular-eslint/prefer-on-push-component-change-detection': 'error',
       '@angular-eslint/directive-selector': [
         'error',
         {
@@ -111,6 +173,7 @@ module.exports = [
           style: 'kebab-case'
         }
       ],
+      'project-rules/enforce-layer-imports': 'error',
       'no-undef': 'off', // TypeScript handles this
       'no-unused-vars': 'off' // Use TypeScript rule instead
     }

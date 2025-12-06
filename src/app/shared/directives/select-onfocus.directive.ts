@@ -7,9 +7,9 @@ import { Directive, ElementRef, inject } from '@angular/core';
   }
 })
 export class SelectOnfocusDirective {
-  private el = inject(ElementRef);
+  private readonly el = inject(ElementRef);
 
-  onFocus(): void {
+  public onFocus(): void {
     this.el.nativeElement.select();
   }
 }

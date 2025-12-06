@@ -81,7 +81,7 @@ export class Session {
   /**
    * Initializes the session service and sets up automatic persistence
    */
-  public constructor() {
+  constructor() {
     this.restoreFromStorage();
 
     // Effect to automatically persist each state change

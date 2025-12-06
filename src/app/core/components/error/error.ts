@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,9 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { IconComponent } from '@factor_ec/ui';
 import { Error as ErrorModel, StorageService } from '@factor_ec/utils';
 
+import { AuthProvider } from 'app/core/services/auth.provider';
 import { environment } from 'environments/environment';
-import { Session } from 'app/core/services/session';
-import { AuthService } from 'app/cross/auth/auth-service';
 
 /**
  * Generic error page.
@@ -19,18 +18,18 @@ import { AuthService } from 'app/cross/auth/auth-service';
   imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
   styleUrl: './error.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-error'
   }
 })
 export class Error implements OnInit {
   // Dependency injection
-  public readonly authService = inject(AuthService);
+  public readonly authService = inject(AuthProvider);
   private readonly storageService = inject(StorageService);
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  public readonly session = inject(Session);
 
   // Properties
   public readonly error = signal<ErrorModel | undefined>(undefined);

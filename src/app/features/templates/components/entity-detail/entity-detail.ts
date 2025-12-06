@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,7 +17,8 @@ import { EntityRepository } from 'app/features/templates/repositories/entity-rep
     ProgressComponent
   ],
   templateUrl: './entity-detail.html',
-  styleUrl: './entity-detail.scss'
+  styleUrl: './entity-detail.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityDetail {
   // Dependency injection
@@ -29,7 +30,7 @@ export class EntityDetail {
   // Properties
   public readonly entity = this.entityRepository.find();
   public readonly entityMutations = this.entityRepository.mutations();
-  public form: FormGroup = new FormGroup({});
+  public readonly form: FormGroup = this.formBuilder.group({});
 
   ngOnInit(): void {
     if (this.data.id) {

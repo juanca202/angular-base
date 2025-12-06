@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -37,6 +37,7 @@ import { ErrorMessagePipe } from 'app/shared/pipes/error-message-pipe';
   ],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-auth ft-auth--form'
   }
@@ -52,7 +53,7 @@ export class ResetPassword {
   private readonly title = inject(Title);
 
   // Properties
-  public form: FormGroup;
+  public readonly form: FormGroup;
   public readonly submitting = signal<boolean>(false);
   public readonly notEqualMessage = $localize`New password is not the same`;
   public readonly passwordVisible = signal<boolean>(false);

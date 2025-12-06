@@ -8,10 +8,14 @@ import { StringService } from '@factor_ec/utils';
   providedIn: 'root'
 })
 export class GraphqlUtils {
-  private apollo = inject(Apollo);
-  private stringService = inject(StringService);
+  private readonly apollo = inject(Apollo);
+  private readonly stringService = inject(StringService);
 
-  mutation(operation: 'create' | 'update' | 'delete', type: string, entity: any): Promise<unknown> {
+  public mutation(
+    operation: 'create' | 'update' | 'delete',
+    type: string,
+    entity: any
+  ): Promise<unknown> {
     let mutation: Observable<MutationResult<unknown>>;
     const capitalizedType = this.stringService.normalizeName(type);
     switch (operation) {
@@ -70,7 +74,7 @@ export class GraphqlUtils {
     }
     return lastValueFrom(mutation);
   }
-  parseQuery(query: Record<string, any>) {
+  public parseQuery(query: Record<string, any>) {
     if (query !== null) {
       const data: any = {};
       for (const property in query) {
@@ -98,7 +102,7 @@ export class GraphqlUtils {
       return query;
     }
   }
-  parseEdges(edges: any): any[] {
+  public parseEdges(edges: any): any[] {
     return edges.map((entity: any) => {
       return this.parseQuery(entity?.node || entity);
     });
