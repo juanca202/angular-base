@@ -203,7 +203,8 @@ module.exports = [
     },
     rules: {
       // Test-specific rules (optional)
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': 'off' // Use TypeScript rule instead
     }
   }
 ];

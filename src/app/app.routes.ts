@@ -10,6 +10,10 @@ export const routes: Routes = [
       import('./features/templates/templates-routes').then((m) => m.templatesRoutes)
   },
   {
+    path: 'contacts',
+    loadChildren: () => import('./features/contacts/contacts-routes').then((m) => m.contactsRoutes)
+  },
+  {
     path: '',
     loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
   },

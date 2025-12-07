@@ -83,48 +83,48 @@ flowchart TD
 
 # Architectural Decisions (ADRs)
 
-This project follows the Architectural Decision Records (ADR) format to document key architectural decisions. Each ADR is maintained as a separate document in the [`decisions/`](./decisions/) directory.
+This project follows the Architectural Decision Records (ADR) format to document key architectural decisions. Each ADR is maintained as a separate document in the [`adr/`](./adr/) directory.
 
 ## ADR Index
 
-- **[ADR-001: Separation of Responsibilities - Core, Shared, and Features](./decisions/ADR-001.md)**  
+- **[ADR-001: Separation of Responsibilities - Core, Shared, and Features](./adr/ADR-001.md)**  
   Defines the three-layer architecture (Core, Shared, Features) with clear dependency rules and separation of concerns.
 
-- **[ADR-002: Adoption of the Official Angular Style Guide](./decisions/ADR-002.md)**  
+- **[ADR-002: Adoption of the Official Angular Style Guide](./adr/ADR-002.md)**  
   Establishes adherence to the official Angular Style Guide for consistent code patterns and best practices.
 
-- **[ADR-003: Use of Tailwind CSS for Utility Classes and Component Creation](./decisions/ADR-003.md)**  
+- **[ADR-003: Use of Tailwind CSS for Utility Classes and Component Creation](./adr/ADR-003.md)**  
   Mandates Tailwind CSS for utility classes while reserving custom CSS with `ft-` prefix for component-specific styles following BEM.
 
-- **[ADR-004: AI-Assisted Development Rules](./decisions/ADR-004.md)**  
+- **[ADR-004: AI-Assisted Development Rules](./adr/ADR-004.md)**  
   Documents rules for AI-assisted development to ensure consistent code generation aligned with architectural decisions.
 
-- **[ADR-005: Internationalization (i18n) Strategy](./decisions/ADR-005.md)**  
+- **[ADR-005: Internationalization (i18n) Strategy](./adr/ADR-005.md)**  
   Defines the internationalization strategy using Angular i18n with runtime translation loading and automated translation management.
 
-- **[ADR-006: Repository Pattern for REST Services](./decisions/ADR-006.md)**  
+- **[ADR-006: Repository Pattern for REST Services](./adr/ADR-006.md)**  
   Establishes the repository pattern with `getMutations()` and `getResource()` for standardized REST API communication and state management.
 
-- **[ADR-007: Testing Strategy](./decisions/ADR-007.md)**  
+- **[ADR-007: Testing Strategy](./adr/ADR-007.md)**  
   Defines the testing approach using Jest for unit/integration tests and Playwright for E2E tests, following AAA pattern and coverage goals.
 
-- **[ADR-008: Form Validation Strategy](./decisions/ADR-008.md)**  
+- **[ADR-008: Form Validation Strategy](./adr/ADR-008.md)**  
   Standardizes form validation using Reactive Forms with errorMessage pipe, validator hierarchy, and consistent error display patterns.
 
-- **[ADR-009: Code Quality & Tooling](./decisions/ADR-009.md)**  
+- **[ADR-009: Code Quality & Tooling](./adr/ADR-009.md)**  
   Documents the code quality toolchain including ESLint, Prettier, Husky, Commitlint, and automated quality enforcement.
 
-- **[ADR-010: Icon Usage Strategy](./decisions/ADR-010.md)**  
+- **[ADR-010: Icon Usage Strategy](./adr/ADR-010.md)**  
   Defines the icon usage strategy using a unified `<ft-icon />` component with support for predefined collections and custom icons.
 
-- **[ADR-011: Documentation Strategy](./decisions/ADR-011.md)**  
+- **[ADR-011: Documentation Strategy](./adr/ADR-011.md)**  
   Establishes documentation standards requiring English-only documentation, JSDoc/TSDoc format, and Compodoc for automatic API documentation generation.
 
 ## Creating New ADRs
 
 When making significant architectural decisions, create a new ADR following this template:
 
-1. Create a new file: `docs/decisions/ADR-XXX.md`
+1. Create a new file: `docs/adr/ADR-XXX.md`
 2. Follow the ADR format with sections: Context, Decision, Consequences
 3. Include examples and code snippets where relevant
 4. Update this index with a link to the new ADR

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1",
+    "firstName": "John",
+    "lastName": "Smith",
+    "email": "john.smith@example.com",
+    "phone": "+1 555 123 4567",
+    "company": "Acme Corporation",
+    "position": "Software Engineer",
+    "notes": "Met at conference. Interested in collaboration.",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "2",
+    "firstName": "Sarah",
+    "lastName": "Johnson",
+    "email": "sarah.johnson@example.com",
+    "phone": "+1 555 234 5678",
+    "company": "Tech Solutions Inc",
+    "position": "Product Manager",
+    "notes": "Follow up on product demo.",
+    "createdAt": "2024-01-16T14:20:00Z",
+    "updatedAt": "2024-01-16T14:20:00Z"
+  },
+  {
+    "id": "3",
+    "firstName": "Michael",
+    "lastName": "Brown",
+    "email": "michael.brown@example.com",
+    "phone": "+1 555 345 6789",
+    "company": "Digital Innovations",
+    "position": "CTO",
+    "notes": "Potential partnership opportunity.",
+    "createdAt": "2024-01-17T09:15:00Z",
+    "updatedAt": "2024-01-17T09:15:00Z"
+  },
+  {
+    "id": "4",
+    "firstName": "Emily",
+    "lastName": "Davis",
+    "email": "emily.davis@example.com",
+    "phone": "+1 555 456 7890",
+    "company": "Creative Agency",
+    "position": "Design Director",
+    "notes": "Great designer, worked on several projects.",
+    "createdAt": "2024-01-18T11:45:00Z",
+    "updatedAt": "2024-01-18T11:45:00Z"
+  },
+  {
+    "id": "5",
+    "firstName": "David",
+    "lastName": "Wilson",
+    "email": "david.wilson@example.com",
+    "phone": "+1 555 567 8901",
+    "company": "Global Enterprises",
+    "position": "Sales Manager",
+    "notes": "Regular client, very responsive.",
+    "createdAt": "2024-01-19T16:30:00Z",
+    "updatedAt": "2024-01-19T16:30:00Z"
+  },
+  {
+    "id": "6",
+    "firstName": "Jessica",
+    "lastName": "Martinez",
+    "email": "jessica.martinez@example.com",
+    "phone": "+1 555 678 9012",
+    "company": "Startup Hub",
+    "position": "Founder",
+    "notes": "Entrepreneur, always looking for opportunities.",
+    "createdAt": "2024-01-20T08:00:00Z",
+    "updatedAt": "2024-01-20T08:00:00Z"
+  },
+  {
+    "id": "7",
+    "firstName": "Robert",
+    "lastName": "Anderson",
+    "email": "robert.anderson@example.com",
+    "phone": "+1 555 789 0123",
+    "company": "Finance Corp",
+    "position": "CFO",
+    "notes": "Financial advisor, expert in investments.",
+    "createdAt": "2024-01-21T13:20:00Z",
+    "updatedAt": "2024-01-21T13:20:00Z"
+  },
+  {
+    "id": "8",
+    "firstName": "Amanda",
+    "lastName": "Taylor",
+    "email": "amanda.taylor@example.com",
+    "phone": "+1 555 890 1234",
+    "company": "Marketing Pro",
+    "position": "Marketing Director",
+    "notes": "Excellent marketing strategist.",
+    "createdAt": "2024-01-22T10:10:00Z",
+    "updatedAt": "2024-01-22T10:10:00Z"
+  },
+  {
+    "id": "9",
+    "firstName": "Christopher",
+    "lastName": "Thomas",
+    "email": "christopher.thomas@example.com",
+    "phone": "+1 555 901 2345",
+    "company": "Consulting Group",
+    "position": "Senior Consultant",
+    "notes": "Industry expert, frequent speaker.",
+    "createdAt": "2024-01-23T15:45:00Z",
+    "updatedAt": "2024-01-23T15:45:00Z"
+  },
+  {
+    "id": "10",
+    "firstName": "Lisa",
+    "lastName": "Jackson",
+    "email": "lisa.jackson@example.com",
+    "phone": "+1 555 012 3456",
+    "company": "Media Company",
+    "position": "Editor-in-Chief",
+    "notes": "Content creator, very creative.",
+    "createdAt": "2024-01-24T12:00:00Z",
+    "updatedAt": "2024-01-24T12:00:00Z"
+  }
+]
