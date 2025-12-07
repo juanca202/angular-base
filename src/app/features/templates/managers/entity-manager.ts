@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { EntityDetail } from '../components/entity-detail/entity-detail';
-import { EntitySearch } from '../components/entity-search/entity-search';
+import { EntityDetail } from '@/features/templates/components/entity-detail/entity-detail';
+import { EntitySearch } from '@/features/templates/components/entity-search/entity-search';
 
 /**
  * Coordinates the experience for opening entity detail dialogs.

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Entity, EntityRequest } from '../models/entity';
+import { Entity, EntityRequest } from '@/features/templates/models/entity';
 import { getMutations, getResource, SignalGet } from '@/core/utils/async-repository';
 
 /**

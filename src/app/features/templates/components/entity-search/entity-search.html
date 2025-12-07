@@ -5,7 +5,12 @@
 <div mat-dialog-content class="!p-2">
   <div class="ft-list">
     @for (entity of entities.value(); track entity.id) {
-      <button type="button" class="ft-list__item" mat-button (click)="showEntity(entity)">
+      <button
+        type="button"
+        class="ft-list__item !block !py-2"
+        mat-button
+        (click)="showEntity(entity)"
+      >
         <div class="flex gap-4 items-center">
           <ft-avatar
             [label]="`${entity.firstName} ${entity.lastName}`"
@@ -17,7 +22,7 @@
     }
     @if (entities.loading()) {
       @for (entity of [1, 2, 3, 4, 5]; track $index) {
-        <div class="ft-list__item">
+        <div class="ft-list__item !block !py-2">
           <div class="flex gap-4 items-center">
             <div class="ft-ph" style="width: 40px; height: 40px; border-radius: 100vh"></div>
             <div class="grow">

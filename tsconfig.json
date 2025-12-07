@@ -25,7 +25,8 @@
       "@/shared/*": ["app/shared/*"],
       "@/cross/*": ["app/cross/*"],
       "@/features/*": ["app/features/*"],
-      "@/environments/*": ["environments/*"]
+      "@/environments/*": ["environments/*"],
+      "@/version-info": ["version-info"]
     }
   },
   "angularCompilerOptions": {

@@ -1,8 +1,8 @@
 import { Injectable, signal, computed, effect, inject, EventEmitter } from '@angular/core';
 import { environment } from '@/environments/environment';
-import { SessionState } from '../models/session-state';
-import { User } from '../models/user';
-import { Settings } from '../models/settings';
+import { SessionState } from '@/core/models/session-state';
+import { User } from '@/core/models/user';
+import { Settings } from '@/core/models/settings';
 import { StorageService } from '@factor_ec/utils';
 
 /** Storage key prefix for session data persisted in local storage */

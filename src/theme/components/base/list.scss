@@ -22,7 +22,6 @@
     padding: 0.5rem 0.25rem 0.5rem 1rem;
     display: block;
     text-decoration: none;
-    height: unset;
     font-size: var(--ft-text-font-size-md);
     border-radius: 0;
     border: 0;
@@ -30,6 +29,7 @@
     width: 100%;
     color: var(--ft-color-text);
     min-height: 3rem;
+    height: unset !important;
 
     &:is(button, a):hover {
       cursor: pointer;

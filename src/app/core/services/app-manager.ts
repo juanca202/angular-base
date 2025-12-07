@@ -11,15 +11,15 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { GoogleTagManagerService, StorageService, Language } from '@factor_ec/utils';
-import { LANGUAGES } from '../constants/languages';
+import { LANGUAGES } from '@/core/constants/languages';
 import { skip } from 'rxjs';
 import moment from 'moment';
 import { getToken, isSupported } from 'firebase/messaging';
 
-import { versionInfo } from '../../../version-info';
+import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
 import { AuthProvider } from '@/core/services/auth.provider';
-import { Session } from './session';
+import { Session } from '@/core/services/session';
 
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');

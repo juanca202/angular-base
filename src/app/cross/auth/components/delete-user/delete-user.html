@@ -11,15 +11,17 @@
       To continue, enter the email associated with your account.
     </p>
     <form id="step1Form" [formGroup]="step1Form" class="mt-4" (ngSubmit)="submit()">
-      <mat-form-field appearance="fill">
-        <mat-label i18n>Email</mat-label>
-        <input type="email" matInput formControlName="email" maxlength="50" />
-        @if (step1Form.get('email')?.invalid) {
-          <mat-error>
-            {{ step1Form.get('email') | errorMessage: { pattern: invalidUserEmail } }}
-          </mat-error>
-        }
-      </mat-form-field>
+      <div class="grid grid-cols-1 gap-y-2 gap-x-4">
+        <mat-form-field>
+          <mat-label i18n>Email</mat-label>
+          <input type="email" matInput formControlName="email" maxlength="50" />
+          @if (step1Form.get('email')?.invalid && step1Form.get('email')?.touched) {
+            <mat-error>
+              {{ step1Form.get('email') | errorMessage: { pattern: invalidUserEmail } }}
+            </mat-error>
+          }
+        </mat-form-field>
+      </div>
     </form>
   }
   @if (codeExpiresIn()) {
@@ -28,15 +30,17 @@
       <strong>{{ session.user()?.email }}</strong> to confirm deletion.
     </p>
     <form id="step2Form" [formGroup]="step2Form" (ngSubmit)="submit()" class="mt-4">
-      <mat-form-field appearance="fill">
-        <mat-label i18n>Verification code</mat-label>
-        <input type="text" matInput formControlName="code" maxlength="13" />
-        @if (step2Form.get('code')?.invalid) {
-          <mat-error>
-            {{ step2Form.get('code') | errorMessage }}
-          </mat-error>
-        }
-      </mat-form-field>
+      <div class="grid grid-cols-1 gap-y-2 gap-x-4">
+        <mat-form-field>
+          <mat-label i18n>Verification code</mat-label>
+          <input type="text" matInput formControlName="code" maxlength="13" />
+          @if (step2Form.get('code')?.invalid && step2Form.get('code')?.touched) {
+            <mat-error>
+              {{ step2Form.get('code') | errorMessage }}
+            </mat-error>
+          }
+        </mat-form-field>
+      </div>
     </form>
   }
 </div>

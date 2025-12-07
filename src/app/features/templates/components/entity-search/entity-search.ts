@@ -4,14 +4,15 @@ import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
-import { EntityRepository } from '../../repositories/entity-repository';
-import { EntityManager } from '../../managers/entity-manager';
-import { Entity } from '../../models/entity';
+import { EntityRepository } from '@/features/templates/repositories/entity-repository';
+import { EntityManager } from '@/features/templates/managers/entity-manager';
+import { Entity } from '@/features/templates/models/entity';
 import { LayoutManager } from '@/core/services/layout-manager';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-entity-search',
-  imports: [AvatarComponent, IconComponent, MatDialogContent, ReactiveFormsModule],
+  imports: [AvatarComponent, IconComponent, MatButtonModule, MatDialogContent, ReactiveFormsModule],
   templateUrl: './entity-search.html',
   styleUrl: './entity-search.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
