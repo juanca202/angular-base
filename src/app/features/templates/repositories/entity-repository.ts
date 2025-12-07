@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Entity, EntityRequest } from '../models/entity';
-import { getApiUrl, getMutations, getResource, SignalGet } from '@/core/utils/async-repository';
+import { getMutations, getResource, SignalGet } from '@/core/utils/async-repository';
 
 /**
  * Repository that encapsulates all data access required by the demo entity feature.
@@ -15,7 +15,7 @@ import { getApiUrl, getMutations, getResource, SignalGet } from '@/core/utils/as
 })
 export class EntityRepository {
   private readonly httpClient = inject(HttpClient);
-  private readonly baseUrl = getApiUrl('v1/entities');
+  private readonly baseUrl = '/mocks/entities.json';
 
   public mutations() {
     return getMutations({

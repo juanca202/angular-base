@@ -31,6 +31,11 @@
           },
           "configurations": {
             "production": {
+              "assets": [
+                {
+                  "ignore": ["mocks/**"]
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",

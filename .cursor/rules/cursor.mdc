@@ -19,33 +19,6 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use `NgOptimizedImage` for all static images.
   - `NgOptimizedImage` does not work for inline base64 images.
 
-## Angular Material (MDC) Guidelines
-
-- Always use components from **Angular Material (MDC)** available at [https://material.angular.dev/components/categories](https://material.angular.dev/components/categories).
-- Avoid plain HTML elements or custom CSS when an official Material component provides the same functionality.
-- Follow the latest MDC syntax and naming conventions (`mat-form-field`, `mat-input`, `mat-card`, `mat-toolbar`, `mat-table`, etc.).
-- Prefer high-level Material components for:
-  - Accessibility (ARIA support)
-  - Consistent theme integration
-  - Responsive, maintainable layouts
-- Use **Angular Material directives** (`matInput`, `matSuffix`, `matPrefix`, etc.) instead of custom attributes.
-- Do not replicate Material styles manually; rely on the official theming and typography APIs.
-- Always render icons with `<ft-icon />`, which is aligned with the project design system. Use the collections documented in `icons.mdc`.
-- Common substitutions:
-  - ✅ Use `<mat-form-field>` with `<input matInput>` instead of a bare `<input>`
-  - ✅ Use `<mat-card>` instead of bespoke `<div>` wrappers
-  - ✅ Use `<ft-icon name="search" />` instead of `<i>` or `<span class="material-icons">`
-- When you build interactive components, prioritize Angular Material options (`mat-button`, `mat-menu`, `mat-dialog`, etc.) before crafting custom implementations.
-
-**Example:**
-
-```html
-<mat-form-field appearance="outline" class="ft-w-100">
-  <mat-label i18n>Search bank</mat-label>
-  <input matInput placeholder="Type the bank name" />
-</mat-form-field>
-```
-
 ## Components
 
 - Keep components small and focused on a single responsibility
@@ -103,3 +76,34 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - If the system receives content in a different language, it must automatically **translate it into natural English** while preserving meaning.
 
 - If hardcoded UI strings are detected, they must be replaced with proper Angular `i18n` usage and an appropriate i18n ID suggested if missing.
+
+## Repository Pattern
+
+- When generating a new component that depends on a repository:
+  - If no real backend implementation is provided yet, a **default mock repository must be created automatically**.
+  - Mock repositories must read their data from JSON files located in:  
+    **`public/mocks/`**  
+    These files must simulate realistic data structures so that the component can render with fully populated UI.
+  - The generated repository must:
+    - Follow the Repository pattern (interface + implementation).
+    - Use in-memory caching when appropriate.
+    - Load mock data using `fetch()` from the `public/mocks` directory.
+    - Never use hardcoded UI strings inside the mock files (only raw data).
+  - Mock repositories must be replaced automatically once a real API-backed repository is created.
+
+**Recommended folder structure:**
+
+    public/mocks/
+      users.json
+      tasks.json
+    src/
+      app/
+        features/
+          user-profile/
+            components/
+              user-profile.component.ts
+            repositories/
+              user.repository.ts        // interface
+              user.repository.mock.ts   // default mock implementation
+
+

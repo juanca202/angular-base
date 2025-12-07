@@ -161,7 +161,7 @@ module.exports = [
         'error',
         {
           type: 'attribute',
-          prefix: 'ft',
+          prefix: 'app',
           style: 'camelCase'
         }
       ],
@@ -169,7 +169,7 @@ module.exports = [
         'error',
         {
           type: 'element',
-          prefix: 'ft',
+          prefix: 'app',
           style: 'kebab-case'
         }
       ],
