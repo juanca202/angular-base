@@ -23,7 +23,7 @@ import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
 import { environment } from '@/environments/environment';
 import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { getApiUrl } from '@/core/utils/async-repository';
 import { Session } from '@/core/services/session';
 
@@ -117,11 +117,13 @@ export class DeleteUser implements OnInit, OnDestroy {
         this.setCountDown(moment(response));
         this.submitting.set(false);
         this.step1Form.enable();
-      } catch (err: any) {
+      } catch (err: unknown) {
         this.submitting.set(false);
-        this.messageService.show(err.error?.detail || err.error.message || err.message, {
-          type: 'modal'
-        });
+        if (err instanceof HttpErrorResponse) {
+          this.messageService.show(err.error?.detail || err.error.message || err.message, {
+            type: 'modal'
+          });
+        }
         this.step1Form.enable();
       }
     }
@@ -135,10 +137,12 @@ export class DeleteUser implements OnInit, OnDestroy {
         this.submitting.set(false);
         this.authService.logout();
         this.storageService.delete('lastUser', 'local');
-      } catch (err: any) {
-        this.messageService.show(err.error?.detail || err.message, {
-          type: 'modal'
-        });
+      } catch (err: unknown) {
+        if (err instanceof HttpErrorResponse) {
+          this.messageService.show(err.error?.detail || err.message, {
+            type: 'modal'
+          });
+        }
         this.submitting.set(false);
         this.step2Form.enable();
       }

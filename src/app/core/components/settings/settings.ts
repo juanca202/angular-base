@@ -23,8 +23,6 @@ import {
   ProgressComponent
 } from '@factor_ec/ui';
 import { Language } from '@factor_ec/utils';
-import { lastValueFrom } from 'rxjs';
-import { Apollo, gql } from 'apollo-angular';
 // import * as Sentry from '@sentry/angular';
 
 import { AppManager } from '@/core/services/app-manager';
@@ -32,6 +30,7 @@ import { CommonModule } from '@angular/common';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { AuthProvider } from '@/core/services/auth.provider';
 import { Session } from '@/core/services/session';
+import { LANGUAGES } from '@/core/constants/languages';
 
 /**
  * Renders the settings hub, exposing contextual actions such as sharing,
@@ -67,7 +66,6 @@ export class Settings implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
   public readonly authService = inject(AuthProvider);
-  private readonly apollo = inject(Apollo);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);
   private readonly title = inject(Title);
@@ -76,14 +74,7 @@ export class Settings implements OnInit {
   public readonly session = inject(Session);
 
   // Properties
-  public readonly notificationsCount = signal<number>(0);
-  public readonly spaces = signal<number>(0);
-  public readonly categories = signal<number>(0);
-  public readonly tags = signal<number>(0);
-  public readonly language = signal<Language>({
-    code: 'en',
-    name: 'English'
-  });
+  public readonly language = signal<Language>(LANGUAGES[0]);
   public readonly subscribing = signal<boolean>(false);
   public readonly supportButton =
     viewChild.required<ElementRef<HTMLButtonElement>>('supportButton');
@@ -100,7 +91,6 @@ export class Settings implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getNotifications();
     this.route.paramMap.subscribe(async (paramMap: ParamMap) => {
       const action = paramMap.get('action');
       if (action) {
@@ -120,21 +110,6 @@ export class Settings implements OnInit {
     const feedback = Sentry.getFeedback();
     feedback?.attachTo(this.supportButton()?.nativeElement);
     */
-  }
-  private async getNotifications(): Promise<void> {
-    const query = await lastValueFrom(
-      this.apollo.query<any>({
-        query: gql`
-          query {
-            notifications(seen: false) {
-              totalCount
-            }
-          }
-        `,
-        fetchPolicy: 'network-only'
-      })
-    );
-    this.notificationsCount.set(query.data.notifications.totalCount);
   }
   public shareApp(): void {
     if (navigator.share) {

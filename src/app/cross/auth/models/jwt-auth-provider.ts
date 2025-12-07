@@ -1,3 +1,5 @@
+import { AuthTokenPayload } from './auth-token-payload';
+
 export interface JwtAuthProvider {
-  getTokenPayload<T = any>(): T | null;
+  getTokenPayload<T = AuthTokenPayload>(): T | null;
 }

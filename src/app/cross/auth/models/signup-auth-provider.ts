@@ -1,3 +1,5 @@
+import { Signup } from './signup';
+
 export interface SignupAuthProvider {
-  signup(data: any): Promise<void>;
+  signup(data: Signup): Promise<void>;
 }

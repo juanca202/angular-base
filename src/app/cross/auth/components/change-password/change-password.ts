@@ -18,7 +18,7 @@ import { lastValueFrom } from 'rxjs';
 
 import { AppManager } from '@/core/services/app-manager';
 import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { getApiUrl } from '@/core/utils/async-repository';
 
 /**
@@ -114,10 +114,12 @@ export class ChangePassword {
         this.messageService.show($localize`Your password was updated successfully.`, {
           verticalPosition: 'top'
         });
-      } catch (err: any) {
-        this.messageService.show(err.error?.detail || err.message, {
-          type: 'modal'
-        });
+      } catch (err: unknown) {
+        if (err instanceof HttpErrorResponse) {
+          this.messageService.show(err.error?.detail || err.message, {
+            type: 'modal'
+          });
+        }
       } finally {
         this.form.enable();
         this.submitting.set(false);

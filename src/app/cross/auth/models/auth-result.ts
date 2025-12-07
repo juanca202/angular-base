@@ -1,5 +1,7 @@
+import { User } from '@/core/models/user';
+
 export interface AuthResult {
   token: string;
-  user?: any;
+  user?: User;
   metadata?: any;
 }

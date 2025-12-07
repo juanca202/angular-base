@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 
@@ -98,12 +98,14 @@ export class ResetPassword {
         setTimeout(() => {
           this.messageService.show($localize`Your password was changed successfully.`);
         }, 100);
-      } catch (err: any) {
+      } catch (err: unknown) {
         this.submitting.set(false);
         this.form.enable();
-        this.messageService.show(err.error?.detail || err.error.message || err.message, {
-          type: 'modal'
-        });
+        if (err instanceof HttpErrorResponse) {
+          this.messageService.show(err.error?.detail || err.error.message || err.message, {
+            type: 'modal'
+          });
+        }
       }
     }
   }

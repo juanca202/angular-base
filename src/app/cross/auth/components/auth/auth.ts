@@ -17,6 +17,7 @@ import { AuthService } from '@/cross/auth/auth-service';
 import { ForgotPassword } from '@/cross/auth/components/forgot-password/forgot-password';
 import { environment } from '@/environments/environment';
 import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Hosts the authentication experience, exposing sign-in and sign-up forms,
@@ -65,7 +66,6 @@ export class Auth implements OnInit {
   // Properties
   public readonly errorMessage = signal<string>('');
   public readonly mode = signal<string>('');
-  public readonly lastUser = signal<any>(undefined);
   public readonly passwordVisible = signal<boolean>(false);
   public readonly signinForm: FormGroup;
   public readonly signupForm: FormGroup;
@@ -82,14 +82,10 @@ export class Auth implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
-    this.lastUser = this.storageService.get(`${environment.sessionPrefix}_lus`, 'local');
   }
 
   ngOnInit(): void {
     this.setMode(this.route.snapshot.data['mode']);
-    if (this.lastUser) {
-      this.signinForm.patchValue({ email: this.lastUser().email });
-    }
   }
   public async connect(client: 'google'): Promise<void> {
     this.submitting.set(true);
@@ -104,7 +100,6 @@ export class Auth implements OnInit {
   }
   public forgetUser(): void {
     this.storageService.delete(`${environment.sessionPrefix}_lus`, 'local');
-    this.lastUser.set(undefined);
     this.signinForm.patchValue({ email: '', password: '' });
   }
   public forgotPassword(): void {
@@ -143,13 +138,15 @@ export class Auth implements OnInit {
           user_id: this.signinForm.value.username,
           app_id: this.appManager.name
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         this.signinForm.enable();
         this.submitting.set(false);
-        this.errorMessage.set(
-          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`
-        );
-        this.messageService.show(this.errorMessage());
+        if (err instanceof HttpErrorResponse) {
+          this.errorMessage.set(
+            err.error?.detail || err.error.message || err.message || $localize`Unexpected error`
+          );
+          this.messageService.show(this.errorMessage());
+        }
       }
     }
   }
@@ -176,13 +173,15 @@ export class Auth implements OnInit {
         } else {
           this.router.navigateByUrl('/');
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         this.signupForm.enable();
         this.submitting.set(false);
-        this.errorMessage.set(
-          err.error?.detail || err.error.message || err.message || $localize`Unexpected error`
-        );
-        this.messageService.show(this.errorMessage());
+        if (err instanceof HttpErrorResponse) {
+          this.errorMessage.set(
+            err.error?.detail || err.error.message || err.message || $localize`Unexpected error`
+          );
+          this.messageService.show(this.errorMessage());
+        }
       }
     }
   }
