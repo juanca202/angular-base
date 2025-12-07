@@ -28,7 +28,7 @@
     border: 0;
     background: transparent;
     width: 100%;
-    color: var(--ft-text-color);
+    color: var(--ft-color-text);
     min-height: 3rem;
 
     &:is(button, a):hover {
@@ -46,7 +46,7 @@
       position: sticky;
       top: 0;
       z-index: 2;
-      background-color: var(--ft-body-bg);
+      background-color: var(--ft-color-bg);
     }
   }
 }

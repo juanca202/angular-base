@@ -2,7 +2,7 @@
 
 .ft-table {
   width: 100%;
-  background-color: var(--ft-body-bg);
+  background-color: var(--ft-color-bg);
   border-collapse: collapse;
 
   &__wrapper {
@@ -29,7 +29,7 @@
   }
 
   > thead {
-    background-color: var(--ft-body-bg);
+    background-color: var(--ft-color-bg);
 
     &.ft-sticky {
       position: sticky;
@@ -66,6 +66,6 @@
   .ft-actions {
     position: sticky;
     right: 0;
-    background-color: var(--ft-body-bg);
+    background-color: var(--ft-color-bg);
   }
 }

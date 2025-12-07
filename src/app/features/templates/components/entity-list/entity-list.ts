@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy } from '@
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
+import { MatButtonModule } from '@angular/material/button';
+import { IconComponent } from '@factor_ec/ui';
 
 /**
  * Displays the sample entity catalog using the reusable table layout.
@@ -11,10 +13,13 @@ import { EntityRepository } from '@/features/templates/repositories/entity-repos
  * presentation to {@link EntityManager}, keeping the template free of business logic.
  */
 @Component({
-  selector: 'ft-entity-list',
-  imports: [],
+  selector: 'app-entity-list',
+  imports: [MatButtonModule, IconComponent],
   templateUrl: './entity-list.html',
   styleUrl: './entity-list.scss',
+  host: {
+    class: 'ft-page'
+  },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityList implements OnInit, OnDestroy {

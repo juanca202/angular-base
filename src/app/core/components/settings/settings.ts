@@ -41,7 +41,7 @@ import { LANGUAGES } from '@/core/constants/languages';
  * to present personalized data and system status.
  */
 @Component({
-  selector: 'ft-settings',
+  selector: 'app-settings',
   imports: [
     CommonModule,
     IconComponent,

@@ -8,6 +8,11 @@ import { authGuard } from './cross/auth/auth-guards';
 export const routes: Routes = [
   {
     path: '',
+    loadChildren: () =>
+      import('./features/templates/templates-routes').then((m) => m.templatesRoutes)
+  },
+  {
+    path: '',
     loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
   },
   {

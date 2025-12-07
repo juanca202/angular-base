@@ -36,7 +36,7 @@ import { Session } from '@/core/services/session';
  * backend requests to ensure the user explicitly confirms the operation.
  */
 @Component({
-  selector: 'ft-delete-user',
+  selector: 'app-delete-user',
   imports: [
     CommonModule,
     ReactiveFormsModule,

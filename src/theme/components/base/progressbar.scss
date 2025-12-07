@@ -26,7 +26,7 @@
     background-color: var(--ft-primary-color);
     border-radius: 100vh;
     transition: width 1s;
-    box-shadow: 0 0 0 2px var(--ft-body-bg);
+    box-shadow: 0 0 0 2px var(--ft-color-bg);
   }
 
   &__negative {
@@ -36,7 +36,7 @@
     right: 0;
     background-color: var(--ft-danger-color);
     border-radius: 100vh;
-    box-shadow: 0 0 0 2px var(--ft-body-bg);
+    box-shadow: 0 0 0 2px var(--ft-color-bg);
     transition: width 1s;
   }
 }

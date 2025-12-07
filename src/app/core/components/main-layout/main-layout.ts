@@ -14,7 +14,7 @@ import { MenuItem } from '@/core/models/menu-item';
  * affordances across the authenticated experience.
  */
 @Component({
-  selector: 'ft-main-layout',
+  selector: 'app-main-layout',
   imports: [AvatarComponent, IconComponent, MatButtonModule, RouterModule, RouterOutlet],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',

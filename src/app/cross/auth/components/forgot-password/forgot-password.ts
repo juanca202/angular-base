@@ -21,7 +21,7 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
  * surfacing UX feedback via {@link MessageService}.
  */
 @Component({
-  selector: 'ft-forgot-password',
+  selector: 'app-forgot-password',
   imports: [
     CommonModule,
     ReactiveFormsModule,

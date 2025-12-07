@@ -4,12 +4,12 @@
   will-change: transform;
   position: relative;
   border-radius: 4px;
-  background-color: color-mix(in srgb, var(--ft-text-color) 10%, transparent);
+  background-color: var(--ft-ph-color1);
 
   &::after {
     content: '';
     display: block;
-    background-color: color-mix(in srgb, var(--ft-text-color) 5%, transparent);
+    background-color: var(--ft-ph-color2);
     position: absolute;
     top: 0;
     bottom: 0;

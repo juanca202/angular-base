@@ -30,7 +30,7 @@ import { getApiUrl } from '@/core/utils/async-repository';
  * communicates status updates via {@link MessageService}.
  */
 @Component({
-  selector: 'ft-change-password',
+  selector: 'app-change-password',
   imports: [
     CommonModule,
     ReactiveFormsModule,

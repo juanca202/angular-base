@@ -21,8 +21,8 @@
   --ft-spacer-5: calc(var(--ft-spacer) * 3);
 
   // Text
-  --ft-text-color: var(--ft-dark-color);
-  --ft-text-muted-color: color-mix(in srgb, var(--ft-text-color) 50%, transparent);
+  --ft-color-text: var(--ft-dark-color);
+  --ft-text-muted-color: color-mix(in srgb, var(--ft-color-text) 50%, transparent);
   --ft-text-font: 400 0.875rem / 1.25rem sans-serif;
   --ft-text-font-family: sans-serif;
   --ft-text-font-size: var(--ft-text-font-size-md);
@@ -39,10 +39,10 @@
   --ft-h3-font-size: var(--ft-text-font-size-md);
 
   // Misc
-  --ft-border-color: color-mix(in srgb, var(--ft-text-color) 20%, transparent);
-  --ft-border2-color: color-mix(in srgb, var(--ft-text-color) 10%, transparent);
-  --ft-button-outline-color: color-mix(in srgb, var(--ft-text-color) 3%, transparent);
-  --ft-body-bg: var(--ft-light-color);
+  --ft-border-color: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
+  --ft-border2-color: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
+  --ft-button-outline-color: color-mix(in srgb, var(--ft-color-text) 3%, transparent);
+  --ft-color-bg: var(--ft-light-color);
   --ft-overlapped-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.14), 0 0 6px 0 rgba(0, 0, 0, 0.12);
 
   // Avatar
@@ -62,7 +62,7 @@
 
   // Progress bar
   --ft-progress-bar-color: var(--ft-primary-color);
-  --ft-progress-track-color: color-mix(in srgb, var(--ft-text-color) 10%, transparent);
+  --ft-progress-track-color: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
 
   // Message
   --ft-message-warning-color: #664d03;
@@ -78,8 +78,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ft-body-bg: var(--ft-dark-color);
-    --ft-text-color: var(--ft-light-color);
+    --ft-color-bg: var(--ft-dark-color);
+    --ft-color-text: var(--ft-light-color);
     --ft-danger-color: #ff4d4d;
     --ft-avatar-bg: #000;
     --ft-thumbnail-bg: #000;

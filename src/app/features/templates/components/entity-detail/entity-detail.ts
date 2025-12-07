@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
+import { MatButtonModule } from '@angular/material/button';
 
 /**
  * Presents the entity detail drawer, enabling both edition and creation flows
@@ -16,16 +17,21 @@ import { EntityRepository } from '@/features/templates/repositories/entity-repos
  * depending on whether an identifier is provided through dialog data.
  */
 @Component({
-  selector: 'ft-entity-detail',
+  selector: 'app-entity-detail',
   imports: [
     CommonModule,
     ReactiveFormsModule,
     IconComponent,
+    MatButtonModule,
+    MatDialogModule,
     MatFormFieldModule,
     ProgressComponent
   ],
   templateUrl: './entity-detail.html',
   styleUrl: './entity-detail.scss',
+  host: {
+    class: 'ft-page'
+  },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityDetail implements OnInit, OnDestroy {

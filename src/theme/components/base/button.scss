@@ -13,7 +13,7 @@
     font-size: var(--ft-text-font-size-sm);
     padding-left: 1.5rem;
     padding-right: 1.5rem;
-    --mdc-filled-button-disabled-label-text-color: var(--ft-text-color);
+    --mdc-filled-button-disabled-label-text-color: var(--ft-color-text);
     transition: background-color 0.2s;
 
     &:disabled {

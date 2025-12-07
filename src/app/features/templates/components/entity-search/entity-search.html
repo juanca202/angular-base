@@ -1,0 +1,35 @@
+<form [formGroup]="form" class="ft-searchbox">
+  <ft-icon name="search" class="ft-icon--2" />
+  <input type="search" i18n-placeholder placeholder="Search" formControlName="query" />
+</form>
+<div mat-dialog-content class="!p-2">
+  <div class="ft-list">
+    @for (entity of entities.value(); track entity.id) {
+      <button type="button" class="ft-list__item" mat-button (click)="showEntity(entity)">
+        <div class="flex gap-4 items-center">
+          <ft-avatar
+            [label]="`${entity.firstName} ${entity.lastName}`"
+            style="--ft-avatar-size: 40px"
+          />
+          <div class="grow">{{ entity.firstName }} {{ entity.lastName }}</div>
+        </div>
+      </button>
+    }
+    @if (entities.loading()) {
+      @for (entity of [1, 2, 3, 4, 5]; track $index) {
+        <div class="ft-list__item">
+          <div class="flex gap-4 items-center">
+            <div class="ft-ph" style="width: 40px; height: 40px; border-radius: 100vh"></div>
+            <div class="grow">
+              <div
+                class="ft-ph"
+                [style.width.px]="layoutManager.getRandomNumber(160, 200)"
+                style="height: 21px"
+              ></div>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

@@ -36,6 +36,12 @@
   --ft-progress-track-color: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
 }
 
+/* Placeholder */
+:root {
+  --ft-ph-color1: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
+  --ft-ph-color2: color-mix(in srgb, var(--ft-color-text) 5%, transparent);
+}
+
 /* Messages */
 :root {
   --ft-message-warning-color: #664d03;

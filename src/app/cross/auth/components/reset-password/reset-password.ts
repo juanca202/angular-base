@@ -31,7 +31,7 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
  * communicates success or failure via {@link MessageService}.
  */
 @Component({
-  selector: 'ft-reset-password',
+  selector: 'app-reset-password',
   imports: [
     CommonModule,
     ReactiveFormsModule,

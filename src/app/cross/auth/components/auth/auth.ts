@@ -28,7 +28,7 @@ import { HttpErrorResponse } from '@angular/common/http';
  * to {@link AuthService} while keeping UI rendering declarative.
  */
 @Component({
-  selector: 'ft-auth',
+  selector: 'app-auth',
   imports: [
     CommonModule,
     NgOptimizedImage,

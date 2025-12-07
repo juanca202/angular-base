@@ -18,7 +18,7 @@ import { environment } from '@/environments/environment';
  * and displays the corresponding localized message and recovery action.
  */
 @Component({
-  selector: 'ft-error',
+  selector: 'app-error',
   imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
   styleUrl: './error.scss',

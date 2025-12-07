@@ -15,7 +15,7 @@ import { environment } from '@/environments/environment';
  * Lets the user review and change the active locale for the application.
  */
 @Component({
-  selector: 'ft-language',
+  selector: 'app-language',
   imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
   templateUrl: './language.html',
   styleUrl: './language.scss',

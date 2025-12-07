@@ -33,7 +33,7 @@ html {
   --mat-button-text-label-text-font: var(--ft-text-font-family);
   --mat-button-text-label-text-size: var(--ft-text-font-size-sm);
   --mat-button-text-label-text-weight: 600;
-  --mat-button-text-label-text-color: var(--ft-text-color);
+  --mat-button-text-label-text-color: var(--ft-color-text);
   --mat-button-text-disabled-label-text-color: var(--ft-text-muted-color);
   --mat-button-text-horizontal-padding: 1rem;
 
@@ -43,12 +43,12 @@ html {
   --mat-button-outlined-label-text-font: var(--ft-text-font-family);
   --mat-button-outlined-label-text-size: var(--ft-text-font-size-sm);
   --mat-button-outlined-label-text-weight: 600;
-  --mat-button-outlined-label-text-color: var(--ft-text-color);
+  --mat-button-outlined-label-text-color: var(--ft-color-text);
   --mat-button-outlined-disabled-label-text-color: var(--ft-text-muted-color);
   --mat-button-outlined-horizontal-padding: 1rem;
   --mat-button-outlined-outline-color: var(--ft-border-color);
 
-  --mat-icon-button-icon-color: var(--ft-text-color);
+  --mat-icon-button-icon-color: var(--ft-color-text);
   --mat-icon-button-disabled-icon-color: var(--ft-text-muted-color);
 
   --mdc-list-list-item-label-text-weight: var(--ft-text-font-weight);
@@ -57,32 +57,32 @@ html {
   --mat-form-field-filled-container-shape: 0.5rem;
   --mat-form-field-filled-label-text-tracking: 0;
   --mat-form-field-filled-label-text-font: var(--ft-text-font-family);
-  --mat-form-field-filled-input-text-color: var(--ft-text-color);
+  --mat-form-field-filled-input-text-color: var(--ft-color-text);
   --mat-form-field-filled-label-text-color: color-mix(
     in srgb,
-    var(--ft-text-color) 60%,
+    var(--ft-color-text) 60%,
     transparent
   );
   --mat-form-field-filled-active-indicator-color: var(--ft-border-color);
   --mat-form-field-filled-hover-label-text-color: color-mix(
     in srgb,
-    var(--ft-text-color) 80%,
+    var(--ft-color-text) 80%,
     transparent
   );
   --mat-form-field-filled-hover-active-indicator-color: color-mix(
     in srgb,
-    var(--ft-text-color) 80%,
+    var(--ft-color-text) 80%,
     transparent
   );
   --mat-form-field-filled-disabled-container-color: var(--ft-input-disabled-bg);
   --mat-form-field-filled-disabled-input-text-color: color-mix(
     in srgb,
-    var(--ft-text-color) 20%,
+    var(--ft-color-text) 20%,
     transparent
   );
   --mat-form-field-filled-disabled-label-text-color: color-mix(
     in srgb,
-    var(--ft-text-color) 20%,
+    var(--ft-color-text) 20%,
     transparent
   );
   --mat-form-field-filled-error-label-text-color: var(--ft-danger-color);
@@ -94,31 +94,31 @@ html {
   --mat-dialog-actions-alignment: flex-end;
   --mat-dialog-container-small-max-width: calc(100vw - 2rem);
   --mat-dialog-container-shape: 0.5rem;
-  --mat-dialog-container-color: var(--ft-body-bg);
+  --mat-dialog-container-color: var(--ft-color-bg);
   --mat-dialog-content-padding: 1.5rem 1.5rem 0;
   --mat-dialog-supporting-text-tracking: 0;
   --mat-dialog-supporting-text-line-height: var(--ft-text-line-height);
-  --mat-dialog-supporting-text-color: var(--ft-text-color);
-  --mat-dialog-subhead-color: var(--ft-text-color);
+  --mat-dialog-supporting-text-color: var(--ft-color-text);
+  --mat-dialog-subhead-color: var(--ft-color-text);
   --mat-dialog-subhead-tracking: 0;
   --mat-dialog-headline-padding: 0.5rem 0.25rem 0.5rem 1.5rem;
   --mat-dialog-with-actions-content-padding: 1.5rem 1.5rem 0;
 
   --mdc-snackbar-supporting-text-font: var(--ft-text-font-family);
-  --mdc-snackbar-supporting-text-color: var(--ft-body-bg);
+  --mdc-snackbar-supporting-text-color: var(--ft-color-bg);
   --mdc-snackbar-container-shape: 0.5rem;
-  --mdc-snackbar-container-color: var(--ft-text-color);
+  --mdc-snackbar-container-color: var(--ft-color-text);
   --mat-snack-bar-button-color: var(--ft-primary-color);
 
   --mat-radio-label-text-tracking: 0;
   --mat-radio-label-text-font: var(--ft-text-font-family);
   --mat-radio-label-text-size: var(--ft-text-font-size);
-  --mat-radio-label-text-color: var(--ft-text-color);
+  --mat-radio-label-text-color: var(--ft-color-text);
   --mat-radio-label-text-line-height: 1.2;
 
   --mat-checkbox-label-text-font: var(--ft-text-font-family);
   --mat-checkbox-label-text-size: var(--ft-text-font-size);
-  --mat-checkbox-label-text-color: var(--ft-text-color);
+  --mat-checkbox-label-text-color: var(--ft-color-text);
   --mdc-checkbox-unselected-icon-color: var(--ft-border-color);
   --mdc-checkbox-unselected-hover-icon-color: var(--ft-border-color);
   --mdc-checkbox-unselected-focus-icon-color: var(--ft-border-color);
@@ -128,8 +128,8 @@ html {
   --mat-menu-item-label-text-font: var(--ft-text-font-family);
   --mat-menu-item-label-text-size: var(--ft-text-font-size);
   --mat-menu-item-label-text-weight: var(--ft-text-font-weight);
-  --mat-menu-item-label-text-color: var(--ft-text-color);
-  --mat-menu-container-color: var(--ft-body-bg);
+  --mat-menu-item-label-text-color: var(--ft-color-text);
+  --mat-menu-container-color: var(--ft-color-bg);
   --mat-menu-container-shape: 0.5rem;
 
   --mat-form-field-container-text-font: var(--ft-text-font-family);
@@ -141,48 +141,48 @@ html {
 
   --mat-select-trigger-text-font: var(--ft-text-font-family);
   --mat-select-trigger-text-tracking: 0;
-  --mat-select-enabled-trigger-text-color: var(--ft-text-color);
-  --mat-select-enabled-arrow-color: var(--ft-text-color);
+  --mat-select-enabled-trigger-text-color: var(--ft-color-text);
+  --mat-select-enabled-arrow-color: var(--ft-color-text);
   --mat-select-disabled-trigger-text-color: color-mix(
     in srgb,
-    var(--ft-text-color) 20%,
+    var(--ft-color-text) 20%,
     transparent
   );
-  --mat-select-disabled-arrow-color: color-mix(in srgb, var(--ft-text-color) 20%, transparent);
-  --mat-select-panel-background-color: var(--ft-body-bg);
+  --mat-select-disabled-arrow-color: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
+  --mat-select-panel-background-color: var(--ft-color-bg);
 
   --mat-option-label-text-font: var(--ft-text-font-family);
   --mat-option-label-text-tracking: 0;
   --mat-option-label-text-weight: 500;
-  --mat-option-label-text-color: var(--ft-text-color);
-  --mat-optgroup-label-text-color: var(--ft-text-color);
+  --mat-option-label-text-color: var(--ft-color-text);
+  --mat-optgroup-label-text-color: var(--ft-color-text);
   --mat-optgroup-label-text-font: var(--ft-text-font-family);
   --mat-optgroup-label-text-tracking: 0;
   --mat-optgroup-label-text-weight: 700;
 
   --mat-datepicker-calendar-text-font: var(--ft-text-font-family);
-  --mat-datepicker-calendar-header-text-color: var(--ft-text-color);
-  --mat-datepicker-calendar-period-button-text-color: var(--ft-text-color);
-  --mat-datepicker-calendar-period-button-icon-color: var(--ft-text-color);
-  --mat-datepicker-calendar-body-label-text-color: var(--ft-text-color);
-  --mat-datepicker-calendar-navigation-button-icon-color: var(--ft-text-color);
-  --mat-datepicker-calendar-date-text-color: var(--ft-text-color);
+  --mat-datepicker-calendar-header-text-color: var(--ft-color-text);
+  --mat-datepicker-calendar-period-button-text-color: var(--ft-color-text);
+  --mat-datepicker-calendar-period-button-icon-color: var(--ft-color-text);
+  --mat-datepicker-calendar-body-label-text-color: var(--ft-color-text);
+  --mat-datepicker-calendar-navigation-button-icon-color: var(--ft-color-text);
+  --mat-datepicker-calendar-date-text-color: var(--ft-color-text);
   --mat-datepicker-calendar-date-disabled-state-text-color: color-mix(
     in srgb,
-    var(--ft-text-color) 20%,
+    var(--ft-color-text) 20%,
     transparent
   );
   --mat-datepicker-calendar-date-today-outline-color: var(--ft-primary-color);
   --mat-datepicker-calendar-date-preview-state-outline-color: var(--ft-primary-color);
-  --mat-datepicker-calendar-container-background-color: var(--ft-body-bg);
+  --mat-datepicker-calendar-container-background-color: var(--ft-color-bg);
   --mat-datepicker-calendar-header-divider-color: var(--ft-border-color);
 
   --mat-bottom-sheet-container-text-font: var(--ft-text-font-family);
   --mat-bottom-sheet-container-text-size: var(--ft-text-font-size);
   --mat-bottom-sheet-container-text-weight: var(--ft-text-font-weight);
-  --mat-bottom-sheet-container-text-color: var(--ft-text-color);
+  --mat-bottom-sheet-container-text-color: var(--ft-color-text);
   --mat-bottom-sheet-container-text-tracking: 0;
-  --mat-bottom-sheet-container-background-color: var(--ft-body-bg);
+  --mat-bottom-sheet-container-background-color: var(--ft-color-bg);
   --mat-bottom-sheet-container-shape: 1rem;
 
   .mat-mdc-form-field {

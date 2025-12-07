@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { EntityDetail } from '../components/entity-detail/entity-detail';
+import { EntitySearch } from '../components/entity-search/entity-search';
 
 /**
  * Coordinates the experience for opening entity detail dialogs.
@@ -16,7 +17,7 @@ import { EntityDetail } from '../components/entity-detail/entity-detail';
 export class EntityManager {
   private readonly dialog = inject(MatDialog);
 
-  public open(id: string) {
+  public open(id?: string) {
     this.dialog.open(EntityDetail, {
       data: {
         id
@@ -28,6 +29,12 @@ export class EntityManager {
         left: 'auto',
         right: '0'
       }
+    });
+  }
+  public search() {
+    this.dialog.open(EntitySearch, {
+      panelClass: ['ft-dialog'],
+      width: '400px'
     });
   }
 }

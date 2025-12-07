@@ -76,7 +76,7 @@
         padding 0.3s;
 
       &:hover {
-        background-color: color-mix(in srgb, var(--ft-body-bg) 30%, transparent);
+        background-color: color-mix(in srgb, var(--ft-color-bg) 30%, transparent);
       }
 
       &.ft-active {
@@ -105,7 +105,7 @@
 
         &.ft-active {
           color: unset;
-          background-color: var(--ft-body-bg);
+          background-color: var(--ft-color-bg);
         }
       }
     }
@@ -182,7 +182,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    background-color: color-mix(in srgb, var(--ft-text-color) 20%, var(--ft-body-bg));
+    background-color: color-mix(in srgb, var(--ft-color-text) 20%, var(--ft-color-bg));
     right: -2px;
     width: 4px;
     z-index: 4;
