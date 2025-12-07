@@ -1,0 +1,1519 @@
+{
+  "ADR-001": {
+    "name": "Separación de Responsabilidades",
+    "passed": 4,
+    "failed": 0,
+    "warnings": 0,
+    "issues": []
+  },
+  "ADR-002": {
+    "name": "Guía de Estilo Angular",
+    "passed": 0,
+    "failed": 0,
+    "warnings": 14,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: app.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: core/components/language/language.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: core/components/main-layout/main-layout.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: core/services/application-insights-logging.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: cross/auth/components/forgot-password/forgot-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: features/templates/components/entity-detail/entity-detail.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: features/templates/components/entity-list/entity-list.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar inject() en lugar de constructor injection: features/templates/components/entity-search/entity-search.ts"
+      }
+    ]
+  },
+  "ADR-003": {
+    "name": "Tailwind CSS",
+    "passed": 0,
+    "failed": 0,
+    "warnings": 34,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/error/error.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/language/language.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/main-layout/main-layout.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/main-layout/main-layout.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/main-layout/main-layout.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: core/components/settings/settings.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/change-password/change-password.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/change-password/change-password.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/change-password/change-password.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/change-password/change-password.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/change-password/change-password.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: cross/auth/components/reset-password/reset-password.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: features/templates/components/entity-list/entity-list.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: features/templates/components/entity-list/entity-list.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: features/templates/components/entity-search/entity-search.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: features/templates/components/entity-search/entity-search.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: features/templates/components/entity-search/entity-search.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: features/templates/components/entity-search/entity-search.html"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar Tailwind o clases con prefijo ft-: features/templates/components/entity-search/entity-search.html"
+      }
+    ]
+  },
+  "ADR-005": {
+    "name": "Internacionalización (i18n)",
+    "passed": 0,
+    "failed": 0,
+    "warnings": 132,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"Terms and Conditions...\" en cross/auth/components/auth/auth.html:111"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"and...\" en cross/auth/components/auth/auth.html:111"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"Privacy Policies...\" en cross/auth/components/auth/auth.html:113"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"Terms and Conditions...\" en cross/auth/components/auth/auth.html:111"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"and...\" en cross/auth/components/auth/auth.html:111"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"Privacy Policies...\" en cross/auth/components/auth/auth.html:113"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"to enter verification code sen...\" en cross/auth/components/delete-user/delete-user.html:29"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"to confirm deletion....\" en cross/auth/components/delete-user/delete-user.html:30"
+      },
+      {
+        "type": "warning",
+        "message": "Texto hardcodeado sin i18n encontrado: \"Cancel...\" en features/templates/components/entity-detail/entity-detail.html:25"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Considerar usar $localize para strings traducibles: features/templates/repositories/entity-repository.ts"
+      }
+    ]
+  },
+  "ADR-006": {
+    "name": "Patrón Repository",
+    "passed": 1,
+    "failed": 1,
+    "warnings": 0,
+    "issues": [
+      {
+        "type": "error",
+        "message": "Repository debería usar getApiUrl() para endpoints: features/templates/repositories/entity-repository.ts"
+      }
+    ]
+  },
+  "ADR-008": {
+    "name": "Validación de Formularios",
+    "passed": 12,
+    "failed": 0,
+    "warnings": 0,
+    "issues": []
+  },
+  "ADR-010": {
+    "name": "Estrategia de Iconos",
+    "passed": 11,
+    "failed": 7,
+    "warnings": 0,
+    "issues": [
+      {
+        "type": "error",
+        "message": "No usar mat-icon, usar componente ft-icon: core/components/language/language.html"
+      },
+      {
+        "type": "error",
+        "message": "No usar mat-icon, usar componente ft-icon: core/components/settings/settings.html"
+      },
+      {
+        "type": "error",
+        "message": "No usar mat-icon, usar componente ft-icon: cross/auth/components/auth/auth.html"
+      },
+      {
+        "type": "error",
+        "message": "No usar mat-icon, usar componente ft-icon: cross/auth/components/change-password/change-password.html"
+      },
+      {
+        "type": "error",
+        "message": "No usar mat-icon, usar componente ft-icon: cross/auth/components/reset-password/reset-password.html"
+      },
+      {
+        "type": "error",
+        "message": "No usar mat-icon, usar componente ft-icon: features/templates/components/entity-detail/entity-detail.html"
+      },
+      {
+        "type": "error",
+        "message": "No usar mat-icon, usar componente ft-icon: features/templates/components/entity-list/entity-list.html"
+      }
+    ]
+  },
+  "ADR-012": {
+    "name": "Modificadores de Acceso",
+    "passed": 0,
+    "failed": 0,
+    "warnings": 174,
+    "issues": [
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: code en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: code en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: icon en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: icon en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: icon en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: icon en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: icon en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: icon en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: default en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: icon en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/error/error.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: default en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: skipLocationChange en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: title en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: text en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: url en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: event en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: event en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: message en core/components/settings/settings.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/pipes/error-message-pipe.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/pipes/error-message-pipe.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/pipes/error-message-pipe.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/pipes/error-message-pipe.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/pipes/error-message-pipe.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/pipes/error-message-pipe.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/pipes/error-message-pipe.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: severity en core/services/ail-error-handler.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: severity en core/services/ail-error-handler.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: severity en core/services/ail-error-handler.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: severity en core/services/ail-error-handler.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: severity en core/services/ail-error-handler.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: cid en core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: timerStart en core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: timerStart en core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: vapidKey en core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: serviceWorkerRegistration en core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: token en core/services/app-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: config en core/services/application-insights-logging.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: instrumentationKey en core/services/application-insights-logging.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: enableAutoRouteTracking en core/services/application-insights-logging.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: name en core/services/application-insights-logging.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: uri en core/services/application-insights-logging.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: type en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: entity en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mutation en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mutation en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: variables en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mutation en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mutation en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: variables en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: id en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mutation en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mutation en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: variables en core/services/graphql-utils.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: settings en core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: params en core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: params en core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: params en core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: user en core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: settings en core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: params en core/services/session.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: factories en core/utils/async-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: observableFactory en core/utils/async-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: value en core/utils/async-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: loading en core/utils/async-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en core/utils/async-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: destroy en core/utils/async-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: setHeaders en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: Authorization en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: panelClass en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: width en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: identity en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mode en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: providers en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: configURL en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: clientId en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: fields en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: params en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: fetch_basic_profile en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: response_type en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: scope en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: include_granted_scopes en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: nonce en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: mediation en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: method en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: headers en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: body en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: id_token en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: panelClass en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: width en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: headers en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: email en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: username en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: email en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: username en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: request en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: next en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: headers en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: status en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: statusText en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: url en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: error en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: headers en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: status en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: statusText en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: url en cross/auth/auth-service.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: username en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: password en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: firstName en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: lastName en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: email en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: password en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: panelClass en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: width en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: default en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: event en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: page_title en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: event en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: user_id en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: app_id en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: event en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: user_id en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: app_id en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: username en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: password en cross/auth/components/auth/auth.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: password en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: newPassword en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: confirmPassword en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: value en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: password en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: newPassword en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: verticalPosition en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: type en cross/auth/components/change-password/change-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: email en cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: code en cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: type en cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: type en cross/auth/components/delete-user/delete-user.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: email en cross/auth/components/forgot-password/forgot-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: event en cross/auth/components/forgot-password/forgot-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: type en cross/auth/components/forgot-password/forgot-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: type en cross/auth/components/forgot-password/forgot-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: token en cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: password en cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: confirmPassword en cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: value en cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: token en cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: password en cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: type en cross/auth/components/reset-password/reset-password.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: data en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: panelClass en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: height en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: width en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: position en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: left en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: right en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: panelClass en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: width en features/templates/managers/entity-manager.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: providedIn en features/templates/repositories/entity-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: create en features/templates/repositories/entity-repository.ts"
+      },
+      {
+        "type": "warning",
+        "message": "Propiedad sin modificador de acceso explícito: update en features/templates/repositories/entity-repository.ts"
+      }
+    ]
+  },
+  "ADR-013": {
+    "name": "Layout de Formularios",
+    "passed": 5,
+    "failed": 0,
+    "warnings": 0,
+    "issues": []
+  }
+}
