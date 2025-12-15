@@ -26,7 +26,7 @@ import { Language } from '@factor_ec/utils';
 // import * as Sentry from '@sentry/angular';
 
 import { AppManager } from '@/core/services/app-manager';
-import { CommonModule } from '@angular/common';
+
 import { LayoutManager } from '@/core/services/layout-manager';
 import { AuthProvider } from '@/core/services/auth.provider';
 import { Session } from '@/core/services/session';
@@ -43,7 +43,6 @@ import { LANGUAGES } from '@/core/constants/languages';
 @Component({
   selector: 'app-settings',
   imports: [
-    CommonModule,
     IconComponent,
     ProgressComponent,
     MatButtonModule,

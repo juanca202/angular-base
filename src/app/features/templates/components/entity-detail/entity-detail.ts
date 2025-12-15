@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -21,7 +20,6 @@ import { EntityManager } from '../../managers/entity-manager';
 @Component({
   selector: 'app-entity-detail',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     IconComponent,
     MatButtonModule,
