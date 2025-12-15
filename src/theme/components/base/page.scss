@@ -25,6 +25,8 @@
 
     .ft-actions {
       min-width: 40px;
+      display: flex;
+      align-items: center;
     }
 
     .mdc-button__label {

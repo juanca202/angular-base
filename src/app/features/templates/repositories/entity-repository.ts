@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Entity, EntityRequest } from '@/features/templates/models/entity';
-import { getMutations, getResource, SignalGet } from '@/core/utils/async-repository';
+import { getApiUrl, getMutations, getResource, SignalGet } from '@/core/utils/async-repository';
+import { MockHttpClient } from '@/core/utils/mock-http-client';
+import repositoryMock from '@/test/mocks/repositories/entities.json';
 
 /**
  * Repository that encapsulates all data access required by the demo entity feature.
@@ -14,13 +15,20 @@ import { getMutations, getResource, SignalGet } from '@/core/utils/async-reposit
   providedIn: 'root'
 })
 export class EntityRepository {
-  private readonly httpClient = inject(HttpClient);
-  private readonly baseUrl = '/mocks/entities.json';
+  // TODO: Replace with real http client
+  private readonly httpClient = inject(MockHttpClient);
+  private readonly baseUrl = getApiUrl('entities');
+
+  constructor() {
+    this.httpClient.loadCollection('entities', repositoryMock);
+  }
 
   public mutations() {
     return getMutations({
-      create: (Entity: EntityRequest) => this.httpClient.post<Entity>(`${this.baseUrl}`, Entity),
-      update: (Entity: EntityRequest) => this.httpClient.put<Entity>(`${this.baseUrl}`, Entity)
+      create: (entity: EntityRequest) => this.httpClient.post<Entity>(this.baseUrl, entity),
+      update: (entity: EntityRequest) =>
+        this.httpClient.put<Entity>(`${this.baseUrl}/${entity.id}`, entity),
+      delete: (id: string) => this.httpClient.delete<void>(`${this.baseUrl}/${id}`)
     });
   }
   public find(): SignalGet<string, Entity> {

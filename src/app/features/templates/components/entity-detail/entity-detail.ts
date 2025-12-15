@@ -1,20 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
+import { EntityManager } from '../../managers/entity-manager';
 
 /**
- * Presents the entity detail drawer, enabling both edition and creation flows
- * backed by {@link EntityRepository}.
+ * Presents the entity detail drawer in read-only mode, displaying the full
+ * information of the selected resource.
  *
  * @remarks
- * The component keeps track of the active resource signal and submits mutations
- * depending on whether an identifier is provided through dialog data.
+ * This component renders the entity’s data for visualization only and does not
+ * perform mutations. It relies on the provided identifier in the dialog data to
+ * load the active resource from the {@link EntityRepository}.
  */
 @Component({
   selector: 'app-entity-detail',
@@ -37,14 +39,13 @@ import { MatButtonModule } from '@angular/material/button';
 export class EntityDetail implements OnInit, OnDestroy {
   // Dependency injection
   private readonly entityRepository = inject(EntityRepository);
+  public readonly entityManager = inject(EntityManager);
   public readonly data = inject(MAT_DIALOG_DATA);
-  private readonly formBuilder = inject(FormBuilder);
   public readonly layoutManager = inject(LayoutManager);
 
   // Properties
   public readonly entity = this.entityRepository.find();
   public readonly entityMutations = this.entityRepository.mutations();
-  public readonly form: FormGroup = this.formBuilder.group({});
 
   ngOnInit(): void {
     if (this.data.id) {
@@ -53,17 +54,5 @@ export class EntityDetail implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.entity.destroy();
-  }
-  public onSubmit(): void {
-    if (this.form.valid) {
-      const formData = this.form.value;
-      if (this.data.id) {
-        // Update existing entity
-        this.entityMutations.update(formData);
-      } else {
-        // Create new entity
-        this.entityMutations.create(formData);
-      }
-    }
   }
 }

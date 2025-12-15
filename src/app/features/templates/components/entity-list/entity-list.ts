@@ -3,7 +3,8 @@ import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
-import { IconComponent } from '@factor_ec/ui';
+import { IconComponent, ProgressComponent } from '@factor_ec/ui';
+import { MatMenuModule } from '@angular/material/menu';
 
 /**
  * Displays the sample entity catalog using the reusable table layout.
@@ -14,7 +15,7 @@ import { IconComponent } from '@factor_ec/ui';
  */
 @Component({
   selector: 'app-entity-list',
-  imports: [MatButtonModule, IconComponent],
+  imports: [MatButtonModule, MatMenuModule, IconComponent, ProgressComponent],
   templateUrl: './entity-list.html',
   styleUrl: './entity-list.scss',
   host: {
@@ -36,5 +37,8 @@ export class EntityList implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.entities.destroy();
+  }
+  protected refresh(): void {
+    this.entities.load();
   }
 }

@@ -33,11 +33,11 @@
 
     &:is(button, a):hover {
       cursor: pointer;
-      background-color: var(--ft-list-item-hover-bg);
+      background-color: var(--ft-list-hover-bg);
     }
 
     &.ft-active {
-      background-color: var(--ft-list-item-active-bg);
+      background-color: var(--ft-list-active-bg);
     }
   }
 

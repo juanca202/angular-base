@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 
@@ -31,11 +31,14 @@ export class EntitySearch implements OnInit {
     query: ['']
   });
 
+  // Events
+  public readonly selected = output<Entity>();
+
   ngOnInit(): void {
     this.entities.load();
   }
-  public showEntity(entity: Entity): void {
+  public select(entity: Entity): void {
     this.dialogRef.close();
-    this.entityManager.open(entity.id);
+    this.selected.emit(entity);
   }
 }

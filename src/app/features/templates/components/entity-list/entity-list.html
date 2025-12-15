@@ -2,24 +2,27 @@
   <div class="ft-actions"></div>
   <div class="ft-title" i18n>Entities</div>
   <div class="ft-actions">
+    <button type="button" mat-icon-button i18n-title title="Add" (click)="entityManager.open()">
+      <ft-icon name="plus" class="ft-icon--2" />
+    </button>
     <button
       type="button"
       mat-icon-button
       i18n-title
-      title="Search"
-      (click)="entityManager.search()"
+      title="Refresh"
+      [disabled]="entities.loading()"
+      (click)="refresh()"
     >
-      <ft-icon name="search" class="ft-icon--2" />
-    </button>
-    <button type="button" mat-icon-button i18n-title title="Add" (click)="entityManager.open()">
-      <ft-icon name="plus" class="ft-icon--2" />
+      @if (!entities.loading()) {
+        <ft-icon name="refresh" class="ft-icon--2" />
+      } @else {
+        <ft-progress class="ft-progress--2 !block" />
+      }
     </button>
   </div>
 </div>
 <div class="ft-page__content ft-anim-enter">
-  @if (entities.loading()) {
-    <div class="flex items-center justify-center h-full" i18n>Loading...</div>
-  } @else if (!entities.loading() && entities.value()?.length) {
+  @if (!entities.loading() || entities.value()?.length) {
     <div class="ft-container">
       <div
         class="ft-observe-interseting"
@@ -38,17 +41,44 @@
         </thead>
         <tbody>
           @for (entity of entities.value(); track entity.id) {
-            <tr class="ft-tr-action" (click)="entityManager.open(entity.id)">
+            <tr class="ft-tr-action" (click)="entityManager.open(entity.id, true)">
               <td>{{ entity.id }}</td>
               <td>{{ entity.firstName }}</td>
               <td>{{ entity.lastName }}</td>
               <td>{{ entity.phone }}</td>
               <td>{{ entity.email }}</td>
-              <td></td>
+              <td>
+                <button
+                  type="button"
+                  mat-icon-button
+                  [matMenuTriggerFor]="menu"
+                  (click)="$event.stopPropagation()"
+                >
+                  <ft-icon name="ellipsis-vertical" />
+                </button>
+                <mat-menu #menu="matMenu" class="ft-auth-menu">
+                  <button type="button" mat-menu-item (click)="entityManager.open(entity.id)" i18n>
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    mat-menu-item
+                    (click)="entityManager.delete(entity.id)"
+                    i18n
+                  >
+                    Delete
+                  </button>
+                </mat-menu>
+              </td>
             </tr>
           }
         </tbody>
       </table>
+    </div>
+  } @else if (entities.loading()) {
+    <div class="flex flex-col items-center justify-center gap-2 h-full">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
     </div>
   } @else if (!entities.value()?.length) {
     <div class="flex items-center justify-center h-full" i18n>No records</div>

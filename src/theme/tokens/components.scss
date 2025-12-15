@@ -1,5 +1,12 @@
 /* theme/components.css */
 
+/* Heading */
+:root {
+  --ft-h1-font-size: var(--ft-font-size-xl);
+  --ft-h2-font-size: var(--ft-font-size-lg);
+  --ft-h3-font-size: var(--ft-font-size-md);
+}
+
 /* Borders */
 :root {
   --ft-border-color: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
@@ -32,7 +39,7 @@
 
 /* Progress bar */
 :root {
-  --ft-progress-color: var(--ft-color-primary);
+  --ft-progress-bar-color: var(--ft-color-primary);
   --ft-progress-track-color: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
 }
 

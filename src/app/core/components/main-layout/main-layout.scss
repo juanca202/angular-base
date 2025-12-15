@@ -80,7 +80,7 @@
       }
 
       &.ft-active {
-        color: var(--ft-list-item-active-bg);
+        color: var(--ft-list-active-bg);
       }
 
       @include mixins.media-breakpoint-down(md) {

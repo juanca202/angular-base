@@ -153,7 +153,7 @@ export function getResource<TParams, TResult>(
   ): Promise<TResult | null> => {
     loading.set(true);
     error.set(null);
-    value.set(null);
+    //value.set(null);
 
     const request$ = observableFactory(...(params as any)).pipe(
       map((response) =>

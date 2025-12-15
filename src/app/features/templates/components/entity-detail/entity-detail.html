@@ -1,41 +1,53 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div #headerElement mat-dialog-title>
-    <div class="ft-actions">
-      <button type="button" mat-icon-button i18n-title title="Close" mat-dialog-close>
-        <ft-icon name="arrow-left" class="ft-icon--2" />
-      </button>
-    </div>
-    <div class="ft-title" i18n>Entity</div>
-    <div class="ft-actions"></div>
+<div #headerElement mat-dialog-title>
+  <div class="ft-actions">
+    <button type="button" mat-icon-button i18n-title title="Close" mat-dialog-close>
+      <ft-icon name="arrow-left" class="ft-icon--2" />
+    </button>
   </div>
-  <div mat-dialog-content>
+  <div class="ft-title grow-1" i18n>Entity</div>
+  <div class="ft-actions">
+    <button
+      type="button"
+      mat-icon-button
+      i18n-title
+      title="Edit"
+      (click)="entityManager.open(entity.value()?.id)"
+    >
+      <ft-icon name="pencil" class="ft-icon--2" />
+    </button>
+  </div>
+</div>
+<div mat-dialog-content>
+  @if (!entity.loading()) {
     <div
       class="ft-observe-interseting"
       (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), headerElement)"
     ></div>
-    <div class="ft-container"></div>
-  </div>
-  <div #actionsElement mat-dialog-actions>
-    <button
-      type="button"
-      mat-button
-      [disabled]="entityMutations.submitting()"
-      mat-dialog-close
-      i18n
-    >
-      Cancel
-    </button>
-    <button type="submit" mat-flat-button color="primary" [disabled]="entityMutations.submitting()">
-      @if (!entityMutations.submitting()) {
-        <span i18n>Submit</span>
-      } @else {
-        <ng-container *ngTemplateOutlet="submittingTemplate"></ng-container>
-      }
-    </button>
-  </div>
-</form>
+    <div class="ft-container">
+      <table>
+        <tr>
+          <th class="text-left" i18n>First name</th>
+          <td class="px-4">{{ entity.value()?.firstName }}</td>
+          <th class="text-left" i18n>Last name</th>
+          <td class="px-4">{{ entity.value()?.lastName }}</td>
+        </tr>
+        <tr>
+          <th class="text-left" i18n>Email</th>
+          <td class="px-4">{{ entity.value()?.email }}</td>
+          <th class="text-left" i18n>Phone</th>
+          <td class="px-4">{{ entity.value()?.phone }}</td>
+        </tr>
+      </table>
+    </div>
+  } @else if (entity.loading()) {
+    <div class="flex flex-col items-center justify-center gap-2 h-full">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
+    </div>
+  }
+</div>
 <ng-template #submittingTemplate>
   <div class="text-center">
-    <ft-progress class="ft-progress--2"></ft-progress>
+    <ft-progress class="ft-progress--2" />
   </div>
 </ng-template>
