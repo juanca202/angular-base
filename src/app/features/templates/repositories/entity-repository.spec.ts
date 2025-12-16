@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { vi } from 'vitest';
 
 import { EntityRepository } from './entity-repository';
 import { Entity, EntityRequest } from '@/features/templates/models/entity';
@@ -12,7 +13,7 @@ describe('EntityRepository', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [{ provide: MessageService, useValue: { show: jest.fn() } }]
+      providers: [{ provide: MessageService, useValue: { show: vi.fn() } }]
     });
 
     repository = TestBed.inject(EntityRepository);
@@ -24,7 +25,7 @@ describe('EntityRepository', () => {
   });
 
   it('loads a single entity by identifier', async () => {
-    const resource = TestBed.runInInjectionContext(() => repository.find());
+    const resource = repository.find();
     const expected: Entity = {
       id: '123',
       firstName: 'Jane',
@@ -44,7 +45,7 @@ describe('EntityRepository', () => {
   });
 
   it('loads the entity collection', async () => {
-    const resource = TestBed.runInInjectionContext(() => repository.findBy());
+    const resource = repository.findBy();
     const expected: Entity[] = [
       { id: '1', firstName: 'A', lastName: 'B', phone: '1', email: 'a@example.com' }
     ];
@@ -60,7 +61,7 @@ describe('EntityRepository', () => {
   });
 
   it('creates a new entity', async () => {
-    const mutations = TestBed.runInInjectionContext(() => repository.mutations());
+    const mutations = repository.mutations();
     const payload: EntityRequest = {
       firstName: 'New',
       lastName: 'Customer',

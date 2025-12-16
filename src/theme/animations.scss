@@ -9,6 +9,10 @@
   animation: ft-enter-down 0.3s ease-out forwards;
 }
 
+.ft-anim-rotate {
+  animation: ft-rotate 1s linear infinite;
+}
+
 @keyframes ft-shaking {
   10%,
   90% {
@@ -103,5 +107,14 @@
   to {
     transform: translateX(0); /* Reaches final position */
     opacity: 1; /* Fully visible */
+  }
+}
+
+@keyframes ft-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
   }
 }

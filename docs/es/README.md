@@ -106,7 +106,7 @@ Este proyecto sigue el formato de Architectural Decision Records (ADR) para docu
   Establece el patrón de repositorio con `getMutations()` y `getResource()` para comunicación REST API estandarizada y gestión de estado.
 
 - **[ADR-007: Estrategia de Testing](./adr/ADR-007.md)**  
-  Define el enfoque de testing usando Jest para tests unitarios/integración y Playwright para tests E2E, siguiendo el patrón AAA y objetivos de cobertura.
+  Define el enfoque de testing usando Vitest para tests unitarios/integración y Playwright para tests E2E, siguiendo el patrón AAA y objetivos de cobertura.
 
 - **[ADR-008: Estrategia de Validación de Formularios](./adr/ADR-008.md)**  
   Estandariza la validación de formularios usando Reactive Forms con pipe errorMessage, jerarquía de validadores y patrones de visualización de errores consistentes.

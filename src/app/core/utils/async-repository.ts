@@ -32,6 +32,7 @@ export interface SignalGet<TParams, TResult> {
   readonly load: (
     ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
   ) => Promise<TResult | null>;
+  readonly refresh: () => Promise<TResult | null>;
   readonly destroy: () => void;
 }
 
@@ -147,10 +148,12 @@ export function getResource<TParams, TResult>(
   const value = signal<TResult | null>(null);
   const error = signal<any | null>(null);
   const destroy$ = new Subject<void>();
+  let lastParams: any[] | null = null;
 
   const load = async (
     ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
   ): Promise<TResult | null> => {
+    lastParams = params;
     loading.set(true);
     error.set(null);
     //value.set(null);
@@ -174,11 +177,19 @@ export function getResource<TParams, TResult>(
     return firstValueFrom(request$);
   };
 
+  const refresh = async (): Promise<TResult | null> => {
+    if (lastParams === null) {
+      throw new Error($localize`Cannot refresh: no previous load call made`);
+    }
+    return load(...(lastParams as any));
+  };
+
   return {
     value: value.asReadonly(),
     loading: loading.asReadonly(),
     error: error.asReadonly(),
     load,
+    refresh,
     destroy: () => {
       destroy$.next();
       destroy$.complete();

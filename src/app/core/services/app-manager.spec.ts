@@ -7,20 +7,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
+import { vi } from 'vitest';
 import { AppManager } from '@/core/services/app-manager';
 import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
 import { AuthProvider } from '@/core/services/auth.provider';
 
 const createAuthContextStub = () => ({
   settings: signal(undefined),
-  getToken: jest.fn(),
-  logout: jest.fn(),
-  changePassword: jest.fn(),
-  confirmDeleteUser: jest.fn(),
-  getSettings: jest.fn().mockResolvedValue(false),
+  getToken: vi.fn(),
+  logout: vi.fn(),
+  changePassword: vi.fn(),
+  confirmDeleteUser: vi.fn(),
+  getSettings: vi.fn().mockResolvedValue(false),
   loggedIn: new EventEmitter<boolean>()
 });
-jest.mock('version-info', () => ({
+vi.mock('version-info', () => ({
   versionInfo: {
     version: 'test',
     hash: 'abc',
@@ -39,30 +40,30 @@ describe('AppManager', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         AppManager,
-        { provide: Router, useValue: { navigate: jest.fn() } },
-        { provide: MatDialog, useValue: { open: jest.fn() } },
-        { provide: MatSnackBar, useValue: { open: jest.fn() } },
-        { provide: Location, useValue: { back: jest.fn(), forward: jest.fn(), go: jest.fn() } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: MatDialog, useValue: { open: vi.fn() } },
+        { provide: MatSnackBar, useValue: { open: vi.fn() } },
+        { provide: Location, useValue: { back: vi.fn(), forward: vi.fn(), go: vi.fn() } },
         {
           provide: SwUpdate,
           useValue: {
-            available: { subscribe: jest.fn() },
-            activated: { subscribe: jest.fn() },
-            versionUpdates: { subscribe: jest.fn() }
+            available: { subscribe: vi.fn() },
+            activated: { subscribe: vi.fn() },
+            versionUpdates: { subscribe: vi.fn() }
           }
         },
         {
           provide: StorageService,
           useValue: {
-            get: jest.fn(),
-            set: jest.fn(),
-            delete: jest.fn(),
-            getItem: jest.fn(),
-            setItem: jest.fn(),
-            removeItem: jest.fn()
+            get: vi.fn(),
+            set: vi.fn(),
+            delete: vi.fn(),
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn()
           }
         },
-        { provide: GoogleTagManagerService, useValue: { push: jest.fn() } },
+        { provide: GoogleTagManagerService, useValue: { push: vi.fn() } },
         { provide: AuthProvider, useValue: createAuthContextStub() }
       ]
     });

@@ -6,7 +6,6 @@ import localeEn from '@angular/common/locales/en';
 import localeEs from '@angular/common/locales/es';
 import { SwUpdate } from '@angular/service-worker';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Messaging } from '@angular/fire/messaging';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -14,7 +13,6 @@ import { GoogleTagManagerService, StorageService, Language } from '@factor_ec/ut
 import { LANGUAGES } from '@/core/constants/languages';
 import { skip } from 'rxjs';
 import moment from 'moment';
-import { getToken, isSupported } from 'firebase/messaging';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
@@ -57,7 +55,7 @@ export class AppManager {
   public readonly updateStatus = signal<string | null>('done');
   private readonly defaultLocale = 'en';
   public readonly languages = signal<Language[]>(LANGUAGES);
-  private pushToken: string | undefined;
+  private readonly pushToken: string | undefined;
 
   // Storage keys
   private readonly clientKey = `${environment.sessionPrefix}_cid`;
@@ -161,55 +159,9 @@ export class AppManager {
     });
   }
   private async initData(networkOnly: boolean): Promise<void> {
-    // Initialize push messages
-    if (!this.pushToken) {
-      this.pushToken = await this.initMessaging();
-    }
     // Load initial configuration
     await this.authService.getSettings(networkOnly, this.pushToken);
     this.initialized = true;
-  }
-  private async initMessaging(): Promise<string | undefined> {
-    let token = '';
-    try {
-      if (!isPlatformBrowser(this.platformId) || !navigator.onLine) {
-        return '';
-      }
-      const supported = await isSupported();
-      if (!supported) {
-        console.warn('Firebase Messaging is not supported in this environment.');
-        return '';
-      }
-      const messaging = this.injector.get(Messaging);
-      if (isPlatformBrowser(this.platformId) && 'serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.getRegistration();
-
-        if (!registration) {
-          console.error('Service Worker registration not found.');
-          //throw new Error('Service Worker registration not found.');
-        }
-
-        const currentToken = await getToken(messaging, {
-          vapidKey: environment.vapidKey,
-          serviceWorkerRegistration: registration
-        });
-        if (currentToken) {
-          console.log('Push token', currentToken);
-          token = currentToken;
-          // Here you would send the token to your server if needed
-        } else {
-          console.log('No registration token available. Request permission to generate one.');
-        }
-      }
-    } catch (err) {
-      if (isPlatformBrowser(this.platformId) && !navigator.onLine) {
-        console.error('No internet connection. Token generation failed.');
-        // You can handle lack of connection here, e.g., retry later
-      } else {
-        console.error('Error obtaining push token:', err);
-      }
-    }
-    return token;
   }
   public install(): void {
     if (!this.installPrompt) {

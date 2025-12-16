@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { vi, type MockedFunction } from 'vitest';
 
 import { EntityList } from './entity-list';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
@@ -15,7 +16,7 @@ type TestSignalGet = SignalGet<void, Entity[]> & {
 describe('EntityList', () => {
   let component: EntityList;
   let fixture: ComponentFixture<EntityList>;
-  let repository: jest.Mocked<EntityRepository>;
+  let repository: Partial<EntityRepository>;
   let entitiesResource: TestSignalGet;
 
   const createSignalGet = (): TestSignalGet => {
@@ -26,8 +27,8 @@ describe('EntityList', () => {
       value: valueSignal.asReadonly(),
       loading: loadingSignal.asReadonly(),
       error: errorSignal.asReadonly(),
-      load: jest.fn().mockResolvedValue([]),
-      destroy: jest.fn(),
+      load: vi.fn().mockResolvedValue([]),
+      destroy: vi.fn(),
       __setValue: (data: Entity[]) => valueSignal.set(data)
     };
   };
@@ -35,15 +36,15 @@ describe('EntityList', () => {
   beforeEach(async () => {
     entitiesResource = createSignalGet();
     repository = {
-      findBy: jest.fn(() => entitiesResource)
-    } as unknown as jest.Mocked<EntityRepository>;
+      findBy: vi.fn(() => entitiesResource)
+    } as Partial<EntityRepository>;
 
     await TestBed.configureTestingModule({
       imports: [EntityList],
       providers: [
         { provide: EntityRepository, useValue: repository },
-        { provide: EntityManager, useValue: { open: jest.fn() } },
-        { provide: LayoutManager, useValue: { setOverlapped: jest.fn() } }
+        { provide: EntityManager, useValue: { open: vi.fn() } },
+        { provide: LayoutManager, useValue: { setOverlapped: vi.fn() } }
       ]
     }).compileComponents();
 

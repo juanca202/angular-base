@@ -5,6 +5,7 @@ import { EntityRepository } from '@/features/templates/repositories/entity-repos
 import { MatButtonModule } from '@angular/material/button';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
 import { MatMenuModule } from '@angular/material/menu';
+import { ENTITY_CONTEXT } from '../../constants/entity-context';
 
 /**
  * Displays the sample entity catalog using the reusable table layout.
@@ -25,9 +26,12 @@ import { MatMenuModule } from '@angular/material/menu';
 })
 export class EntityList implements OnInit, OnDestroy {
   // Dependency injection
-  private readonly entityRepository = inject(EntityRepository);
   public readonly entityManager = inject(EntityManager);
+  private readonly entityRepository = inject(EntityRepository);
   public readonly layoutManager = inject(LayoutManager);
+
+  // Constansts
+  public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
   public readonly entities = this.entityRepository.findBy();

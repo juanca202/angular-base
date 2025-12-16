@@ -2,19 +2,20 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 
 import { authGuard, loginGuard, resetGuard } from './auth-guards';
 import { AppManager } from '@/core/services/app-manager';
 import { Session } from '@/core/services/session';
 
 describe('Auth Guards', () => {
-  let mockRouter: jest.Mocked<Router>;
-  let mockAppManager: jest.Mocked<AppManager>;
-  let mockSession: jest.Mocked<Session>;
+  let mockRouter: Partial<Router>;
+  let mockAppManager: Partial<AppManager>;
+  let mockSession: Partial<Session>;
 
   beforeEach(() => {
     mockRouter = {
-      navigateByUrl: jest.fn()
+      navigateByUrl: vi.fn()
     } as any;
 
     mockAppManager = {
@@ -22,8 +23,8 @@ describe('Auth Guards', () => {
     } as any;
 
     mockSession = {
-      isLoggedIn: jest.fn().mockReturnValue(true),
-      settings: jest.fn().mockReturnValue({})
+      isLoggedIn: vi.fn().mockReturnValue(true),
+      settings: vi.fn().mockReturnValue({})
     } as any;
 
     TestBed.configureTestingModule({
@@ -153,7 +154,7 @@ describe('Auth Guards', () => {
       // Arrange
       const route = {
         queryParamMap: {
-          get: jest.fn().mockReturnValue('valid-token')
+          get: vi.fn().mockReturnValue('valid-token')
         }
       } as unknown as ActivatedRouteSnapshot;
       mockSession.isLoggedIn.mockReturnValue(false);
@@ -170,7 +171,7 @@ describe('Auth Guards', () => {
       // Arrange
       const route = {
         queryParamMap: {
-          get: jest.fn().mockReturnValue('valid-token')
+          get: vi.fn().mockReturnValue('valid-token')
         }
       } as unknown as ActivatedRouteSnapshot;
       mockSession.isLoggedIn.mockReturnValue(true);
@@ -187,7 +188,7 @@ describe('Auth Guards', () => {
       // Arrange
       const route = {
         queryParamMap: {
-          get: jest.fn().mockReturnValue(null)
+          get: vi.fn().mockReturnValue(null)
         }
       } as unknown as ActivatedRouteSnapshot;
       mockSession.isLoggedIn.mockReturnValue(false);

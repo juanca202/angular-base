@@ -15,6 +15,9 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { Entity } from '../../models/entity';
 import { OPERATION_TYPE, OperationType } from '@/core/constants/operation-type';
 import { Operation } from '@/core/models/operation';
+import { ENTITY_CONTEXT } from '../../constants/entity-context';
+import { EntityManager } from '../../managers/entity-manager';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-entity-form',
@@ -26,6 +29,7 @@ import { Operation } from '@/core/models/operation';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
+    MatMenuModule,
     ProgressComponent,
     ErrorMessagePipe
   ],
@@ -35,12 +39,16 @@ import { Operation } from '@/core/models/operation';
 })
 export class EntityForm {
   // Dependency injection
+  public readonly entityManager = inject(EntityManager);
   private readonly entityRepository = inject(EntityRepository);
   public readonly data = inject(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);
   public readonly layoutManager = inject(LayoutManager);
   private readonly dialogRef = inject(MatDialogRef<EntityDetail>);
   private readonly messageService = inject(MessageService);
+
+  // Constansts
+  public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
   public readonly entity = this.entityRepository.find();

@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { vi } from 'vitest';
 import { AuthService } from './auth-service';
 import { StorageService } from '@factor_ec/utils';
 
@@ -13,10 +14,17 @@ describe('AuthService', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: MatDialog, useValue: { open: jest.fn(), closeAll: jest.fn() } },
+        { provide: MatDialog, useValue: { open: vi.fn(), closeAll: vi.fn() } },
         {
           provide: StorageService,
-          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
+          useValue: {
+            get: vi.fn(),
+            set: vi.fn(),
+            delete: vi.fn(),
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn()
+          }
         }
       ]
     });
