@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
-import { ProgressComponent, MessageService } from '@factor_ec/ui';
+import { ProgressComponent, MessageService, IconComponent } from '@factor_ec/ui';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 
 import { environment } from '@/environments/environment';
@@ -28,6 +28,7 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
+    IconComponent,
     ProgressComponent,
     ErrorMessagePipe
   ],
