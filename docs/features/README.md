@@ -122,7 +122,7 @@ Ejemplos:
 
 ---
 
-## RT-1. Modelos de Dominio
+## TR-1. Modelos de Dominio
 
 Definir **todas las entidades del dominio** del feature.
 
@@ -142,7 +142,7 @@ export interface Entity {
 
 ---
 
-## RT-2. Modelos Orientados a UI
+## TR-2. Modelos Orientados a UI
 
 Modelos derivados o adaptados para presentación.
 
@@ -156,7 +156,7 @@ Estos modelos pueden duplicar datos del dominio si mejora la claridad.
 
 ---
 
-## RT-3. Contratos de Repositorio
+## TR-3. Contratos de Repositorio
 
 Definir las interfaces que representan el acceso a datos.
 
@@ -180,7 +180,7 @@ export interface EntityRepository {
 
 ---
 
-## RT-4. Reglas de Dominio
+## TR-4. Reglas de Dominio
 
 Reglas técnicas que **NO deben inferirse**:
 
@@ -308,13 +308,13 @@ Como <rol>, quiero <acción> para <beneficio>.
 
 ---
 
-## RT-1. Modelos de Dominio
+## TR-1. Modelos de Dominio
 
-## RT-2. Modelos Orientados a UI
+## TR-2. Modelos Orientados a UI
 
-## RT-3. Contratos de Repositorio
+## TR-3. Contratos de Repositorio
 
-## RT-4. Reglas de Dominio
+## TR-4. Reglas de Dominio
 
 - <Regla de dominio 1>
 - <Regla de dominio 2>

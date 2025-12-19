@@ -116,7 +116,7 @@ Como usuario, quiero definir relaciones entre contactos para entender cómo est�
 
 ---
 
-## RT-1. Modelos de Dominio
+## TR-1. Modelos de Dominio
 
 ```ts
 export interface Contact {
@@ -152,7 +152,7 @@ export type ContactRelationshipType =
 
 ---
 
-## RT-2. Modelos Orientados a UI
+## TR-2. Modelos Orientados a UI
 
 ```ts
 export interface ContactListItem {
@@ -174,7 +174,7 @@ export interface ContactRelationshipView {
 
 ---
 
-## RT-3. Contratos de Repositorio
+## TR-3. Contratos de Repositorio
 
 ```ts
 export interface ContactRepository {
@@ -197,7 +197,7 @@ export interface ContactRelationshipRepository {
 
 ---
 
-## RT-4. Reglas de Dominio
+## TR-4. Reglas de Dominio
 
 * Un contacto no puede tener más de una relación con el mismo contacto relacionado.
 * No se permiten relaciones circulares consigo mismo.
