@@ -18,7 +18,8 @@
     "prepare": "husky",
     "compodoc:build": "compodoc -p tsconfig.doc.json",
     "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
-    "compodoc:serve": "compodoc -s"
+    "compodoc:serve": "compodoc -s",
+    "icons:pack": "node generate-icons.js"
   },
   "lint-staged": {
     "src/**/*.{ts,js,html,scss,json,md}": [
@@ -68,14 +69,17 @@
     "@vitest/coverage-v8": "^4.0.15",
     "@vitest/ui": "^4.0.15",
     "baseline-browser-mapping": "^2.9.2",
+    "cheerio": "^1.1.2",
     "eslint": "^9.36.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "fs-extra": "^11.3.3",
     "happy-dom": "^20.0.11",
     "husky": "^9.1.7",
     "jsdom": "^27.0.0",
     "lint-staged": "^15.2.10",
     "postcss": "^8.5.3",
     "prettier": "^3.3.3",
+    "svgo": "^4.0.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
     "vitest": "^4.0.15"
