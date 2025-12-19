@@ -11,7 +11,7 @@
       i18n-title
       title="Refresh"
       [disabled]="entities.loading()"
-      (click)="refresh()"
+      (click)="entities.refresh()"
     >
       @if (!entities.loading()) {
         <ft-icon name="refresh" class="ft-icon--2" />

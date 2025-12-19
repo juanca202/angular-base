@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  output
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -9,7 +16,6 @@ import { MatInputModule } from '@angular/material/input';
 import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui';
 
 import { LayoutManager } from '@/core/services/layout-manager';
-import { EntityDetail } from '@/features/templates/components/entity-detail/entity-detail';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { Entity } from '../../models/entity';
@@ -33,13 +39,13 @@ import { Operation } from '@/core/models/operation';
   styleUrl: './entity-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityForm {
+export class EntityForm implements OnInit, OnDestroy {
   // Dependency injection
   private readonly entityRepository = inject(EntityRepository);
   public readonly data = inject(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);
   public readonly layoutManager = inject(LayoutManager);
-  private readonly dialogRef = inject(MatDialogRef<EntityDetail>);
+  private readonly dialogRef = inject(MatDialogRef<EntityForm>);
   private readonly messageService = inject(MessageService);
 
   // Properties

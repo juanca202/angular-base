@@ -38,7 +38,4 @@ export class EntityList implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.entities.destroy();
   }
-  protected refresh(): void {
-    this.entities.load();
-  }
 }
