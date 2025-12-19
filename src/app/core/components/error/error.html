@@ -6,11 +6,11 @@
       <p class="text-gray-500 mt-0">{{ error()?.message }}</p>
     </div>
     @if (error()?.icon === '404' || !authService.logout()) {
-      <a routerLink="/" mat-flat-button color="primary" i18n>Go home</a>
+      <a routerLink="/" matButton="filled" color="primary" i18n>Go home</a>
     } @else if (error()?.icon === '403') {
-      <button mat-flat-button color="primary" (click)="authService.logout()" i18n>Logout</button>
+      <button matButton="filled" color="primary" (click)="authService.logout()" i18n>Logout</button>
     } @else if (error()?.icon === 'unknown') {
-      <button mat-flat-button color="primary" (click)="reload()" i18n>Reload</button>
+      <button matButton="filled" color="primary" (click)="reload()" i18n>Reload</button>
     }
   </div>
 }
