@@ -136,5 +136,10 @@ You are an expert in TypeScript, Angular, and scalable web application developme
   - Constants (entity-context)
   - Routes (templates-routes)
 - Use the templates as a starting point and adapt them to the specific feature requirements while maintaining consistency with the established patterns.
+- **All implementations must strictly comply with the Architecture Decision Records (ADRs)**:
+  - No deviations from approved architectural decisions are allowed.
+  - If a feature requires a change or exception, a new ADR must be proposed, reviewed, and approved before implementation.
+- Ensure the feature is **fully aligned with the system’s architectural principles, constraints, and conventions** defined in the ADRs.
+
 
 
