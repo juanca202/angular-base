@@ -1,8 +1,14 @@
-# FEAT-001 · Administrador de Contactos
+# FEAT-001 · Contact Manager
+
+Este feature permite gestionar contactos mediante operaciones CRUD y definir relaciones explícitas entre contactos, resolviendo la necesidad de administrar una red básica de personas y sus vínculos.
+
+---
 
 ## FR-1. Visión General
 
-El feature **Administrador de Contactos** provee capacidades completas de CRUD (Crear, Leer, Actualizar, Eliminar) para la gestión de contactos. Adicionalmente a la información básica de cada contacto, el feature incluye una sección de **Relaciones** en la vista de detalle, que permite asociar contactos entre sí utilizando tipos de relación predefinidos.
+El Administrador de Contactos permite a los usuarios crear, visualizar, editar y eliminar contactos. Cada contacto puede tener relaciones con otros contactos, las cuales se gestionan desde la vista de detalle.
+
+El feature está orientado a usuarios que necesitan organizar información de personas y entender cómo se relacionan entre sí dentro del sistema.
 
 ---
 
@@ -10,124 +16,107 @@ El feature **Administrador de Contactos** provee capacidades completas de CRUD (
 
 ### Incluye
 
-* Vista de listado de contactos
-* Vista de detalle de contacto
-* Crear contacto
-* Editar contacto
-* Eliminar contacto
+* Listado de contactos
+* Creación de contactos
+* Edición de contactos
+* Eliminación de contactos
+* Visualización del detalle de un contacto
 * Gestión de relaciones entre contactos
-* Modelos de datos mock para desarrollo y pruebas
 
 ### Excluye
 
-* Autenticación / autorización
-* Integraciones externas
-* Funcionalidad de importación / exportación
+* Importación o exportación de contactos
+* Sincronización con servicios externos
+* Gestión de permisos o roles
 
 ---
 
 ## FR-3. Historias de Usuario
 
-### HU-001: Ver contactos
+### HU-001: Ver listado de contactos
 
-Como usuario, quiero ver un listado de todos los contactos para poder explorarlos y seleccionar uno fácilmente.
+Como usuario, quiero ver un listado de contactos para poder seleccionar uno y consultar su información.
 
-### HU-002: Crear un contacto
+### HU-002: Crear contacto
 
-Como usuario, quiero crear un nuevo contacto para poder almacenar su información.
+Como usuario, quiero crear un contacto para registrar su información básica.
 
-### HU-003: Editar un contacto
+### HU-003: Editar contacto
 
 Como usuario, quiero editar un contacto existente para mantener su información actualizada.
 
-### HU-004: Eliminar un contacto
+### HU-004: Eliminar contacto
 
-Como usuario, quiero eliminar un contacto para remover información obsoleta o incorrecta.
+Como usuario, quiero eliminar un contacto para remover información que ya no necesito.
 
-### HU-005: Gestionar relaciones entre contactos
+### HU-005: Gestionar relaciones
 
-Como usuario, quiero definir relaciones entre contactos para entender cómo están conectados entre sí.
+Como usuario, quiero definir relaciones entre contactos para entender cómo están vinculados.
 
 ---
 
-## FR-4. Pantallas
+## FR-4. Pantallas / Flujos
 
-### 4.1 Listado de Contactos
+### Listado de Contactos
 
-* Muestra una lista o tabla de contactos
-* Columnas:
+* Descripción general: muestra todos los contactos registrados.
+* Secciones:
 
-  * Nombre completo
-  * Correo electrónico
-  * Teléfono
-* Acciones por fila:
+  * Lista de contactos
+* Acciones:
 
+  * Crear contacto
   * Ver detalle
   * Editar
   * Eliminar
-* Acción principal:
-
-  * Crear contacto
 
 ---
 
-### 4.2 Detalle de Contacto
+### Detalle de Contacto
 
-Secciones:
+* Descripción general: muestra la información completa de un contacto.
+* Secciones:
 
-#### 4.2.1 Información Básica
+  * Información básica
+  * Relaciones
+* Acciones:
 
-* Nombre
-* Apellido
-* Correo electrónico
-* Teléfono
-* Notas (opcional)
-
-#### 4.2.2 Relaciones
-
-* Muestra un listado de contactos relacionados
-
-* Cada relación incluye:
-
-  * Contacto relacionado (nombre visible)
-  * Tipo de relación (editable mediante combobox)
-  * Acción para eliminar la relación
-
-* Acción principal:
-
+  * Editar contacto
+  * Eliminar contacto
   * Agregar relación
 
-##### Flujo para agregar una relación
+#### Flujo principal
 
-1. El usuario hace clic en **Agregar relación**
-2. Se abre un **contact-picker**
-3. El usuario selecciona otro contacto
-4. El contacto seleccionado se agrega al listado de relaciones
-5. El usuario selecciona el tipo de relación desde un combobox
+1. El usuario selecciona un contacto desde el listado.
+2. El sistema muestra el detalle del contacto.
+3. El usuario puede gestionar la información o las relaciones.
 
 ---
 
-## FR-5. Tipos de Relación
+### Creación / Edición de Contacto
 
-Los siguientes tipos de relación están disponibles:
+* Descripción general: formulario para crear o editar un contacto.
+* Secciones:
 
-* FRIEND
-* FAMILY
-* COLLEAGUE
-* MANAGER
-* DIRECT_REPORT
-* PARTNER
-* CLIENT
-* SUPPLIER
-* EMERGENCY_CONTACT
+  * Información básica
+* Acciones:
 
-Los tipos de relación son **direccionales** (desde el contacto actual hacia el contacto relacionado). Las relaciones **no son bidireccionales automáticamente** y deben gestionarse explícitamente por el usuario si se requiere la relación inversa.
+  * Guardar
+  * Cancelar
 
 ---
 
-## RT-1. Modelos de Entidades
+## FR-5. Reglas Funcionales
 
-### 6.1 Contacto
+* Un contacto debe tener nombre y apellido obligatorios.
+* Un contacto no puede eliminarse si está siendo usado como contacto relacionado por sí mismo.
+* Un contacto no puede relacionarse consigo mismo.
+* Las relaciones son direccionales y se crean únicamente desde el detalle del contacto.
+* El tipo de relación debe seleccionarse explícitamente.
+
+---
+
+## RT-1. Modelos de Dominio
 
 ```ts
 export interface Contact {
@@ -137,27 +126,17 @@ export interface Contact {
   email: string;
   phone: string;
   notes?: string;
-  createdAt: string; // fecha ISO
-  updatedAt: string; // fecha ISO
 }
 ```
-
----
-
-### 6.2 Relación de Contacto
 
 ```ts
 export interface ContactRelationship {
   id: string;
-  contactId: string; // contacto propietario
-  relatedContactId: string; // contacto relacionado
+  contactId: string;
+  relatedContactId: string;
   type: ContactRelationshipType;
 }
 ```
-
----
-
-### 6.3 Tipo de Relación de Contacto
 
 ```ts
 export type ContactRelationshipType =
@@ -168,15 +147,12 @@ export type ContactRelationshipType =
   | 'DIRECT_REPORT'
   | 'PARTNER'
   | 'CLIENT'
-  | 'SUPPLIER'
-  | 'EMERGENCY_CONTACT';
+  | 'SUPPLIER';
 ```
 
 ---
 
-## RT-2. Modelos de Vista (Orientados a UI)
-
-### 7.1 Item de Listado de Contacto
+## RT-2. Modelos Orientados a UI
 
 ```ts
 export interface ContactListItem {
@@ -185,11 +161,7 @@ export interface ContactListItem {
   email: string;
   phone: string;
 }
-````
-
----
-
-### 7.2 Vista de Relación de Contacto
+```
 
 ```ts
 export interface ContactRelationshipView {
@@ -202,13 +174,32 @@ export interface ContactRelationshipView {
 
 ---
 
-## RT-4. Reglas de Validación
+## RT-3. Contratos de Repositorio
 
-* Nombre: obligatorio
-* Apellido: obligatorio
-* Correo electrónico: obligatorio, formato válido
-* Teléfono: obligatorio
-* Un contacto no puede relacionarse consigo mismo
-* Un contacto no puede tener relaciones duplicadas con el mismo contacto relacionado
+```ts
+export interface ContactRepository {
+  getAll(): Promise<Contact[]>;
+  getById(id: string): Promise<Contact>;
+  create(payload: CreateContact): Promise<Contact>;
+  update(id: string, payload: UpdateContact): Promise<Contact>;
+  delete(id: string): Promise<void>;
+}
+```
+
+```ts
+export interface ContactRelationshipRepository {
+  getByContact(contactId: string): Promise<ContactRelationship[]>;
+  create(payload: CreateContactRelationship): Promise<ContactRelationship>;
+  update(id: string, payload: UpdateContactRelationship): Promise<ContactRelationship>;
+  delete(id: string): Promise<void>;
+}
+```
 
 ---
+
+## RT-4. Reglas de Dominio
+
+* Un contacto no puede tener más de una relación con el mismo contacto relacionado.
+* No se permiten relaciones circulares consigo mismo.
+* La eliminación de un contacto elimina todas sus relaciones salientes.
+* Las relaciones no se crean automáticamente en sentido inverso.
