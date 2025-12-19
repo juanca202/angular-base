@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
 import { vi } from 'vitest';
+import { of } from 'rxjs';
 import { Error } from './error';
 import { AppManager } from '@/core/services/app-manager';
 import { provideHttpClient } from '@angular/common/http';
@@ -49,7 +50,10 @@ describe('Error', () => {
           provide: Router,
           useValue: {
             navigate: vi.fn(),
-            currentNavigation: vi.fn(() => ({ extras: { state: {} } }))
+            currentNavigation: vi.fn(() => ({ extras: { state: {} } })),
+            createUrlTree: vi.fn(() => ({})),
+            serializeUrl: vi.fn(() => '/'),
+            events: of()
           }
         },
         { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: {} } } },

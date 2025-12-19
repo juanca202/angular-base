@@ -1,0 +1,132 @@
+<div #headerElement mat-dialog-title>
+  <div class="ft-actions">
+    <button type="button" matIconButton i18n-title title="Close" mat-dialog-close>
+      <ft-icon name="arrow-left" class="ft-icon--2" />
+    </button>
+  </div>
+
+  <div class="ft-title grow-1" i18n>Contact</div>
+
+  <div class="ft-actions">
+    <button
+      type="button"
+      matIconButton
+      i18n-title
+      title="Add relationship"
+      (click)="addRelationship()"
+    >
+      <ft-icon name="plus" class="ft-icon--2" />
+    </button>
+
+    @let contextMenuItems = contactManager.getContextMenu(contact.value(), CONTACT_CONTEXT.DETAIL);
+    @if (contextMenuItems.length > 0) {
+      <button
+        type="button"
+        mat-icon-button
+        [matMenuTriggerFor]="contextMenu"
+        (click)="$event.stopPropagation()"
+      >
+        <ft-icon name="ellipsis-vertical" />
+      </button>
+      <mat-menu #contextMenu="matMenu">
+        @for (group of contextMenuItems; track group.id) {
+          @if ($index > 0) {
+            <hr class="my-2" />
+          }
+          @for (action of group.children; track action.id) {
+            <button type="button" mat-menu-item (click)="action.click?.()">
+              {{ action.label }}
+            </button>
+          }
+        }
+      </mat-menu>
+    }
+  </div>
+</div>
+
+<div mat-dialog-content>
+  @if (!contact.loading()) {
+    <div
+      class="ft-observe-interseting"
+      (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), headerElement)"
+    ></div>
+
+    <div class="ft-container">
+      <table>
+        <tr>
+          <th class="text-left" i18n>First name</th>
+          <td class="px-4">{{ contact.value()?.firstName }}</td>
+          <th class="text-left" i18n>Last name</th>
+          <td class="px-4">{{ contact.value()?.lastName }}</td>
+        </tr>
+        <tr>
+          <th class="text-left" i18n>Email</th>
+          <td class="px-4">{{ contact.value()?.email }}</td>
+          <th class="text-left" i18n>Phone</th>
+          <td class="px-4">{{ contact.value()?.phone }}</td>
+        </tr>
+        @if (contact.value()?.notes) {
+          <tr>
+            <th class="text-left" i18n>Notes</th>
+            <td class="px-4" colspan="3">{{ contact.value()?.notes }}</td>
+          </tr>
+        }
+      </table>
+    </div>
+
+    <div class="ft-container mt-6">
+      <div class="flex items-center justify-between mb-2">
+        <div class="ft-title" i18n>Relationships</div>
+        <button type="button" mat-button (click)="addRelationship()" i18n>Add</button>
+      </div>
+
+      @if (!relationships.loading()) {
+        @if (relationships.value()?.length) {
+          <table class="ft-table">
+            <thead>
+              <tr>
+                <th i18n>Related contact</th>
+                <th i18n>Type</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rel of relationships.value(); track rel.id) {
+                <tr>
+                  <td>{{ rel.relatedContactName }}</td>
+                  <td>{{ RELATIONSHIP_LABEL[rel.type] }}</td>
+                  <td class="text-right">
+                    <button type="button" mat-button (click)="editRelationship(rel)" i18n>
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      mat-button
+                      color="warn"
+                      (click)="deleteRelationship(rel)"
+                      i18n
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <div class="flex items-center justify-center h-24" i18n>No relationships</div>
+        }
+      } @else {
+        <div class="flex flex-col items-center justify-center gap-2 h-24">
+          <ft-progress class="ft-progress--2" />
+          <div i18n>Loading...</div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center gap-2 h-full">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
+    </div>
+  }
+</div>

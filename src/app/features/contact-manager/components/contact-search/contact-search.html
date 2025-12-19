@@ -1,0 +1,37 @@
+<form [formGroup]="form" class="ft-searchbox">
+  <ft-icon name="search" class="ft-icon--2" />
+  <input type="search" i18n-placeholder placeholder="Search" formControlName="query" />
+</form>
+
+<div mat-dialog-content class="!p-2">
+  <div class="ft-list">
+    @for (contact of getFiltered(); track contact.id) {
+      <button type="button" class="ft-list__item !block !py-2" matButton (click)="select(contact)">
+        <div class="flex gap-4 items-center">
+          <ft-avatar
+            [label]="`${contact.firstName} ${contact.lastName}`"
+            style="--ft-avatar-size: 40px"
+          />
+          <div class="grow">{{ contact.firstName }} {{ contact.lastName }}</div>
+        </div>
+      </button>
+    }
+
+    @if (contacts.loading()) {
+      @for (row of [1, 2, 3, 4, 5]; track $index) {
+        <div class="ft-list__item !block !py-2">
+          <div class="flex gap-4 items-center">
+            <div class="ft-ph" style="width: 40px; height: 40px; border-radius: 100vh"></div>
+            <div class="grow">
+              <div
+                class="ft-ph"
+                [style.width.px]="layoutManager.getRandomNumber(160, 200)"
+                style="height: 21px"
+              ></div>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

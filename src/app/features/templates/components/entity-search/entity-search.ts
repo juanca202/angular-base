@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-entity-search',
-  imports: [AvatarComponent, IconComponent, MatButtonModule, MatDialogContent, ReactiveFormsModule],
+  imports: [AvatarComponent, IconComponent, MatButtonModule, MatDialogModule, ReactiveFormsModule],
   templateUrl: './entity-search.html',
   styleUrl: './entity-search.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

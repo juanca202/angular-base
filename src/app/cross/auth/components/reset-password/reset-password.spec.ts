@@ -46,7 +46,12 @@ describe('ResetPassword', () => {
         provideHttpClientTesting(),
         AppManager,
         { provide: Router, useValue: { navigate: vi.fn() } },
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { queryParamMap: { get: vi.fn(() => null) } }
+          }
+        },
         { provide: MatSnackBar, useValue: { open: vi.fn() } },
         { provide: Location, useValue: { back: vi.fn(), forward: vi.fn(), go: vi.fn() } },
         {

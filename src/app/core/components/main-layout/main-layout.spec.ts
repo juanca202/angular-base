@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventEmitter, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { MainLayout } from './main-layout';
 import { provideHttpClient } from '@angular/common/http';
@@ -44,6 +46,17 @@ describe('MainLayout', () => {
         {
           provide: AuthProvider,
           useValue: createAuthContextStub()
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { params: {}, queryParams: {}, data: {}, root: {} },
+            url: of([]),
+            params: of({}),
+            queryParams: of({}),
+            fragment: of(null),
+            data: of({})
+          }
         },
         {
           provide: MatBottomSheet,

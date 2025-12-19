@@ -11,6 +11,13 @@ export const routes: Routes = [
   },
   {
     path: '',
+    loadChildren: () =>
+      import('./features/contact-manager/contact-manager-routes').then(
+        (m) => m.contactManagerRoutes
+      )
+  },
+  {
+    path: '',
     loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
   },
   { path: 'settings', component: Settings },

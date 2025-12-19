@@ -1,0 +1,76 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div mat-dialog-title class="flex items-center justify-between gap-2">
+    <div class="ft-title" i18n>Relationship</div>
+    <button type="button" matIconButton i18n-title title="Close" mat-dialog-close>
+      <ft-icon name="xmark" class="ft-icon--2" />
+    </button>
+  </div>
+
+  <div mat-dialog-content>
+    <div class="ft-container">
+      <div class="grid grid-cols-1 gap-3">
+        <mat-form-field>
+          <mat-label i18n>Related contact</mat-label>
+          <input
+            matInput
+            type="text"
+            [value]="
+              selectedContact()?.firstName
+                ? selectedContact()?.firstName + ' ' + selectedContact()?.lastName
+                : ''
+            "
+            readonly
+            placeholder="Select a contact"
+            i18n-placeholder
+          />
+        </mat-form-field>
+
+        <div class="flex gap-2">
+          <button
+            type="button"
+            mat-stroked-button
+            class="flex-grow-1"
+            (click)="pickContact()"
+            [disabled]="form.controls.relatedContactId.disabled"
+            i18n
+          >
+            Choose contact
+          </button>
+        </div>
+
+        <mat-form-field>
+          <mat-label i18n>Type</mat-label>
+          <mat-select formControlName="type">
+            @for (opt of RELATIONSHIP_OPTIONS; track opt.value) {
+              <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions>
+    <button
+      type="button"
+      mat-button
+      [disabled]="relationshipMutations.submitting()"
+      mat-dialog-close
+      i18n
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      mat-flat-button
+      color="primary"
+      [disabled]="form.invalid || relationshipMutations.submitting()"
+    >
+      @if (!relationshipMutations.submitting()) {
+        <span i18n>Save</span>
+      } @else {
+        <ft-progress class="ft-progress--2" />
+      }
+    </button>
+  </div>
+</form>

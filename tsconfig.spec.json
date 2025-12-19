@@ -7,6 +7,14 @@
     "esModuleInterop": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "paths": {
+      "@/version-info": ["test/mocks/version-info.ts"],
+      "@factor_ec/ui": ["test/mocks/factor-ui.ts"],
+      "@factor_ec/utils": ["test/mocks/factor-utils.ts"],
+      "apollo-angular": ["test/mocks/apollo-angular.ts"],
+      "@sentry/angular": ["test/mocks/sentry-angular.ts"],
+      "version-info": ["test/mocks/version-info.ts"]
+    },
     "types": ["vitest/globals", "node"]
   },
   "include": ["src/**/*.ts", "setup-vitest.ts"]

@@ -1,0 +1,127 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div #headerElement mat-dialog-title>
+    <div class="ft-actions">
+      <button type="button" matIconButton i18n-title title="Close" mat-dialog-close>
+        <ft-icon name="arrow-left" class="ft-icon--2" />
+      </button>
+    </div>
+
+    <div class="ft-title grow-1" i18n>Contact</div>
+
+    <div class="ft-actions">
+      @let contextMenuItems = contactManager.getContextMenu(contact.value(), CONTACT_CONTEXT.FORM);
+      @if (contextMenuItems.length > 0) {
+        <button
+          type="button"
+          mat-icon-button
+          [matMenuTriggerFor]="contextMenu"
+          (click)="$event.stopPropagation()"
+        >
+          <ft-icon name="ellipsis-vertical" />
+        </button>
+        <mat-menu #contextMenu="matMenu">
+          @for (group of contextMenuItems; track group.id) {
+            @if ($index > 0) {
+              <hr class="my-2" />
+            }
+            @for (action of group.children; track action.id) {
+              <button type="button" mat-menu-item (click)="action.click?.()">
+                {{ action.label }}
+              </button>
+            }
+          }
+        </mat-menu>
+      }
+    </div>
+  </div>
+
+  <div mat-dialog-content>
+    @if (!contact.loading()) {
+      <div
+        class="ft-observe-interseting"
+        (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), headerElement)"
+      ></div>
+
+      <div class="ft-container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
+          <mat-form-field>
+            <mat-label i18n>First name</mat-label>
+            <input matInput type="text" formControlName="firstName" maxlength="80" />
+            @if (form.get('firstName')?.invalid && form.get('firstName')?.touched) {
+              <mat-error>{{ form.get('firstName') | errorMessage }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label i18n>Last name</mat-label>
+            <input matInput type="text" formControlName="lastName" maxlength="80" />
+            @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
+              <mat-error>{{ form.get('lastName') | errorMessage }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field class="col-span-1 sm:col-span-2">
+            <mat-label i18n>Email</mat-label>
+            <input matInput type="email" formControlName="email" maxlength="100" />
+            @if (form.get('email')?.invalid && form.get('email')?.touched) {
+              <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field class="col-span-1 sm:col-span-2">
+            <mat-label i18n>Phone</mat-label>
+            <input matInput type="tel" formControlName="phone" maxlength="20" />
+            @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
+              <mat-error>{{ form.get('phone') | errorMessage }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field class="col-span-1 sm:col-span-2">
+            <mat-label i18n>Notes</mat-label>
+            <textarea matInput formControlName="notes" rows="4" maxlength="500"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div
+        class="ft-observe-interseting"
+        (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), actionsElement)"
+      ></div>
+    } @else {
+      <div class="flex flex-col items-center justify-center gap-2 h-full">
+        <ft-progress class="ft-progress--3" />
+        <div i18n>Loading...</div>
+      </div>
+    }
+  </div>
+
+  <div #actionsElement mat-dialog-actions>
+    <button
+      type="button"
+      mat-button
+      [disabled]="contactMutations.submitting()"
+      mat-dialog-close
+      i18n
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      mat-flat-button
+      color="primary"
+      [disabled]="form.invalid || contactMutations.submitting()"
+    >
+      @if (!contactMutations.submitting()) {
+        <span i18n>Save</span>
+      } @else {
+        <ng-container *ngTemplateOutlet="submittingTemplate"></ng-container>
+      }
+    </button>
+  </div>
+</form>
+
+<ng-template #submittingTemplate>
+  <div class="text-center">
+    <ft-progress class="ft-progress--2" />
+  </div>
+</ng-template>

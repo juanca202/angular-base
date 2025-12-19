@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventEmitter, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
 import { vi } from 'vitest';
+import { of } from 'rxjs';
 import { Settings } from './settings';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -49,8 +50,22 @@ describe('Settings', () => {
         AppManager,
         LayoutManager,
         Session,
-        { provide: Router, useValue: { navigate: vi.fn() } },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map() } } },
+        {
+          provide: Router,
+          useValue: {
+            navigate: vi.fn(),
+            createUrlTree: vi.fn(() => ({})),
+            serializeUrl: vi.fn(() => '/'),
+            events: of()
+          }
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: convertToParamMap({}) },
+            paramMap: of(convertToParamMap({}))
+          }
+        },
         { provide: MatDialog, useValue: { open: vi.fn() } },
         { provide: MatSnackBar, useValue: { open: vi.fn() } },
         { provide: Location, useValue: { back: vi.fn(), forward: vi.fn(), go: vi.fn() } },

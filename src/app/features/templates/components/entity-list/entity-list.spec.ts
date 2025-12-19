@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { vi, type MockedFunction } from 'vitest';
+import { vi } from 'vitest';
 
 import { EntityList } from './entity-list';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';

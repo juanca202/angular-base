@@ -5,7 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -34,7 +34,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     NgOptimizedImage,
     ReactiveFormsModule,
     MatButtonModule,
-    MatFormField,
+    MatFormFieldModule,
     MatInputModule,
     MatMenuModule,
     RouterModule,

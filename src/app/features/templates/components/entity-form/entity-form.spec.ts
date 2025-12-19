@@ -58,7 +58,15 @@ describe('EntityForm', () => {
       imports: [EntityForm],
       providers: [
         { provide: EntityRepository, useValue: repository },
-        { provide: EntityManager, useValue: { open: vi.fn(), delete: vi.fn(), search: vi.fn() } },
+        {
+          provide: EntityManager,
+          useValue: {
+            open: vi.fn(),
+            delete: vi.fn(),
+            search: vi.fn(),
+            getContextMenu: vi.fn(() => [])
+          }
+        },
         { provide: LayoutManager, useValue: { setOverlapped: vi.fn() } },
         { provide: MessageService, useValue: { show: vi.fn() } },
         { provide: MAT_DIALOG_DATA, useValue: {} },

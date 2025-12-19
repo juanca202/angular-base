@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "firstName": "María",
+    "lastName": "García",
+    "phone": "+34 612 345 678",
+    "email": "maria.garcia@email.com",
+    "notes": "Contacto principal"
+  },
+  {
+    "id": "2",
+    "firstName": "Carlos",
+    "lastName": "Rodríguez",
+    "phone": "+34 623 456 789",
+    "email": "carlos.rodriguez@email.com"
+  },
+  {
+    "id": "3",
+    "firstName": "Ana",
+    "lastName": "López",
+    "phone": "+34 634 567 890",
+    "email": "ana.lopez@email.com"
+  },
+  {
+    "id": "4",
+    "firstName": "José",
+    "lastName": "Martín",
+    "phone": "+34 645 678 901",
+    "email": "jose.martin@email.com"
+  },
+  {
+    "id": "5",
+    "firstName": "Carmen",
+    "lastName": "Sánchez",
+    "phone": "+34 656 789 012",
+    "email": "carmen.sanchez@email.com"
+  }
+]

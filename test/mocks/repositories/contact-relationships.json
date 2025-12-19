@@ -1,0 +1,20 @@
+[
+  {
+    "id": "rel-1",
+    "contactId": "1",
+    "relatedContactId": "2",
+    "type": "FRIEND"
+  },
+  {
+    "id": "rel-2",
+    "contactId": "1",
+    "relatedContactId": "3",
+    "type": "COLLEAGUE"
+  },
+  {
+    "id": "rel-3",
+    "contactId": "2",
+    "relatedContactId": "1",
+    "type": "CLIENT"
+  }
+]

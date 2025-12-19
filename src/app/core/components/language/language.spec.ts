@@ -6,13 +6,14 @@ import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
 import { AppManager } from '@/core/services/app-manager';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
 import { vi } from 'vitest';
 import { AuthProvider } from '@/core/services/auth.provider';
+import { of } from 'rxjs';
 
 /**
  *
@@ -30,7 +31,26 @@ describe('Language', () => {
         AppManager,
         { provide: Title, useValue: { setTitle: vi.fn() } },
         { provide: StorageService, useValue: { set: vi.fn(), get: vi.fn(), delete: vi.fn() } },
-        { provide: Router, useValue: { navigate: vi.fn() } },
+        {
+          provide: Router,
+          useValue: {
+            navigate: vi.fn(),
+            createUrlTree: vi.fn(() => ({})),
+            serializeUrl: vi.fn(() => '/'),
+            events: of()
+          }
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { params: {}, queryParams: {}, data: {}, root: {} },
+            url: of([]),
+            params: of({}),
+            queryParams: of({}),
+            fragment: of(null),
+            data: of({})
+          }
+        },
         { provide: MatDialog, useValue: { open: vi.fn() } },
         { provide: MatSnackBar, useValue: { open: vi.fn() } },
         { provide: Location, useValue: { back: vi.fn(), forward: vi.fn(), go: vi.fn() } },

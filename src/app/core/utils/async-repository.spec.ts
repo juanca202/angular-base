@@ -10,15 +10,6 @@ describe('async-repository', () => {
   let httpMock: HttpTestingController;
   let mockMessageService: Partial<MessageService>;
 
-  // Helper to ensure TestBed is initialized before using runInInjectionContext
-  const ensureTestBedInitialized = () => {
-    try {
-      TestBed.inject(HttpTestingController);
-    } catch {
-      // TestBed not initialized yet, will be initialized on first inject
-    }
-  };
-
   beforeEach(() => {
     mockMessageService = {
       show: vi.fn()
@@ -76,7 +67,7 @@ describe('async-repository', () => {
     it('should execute mutation and update state', async () => {
       // Arrange
       const factories = {
-        create: (data: any) => of({ id: '1', ...data })
+        create: (data: any) => of({ id: '1', ...data }).pipe(delay(0))
       };
       const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
       const payload = { name: 'Test' };
@@ -127,8 +118,8 @@ describe('async-repository', () => {
     it('should track global submitting state across multiple mutations', async () => {
       // Arrange
       const factories = {
-        create: () => of({ id: '1' }),
-        update: () => of({ id: '1' })
+        create: () => of({ id: '1' }).pipe(delay(0)),
+        update: () => of({ id: '1' }).pipe(delay(0))
       };
       const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
 
@@ -239,7 +230,6 @@ describe('async-repository', () => {
 
     it('should refresh resource with last used parameters', async () => {
       // Arrange
-      const expectedData = [{ id: '1', name: 'Test' }];
       const factory = (id: string) => of([{ id, name: 'Test' }]).pipe(delay(0));
       const resource = TestBed.runInInjectionContext(() => getResource(factory));
 

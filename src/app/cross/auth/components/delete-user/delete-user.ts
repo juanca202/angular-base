@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 
@@ -42,7 +42,7 @@ import { Session } from '@/core/services/session';
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    MatFormField,
+    MatFormFieldModule,
     MatInputModule,
     IconComponent,
     ProgressComponent,

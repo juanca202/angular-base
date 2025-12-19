@@ -1,0 +1,87 @@
+<div #headerElement class="ft-page__header">
+  <div class="ft-actions"></div>
+  <div class="ft-title" i18n>Contacts</div>
+  <div class="ft-actions">
+    <button
+      type="button"
+      matIconButton
+      i18n-title
+      title="Add"
+      (click)="contactManager.openContact()"
+    >
+      <ft-icon name="plus" class="ft-icon--2" />
+    </button>
+    <button
+      type="button"
+      mat-icon-button
+      i18n-title
+      title="Refresh"
+      [disabled]="contacts.loading()"
+      (click)="contacts.refresh()"
+    >
+      <ft-icon name="refresh" class="ft-icon--2" [class.ft-anim-rotate]="contacts.loading()" />
+    </button>
+  </div>
+</div>
+
+<div class="ft-page__content ft-anim-enter">
+  @if (!contacts.loading() || contacts.value()?.length) {
+    <div class="ft-container">
+      <div
+        class="ft-observe-interseting"
+        (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), datagridHeaderElement)"
+      ></div>
+      <table class="ft-table">
+        <thead class="ft-sticky" #datagridHeaderElement>
+          <tr>
+            <th i18n>Name</th>
+            <th i18n>Phone</th>
+            <th i18n>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (contact of contacts.value(); track contact.id) {
+            <tr class="ft-tr-action" (click)="contactManager.openContact(contact.id, true)">
+              <td>{{ contact.firstName }} {{ contact.lastName }}</td>
+              <td>{{ contact.phone }}</td>
+              <td>{{ contact.email }}</td>
+              <td>
+                <button
+                  type="button"
+                  mat-icon-button
+                  [matMenuTriggerFor]="contextMenu"
+                  (click)="$event.stopPropagation()"
+                >
+                  <ft-icon name="ellipsis-vertical" />
+                </button>
+                <mat-menu #contextMenu="matMenu">
+                  @for (
+                    group of contactManager.getContextMenu(contact, CONTACT_CONTEXT.LIST);
+                    track group.id
+                  ) {
+                    @if ($index > 0) {
+                      <hr class="my-2" />
+                    }
+                    @for (action of group.children; track action.id) {
+                      <button type="button" mat-menu-item (click)="action.click?.()">
+                        {{ action.label }}
+                      </button>
+                    }
+                  }
+                </mat-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else if (contacts.loading()) {
+    <div class="flex flex-col items-center justify-center gap-2 h-full">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
+    </div>
+  } @else if (!contacts.value()?.length) {
+    <div class="flex items-center justify-center h-full" i18n>No records</div>
+  }
+</div>

@@ -7,7 +7,7 @@ import {
   Validators
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -37,7 +37,7 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    MatFormField,
+    MatFormFieldModule,
     MatInputModule,
     IconComponent,
     ProgressComponent,
