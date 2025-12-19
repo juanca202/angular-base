@@ -13,11 +13,7 @@
       [disabled]="entities.loading()"
       (click)="entities.refresh()"
     >
-      @if (!entities.loading()) {
-        <ft-icon name="refresh" class="ft-icon--2" />
-      } @else {
-        <ft-progress class="ft-progress--2 !block" />
-      }
+      <ft-icon name="refresh" class="ft-icon--2" [class.ft-anim-rotate]="entities.loading()" />
     </button>
   </div>
 </div>
@@ -31,7 +27,6 @@
       <table class="ft-table">
         <thead class="ft-sticky" #datagridHeaderElement>
           <tr>
-            <th i18n>Id</th>
             <th i18n>Firstname</th>
             <th i18n>Lastname</th>
             <th i18n>Phone</th>
@@ -42,7 +37,6 @@
         <tbody>
           @for (entity of entities.value(); track entity.id) {
             <tr class="ft-tr-action" (click)="entityManager.open(entity.id, true)">
-              <td>{{ entity.id }}</td>
               <td>{{ entity.firstName }}</td>
               <td>{{ entity.lastName }}</td>
               <td>{{ entity.phone }}</td>
@@ -51,23 +45,25 @@
                 <button
                   type="button"
                   mat-icon-button
-                  [matMenuTriggerFor]="menu"
+                  [matMenuTriggerFor]="contextMenu"
                   (click)="$event.stopPropagation()"
                 >
                   <ft-icon name="ellipsis-vertical" />
                 </button>
-                <mat-menu #menu="matMenu" class="ft-auth-menu">
-                  <button type="button" mat-menu-item (click)="entityManager.open(entity.id)" i18n>
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    mat-menu-item
-                    (click)="entityManager.delete(entity.id)"
-                    i18n
-                  >
-                    Delete
-                  </button>
+                <mat-menu #contextMenu="matMenu">
+                  @for (
+                    group of entityManager.getContextMenu(entity, ENTITY_CONTEXT.LIST);
+                    track group.id
+                  ) {
+                    @if ($index > 0) {
+                      <hr class="my-2" />
+                    }
+                    @for (action of group.children; track action.id) {
+                      <button type="button" mat-menu-item (click)="action.click?.()">
+                        {{ action.label }}
+                      </button>
+                    }
+                  }
                 </mat-menu>
               </td>
             </tr>

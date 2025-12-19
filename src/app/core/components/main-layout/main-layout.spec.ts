@@ -1,18 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventEmitter, signal } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { vi } from 'vitest';
 import { MainLayout } from './main-layout';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { StorageService } from '@factor_ec/utils';
 import { AuthProvider } from '@/core/services/auth.provider';
+import { Session } from '@/core/services/session';
 
 const createAuthContextStub = () => ({
   settings: signal(undefined),
-  getToken: jest.fn(),
-  logout: jest.fn(),
-  changePassword: jest.fn(),
-  confirmDeleteUser: jest.fn(),
-  getSettings: jest.fn(),
+  getToken: vi.fn(),
+  logout: vi.fn(),
+  changePassword: vi.fn(),
+  confirmDeleteUser: vi.fn(),
+  getSettings: vi.fn(),
   loggedIn: new EventEmitter<boolean>()
 });
 
@@ -26,13 +29,25 @@ describe('MainLayout', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        Session,
         {
           provide: StorageService,
-          useValue: { get: jest.fn(), set: jest.fn(), delete: jest.fn() }
+          useValue: {
+            get: vi.fn(),
+            set: vi.fn(),
+            delete: vi.fn(),
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn()
+          }
         },
         {
           provide: AuthProvider,
           useValue: createAuthContextStub()
+        },
+        {
+          provide: MatBottomSheet,
+          useValue: { open: vi.fn() }
         }
       ]
     }).compileComponents();

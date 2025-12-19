@@ -6,15 +6,29 @@
   </div>
   <div class="ft-title grow-1" i18n>Entity</div>
   <div class="ft-actions">
-    <button
-      type="button"
-      mat-icon-button
-      i18n-title
-      title="Edit"
-      (click)="entityManager.open(entity.value()?.id)"
-    >
-      <ft-icon name="pencil" class="ft-icon--2" />
-    </button>
+    @let contextMenuItems = entityManager.getContextMenu(entity.value(), ENTITY_CONTEXT.DETAIL);
+    @if (contextMenuItems.length > 0) {
+      <button
+        type="button"
+        mat-icon-button
+        [matMenuTriggerFor]="contextMenu"
+        (click)="$event.stopPropagation()"
+      >
+        <ft-icon name="ellipsis-vertical" />
+      </button>
+      <mat-menu #contextMenu="matMenu">
+        @for (group of contextMenuItems; track group.id) {
+          @if ($index > 0) {
+            <hr class="my-2" />
+          }
+          @for (action of group.children; track action.id) {
+            <button type="button" mat-menu-item (click)="action.click?.()">
+              {{ action.label }}
+            </button>
+          }
+        }
+      </mat-menu>
+    }
   </div>
 </div>
 <div mat-dialog-content>

@@ -1,23 +1,32 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
 import { of, throwError, delay } from 'rxjs';
+import { vi } from 'vitest';
 
 import { getMutations, getResource, getApiUrl, MutationException } from './async-repository';
 import { MessageService } from '@factor_ec/ui';
 
 describe('async-repository', () => {
   let httpMock: HttpTestingController;
-  let mockMessageService: jest.Mocked<MessageService>;
+  let mockMessageService: Partial<MessageService>;
+
+  // Helper to ensure TestBed is initialized before using runInInjectionContext
+  const ensureTestBedInitialized = () => {
+    try {
+      TestBed.inject(HttpTestingController);
+    } catch {
+      // TestBed not initialized yet, will be initialized on first inject
+    }
+  };
 
   beforeEach(() => {
     mockMessageService = {
-      show: jest.fn()
+      show: vi.fn()
     } as any;
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [provideHttpClient(), { provide: MessageService, useValue: mockMessageService }]
+      providers: [{ provide: MessageService, useValue: mockMessageService }]
     });
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -25,6 +34,7 @@ describe('async-repository', () => {
 
   afterEach(() => {
     httpMock.verify();
+    TestBed.resetTestingModule();
   });
 
   describe('getApiUrl', () => {
@@ -49,7 +59,9 @@ describe('async-repository', () => {
       };
 
       // Act
-      const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
+      const mutations = TestBed.runInInjectionContext(() => {
+        return getMutations(factories);
+      });
 
       // Assert
       expect(mutations).toHaveProperty('create');
@@ -148,6 +160,7 @@ describe('async-repository', () => {
       expect(resource).toHaveProperty('loading');
       expect(resource).toHaveProperty('error');
       expect(resource).toHaveProperty('load');
+      expect(resource).toHaveProperty('refresh');
       expect(resource).toHaveProperty('destroy');
     });
 
@@ -222,6 +235,62 @@ describe('async-repository', () => {
       // Assert
       expect(result).toBeNull();
       expect(resource.value()).toBeNull();
+    });
+
+    it('should refresh resource with last used parameters', async () => {
+      // Arrange
+      const expectedData = [{ id: '1', name: 'Test' }];
+      const factory = (id: string) => of([{ id, name: 'Test' }]).pipe(delay(0));
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
+
+      // Act - First load
+      await resource.load('1');
+      expect(resource.value()).toEqual([{ id: '1', name: 'Test' }]);
+
+      // Update factory to return different data
+      const updatedData = [{ id: '1', name: 'Updated' }];
+      const newFactory = (id: string) => of([{ id, name: 'Updated' }]).pipe(delay(0));
+      const resource2 = TestBed.runInInjectionContext(() => getResource(newFactory));
+
+      // Act - Load and then refresh
+      await resource2.load('1');
+      const refreshResult = await resource2.refresh();
+
+      // Assert
+      expect(refreshResult).toEqual(updatedData);
+      expect(resource2.value()).toEqual(updatedData);
+    });
+
+    it('should throw error when refresh is called without previous load', async () => {
+      // Arrange
+      const factory = () => of([{ id: '1' }]);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
+
+      // Act & Assert
+      await expect(resource.refresh()).rejects.toThrow(
+        'Cannot refresh: no previous load call made'
+      );
+    });
+
+    it('should refresh with parameters from last load call', async () => {
+      // Arrange
+      let callCount = 0;
+      const factory = (param1: string, param2: number) => {
+        callCount++;
+        return of([{ id: param1, count: param2, call: callCount }]);
+      };
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
+
+      // Act - Load with parameters
+      await resource.load('test', 42);
+      expect(resource.value()).toEqual([{ id: 'test', count: 42, call: 1 }]);
+
+      // Refresh should use same parameters
+      const refreshResult = await resource.refresh();
+
+      // Assert
+      expect(refreshResult).toEqual([{ id: 'test', count: 42, call: 2 }]);
+      expect(resource.value()).toEqual([{ id: 'test', count: 42, call: 2 }]);
     });
   });
 

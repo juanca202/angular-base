@@ -106,7 +106,7 @@ This project follows the Architectural Decision Records (ADR) format to document
   Establishes the repository pattern with `getMutations()` and `getResource()` for standardized REST API communication and state management.
 
 - **[ADR-007: Testing Strategy](./adr/ADR-007.md)**  
-  Defines the testing approach using Jest for unit/integration tests and Playwright for E2E tests, following AAA pattern and coverage goals.
+  Defines the testing approach using Vitest for unit/integration tests and Playwright for E2E tests, following AAA pattern and coverage goals.
 
 - **[ADR-008: Form Validation Strategy](./adr/ADR-008.md)**  
   Standardizes form validation using Reactive Forms with errorMessage pipe, validator hierarchy, and consistent error display patterns.

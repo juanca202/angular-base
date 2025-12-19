@@ -1,13 +1,12 @@
+import { ActionType } from '../constants/action-type';
+
 export interface Action {
-  id?: string;
-  uuid: string;
-  type: string;
-  selected: string;
-  selectedObject?: any;
-  options: {
-    label: string;
-    value: string;
-    queryParams: any;
-  }[];
+  id: string;
+  label?: string;
+  type: ActionType;
+  visible?: boolean;
+  selected?: boolean;
+  children?: Action[];
+  click?: () => void;
   payload?: any;
 }

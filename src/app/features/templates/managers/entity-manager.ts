@@ -9,6 +9,9 @@ import { Entity } from '../models/entity';
 import { MessageService } from '@factor_ec/ui';
 import { firstValueFrom } from 'rxjs';
 import { EntityRepository } from '../repositories/entity-repository';
+import { ENTITY_CONTEXT, EntityContext } from '../constants/entity-context';
+import { Action } from '@/shared/models/action';
+import { ACTION_TYPE } from '@/shared/constants/action-type';
 
 /**
  * Coordinates the experience for opening entity detail dialogs.
@@ -63,6 +66,40 @@ export class EntityManager {
       });
     }
     return value;
+  }
+  public getContextMenu(entity: Entity | null, context?: EntityContext): Action[] {
+    let actions: Action[];
+    if (!entity?.id) {
+      actions = [];
+    } else {
+      actions = [
+        {
+          id: 'generalGroup',
+          type: ACTION_TYPE.GROUP,
+          children: [
+            {
+              id: 'edit',
+              type: ACTION_TYPE.ITEM,
+              label: $localize`Edit`,
+              visible: context !== ENTITY_CONTEXT.FORM,
+              click: () => {
+                this.open(entity.id);
+              }
+            },
+            {
+              id: 'delete',
+              type: ACTION_TYPE.ITEM,
+              label: $localize`Delete`,
+              visible: [ENTITY_CONTEXT.LIST, ENTITY_CONTEXT.SEARCH].includes(context ?? ''),
+              click: () => {
+                this.delete(entity.id);
+              }
+            }
+          ].filter((a) => a.visible)
+        }
+      ].filter((g) => g.children.length > 0);
+    }
+    return actions;
   }
   public async open(id?: string, view?: boolean): Promise<Operation> {
     return new Promise<Operation>((resolve) => {

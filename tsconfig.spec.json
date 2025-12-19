@@ -6,8 +6,8 @@
     "outDir": "./out-tsc/spec",
     "esModuleInterop": true,
     "module": "ESNext",
-    "moduleResolution": "node",
-    "types": ["jest", "node"]
+    "moduleResolution": "bundler",
+    "types": ["vitest/globals", "node"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "setup-vitest.ts"]
 }

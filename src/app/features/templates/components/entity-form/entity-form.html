@@ -5,8 +5,32 @@
         <ft-icon name="arrow-left" class="ft-icon--2" />
       </button>
     </div>
-    <div class="ft-title" i18n>Entity</div>
-    <div class="ft-actions"></div>
+    <div class="ft-title grow-1" i18n>Entity</div>
+    <div class="ft-actions">
+      @let contextMenuItems = entityManager.getContextMenu(entity.value(), ENTITY_CONTEXT.FORM);
+      @if (contextMenuItems.length > 0) {
+        <button
+          type="button"
+          mat-icon-button
+          [matMenuTriggerFor]="contextMenu"
+          (click)="$event.stopPropagation()"
+        >
+          <ft-icon name="ellipsis-vertical" />
+        </button>
+        <mat-menu #contextMenu="matMenu">
+          @for (group of contextMenuItems; track group.id) {
+            @if ($index > 0) {
+              <hr class="my-2" />
+            }
+            @for (action of group.children; track action.id) {
+              <button type="button" mat-menu-item (click)="action.click?.()">
+                {{ action.label }}
+              </button>
+            }
+          }
+        </mat-menu>
+      }
+    </div>
   </div>
   <div mat-dialog-content>
     @if (!entity.loading()) {

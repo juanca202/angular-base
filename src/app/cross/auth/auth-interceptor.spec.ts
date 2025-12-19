@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpInterceptorFn } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { vi } from 'vitest';
 import { authInterceptor } from './auth-interceptor';
 import { AuthService } from './auth-service';
 
@@ -16,10 +17,10 @@ describe('authInterceptor', () => {
           provide: AuthService,
           useValue: {
             addAuthenticationToken: (req: any) => req,
-            handle401Error: jest.fn((e: any) => {
+            handle401Error: vi.fn((e: any) => {
               throw e;
             }),
-            logout: jest.fn()
+            logout: vi.fn()
           }
         }
       ]
