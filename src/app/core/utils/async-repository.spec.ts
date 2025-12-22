@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { of, throwError, delay } from 'rxjs';
 import { vi } from 'vitest';
 
-import { getMutations, getResource, getApiUrl, MutationException } from './async-repository';
+import { getMutations, getResource, getApiUrl, ResourceException } from './async-repository';
 import { MessageService } from '@factor_ec/ui';
 
 describe('async-repository', () => {
@@ -104,7 +104,7 @@ describe('async-repository', () => {
       const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
 
       // Act & Assert
-      await expect(mutations.create({})).rejects.toThrow(MutationException);
+      await expect(mutations.create({})).rejects.toThrow(ResourceException);
       expect(mockMessageService.show).toHaveBeenCalledWith('Error message');
       expect(mutations.create.error()).toBe('Error message');
       expect(mutations.error()).toBe('Error message');
@@ -120,7 +120,7 @@ describe('async-repository', () => {
       const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
 
       // Act & Assert
-      await expect(mutations.create({})).rejects.toThrow(MutationException);
+      await expect(mutations.create({})).rejects.toThrow(ResourceException);
       expect(mockMessageService.show).toHaveBeenCalledWith('Simple error');
     });
 
@@ -190,7 +190,7 @@ describe('async-repository', () => {
       const resource = TestBed.runInInjectionContext(() => getResource(factory));
 
       // Act & Assert
-      await expect(resource.load()).rejects.toThrow(MutationException);
+      await expect(resource.load()).rejects.toThrow(ResourceException);
       expect(mockMessageService.show).toHaveBeenCalledWith('Load error');
       expect(resource.error()).toBe('Load error');
       expect(resource.loading()).toBe(false);
@@ -294,14 +294,14 @@ describe('async-repository', () => {
     });
   });
 
-  describe('MutationException', () => {
+  describe(' ResourceException', () => {
     it('should create exception with message and raw error', () => {
       // Arrange
       const rawError = { status: 500 };
       const message = 'Test error';
 
       // Act
-      const exception = new MutationException(message, rawError);
+      const exception = new ResourceException(message, rawError);
 
       // Assert
       expect(exception.message).toBe(message);

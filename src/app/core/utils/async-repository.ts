@@ -5,6 +5,8 @@ import {
   catchError,
   finalize,
   firstValueFrom,
+  from,
+  isObservable,
   map,
   Observable,
   Subject,
@@ -13,17 +15,27 @@ import {
 } from 'rxjs';
 
 /**
- * Extracts the parameters of an observable function as a tuple.
+ * Factory function that can return either an Observable or a Promise.
+ * Used to unify async handling across resources and mutations.
  */
-type ObservableFactory<TParams, TResult> = (
+export type AsyncFactory<TParams, TResult> = (
   ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
-) => Observable<TResult>;
-
-/** Extracts the value type of an Observable */
-type UnwrapObservable<T> = T extends Observable<infer U> ? U : T;
+) => Observable<TResult> | Promise<TResult>;
 
 /**
- * State of a resource retrieved via `load` (GET).
+ * Extracts the inner value type from an Observable or a Promise.
+ */
+type UnwrapAsync<T> = T extends Observable<infer U> ? U : T extends Promise<infer U> ? U : T;
+
+/**
+ * Normalizes a Promise or Observable into an Observable.
+ */
+function toObservable<T>(value: Observable<T> | Promise<T>): Observable<T> {
+  return isObservable(value) ? value : from(value);
+}
+
+/**
+ * State container for a GET resource.
  */
 export interface SignalGet<TParams, TResult> {
   readonly value: Signal<TResult | null>;
@@ -37,19 +49,7 @@ export interface SignalGet<TParams, TResult> {
 }
 
 /**
- * State of a mutation (POST/PUT/DELETE).
- */
-export interface SignalMutate<TParams, TResult> {
-  readonly submitting: Signal<boolean>;
-  readonly value: Signal<TResult | null>;
-  readonly error: Signal<any | null>;
-  readonly submit: (
-    ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
-  ) => Promise<TResult | null>;
-}
-
-/**
- * Mutation function with included state.
+ * Mutation function with its associated reactive state.
  */
 export interface SignalMutateFn<TArgs extends any[], TResult> {
   (...args: TArgs): Promise<TResult | null>;
@@ -58,28 +58,35 @@ export interface SignalMutateFn<TArgs extends any[], TResult> {
   error: Signal<any | null>;
 }
 
-export class MutationException extends Error {
+/**
+ * Custom exception used for resource and mutation failures.
+ */
+export class ResourceException extends Error {
   public raw: any;
+
   constructor(message: string, raw: any) {
     super(message);
     this.raw = raw;
-    Object.setPrototypeOf(this, MutationException.prototype);
+    Object.setPrototypeOf(this, ResourceException.prototype);
   }
 }
 
-/** Builds the backend base URL */
+/**
+ * Builds the full backend API URL for a given path.
+ */
 export function getApiUrl(path: string): string {
   return `${environment.restEndpoint}/${path}`;
 }
 
 /**
- * Creates a set of mutations from a collection of observable factories.
- * Each mutation has its own state and a global `submitting` and `error` state is exposed.
+ * Creates a set of mutation handlers (POST / PUT / DELETE).
+ * Each mutation manages its own state and supports both
+ * Observable and Promise based implementations.
  */
-export function getMutations<T extends Record<string, (...args: any[]) => Observable<any>>>(
+export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>(
   factories: T
 ): {
-  [K in keyof T]: SignalMutateFn<Parameters<T[K]>, UnwrapObservable<ReturnType<T[K]>>>;
+  [K in keyof T]: SignalMutateFn<Parameters<T[K]>, UnwrapAsync<ReturnType<T[K]>>>;
 } & {
   submitting: Signal<boolean>;
   error: Signal<any | null>;
@@ -98,22 +105,22 @@ export function getMutations<T extends Record<string, (...args: any[]) => Observ
 
     submittingSignals.push(submitting);
 
-    const fn: any = async (...args: any[]): Promise<any | null> => {
+    const fn: SignalMutateFn<any[], any> = async (...args: any[]) => {
       submitting.set(true);
       error.set(null);
       value.set(null);
       globalSubmitting.set(true);
 
-      const request$ = factories[key](...args).pipe(
+      const request$ = toObservable(factories[key](...args)).pipe(
         tap((result) => value.set(result ?? null)),
         catchError((err) => {
           const msg =
             err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
+
           error.set(msg);
           globalError.set(msg);
           messageService.show(msg);
-          // Rethrow to allow try/catch
-          throw new MutationException(msg, err);
+          throw new ResourceException(msg, err);
         }),
         finalize(() => {
           submitting.set(false);
@@ -138,10 +145,11 @@ export function getMutations<T extends Record<string, (...args: any[]) => Observ
 }
 
 /**
- * Creates a reactive resource (GET) that manages its state and can be destroyed.
+ * Creates a reactive GET resource with lifecycle and state management.
+ * Supports both Observable and Promise based factories.
  */
 export function getResource<TParams, TResult>(
-  observableFactory: ObservableFactory<TParams, TResult>
+  factory: AsyncFactory<TParams, TResult>
 ): SignalGet<TParams, TResult> {
   const messageService = inject(MessageService);
   const loading = signal(false);
@@ -156,19 +164,18 @@ export function getResource<TParams, TResult>(
     lastParams = params;
     loading.set(true);
     error.set(null);
-    //value.set(null);
 
-    const request$ = observableFactory(...(params as any)).pipe(
+    const request$ = toObservable(factory(...(params as any))).pipe(
       map((response) =>
         response && 'payload' in (response as any) ? (response as any).payload : response
       ),
       tap((result) => value.set((result ?? null) as TResult | null)),
       catchError((err) => {
         const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
+
         error.set(msg);
         messageService.show(msg);
-        // Rethrow to allow try/catch
-        throw new MutationException(msg, err);
+        throw new ResourceException(msg, err);
       }),
       finalize(() => loading.set(false)),
       takeUntil(destroy$)
