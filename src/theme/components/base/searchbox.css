@@ -1,0 +1,18 @@
+.ft-searchbox {
+  @apply relative;
+  .ft-icon {
+    @apply absolute top-1/2 left-4 -translate-y-1/2;
+  }
+  input {
+    @apply w-full p-3 pl-12 border-b;
+    &:focus {
+      @apply outline-none border-(--ft-color-primary);
+      box-shadow: 0 1px 0 0 var(--ft-color-primary);
+      transition: color 0.2s ease;
+
+      &::placeholder {
+        color: color-mix(in srgb, var(--ft-color-text) 30%, transparent);
+      }
+    }
+  }
+}

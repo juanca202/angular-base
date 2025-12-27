@@ -1,9 +1,17 @@
 import { inject, Injectable } from '@angular/core';
-import { Entity, EntityRequest } from '@/features/templates/models/entity';
-import { getApiUrl, getMutations, getResource, SignalGet } from '@/core/utils/async-repository';
-import { MockHttpClient } from '@/core/utils/mock-http-client';
+import {
+  Entity,
+  EntityRequestCreate,
+  EntityRequestUpdate,
+  EntitySearchParams
+} from '@/features/templates/models/entity';
+import { getApiUrl, getMutations, getResource } from '@/core/utils/async-repository';
+import { MockHttpClient } from '@/core/services/mock-http-client';
 import repositoryMock from '@/test/mocks/repositories/entities.json';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { BaseRepository } from '@/core/services/base-repository';
+import { HttpParams } from '@angular/common/http';
+import { HttpApiResponse } from '@/core/models/http-api-response';
 
 /**
  * Repository that encapsulates all data access required by the demo entity feature.
@@ -15,39 +23,44 @@ import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class EntityRepository {
+export class EntityRepository extends BaseRepository {
   // TODO: Replace with real http client
   private readonly httpClient = inject(MockHttpClient);
   private readonly baseUrl = getApiUrl('entities');
-  private readonly entity = getResource<string, Entity>((id: string) => {
-    return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);
-  });
-  private readonly entities = getResource<void, Entity[]>(() => {
-    return this.httpClient.get<Entity[]>(`${this.baseUrl}`);
-  });
 
   constructor() {
+    super();
     this.httpClient.loadCollection('entities', repositoryMock);
   }
 
-  public mutations() {
-    return getMutations({
-      create: (entity: EntityRequest) =>
-        this.httpClient.post<Entity>(this.baseUrl, entity).pipe(tap(() => this.entities.refresh())),
-      update: (entity: EntityRequest) =>
-        this.httpClient
-          .put<Entity>(`${this.baseUrl}/${entity.id}`, entity)
-          .pipe(tap(() => this.entities.refresh())),
-      delete: (id: string) =>
-        this.httpClient
-          .delete<void>(`${this.baseUrl}/${id}`)
-          .pipe(tap(() => this.entities.refresh()))
-    });
-  }
-  public find(): SignalGet<string, Entity> {
-    return this.entity;
-  }
-  public findBy(): SignalGet<void, Entity[]> {
-    return this.entities;
-  }
+  public mutations = getMutations({
+    create: (entity: EntityRequestCreate) =>
+      this.httpClient.post<HttpApiResponse<Entity>>(this.baseUrl, entity).pipe(
+        map((response: HttpApiResponse<Entity>) => response.data),
+        tap((data) => this.notifyChange('create', [data?.id]))
+      ),
+    update: (entity: EntityRequestUpdate) =>
+      this.httpClient.put<HttpApiResponse<Entity>>(`${this.baseUrl}/${entity.id}`, entity).pipe(
+        map((response: HttpApiResponse<Entity>) => response.data),
+        tap(() => this.notifyChange('update', [entity.id]))
+      ),
+    delete: (id: string) =>
+      this.httpClient
+        .delete<void>(`${this.baseUrl}/${id}`)
+        .pipe(tap(() => this.notifyChange('delete', [id])))
+  });
+  public find = getResource<string, Entity>((id) => {
+    return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);
+  });
+  public findBy = getResource<EntitySearchParams | undefined, Entity[]>((searchParams?) => {
+    let params = new HttpParams();
+    if (searchParams) {
+      Object.entries(searchParams).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          params = params.set(key, String(value));
+        }
+      });
+    }
+    return this.httpClient.get<Entity[]>(`${this.baseUrl}`, { params });
+  });
 }

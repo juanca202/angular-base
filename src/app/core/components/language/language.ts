@@ -18,7 +18,7 @@ import { environment } from '@/environments/environment';
   selector: 'app-language',
   imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
   templateUrl: './language.html',
-  styleUrl: './language.scss',
+  styleUrl: './language.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-page'

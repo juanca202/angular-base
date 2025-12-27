@@ -1,0 +1,88 @@
+:root {
+  color-scheme: light dark;
+
+  /* Colors */
+  --ft-dark-color: #333;
+  --ft-light-color: #f4f4f4;
+  --ft-info-color: #0dcaf0;
+  --ft-danger-color: #ba1a1a;
+  --ft-success-color: #4caf50;
+  --ft-warning-color: #ffc107;
+  --ft-primary-color: #ff9800;
+  --ft-secondary-color: #2196f3;
+  --ft-tertiary-color: #9c27b0;
+
+  /* Spaces */
+  --ft-spacer: 1rem;
+  --ft-spacer-1: calc(var(--ft-spacer) * 0.25);
+  --ft-spacer-2: calc(var(--ft-spacer) * 0.5);
+  --ft-spacer-3: calc(var(--ft-spacer) * 1);
+  --ft-spacer-4: calc(var(--ft-spacer) * 1.5);
+  --ft-spacer-5: calc(var(--ft-spacer) * 3);
+
+  /* Text */
+  --ft-color-text: var(--ft-dark-color);
+  --ft-text-muted-color: color-mix(in srgb, var(--ft-color-text) 50%, transparent);
+  --ft-text-font: 400 0.875rem / 1.25rem sans-serif;
+  --ft-text-font-family: sans-serif;
+  --ft-text-font-size: var(--ft-text-font-size-md);
+  --ft-text-font-size-sm: 0.875rem;
+  --ft-text-font-size-md: 1rem;
+  --ft-text-font-size-lg: 1.125rem;
+  --ft-text-font-size-xl: 1.5rem;
+  --ft-text-font-weight: 600;
+  --ft-text-line-height: 1.5;
+
+  /* Heading */
+  --ft-h1-font-size: var(--ft-text-font-size-xl);
+  --ft-h2-font-size: var(--ft-text-font-size-lg);
+  --ft-h3-font-size: var(--ft-text-font-size-md);
+
+  /* Misc */
+  --ft-border-color: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
+  --ft-border2-color: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
+  --ft-button-outline-color: color-mix(in srgb, var(--ft-color-text) 3%, transparent);
+  --ft-color-bg: var(--ft-light-color);
+  --ft-overlapped-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.14), 0 0 6px 0 rgba(0, 0, 0, 0.12);
+
+  /* Avatar */
+  --ft-avatar-size: 2.5rem;
+  --ft-avatar-bg: var(--ft-border-color);
+  --ft-avatar-color: var(--ft-light-color);
+
+  /* Thumbnail */
+  --ft-thumbnail-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+  --ft-thumbnail-size: 2.5rem;
+
+  /* Input */
+  --ft-input-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+  --ft-input-focused-bg: color-mix(in srgb, var(--ft-border-color) 50%, transparent);
+  --ft-input-disabled-bg: color-mix(in srgb, var(--ft-border-color) 60%, transparent);
+  --ft-input-border-radius: 0.5rem;
+
+  /* Progress bar */
+  --ft-progress-bar-color: var(--ft-primary-color);
+  --ft-progress-track-color: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
+
+  /* Message */
+  --ft-message-warning-color: #664d03;
+  --ft-message-warning-bg: #fff3cd;
+  --ft-message-info-color: #055160;
+  --ft-message-info-bg: #cff4fc;
+
+  /* List */
+  --ft-list-item-hover-bg: color-mix(in srgb, var(--ft-primary-color) 10%, transparent);
+  --ft-list-item-focus-bg: color-mix(in srgb, var(--ft-primary-color) 15%, transparent);
+  --ft-list-item-active-bg: color-mix(in srgb, var(--ft-primary-color) 20%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ft-color-bg: var(--ft-dark-color);
+    --ft-color-text: var(--ft-light-color);
+    --ft-danger-color: #ff4d4d;
+    --ft-avatar-bg: #000;
+    --ft-thumbnail-bg: #000;
+    --ft-overlapped-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.54), 0 0 6px 0 rgba(0, 0, 0, 0.52);
+  }
+}

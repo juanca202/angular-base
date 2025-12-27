@@ -26,7 +26,7 @@ export class EntitySearch implements OnInit {
   public readonly layoutManager = inject(LayoutManager);
 
   // Properties
-  public readonly entities = this.entityRepository.findBy();
+  public readonly entities = this.entityRepository.findBy;
   public form = this.formBuilder.group({
     query: ['']
   });

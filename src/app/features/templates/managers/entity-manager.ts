@@ -30,7 +30,7 @@ export class EntityManager {
   private readonly messageService = inject(MessageService);
 
   // Properties
-  private readonly mutations = this.entityRepository.mutations();
+  private readonly mutations = this.entityRepository.mutations;
 
   public async delete(id?: string): Promise<void> {
     const value = await firstValueFrom(

@@ -28,6 +28,11 @@ export type AsyncFactory<TParams, TResult> = (
 type UnwrapAsync<T> = T extends Observable<infer U> ? U : T extends Promise<infer U> ? U : T;
 
 /**
+ * Arguments accepted by `load()`
+ */
+type LoadArgs<TParams> = TParams extends void ? [] : TParams extends undefined ? [] : [TParams?];
+
+/**
  * Normalizes a Promise or Observable into an Observable.
  */
 function toObservable<T>(value: Observable<T> | Promise<T>): Observable<T> {
@@ -41,9 +46,7 @@ export interface SignalGet<TParams, TResult> {
   readonly value: Signal<TResult | null>;
   readonly loading: Signal<boolean>;
   readonly error: Signal<any | null>;
-  readonly load: (
-    ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
-  ) => Promise<TResult | null>;
+  readonly load: (...params: LoadArgs<TParams>) => Promise<TResult | null>;
   readonly refresh: () => Promise<TResult | null>;
   readonly destroy: () => void;
 }
@@ -80,8 +83,6 @@ export function getApiUrl(path: string): string {
 
 /**
  * Creates a set of mutation handlers (POST / PUT / DELETE).
- * Each mutation manages its own state and supports both
- * Observable and Promise based implementations.
  */
 export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>(
   factories: T
@@ -146,7 +147,6 @@ export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>
 
 /**
  * Creates a reactive GET resource with lifecycle and state management.
- * Supports both Observable and Promise based factories.
  */
 export function getResource<TParams, TResult>(
   factory: AsyncFactory<TParams, TResult>
@@ -158,9 +158,7 @@ export function getResource<TParams, TResult>(
   const destroy$ = new Subject<void>();
   let lastParams: any[] | null = null;
 
-  const load = async (
-    ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
-  ): Promise<TResult | null> => {
+  const load = async (...params: LoadArgs<TParams>): Promise<TResult | null> => {
     lastParams = params;
     loading.set(true);
     error.set(null);

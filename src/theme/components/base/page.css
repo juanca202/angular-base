@@ -1,0 +1,18 @@
+.ft-page {
+  @apply flex flex-col overflow-hidden h-full;
+  .ft-page__header {
+    @apply flex items-center justify-between p-2 text-xl gap-2;
+    .ft-actions {
+      @apply flex items-center gap-1 min-w-20;
+      &:last-of-type {
+        @apply justify-end;
+      }
+    }
+  }
+  .ft-page__content {
+    @apply flex-1 overflow-auto;
+    .ft-center {
+        @apply flex flex-col gap-2 h-full items-center justify-center;
+    }
+  }
+}

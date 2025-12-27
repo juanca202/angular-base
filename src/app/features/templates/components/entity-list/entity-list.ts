@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  effect
+} from '@angular/core';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
@@ -34,7 +41,15 @@ export class EntityList implements OnInit, OnDestroy {
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
-  public readonly entities = this.entityRepository.findBy();
+  public readonly entities = this.entityRepository.findBy;
+
+  constructor() {
+    effect(() => {
+      const change = this.entityRepository.change();
+      if (!change) return;
+      this.entities.refresh();
+    });
+  }
 
   ngOnInit(): void {
     this.entities.load();

@@ -1,11 +1,11 @@
 <form [formGroup]="form" class="ft-searchbox">
-  <ft-icon name="search" class="ft-icon--2" />
+  <ft-icon name="search" class="text-2xl" />
   <input type="search" i18n-placeholder placeholder="Search" formControlName="query" />
 </form>
 <div mat-dialog-content class="!p-2">
   <div class="ft-list">
     @for (entity of entities.value(); track entity.id) {
-      <button type="button" class="ft-list__item !block !py-2" matButton (click)="select(entity)">
+      <button type="button" class="ft-list__item" matButton (click)="select(entity)">
         <div class="flex gap-4 items-center">
           <ft-avatar
             [label]="`${entity.firstName} ${entity.lastName}`"
@@ -17,7 +17,7 @@
     }
     @if (entities.loading()) {
       @for (entity of [1, 2, 3, 4, 5]; track $index) {
-        <div class="ft-list__item !block !py-2">
+        <div class="ft-list__item">
           <div class="flex gap-4 items-center">
             <div class="ft-ph" style="width: 40px; height: 40px; border-radius: 100vh"></div>
             <div class="grow">

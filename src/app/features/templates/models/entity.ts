@@ -1,3 +1,5 @@
+import { CollectionQueryParams } from '@/core/models/collection-query-params';
+
 export interface Entity {
   id: string;
   firstName: string;
@@ -11,4 +13,13 @@ export interface Entity {
   updatedAt: string;
 }
 
-export type EntityRequest = Omit<Entity, 'id'> & { id?: string };
+export type EntityRequestCreate = Omit<Entity, 'id'> & { id?: string };
+export type EntityRequestUpdate = Pick<Entity, 'id'> & Partial<Omit<Entity, 'id'>>;
+
+export interface EntityFilters {
+  email?: string;
+  company?: string;
+  isActive?: boolean;
+}
+
+export type EntitySearchParams = CollectionQueryParams<EntityFilters>;

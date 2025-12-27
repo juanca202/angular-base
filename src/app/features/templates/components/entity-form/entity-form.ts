@@ -57,8 +57,8 @@ export class EntityForm implements OnInit, OnDestroy {
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
-  public readonly entity = this.entityRepository.find();
-  public readonly entityMutations = this.entityRepository.mutations();
+  public readonly entity = this.entityRepository.find;
+  public readonly entityMutations = this.entityRepository.mutations;
   public readonly form: FormGroup = this.formBuilder.group({
     firstName: ['', [Validators.required]],
     lastName: ['', [Validators.required]],

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,9 +39,6 @@ import { MatMenuModule } from '@angular/material/menu';
   ],
   templateUrl: './entity-detail.html',
   styleUrl: './entity-detail.scss',
-  host: {
-    class: 'ft-page'
-  },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityDetail implements OnInit, OnDestroy {
@@ -48,15 +52,28 @@ export class EntityDetail implements OnInit, OnDestroy {
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
-  public readonly entity = this.entityRepository.find();
-  public readonly entityMutations = this.entityRepository.mutations();
+  public readonly entity = this.entityRepository.find;
+  public readonly entityMutations = this.entityRepository.mutations;
+  public readonly related = this.entityRepository.findBy;
+
+  constructor() {
+    effect(() => {
+      const change = this.entityRepository.change();
+      if (!change) return;
+      this.entity.refresh();
+    });
+  }
 
   ngOnInit(): void {
     if (this.data.id) {
       this.entity.load(this.data.id);
+      this.related.load();
     }
   }
   ngOnDestroy(): void {
     this.entity.destroy();
+  }
+  public addRelation(): void {
+    this.entityManager.search();
   }
 }
