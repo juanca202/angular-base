@@ -27,9 +27,10 @@
     }
   }
 
+  /*
   .ft-logo {
     text-align: center;
-    //background-image: url(../../../public/images/logo.svg);
+    background-image: url(../../../public/images/logo.svg);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -37,7 +38,7 @@
     height: 3rem;
 
     @media (prefers-color-scheme: dark) {
-      //background-image: url(../../../public/images/logo-dark.svg);
+      background-image: url(../../../public/images/logo-dark.svg);
     }
 
     &__wrapper {
@@ -47,7 +48,7 @@
       width: 100%;
       margin-top: 3rem;
     }
-  }
+  }*/
 
   .ft-terms {
     font-size: 0.75rem;
@@ -63,13 +64,23 @@
     }
   }
 
-  .ft-auth__reset {
+  .ft-auth__signin {
     margin: auto;
     padding: 1.5rem;
     max-width: max(40vw, 450px);
 
     > div {
       max-width: 330px;
+    }
+  }
+
+  .ft-auth__signup {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: max(40vw, 450px);
+
+    > div {
+      max-width: 400px;
     }
   }
 }

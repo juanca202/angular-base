@@ -38,7 +38,7 @@ import { MatMenuModule } from '@angular/material/menu';
     ProgressComponent
   ],
   templateUrl: './entity-detail.html',
-  styleUrl: './entity-detail.scss',
+  styleUrl: './entity-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityDetail implements OnInit, OnDestroy {
@@ -52,9 +52,9 @@ export class EntityDetail implements OnInit, OnDestroy {
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
-  public readonly entity = this.entityRepository.find;
+  public readonly entity = this.entityRepository.find();
   public readonly entityMutations = this.entityRepository.mutations;
-  public readonly related = this.entityRepository.findBy;
+  public readonly related = this.entityRepository.findBy();
 
   constructor() {
     effect(() => {

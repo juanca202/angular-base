@@ -40,7 +40,7 @@ import { MatMenuModule } from '@angular/material/menu';
     ErrorMessagePipe
   ],
   templateUrl: './entity-form.html',
-  styleUrl: './entity-form.scss',
+  styleUrl: './entity-form.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityForm implements OnInit, OnDestroy {
@@ -57,7 +57,7 @@ export class EntityForm implements OnInit, OnDestroy {
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
-  public readonly entity = this.entityRepository.find;
+  public readonly entity = this.entityRepository.find();
   public readonly entityMutations = this.entityRepository.mutations;
   public readonly form: FormGroup = this.formBuilder.group({
     firstName: ['', [Validators.required]],

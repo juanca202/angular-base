@@ -49,18 +49,22 @@ export class EntityRepository extends BaseRepository {
         .delete<void>(`${this.baseUrl}/${id}`)
         .pipe(tap(() => this.notifyChange('delete', [id])))
   });
-  public find = getResource<string, Entity>((id) => {
-    return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);
-  });
-  public findBy = getResource<EntitySearchParams | undefined, Entity[]>((searchParams?) => {
-    let params = new HttpParams();
-    if (searchParams) {
-      Object.entries(searchParams).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          params = params.set(key, String(value));
-        }
-      });
-    }
-    return this.httpClient.get<Entity[]>(`${this.baseUrl}`, { params });
-  });
+  public find() {
+    return getResource<string, Entity>((id) => {
+      return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);
+    });
+  }
+  public findBy() {
+    return getResource<EntitySearchParams | undefined, Entity[]>((searchParams?) => {
+      let params = new HttpParams();
+      if (searchParams) {
+        Object.entries(searchParams).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) {
+            params = params.set(key, String(value));
+          }
+        });
+      }
+      return this.httpClient.get<Entity[]>(`${this.baseUrl}`, { params });
+    });
+  }
 }

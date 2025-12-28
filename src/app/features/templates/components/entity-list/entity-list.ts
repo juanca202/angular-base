@@ -25,7 +25,7 @@ import { ENTITY_CONTEXT } from '../../constants/entity-context';
   selector: 'app-entity-list',
   imports: [MatButtonModule, MatMenuModule, IconComponent, ProgressComponent],
   templateUrl: './entity-list.html',
-  styleUrl: './entity-list.scss',
+  styleUrl: './entity-list.css',
   host: {
     class: 'ft-page'
   },
@@ -41,7 +41,7 @@ export class EntityList implements OnInit, OnDestroy {
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
-  public readonly entities = this.entityRepository.findBy;
+  public readonly entities = this.entityRepository.findBy();
 
   constructor() {
     effect(() => {

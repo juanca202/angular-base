@@ -44,7 +44,7 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
     ErrorMessagePipe
   ],
   templateUrl: './reset-password.html',
-  styleUrl: './reset-password.scss',
+  styleUrl: './reset-password.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-auth ft-auth--form'
