@@ -21,9 +21,9 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { Entity } from '../../models/entity';
 import { OPERATION_TYPE, OperationType } from '@/core/constants/operation-type';
 import { Operation } from '@/core/models/operation';
-import { ENTITY_CONTEXT } from '../../constants/entity-context';
 import { EntityManager } from '../../managers/entity-manager';
 import { MatMenuModule } from '@angular/material/menu';
+import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 
 @Component({
   selector: 'app-entity-form',

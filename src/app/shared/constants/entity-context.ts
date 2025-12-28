@@ -4,5 +4,3 @@ export const ENTITY_CONTEXT = {
   LIST: 'list',
   SEARCH: 'search'
 };
-
-export type EntityContext = (typeof ENTITY_CONTEXT)[keyof typeof ENTITY_CONTEXT];

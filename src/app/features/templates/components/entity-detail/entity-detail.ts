@@ -14,8 +14,8 @@ import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
 import { EntityManager } from '../../managers/entity-manager';
-import { ENTITY_CONTEXT } from '../../constants/entity-context';
 import { MatMenuModule } from '@angular/material/menu';
+import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 
 /**
  * Presents the entity detail drawer in read-only mode, displaying the full

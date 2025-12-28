@@ -1,4 +1,5 @@
 import { CollectionQueryParams } from '@/core/models/collection-query-params';
+import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 
 export interface Entity {
   id: string;
@@ -23,3 +24,4 @@ export interface EntityFilters {
 }
 
 export type EntitySearchParams = CollectionQueryParams<EntityFilters>;
+export type EntityContext = (typeof ENTITY_CONTEXT)[keyof typeof ENTITY_CONTEXT];

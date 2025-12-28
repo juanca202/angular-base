@@ -12,7 +12,7 @@ import { EntityRepository } from '@/features/templates/repositories/entity-repos
 import { MatButtonModule } from '@angular/material/button';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
 import { MatMenuModule } from '@angular/material/menu';
-import { ENTITY_CONTEXT } from '../../constants/entity-context';
+import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 
 /**
  * Displays the sample entity catalog using the reusable table layout.
