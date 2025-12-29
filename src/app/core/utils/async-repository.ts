@@ -7,7 +7,6 @@ import {
   firstValueFrom,
   from,
   isObservable,
-  map,
   Observable,
   Subject,
   takeUntil,
@@ -30,7 +29,21 @@ type UnwrapAsync<T> = T extends Observable<infer U> ? U : T extends Promise<infe
 /**
  * Arguments accepted by `load()`
  */
-type LoadArgs<TParams> = TParams extends void ? [] : TParams extends undefined ? [] : [TParams?];
+type LoadArgs<TParams> = TParams extends any[] ? TParams : TParams extends void ? [] : [TParams];
+
+/**
+ * Options for load and mutate methods.
+ */
+interface Options {
+  notifyError?: boolean;
+}
+
+/**
+ * Options for collection load method.
+ */
+interface CollectionOptions extends Options {
+  append?: boolean;
+}
 
 /**
  * Normalizes a Promise or Observable into an Observable.
@@ -42,32 +55,44 @@ function toObservable<T>(value: Observable<T> | Promise<T>): Observable<T> {
 /**
  * State container for a GET resource.
  */
-export interface SignalGet<TParams, TResult> {
+export interface Resource<TParams, TResult> {
   readonly value: Signal<TResult | null>;
   readonly loading: Signal<boolean>;
-  readonly error: Signal<any | null>;
-  readonly load: (...params: LoadArgs<TParams>) => Promise<TResult | null>;
+  readonly error: Signal<unknown | null>;
+  readonly load: (params?: LoadArgs<TParams>, options?: Options) => Promise<TResult | null>;
   readonly refresh: () => Promise<TResult | null>;
   readonly destroy: () => void;
 }
 
 /**
+ * State container for a GET collection resource.
+ */
+interface ResourceCollection<TParams, TResult extends unknown[]>
+  extends Resource<TParams, TResult> {
+  readonly accumulated: Signal<TResult | null>;
+  readonly load: (
+    params?: LoadArgs<TParams>,
+    options?: CollectionOptions
+  ) => Promise<TResult | null>;
+}
+
+/**
  * Mutation function with its associated reactive state.
  */
-export interface SignalMutateFn<TArgs extends any[], TResult> {
-  (...args: TArgs): Promise<TResult | null>;
+export interface Mutate<TResult> {
+  (data: unknown, options?: Options): Promise<TResult | null>;
   submitting: Signal<boolean>;
   value: Signal<TResult | null>;
-  error: Signal<any | null>;
+  error: Signal<unknown | null>;
 }
 
 /**
  * Custom exception used for resource and mutation failures.
  */
 export class ResourceException extends Error {
-  public raw: any;
+  public raw: unknown;
 
-  constructor(message: string, raw: any) {
+  constructor(message: string, raw: unknown) {
     super(message);
     this.raw = raw;
     Object.setPrototypeOf(this, ResourceException.prototype);
@@ -87,32 +112,33 @@ export function getApiUrl(path: string): string {
 export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>(
   factories: T
 ): {
-  [K in keyof T]: SignalMutateFn<Parameters<T[K]>, UnwrapAsync<ReturnType<T[K]>>>;
+  [K in keyof T]: Mutate<UnwrapAsync<ReturnType<T[K]>>>;
 } & {
   submitting: Signal<boolean>;
-  error: Signal<any | null>;
+  error: Signal<unknown | null>;
 } {
   const messageService = inject(MessageService);
   const mutations: any = {};
   const globalSubmitting = signal(false);
-  const globalError = signal<any | null>(null);
+  const globalError = signal<unknown | null>(null);
 
   const submittingSignals: Signal<boolean>[] = [];
 
   for (const key in factories) {
     const submitting = signal(false);
-    const value = signal<any | null>(null);
-    const error = signal<any | null>(null);
+    const value = signal<unknown | null>(null);
+    const error = signal<unknown | null>(null);
 
     submittingSignals.push(submitting);
 
-    const fn: SignalMutateFn<any[], any> = async (...args: any[]) => {
+    const fn: Mutate<any> = async (data: unknown, options?: Options) => {
+      const { notifyError = true } = options || {};
       submitting.set(true);
       error.set(null);
       value.set(null);
       globalSubmitting.set(true);
 
-      const request$ = toObservable(factories[key](...args)).pipe(
+      const request$ = toObservable(factories[key](data as any)).pipe(
         tap((result) => value.set(result ?? null)),
         catchError((err) => {
           const msg =
@@ -120,7 +146,9 @@ export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>
 
           error.set(msg);
           globalError.set(msg);
-          messageService.show(msg);
+          if (notifyError) {
+            messageService.show(msg);
+          }
           throw new ResourceException(msg, err);
         }),
         finalize(() => {
@@ -150,29 +178,30 @@ export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>
  */
 export function getResource<TParams, TResult>(
   factory: AsyncFactory<TParams, TResult>
-): SignalGet<TParams, TResult> {
+): Resource<TParams, TResult> {
   const messageService = inject(MessageService);
   const loading = signal(false);
   const value = signal<TResult | null>(null);
-  const error = signal<any | null>(null);
+  const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
-  let lastParams: any[] | null = null;
+  let lastParams: LoadArgs<TParams> | null = null;
 
-  const load = async (...params: LoadArgs<TParams>): Promise<TResult | null> => {
-    lastParams = params;
+  const load = async (params?: LoadArgs<TParams>, options?: Options): Promise<TResult | null> => {
+    const paramsToUse = (params ?? [undefined as any]) as LoadArgs<TParams>;
+    const { notifyError = true } = options || {};
+    lastParams = paramsToUse;
     loading.set(true);
     error.set(null);
 
-    const request$ = toObservable(factory(...(params as any))).pipe(
-      map((response) =>
-        response && 'payload' in (response as any) ? (response as any).payload : response
-      ),
+    const request$ = toObservable(factory(...(paramsToUse as any))).pipe(
       tap((result) => value.set((result ?? null) as TResult | null)),
       catchError((err) => {
         const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
 
         error.set(msg);
-        messageService.show(msg);
+        if (notifyError) {
+          messageService.show(msg);
+        }
         throw new ResourceException(msg, err);
       }),
       finalize(() => loading.set(false)),
@@ -186,11 +215,97 @@ export function getResource<TParams, TResult>(
     if (lastParams === null) {
       throw new Error($localize`Cannot refresh: no previous load call made`);
     }
-    return load(...(lastParams as any));
+    return load(lastParams);
   };
 
   return {
     value: value.asReadonly(),
+    loading: loading.asReadonly(),
+    error: error.asReadonly(),
+    load,
+    refresh,
+    destroy: () => {
+      destroy$.next();
+      destroy$.complete();
+    }
+  };
+}
+
+/**
+ * Creates a reactive resource (GET) with support for accumulable collections.
+ * - `value`: latest result.
+ * - `accumulated`: accumulation of all previous results.
+ * - `load(params, options?)`: options can include `notifyError` (default true) and `append` (default false for collections).
+ */
+export function getResourceCollection<TParams, TResult extends unknown[]>(
+  factory: AsyncFactory<TParams, TResult>
+): ResourceCollection<TParams, TResult> {
+  const messageService = inject(MessageService);
+  const loading = signal(false);
+  const value = signal<TResult | null>(null);
+  const accumulated = signal<TResult | null>(null);
+  const error = signal<unknown | null>(null);
+  const destroy$ = new Subject<void>();
+  let lastParams: LoadArgs<TParams> | null = null;
+
+  const load = async (
+    params?: LoadArgs<TParams>,
+    options?: CollectionOptions
+  ): Promise<TResult | null> => {
+    const paramsToUse = (params ?? [undefined as any]) as LoadArgs<TParams>;
+    const { notifyError = true, append = false } = options || {};
+    loading.set(true);
+    error.set(null);
+    value.set(null);
+    if (!append) {
+      accumulated.set(null);
+    }
+    lastParams = paramsToUse;
+    const request$ = toObservable(factory(...(paramsToUse as any))).pipe(
+      tap((result: TResult | null) => {
+        value.set((result ?? null) as TResult | null);
+        if (append) {
+          const prev = accumulated() as unknown;
+          // If both previous accumulated and new result are arrays, concatenate them.
+          if (Array.isArray(prev) && Array.isArray(result)) {
+            // concat previous accumulated array with the new result array
+            accumulated.set((prev as unknown[]).concat(result as unknown[]) as TResult);
+          } else if (Array.isArray(prev) && result == null) {
+            // nothing new to append, keep previous accumulated
+            accumulated.set(prev as TResult);
+          } else {
+            // Fallback: replace accumulated with the result (which can be null)
+            accumulated.set((result ?? null) as TResult | null);
+          }
+        } else {
+          accumulated.set((result ?? null) as TResult | null);
+        }
+      }),
+      catchError((err) => {
+        const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
+
+        error.set(msg);
+        if (notifyError) {
+          messageService.show(msg);
+        }
+        throw new ResourceException(msg, err);
+      }),
+      finalize(() => loading.set(false)),
+      takeUntil(destroy$)
+    );
+    return firstValueFrom(request$);
+  };
+
+  const refresh = async (): Promise<TResult | null> => {
+    if (lastParams === null) {
+      throw new Error($localize`Cannot refresh: no previous load call made`);
+    }
+    return load(lastParams, { append: false });
+  };
+
+  return {
+    value: value.asReadonly(),
+    accumulated: accumulated.asReadonly(),
     loading: loading.asReadonly(),
     error: error.asReadonly(),
     load,
