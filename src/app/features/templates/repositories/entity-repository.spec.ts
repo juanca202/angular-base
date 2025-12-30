@@ -16,12 +16,14 @@ describe('EntityRepository', () => {
       providers: [{ provide: MessageService, useValue: { show: vi.fn() } }]
     });
 
-    repository = TestBed.inject(EntityRepository);
+    // Ensure TestBed is fully initialized before injecting
     httpMock = TestBed.inject(HttpTestingController);
+    repository = TestBed.inject(EntityRepository);
   });
 
   afterEach(() => {
     httpMock.verify();
+    TestBed.resetTestingModule();
   });
 
   it('loads a single entity by identifier', async () => {

@@ -1,7 +1,16 @@
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
 export class GoogleTagManagerService {
   appendTrackingCode(_code: string) {}
   push() {}
 }
+
+@Injectable({
+  providedIn: 'root'
+})
 export class StorageService {
   get(key: string, _scope?: 'local' | 'session') {
     return this.getItem(key);

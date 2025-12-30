@@ -28,11 +28,11 @@ module.exports = [
       '**/*.json',
       '**/angular.json',
       '**/tsconfig*.json',
-      '**/jest.config.ts',
+      '**/vitest.config.ts',
       '**/eslint.config.js',
       '**/generate-i18n.js',
       '**/git-version.js',
-      '**/setup-jest.ts',
+      '**/setup-vitest.ts',
       '**/*.css',
       '**/*.js',
       '**/*.mjs',
@@ -81,11 +81,11 @@ module.exports = [
       '**/tsconfig*.json',
       '**/package.json',
       '**/angular.json',
-      '**/jest.config.ts',
+      '**/vitest.config.ts',
       '**/eslint.config.js',
       '**/generate-i18n.js',
       '**/git-version.js',
-      '**/setup-jest.ts'
+      '**/setup-vitest.ts'
     ],
     plugins: {
       '@typescript-eslint': tseslint,
@@ -197,7 +197,7 @@ module.exports = [
         beforeEach: 'readonly',
         afterEach: 'readonly',
         expect: 'readonly',
-        jest: 'readonly',
+        vi: 'readonly',
         HTMLElement: 'readonly'
       }
     },

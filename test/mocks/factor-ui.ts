@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 
 @Component({
   selector: 'ft-icon',
@@ -21,6 +21,9 @@ export class AvatarComponent {}
 })
 export class ProgressComponent {}
 
+@Injectable({
+  providedIn: 'root'
+})
 export class MessageService {
   show(_msg: string) {}
   success() {}

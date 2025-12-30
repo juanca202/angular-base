@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EventEmitter, signal } from '@angular/core';
+import { EventEmitter, signal, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -49,6 +49,7 @@ describe('Settings', () => {
         AppManager,
         LayoutManager,
         Session,
+        { provide: PLATFORM_ID, useValue: 'browser' },
         { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map() } } },
         { provide: MatDialog, useValue: { open: vi.fn() } },

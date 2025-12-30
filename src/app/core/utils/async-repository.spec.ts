@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { of, throwError, delay } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -8,16 +9,7 @@ import { MessageService } from '@factor_ec/ui';
 
 describe('async-repository', () => {
   let httpMock: HttpTestingController;
-  let mockMessageService: Partial<MessageService>;
-
-  // Helper to ensure TestBed is initialized before using runInInjectionContext
-  const ensureTestBedInitialized = () => {
-    try {
-      TestBed.inject(HttpTestingController);
-    } catch {
-      // TestBed not initialized yet, will be initialized on first inject
-    }
-  };
+  let mockMessageService: MessageService;
 
   beforeEach(() => {
     mockMessageService = {
@@ -25,10 +17,14 @@ describe('async-repository', () => {
     } as any;
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [{ provide: MessageService, useValue: mockMessageService }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: MessageService, useValue: mockMessageService }
+      ]
     });
 
+    // Ensure TestBed is fully initialized before using runInInjectionContext
     httpMock = TestBed.inject(HttpTestingController);
   });
 

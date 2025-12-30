@@ -8,8 +8,18 @@ import { StorageService } from '@factor_ec/utils';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let mockStorageService: StorageService;
 
   beforeEach(() => {
+    mockStorageService = {
+      get: vi.fn(),
+      set: vi.fn(),
+      delete: vi.fn(),
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn()
+    } as unknown as StorageService;
+
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -17,17 +27,11 @@ describe('AuthService', () => {
         { provide: MatDialog, useValue: { open: vi.fn(), closeAll: vi.fn() } },
         {
           provide: StorageService,
-          useValue: {
-            get: vi.fn(),
-            set: vi.fn(),
-            delete: vi.fn(),
-            getItem: vi.fn(),
-            setItem: vi.fn(),
-            removeItem: vi.fn()
-          }
+          useValue: mockStorageService
         }
       ]
     });
+
     service = TestBed.inject(AuthService);
   });
 

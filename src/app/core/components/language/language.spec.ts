@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EventEmitter, signal } from '@angular/core';
+import { EventEmitter, signal, PLATFORM_ID } from '@angular/core';
 import { Language } from './language';
 import { Title } from '@angular/platform-browser';
 import { StorageService, GoogleTagManagerService } from '@factor_ec/utils';
 import { AppManager } from '@/core/services/app-manager';
+import { Session } from '@/core/services/session';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -28,8 +29,20 @@ describe('Language', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         AppManager,
+        Session,
+        { provide: PLATFORM_ID, useValue: 'browser' },
         { provide: Title, useValue: { setTitle: vi.fn() } },
-        { provide: StorageService, useValue: { set: vi.fn(), get: vi.fn(), delete: vi.fn() } },
+        {
+          provide: StorageService,
+          useValue: {
+            set: vi.fn(),
+            get: vi.fn(),
+            delete: vi.fn(),
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn()
+          }
+        },
         { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: MatDialog, useValue: { open: vi.fn() } },
         { provide: MatSnackBar, useValue: { open: vi.fn() } },
