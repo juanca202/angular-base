@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
 import { LayoutManager } from '@/core/services/layout-manager';
@@ -46,6 +46,7 @@ export class EntityDetail implements OnInit, OnDestroy {
   public readonly entityManager = inject(EntityManager);
   private readonly entityRepository = inject(EntityRepository);
   public readonly data = inject(MAT_DIALOG_DATA);
+  private readonly dialogRef = inject(MatDialogRef);
   public readonly layoutManager = inject(LayoutManager);
 
   // Constansts
@@ -53,7 +54,7 @@ export class EntityDetail implements OnInit, OnDestroy {
 
   // Properties
   public readonly entity = this.entityRepository.find();
-  public readonly entityMutations = this.entityRepository.mutations;
+  public readonly entityMutations = this.entityRepository.mutations();
   public readonly related = this.entityRepository.findBy();
 
   constructor() {
@@ -64,10 +65,13 @@ export class EntityDetail implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     if (this.data.id) {
-      this.entity.load(this.data.id);
-      this.related.load();
+      try {
+        await Promise.all([this.entity.load(this.data.id), this.related.load()]);
+      } catch {
+        this.dialogRef.close();
+      }
     }
   }
   ngOnDestroy(): void {

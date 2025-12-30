@@ -8,7 +8,7 @@ import {
 import { getApiUrl, getMutations, getResource } from '@/core/utils/async-repository';
 import { MockHttpClient } from '@/core/services/mock-http-client';
 import repositoryMock from '@/test/mocks/repositories/entities.json';
-import { map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs';
 import { BaseRepository } from '@/core/services/base-repository';
 import { HttpParams } from '@angular/common/http';
 import { HttpApiResponse } from '@/core/models/http-api-response';
@@ -33,22 +33,24 @@ export class EntityRepository extends BaseRepository {
     this.httpClient.loadCollection('entities', repositoryMock);
   }
 
-  public mutations = getMutations({
-    create: (entity: EntityRequestCreate) =>
-      this.httpClient.post<HttpApiResponse<Entity>>(this.baseUrl, entity).pipe(
-        map((response: HttpApiResponse<Entity>) => response.data),
-        tap((data) => this.notifyChange('create', [data?.id]))
-      ),
-    update: (entity: EntityRequestUpdate) =>
-      this.httpClient.put<HttpApiResponse<Entity>>(`${this.baseUrl}/${entity.id}`, entity).pipe(
-        map((response: HttpApiResponse<Entity>) => response.data),
-        tap(() => this.notifyChange('update', [entity.id]))
-      ),
-    delete: (id: string) =>
-      this.httpClient
-        .delete<void>(`${this.baseUrl}/${id}`)
-        .pipe(tap(() => this.notifyChange('delete', [id])))
-  });
+  public mutations() {
+    return getMutations({
+      create: (entity: EntityRequestCreate) =>
+        this.httpClient.post<HttpApiResponse<Entity>>(this.baseUrl, entity).pipe(
+          map((response: HttpApiResponse<Entity>) => response.data),
+          tap((data) => this.notifyChange('create', [data?.id]))
+        ),
+      update: (entity: EntityRequestUpdate) =>
+        this.httpClient.put<HttpApiResponse<Entity>>(`${this.baseUrl}/${entity.id}`, entity).pipe(
+          map((response: HttpApiResponse<Entity>) => response.data),
+          tap(() => this.notifyChange('update', [entity.id]))
+        ),
+      delete: (id: string) =>
+        this.httpClient
+          .delete<void>(`${this.baseUrl}/${id}`)
+          .pipe(tap(() => this.notifyChange('delete', [id])))
+    });
+  }
   public find() {
     return getResource<string, Entity>((id) => {
       return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);

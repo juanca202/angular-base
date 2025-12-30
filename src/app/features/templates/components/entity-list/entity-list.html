@@ -18,11 +18,11 @@
   </div>
 </div>
 <div class="ft-page__content ft-anim-enter">
-  @if (!entities.loading() || entities.value()?.length) {
+  @if (!entities.error() && (!entities.loading() || entities.value()?.length)) {
     <table class="ft-table">
       <thead>
         <tr>
-          <th i18n>Firstname</th>
+          <th class="!ps-6" i18n>Firstname</th>
           <th i18n>Lastname</th>
           <th i18n>Phone</th>
           <th i18n>Email</th>
@@ -32,7 +32,7 @@
       <tbody>
         @for (entity of entities.value(); track entity.id) {
           <tr class="ft-table__item--action" (click)="entityManager.open(entity.id, true)">
-            <td>{{ entity.firstName }}</td>
+            <td class="!ps-6">{{ entity.firstName }}</td>
             <td>{{ entity.lastName }}</td>
             <td>{{ entity.phone }}</td>
             <td>{{ entity.email }}</td>
@@ -69,6 +69,12 @@
     <div class="ft-center">
       <ft-progress class="ft-progress--3" />
       <div i18n>Loading...</div>
+    </div>
+  } @else if (entities.error()) {
+    <div class="ft-center p-6">
+      <ft-icon name="warning" collection="factoricons-slim" class="ft-icon--4" />
+      <p class="text-gray-500 mb-4">{{ entities.error() }}</p>
+      <button i18n type="button" matButton="filled" (click)="entities.refresh()">Retry</button>
     </div>
   } @else if (!entities.value()?.length) {
     <div class="ft-center" i18n>No records</div>

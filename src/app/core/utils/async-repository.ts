@@ -147,7 +147,10 @@ export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>
           error.set(msg);
           globalError.set(msg);
           if (notifyError) {
-            messageService.show(msg);
+            messageService.show(msg, {
+              class: 'ft-message--danger',
+              icon: 'warning'
+            });
           }
           throw new ResourceException(msg, err);
         }),
@@ -185,11 +188,13 @@ export function getResource<TParams, TResult>(
   const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
   let lastParams: LoadArgs<TParams> | null = null;
+  let lastOptions: Options | undefined;
 
   const load = async (params?: LoadArgs<TParams>, options?: Options): Promise<TResult | null> => {
     const paramsToUse = (params ?? [undefined as any]) as LoadArgs<TParams>;
     const { notifyError = true } = options || {};
     lastParams = paramsToUse;
+    lastOptions = options;
     loading.set(true);
     error.set(null);
 
@@ -200,7 +205,10 @@ export function getResource<TParams, TResult>(
 
         error.set(msg);
         if (notifyError) {
-          messageService.show(msg);
+          messageService.show(msg, {
+            class: 'ft-message--danger',
+            icon: 'warning'
+          });
         }
         throw new ResourceException(msg, err);
       }),
@@ -213,9 +221,9 @@ export function getResource<TParams, TResult>(
 
   const refresh = async (): Promise<TResult | null> => {
     if (lastParams === null) {
-      throw new Error($localize`Cannot refresh: no previous load call made`);
+      return load(undefined, lastOptions);
     }
-    return load(lastParams);
+    return load(lastParams, lastOptions);
   };
 
   return {
@@ -247,6 +255,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
   const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
   let lastParams: LoadArgs<TParams> | null = null;
+  let lastOptions: Options | undefined;
 
   const load = async (
     params?: LoadArgs<TParams>,
@@ -254,13 +263,15 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
   ): Promise<TResult | null> => {
     const paramsToUse = (params ?? [undefined as any]) as LoadArgs<TParams>;
     const { notifyError = true, append = false } = options || {};
+    lastParams = paramsToUse;
+    lastOptions = options;
     loading.set(true);
     error.set(null);
     value.set(null);
     if (!append) {
       accumulated.set(null);
     }
-    lastParams = paramsToUse;
+
     const request$ = toObservable(factory(...(paramsToUse as any))).pipe(
       tap((result: TResult | null) => {
         value.set((result ?? null) as TResult | null);
@@ -286,7 +297,10 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
 
         error.set(msg);
         if (notifyError) {
-          messageService.show(msg);
+          messageService.show(msg, {
+            class: 'ft-message--danger',
+            icon: 'warning'
+          });
         }
         throw new ResourceException(msg, err);
       }),
@@ -298,9 +312,9 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
 
   const refresh = async (): Promise<TResult | null> => {
     if (lastParams === null) {
-      throw new Error($localize`Cannot refresh: no previous load call made`);
+      return load(undefined, { append: false });
     }
-    return load(lastParams, { append: false });
+    return load(lastParams, { ...lastOptions, append: false });
   };
 
   return {

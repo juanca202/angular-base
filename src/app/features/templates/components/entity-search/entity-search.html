@@ -4,18 +4,19 @@
 </form>
 <div mat-dialog-content class="!p-2">
   <div class="ft-list">
-    @for (entity of entities.value(); track entity.id) {
-      <button type="button" class="ft-list__item" matButton (click)="select(entity)">
-        <div class="flex gap-4 items-center">
-          <ft-avatar
-            [label]="`${entity.firstName} ${entity.lastName}`"
-            style="--ft-avatar-size: 40px"
-          />
-          <div class="grow">{{ entity.firstName }} {{ entity.lastName }}</div>
-        </div>
-      </button>
-    }
-    @if (entities.loading()) {
+    @if (!entities.error() && (!entities.loading() || entities.value()?.length)) {
+      @for (entity of entities.value(); track entity.id) {
+        <button type="button" class="ft-list__item" matButton (click)="select(entity)">
+          <div class="flex gap-4 items-center">
+            <ft-avatar
+              [label]="`${entity.firstName} ${entity.lastName}`"
+              style="--ft-avatar-size: 40px"
+            />
+            <div class="grow">{{ entity.firstName }} {{ entity.lastName }}</div>
+          </div>
+        </button>
+      }
+    } @else if (entities.loading()) {
       @for (entity of [1, 2, 3, 4, 5]; track $index) {
         <div class="ft-list__item">
           <div class="flex gap-4 items-center">
@@ -30,6 +31,14 @@
           </div>
         </div>
       }
+    } @else if (entities.error()) {
+      <div class="ft-center p-6">
+        <ft-icon name="warning" collection="factoricons-slim" class="ft-icon--4" />
+        <p class="text-gray-500 mb-4">{{ entities.error() }}</p>
+        <button i18n type="button" matButton="filled" (click)="entities.refresh()">Retry</button>
+      </div>
+    } @else if (!entities.value()?.length) {
+      <div class="ft-center" i18n>No records</div>
     }
   </div>
 </div>

@@ -30,7 +30,7 @@ export class EntityManager {
   private readonly messageService = inject(MessageService);
 
   // Properties
-  private readonly mutations = this.entityRepository.mutations;
+  private readonly mutations = this.entityRepository.mutations();
 
   public async delete(id?: string): Promise<void> {
     const value = await firstValueFrom(
@@ -116,7 +116,7 @@ export class EntityManager {
         }
       };
       if (!view) {
-        const dialogRef = this.dialog.open(EntityForm, config);
+        const dialogRef = this.dialog.open(EntityForm, { ...config, disableClose: true });
         const sub = dialogRef.componentInstance.afterSubmit.subscribe((operation) => {
           if (operation) {
             resolve(operation);

@@ -58,7 +58,7 @@ export class EntityForm implements OnInit, OnDestroy {
 
   // Properties
   public readonly entity = this.entityRepository.find();
-  public readonly entityMutations = this.entityRepository.mutations;
+  public readonly entityMutations = this.entityRepository.mutations();
   public readonly form: FormGroup = this.formBuilder.group({
     firstName: ['', [Validators.required]],
     lastName: ['', [Validators.required]],
@@ -92,6 +92,7 @@ export class EntityForm implements OnInit, OnDestroy {
       try {
         let entity: Entity | null;
         let type: OperationType;
+        this.form.disable();
         if (this.data?.id) {
           // Update existing entity
           entity = await this.entityMutations.update({ ...formData, id: this.data.id });
@@ -104,10 +105,13 @@ export class EntityForm implements OnInit, OnDestroy {
         // Close dialog on success
         this.dialogRef.close();
         // Show confirmation message
-        this.messageService.show($localize`Saved successfully.`);
+        this.messageService.show($localize`Saved successfully.`, {
+          class: 'ft-message--success',
+          icon: 'check--circle'
+        });
         this.afterSubmit.emit({ type, entity });
-      } catch {
-        // Error is already handled by the repository
+      } finally {
+        this.form.enable();
       }
     }
   }

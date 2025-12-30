@@ -52,7 +52,7 @@ export class EntityList implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.entities.load();
+    this.entities.load(undefined, { notifyError: false });
   }
   ngOnDestroy(): void {
     this.entities.destroy();
