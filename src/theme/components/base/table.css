@@ -1,0 +1,27 @@
+.ft-table {
+  @apply w-full table-auto border-collapse text-sm bg-(--ft-color-bg);
+  thead {
+    @apply bg-(--ft-color-bg) sticky top-0;
+    th {
+      @apply p-2 pt-0 font-medium text-left;
+    }
+  }
+  tbody {
+    tr {
+      td {
+        @apply p-2;
+      }
+      &:not(:last-child) {
+        td {
+          @apply border-b border-gray-300;
+        }
+      }
+      &.ft-table__item--action {
+        @apply cursor-pointer;
+        &:hover {
+          @apply border-gray-100;
+        }
+      }
+    }
+  }
+}

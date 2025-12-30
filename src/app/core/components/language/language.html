@@ -1,10 +1,10 @@
 <div class="ft-page__header">
   <div class="ft-actions">
     <button type="button" matIconButton i18n-title title="Back" routerLink="/settings">
-      <ft-icon name="arrow-left" class="ft-icon--2" />
+      <ft-icon name="arrow-left" class="text-2xl" />
     </button>
   </div>
-  <div class="ft-title" i18n>Language</div>
+  <div i18n>Language</div>
   <div class="ft-actions"></div>
 </div>
 <div class="ft-page__content ft-anim-enter">
@@ -14,13 +14,13 @@
         <button
           type="button"
           class="ft-list__item"
-          matRipple
+          matButton
           (click)="select(language)"
           [disabled]="locale() === language.code"
         >
           <div class="flex gap-4 items-center">
             <div class="ft-thumbnail">
-              <ft-icon name="globe" class="ft-icon--2" />
+              <ft-icon name="globe" class="text-2xl" />
               @if (locale() === language.code) {
                 <ft-icon name="check" class="ft-thumbnail__badge ft-thumbnail__badge--checked" />
               }

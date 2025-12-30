@@ -1,82 +1,82 @@
 <div #headerElement class="ft-page__header">
   <div class="ft-actions"></div>
-  <div class="ft-title" i18n>Entities</div>
+  <div i18n>Entities</div>
   <div class="ft-actions">
     <button type="button" matIconButton i18n-title title="Add" (click)="entityManager.open()">
-      <ft-icon name="plus" class="ft-icon--2" />
+      <ft-icon name="plus" class="text-2xl" />
     </button>
     <button
       type="button"
-      mat-icon-button
+      matIconButton
       i18n-title
       title="Refresh"
       [disabled]="entities.loading()"
       (click)="entities.refresh()"
     >
-      <ft-icon name="refresh" class="ft-icon--2" [class.ft-anim-rotate]="entities.loading()" />
+      <ft-icon name="refresh" class="text-2xl" [class.ft-anim-rotate]="entities.loading()" />
     </button>
   </div>
 </div>
 <div class="ft-page__content ft-anim-enter">
-  @if (!entities.loading() || entities.value()?.length) {
-    <div class="ft-container">
-      <div
-        class="ft-observe-interseting"
-        (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), datagridHeaderElement)"
-      ></div>
-      <table class="ft-table">
-        <thead class="ft-sticky" #datagridHeaderElement>
-          <tr>
-            <th i18n>Firstname</th>
-            <th i18n>Lastname</th>
-            <th i18n>Phone</th>
-            <th i18n>Email</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (entity of entities.value(); track entity.id) {
-            <tr class="ft-tr-action" (click)="entityManager.open(entity.id, true)">
-              <td>{{ entity.firstName }}</td>
-              <td>{{ entity.lastName }}</td>
-              <td>{{ entity.phone }}</td>
-              <td>{{ entity.email }}</td>
-              <td>
-                <button
-                  type="button"
-                  mat-icon-button
-                  [matMenuTriggerFor]="contextMenu"
-                  (click)="$event.stopPropagation()"
-                >
-                  <ft-icon name="ellipsis-vertical" />
-                </button>
-                <mat-menu #contextMenu="matMenu">
-                  @for (
-                    group of entityManager.getContextMenu(entity, ENTITY_CONTEXT.LIST);
-                    track group.id
-                  ) {
-                    @if ($index > 0) {
-                      <hr class="my-2" />
-                    }
-                    @for (action of group.children; track action.id) {
-                      <button type="button" mat-menu-item (click)="action.click?.()">
-                        {{ action.label }}
-                      </button>
-                    }
+  @if (!entities.error() && (!entities.loading() || entities.value()?.length)) {
+    <table class="ft-table">
+      <thead>
+        <tr>
+          <th class="!ps-6" i18n>Firstname</th>
+          <th i18n>Lastname</th>
+          <th i18n>Phone</th>
+          <th i18n>Email</th>
+          <th class="w-[57px]"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (entity of entities.value(); track entity.id) {
+          <tr class="ft-table__item--action" (click)="entityManager.open(entity.id, true)">
+            <td class="!ps-6">{{ entity.firstName }}</td>
+            <td>{{ entity.lastName }}</td>
+            <td>{{ entity.phone }}</td>
+            <td>{{ entity.email }}</td>
+            <td>
+              <button
+                type="button"
+                matIconButton
+                [matMenuTriggerFor]="contextMenu"
+                (click)="$event.stopPropagation()"
+              >
+                <ft-icon name="ellipsis-vertical" class="text-2xl" />
+              </button>
+              <mat-menu #contextMenu="matMenu">
+                @for (
+                  group of entityManager.getContextMenu(entity, ENTITY_CONTEXT.LIST);
+                  track group.id
+                ) {
+                  @if ($index > 0) {
+                    <hr class="my-2" />
                   }
-                </mat-menu>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+                  @for (action of group.children; track action.id) {
+                    <button type="button" mat-menu-item (click)="action.click?.()">
+                      {{ action.label }}
+                    </button>
+                  }
+                }
+              </mat-menu>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   } @else if (entities.loading()) {
-    <div class="flex flex-col items-center justify-center gap-2 h-full">
+    <div class="ft-center">
       <ft-progress class="ft-progress--3" />
       <div i18n>Loading...</div>
     </div>
+  } @else if (entities.error()) {
+    <div class="ft-center p-6">
+      <ft-icon name="warning" collection="factoricons-slim" class="ft-icon--4" />
+      <p class="text-gray-500 mb-4">{{ entities.error() }}</p>
+      <button i18n type="button" matButton="filled" (click)="entities.refresh()">Retry</button>
+    </div>
   } @else if (!entities.value()?.length) {
-    <div class="flex items-center justify-center h-full" i18n>No records</div>
+    <div class="ft-center" i18n>No records</div>
   }
 </div>

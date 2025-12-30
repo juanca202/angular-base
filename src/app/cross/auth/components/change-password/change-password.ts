@@ -42,7 +42,7 @@ import { getApiUrl } from '@/core/utils/async-repository';
     ErrorMessagePipe
   ],
   templateUrl: './change-password.html',
-  styleUrl: './change-password.scss',
+  styleUrl: './change-password.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangePassword {

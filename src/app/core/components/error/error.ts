@@ -21,7 +21,7 @@ import { environment } from '@/environments/environment';
   selector: 'app-error',
   imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
-  styleUrl: './error.scss',
+  styleUrl: './error.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-error'

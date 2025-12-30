@@ -43,7 +43,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     ErrorMessagePipe
   ],
   templateUrl: './auth.html',
-  styleUrl: './auth.scss',
+  styleUrl: './auth.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-auth',

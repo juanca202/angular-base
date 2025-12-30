@@ -1,4 +1,4 @@
-import { ActionType } from '../constants/action-type';
+import { ACTION_TYPE } from '../constants/action-type';
 
 export interface Action {
   id: string;
@@ -10,3 +10,5 @@ export interface Action {
   click?: () => void;
   payload?: any;
 }
+
+export type ActionType = (typeof ACTION_TYPE)[keyof typeof ACTION_TYPE];

@@ -1,0 +1,3 @@
+.ft-container {
+    @apply max-w-[960px] mx-auto;
+}

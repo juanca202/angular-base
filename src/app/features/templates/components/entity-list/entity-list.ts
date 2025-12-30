@@ -1,11 +1,18 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  effect
+} from '@angular/core';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
 import { MatMenuModule } from '@angular/material/menu';
-import { ENTITY_CONTEXT } from '../../constants/entity-context';
+import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 
 /**
  * Displays the sample entity catalog using the reusable table layout.
@@ -18,7 +25,7 @@ import { ENTITY_CONTEXT } from '../../constants/entity-context';
   selector: 'app-entity-list',
   imports: [MatButtonModule, MatMenuModule, IconComponent, ProgressComponent],
   templateUrl: './entity-list.html',
-  styleUrl: './entity-list.scss',
+  styleUrl: './entity-list.css',
   host: {
     class: 'ft-page'
   },
@@ -36,8 +43,16 @@ export class EntityList implements OnInit, OnDestroy {
   // Properties
   public readonly entities = this.entityRepository.findBy();
 
+  constructor() {
+    effect(() => {
+      const change = this.entityRepository.change();
+      if (!change) return;
+      this.entities.refresh();
+    });
+  }
+
   ngOnInit(): void {
-    this.entities.load();
+    this.entities.load(undefined, { notifyError: false });
   }
   ngOnDestroy(): void {
     this.entities.destroy();

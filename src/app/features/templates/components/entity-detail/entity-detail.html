@@ -1,16 +1,16 @@
-<div #headerElement mat-dialog-title>
+<div mat-dialog-title>
   <div class="ft-actions">
     <button type="button" matIconButton i18n-title title="Close" mat-dialog-close>
-      <ft-icon name="arrow-left" class="ft-icon--2" />
+      <ft-icon name="arrow-left" class="text-2xl" />
     </button>
   </div>
-  <div class="ft-title grow-1" i18n>Entity</div>
+  <div i18n>{{ entity.value()?.firstName }} {{ entity.value()?.lastName }}</div>
   <div class="ft-actions">
     @let contextMenuItems = entityManager.getContextMenu(entity.value(), ENTITY_CONTEXT.DETAIL);
     @if (contextMenuItems.length > 0) {
       <button
         type="button"
-        mat-icon-button
+        matIconButton
         [matMenuTriggerFor]="contextMenu"
         (click)="$event.stopPropagation()"
       >
@@ -33,35 +33,61 @@
 </div>
 <div mat-dialog-content>
   @if (!entity.loading()) {
-    <div
-      class="ft-observe-interseting"
-      (ftObserveIntersecting)="layoutManager.setOverlapped($any($event), headerElement)"
-    ></div>
-    <div class="ft-container">
-      <table>
-        <tr>
-          <th class="text-left" i18n>First name</th>
-          <td class="px-4">{{ entity.value()?.firstName }}</td>
-          <th class="text-left" i18n>Last name</th>
-          <td class="px-4">{{ entity.value()?.lastName }}</td>
-        </tr>
-        <tr>
-          <th class="text-left" i18n>Email</th>
-          <td class="px-4">{{ entity.value()?.email }}</td>
-          <th class="text-left" i18n>Phone</th>
-          <td class="px-4">{{ entity.value()?.phone }}</td>
-        </tr>
+    <div class="ft-container flex flex-col gap-4 pt-4">
+      <div class="flex items-center justify-between">
+        <div>{{ entity.value()?.email }}</div>
+        <a [href]="`mailto:${entity.value()?.email}`" matButton="outlined">
+          <div class="flex items-center gap-2">
+            <ft-icon name="paper-plane" class="text-2xl" />
+            <div i18n>Send email</div>
+          </div>
+        </a>
+      </div>
+      <div class="flex items-center justify-between">
+        <div>{{ entity.value()?.phone }}</div>
+        <a [href]="`tel:${entity.value()?.phone}`" matButton="outlined">
+          <div class="flex items-center gap-2">
+            <ft-icon name="phone" class="text-2xl" />
+            <div i18n>Call</div>
+          </div>
+        </a>
+      </div>
+      <div class="flex items-center justify-between">
+        <h2 i18n class="m-0">Relations</h2>
+        <button type="button" matButton="outlined" (click)="addRelation()">
+          <div class="flex items-center gap-2">
+            <ft-icon name="plus" class="text-2xl" />
+            <div i18n>Add relation</div>
+          </div>
+        </button>
+      </div>
+      <table class="ft-table">
+        <thead>
+          <tr>
+            <th i18n>Name</th>
+            <th i18n>Email</th>
+            <th class="w-[57px]"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entity of related.value()?.slice(0, 3); track entity.id) {
+            <tr>
+              <td>{{ entity.firstName }} {{ entity.lastName }}</td>
+              <td>{{ entity.email }}</td>
+              <td>
+                <button type="button" matIconButton>
+                  <ft-icon name="trash" class="text-2xl" />
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
       </table>
     </div>
   } @else if (entity.loading()) {
-    <div class="flex flex-col items-center justify-center gap-2 h-full">
+    <div class="ft-center">
       <ft-progress class="ft-progress--3" />
       <div i18n>Loading...</div>
     </div>
   }
 </div>
-<ng-template #submittingTemplate>
-  <div class="text-center">
-    <ft-progress class="ft-progress--2" />
-  </div>
-</ng-template>

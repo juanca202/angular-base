@@ -49,7 +49,7 @@ import { Session } from '@/core/services/session';
     ErrorMessagePipe
   ],
   templateUrl: './delete-user.html',
-  styleUrl: './delete-user.scss',
+  styleUrl: './delete-user.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeleteUser implements OnInit, OnDestroy {

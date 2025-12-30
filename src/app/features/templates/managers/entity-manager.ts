@@ -5,13 +5,13 @@ import { EntityDetail } from '@/features/templates/components/entity-detail/enti
 import { EntitySearch } from '@/features/templates/components/entity-search/entity-search';
 import { EntityForm } from '../components/entity-form/entity-form';
 import { Operation } from '@/core/models/operation';
-import { Entity } from '../models/entity';
+import { Entity, EntityContext } from '../models/entity';
 import { MessageService } from '@factor_ec/ui';
 import { firstValueFrom } from 'rxjs';
 import { EntityRepository } from '../repositories/entity-repository';
-import { ENTITY_CONTEXT, EntityContext } from '../constants/entity-context';
 import { Action } from '@/shared/models/action';
 import { ACTION_TYPE } from '@/shared/constants/action-type';
+import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 
 /**
  * Coordinates the experience for opening entity detail dialogs.
@@ -116,7 +116,7 @@ export class EntityManager {
         }
       };
       if (!view) {
-        const dialogRef = this.dialog.open(EntityForm, config);
+        const dialogRef = this.dialog.open(EntityForm, { ...config, disableClose: true });
         const sub = dialogRef.componentInstance.afterSubmit.subscribe((operation) => {
           if (operation) {
             resolve(operation);

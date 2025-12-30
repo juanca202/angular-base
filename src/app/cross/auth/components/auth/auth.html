@@ -16,7 +16,7 @@
       @if (appManager.allowAuthFederation) {
         <button
           type="button"
-          mat-stroked-button
+          matButton="outlined"
           class="block pb-1"
           (click)="connect('google')"
           [disabled]="submitting()"
@@ -58,7 +58,7 @@
             />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye" class="ft-icon--2"></ft-icon>
+                <ft-icon name="eye" class="text-2xl"></ft-icon>
               </button>
             }
             @if (signinForm.get('password')?.invalid && signinForm.get('password')?.touched) {
@@ -78,7 +78,7 @@
             />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye--strike-through" class="ft-icon--2"></ft-icon>
+                <ft-icon name="eye--strike-through" class="text-2xl"></ft-icon>
               </button>
             }
             @if (signinForm.get('password')?.invalid && signinForm.get('password')?.touched) {
@@ -90,7 +90,7 @@
       <div class="flex flex-col mb-4 justify-center gap-4">
         <button
           type="submit"
-          mat-flat-button
+          matButton="filled"
           color="primary"
           [disabled]="!signinForm.valid || submitting()"
         >
@@ -131,7 +131,7 @@
       @if (appManager.allowAuthFederation) {
         <button
           type="button"
-          mat-stroked-button
+          matButton="outlined"
           class="block pb-1"
           (click)="connect('google')"
           [disabled]="submitting()"
@@ -199,7 +199,7 @@
             />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye" class="ft-icon--2"></ft-icon>
+                <ft-icon name="eye" class="text-2xl"></ft-icon>
               </button>
             }
             @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
@@ -219,7 +219,7 @@
             />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye--strike-through" class="ft-icon--2"></ft-icon>
+                <ft-icon name="eye--strike-through" class="text-2xl"></ft-icon>
               </button>
             }
             @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
@@ -231,7 +231,7 @@
       <div class="text-center mb-4">
         <button
           type="submit"
-          mat-flat-button
+          matButton="filled"
           color="primary"
           [disabled]="!signupForm.valid || submitting()"
           class="min-w-[250px]"

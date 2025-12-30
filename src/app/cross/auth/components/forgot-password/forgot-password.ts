@@ -32,7 +32,7 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
     ErrorMessagePipe
   ],
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.scss',
+  styleUrl: './forgot-password.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForgotPassword {

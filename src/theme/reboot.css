@@ -1,0 +1,80 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overscroll-behavior-y: contain;
+  margin: 0;
+  font: var(--ft-text-font);
+  color: var(--ft-color-text);
+  background-color: var(--ft-color-bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+button,
+select,
+optgroup,
+textarea {
+  margin: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+h1 {
+  font-size: var(--ft-h1-font-size);
+  font-weight: 700;
+  margin-block: 0.5rem;
+}
+
+h2 {
+  font-size: var(--ft-h2-font-size);
+  font-weight: 700;
+  margin-block: 0.5rem;
+}
+
+h3 {
+  font-size: var(--ft-h3-font-size);
+  font-weight: 700;
+  margin-block: 0.5rem;
+}
+
+button:not(:disabled),
+[type='button']:not(:disabled),
+[type='reset']:not(:disabled),
+[type='submit']:not(:disabled) {
+  cursor: pointer;
+}
+
+/* Prevent the browser from forcing dark mode */
+meta[name='color-scheme'][content='dark light'],
+meta[name='supported-color-schemes'][content='dark light'] {
+  --samsung-invert-colors: 0 !important;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--ft-border-color);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}

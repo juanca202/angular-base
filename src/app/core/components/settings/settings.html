@@ -1,17 +1,13 @@
 <div #headerElement class="ft-page__header">
   <div class="ft-actions">
     <button type="button" matIconButton i18n-title title="Back" routerLink="/">
-      <ft-icon name="arrow-left" class="ft-icon--2" />
+      <ft-icon name="arrow-left" class="text-2xl" />
     </button>
   </div>
-  <div class="ft-title" i18n>Settings</div>
+  <div i18n>Settings</div>
   <div class="ft-actions"></div>
 </div>
 <div class="ft-page__content ft-anim-enter">
-  <div
-    class="ft-observe-interseting"
-    (ftObserveIntersecting)="layoutManager.setOverlapped($event, headerElement)"
-  ></div>
   <div class="ft-container">
     <div class="ft-list">
       @if (session.settings()) {
@@ -33,10 +29,10 @@
           </div>
         </div>
       }
-      <a routerLink="/settings/language" matRipple class="ft-list__item">
+      <a routerLink="/settings/language" matButton class="ft-list__item">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
-            <ft-icon name="globe" class="ft-icon--2" />
+            <ft-icon name="globe" class="text-2xl" />
           </div>
           <div>
             <div class="ft-item__label" i18n>Language</div>
@@ -44,67 +40,68 @@
           </div>
         </div>
       </a>
-      <button type="button" matRipple class="ft-list__item" (click)="authService.changePassword()">
+      <button type="button" matButton class="ft-list__item" (click)="authService.changePassword()">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
-            <ft-icon name="password-edit" class="ft-icon--2" />
+            <ft-icon name="password-edit" class="text-2xl" />
           </div>
           <div class="ft-item__label" i18n>Change password</div>
         </div>
       </button>
-      <hr />
-      <button type="button" matRipple #supportButton class="ft-list__item">
+      <hr class="my-4" />
+      <button type="button" matButton #supportButton class="ft-list__item">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
-            <ft-icon name="help" class="ft-icon--2" />
+            <ft-icon name="help" class="text-2xl" />
           </div>
           <div class="ft-item__label" i18n>Support</div>
         </div>
       </button>
-      <button type="button" matRipple class="ft-list__item">
+      <button type="button" matButton class="ft-list__item">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
-            <ft-icon name="document--text" class="ft-icon--2" />
+            <ft-icon name="document--text" class="text-2xl" />
           </div>
           <div class="ft-item__label" i18n>Terms and Conditions</div>
         </div>
       </button>
-      <button type="button" matRipple class="ft-list__item">
+      <button type="button" matButton class="ft-list__item">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
-            <ft-icon name="document--text" class="ft-icon--2" />
+            <ft-icon name="document--text" class="text-2xl" />
           </div>
           <div class="ft-item__label" i18n>Privacy Policies</div>
         </div>
       </button>
-      <hr />
-      <button type="button" matRipple class="ft-list__item" (click)="authService.logout()">
+      <hr class="my-4" />
+      <button type="button" matButton class="ft-list__item" (click)="authService.logout()">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
-            <ft-icon name="sign-out" class="ft-icon--2" />
+            <ft-icon name="sign-out" class="text-2xl" />
           </div>
           <div class="ft-item__label" i18n>Sign out</div>
         </div>
       </button>
       <button
         type="button"
-        matRipple
+        matButton
         class="ft-list__item text-red-500"
         (click)="authService.confirmDeleteUser()"
       >
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
-            <ft-icon name="error" class="ft-icon--2 text-red-500" />
+            <ft-icon name="error" class="text-2xl text-red-500" />
           </div>
           <div class="ft-item__label" i18n>Delete account</div>
         </div>
       </button>
     </div>
-    <div class="ft-card m-2">
-      <div class="ft-card__body flex items-center gap-4">
+    <hr class="my-4" />
+    <div class="m-2">
+      <div class="flex items-center gap-4">
         @if (appManager.updateStatus() === 'done') {
           <div class="ft-thumbnail">
-            <ft-icon name="check--circle" class="ft-icon--2 text-green-500" />
+            <ft-icon name="check--circle" class="text-2xl text-green-500" />
           </div>
           <div class="flex-1">
             <div class="ft-item__label" i18n>{{ appManager.name }} is up to date</div>
@@ -120,7 +117,7 @@
           </div>
         } @else if (appManager.updateStatus() === 'failed') {
           <div class="ft-thumbnail">
-            <ft-icon name="warning" class="ft-icon--2 text-yellow-500" />
+            <ft-icon name="warning" class="text-2xl text-yellow-500" />
           </div>
           <div class="flex-1">
             <div class="ft-item__label" i18n>Error checking for updates</div>
@@ -131,8 +128,3 @@
     </div>
   </div>
 </div>
-<ng-template #submittingTemplate>
-  <div class="text-center">
-    <ft-progress class="ft-progress--2" />
-  </div>
-</ng-template>

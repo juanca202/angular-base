@@ -21,9 +21,9 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { Entity } from '../../models/entity';
 import { OPERATION_TYPE, OperationType } from '@/core/constants/operation-type';
 import { Operation } from '@/core/models/operation';
-import { ENTITY_CONTEXT } from '../../constants/entity-context';
 import { EntityManager } from '../../managers/entity-manager';
 import { MatMenuModule } from '@angular/material/menu';
+import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 
 @Component({
   selector: 'app-entity-form',
@@ -40,7 +40,7 @@ import { MatMenuModule } from '@angular/material/menu';
     ErrorMessagePipe
   ],
   templateUrl: './entity-form.html',
-  styleUrl: './entity-form.scss',
+  styleUrl: './entity-form.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityForm implements OnInit, OnDestroy {
@@ -92,6 +92,7 @@ export class EntityForm implements OnInit, OnDestroy {
       try {
         let entity: Entity | null;
         let type: OperationType;
+        this.form.disable();
         if (this.data?.id) {
           // Update existing entity
           entity = await this.entityMutations.update({ ...formData, id: this.data.id });
@@ -104,10 +105,13 @@ export class EntityForm implements OnInit, OnDestroy {
         // Close dialog on success
         this.dialogRef.close();
         // Show confirmation message
-        this.messageService.show($localize`Saved successfully.`);
+        this.messageService.show($localize`Saved successfully.`, {
+          class: 'ft-message--success',
+          icon: 'check--circle'
+        });
         this.afterSubmit.emit({ type, entity });
-      } catch {
-        // Error is already handled by the repository
+      } finally {
+        this.form.enable();
       }
     }
   }

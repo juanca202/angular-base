@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-entity-search',
   imports: [AvatarComponent, IconComponent, MatButtonModule, MatDialogContent, ReactiveFormsModule],
   templateUrl: './entity-search.html',
-  styleUrl: './entity-search.scss',
+  styleUrl: './entity-search.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntitySearch implements OnInit {

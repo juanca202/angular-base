@@ -1,0 +1,6 @@
+.ft-list {
+  @apply flex flex-col;
+  .ft-list__item {
+    @apply block p-2 h-max text-start;
+  }
+}

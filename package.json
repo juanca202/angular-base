@@ -41,12 +41,9 @@
     "@factor_ec/ui": "^5.0.8",
     "@factor_ec/utils": "^5.0.8",
     "@microsoft/applicationinsights-web": "^3.3.10",
-    "@tailwindcss/postcss": "^4.1.17",
     "git-describe": "^4.1.1",
     "moment": "^2.30.1",
-    "postcss": "^8.5.6",
     "rxjs": "~7.8.0",
-    "tailwindcss": "^4.1.17",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -77,11 +74,13 @@
     "husky": "^9.1.7",
     "jsdom": "^27.0.0",
     "lint-staged": "^15.2.10",
-    "postcss": "^8.5.3",
     "prettier": "^3.3.3",
     "svgo": "^4.0.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.15",
+    "postcss": "^8.5.3",
+    "@tailwindcss/postcss": "^4.1.12",
+    "tailwindcss": "^4.1.12"
   }
 }

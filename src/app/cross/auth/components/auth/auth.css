@@ -1,0 +1,95 @@
+@use '../../../../../theme/utils/mixins' as mixins;
+
+:host {
+  display: flex;
+  flex-direction: row-reverse;
+  min-height: 100vh;
+  min-height: 100svh;
+  background-color: var(--ft-color-bg);
+
+  form {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: max(40vw, 450px);
+
+    @include mixins.media-breakpoint-up(md) {
+      padding: 2rem 3rem;
+      min-width: max(40vw, 450px);
+    }
+
+    > div {
+      width: 100%;
+      margin: auto;
+    }
+
+    a {
+      color: var(--ft-primary-color);
+    }
+  }
+
+  /*
+  .ft-logo {
+    text-align: center;
+    background-image: url(../../../public/images/logo.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 3rem;
+
+    @media (prefers-color-scheme: dark) {
+      background-image: url(../../../public/images/logo-dark.svg);
+    }
+
+    &__wrapper {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-top: 3rem;
+    }
+  }*/
+
+  .ft-terms {
+    font-size: 0.75rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    max-width: 360px;
+    text-align: center;
+    margin: auto;
+
+    &,
+    a {
+      color: var(--ft-text-muted-color);
+    }
+  }
+
+  .ft-auth__signin {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: max(40vw, 450px);
+
+    > div {
+      max-width: 330px;
+    }
+  }
+
+  .ft-auth__signup {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: max(40vw, 450px);
+
+    > div {
+      max-width: 400px;
+    }
+  }
+}
+
+.ft-auth-menu.mat-mdc-menu-panel {
+  max-width: calc(400px - 4rem);
+
+  .mat-mdc-menu-content {
+    width: calc(100vw - 4rem);
+    max-width: calc(400px - 4rem);
+  }
+}

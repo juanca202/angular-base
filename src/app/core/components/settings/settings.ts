@@ -16,12 +16,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Title } from '@angular/platform-browser';
 
 import { GoogleTagManagerService } from '@factor_ec/utils';
-import {
-  IconComponent,
-  AvatarComponent,
-  ObserveIntersectingDirective,
-  ProgressComponent
-} from '@factor_ec/ui';
+import { IconComponent, AvatarComponent, ProgressComponent } from '@factor_ec/ui';
 import { Language } from '@factor_ec/utils';
 // import * as Sentry from '@sentry/angular';
 
@@ -51,11 +46,10 @@ import { LANGUAGES } from '@/core/constants/languages';
     MatTooltipModule,
     MatRippleModule,
     RouterModule,
-    AvatarComponent,
-    ObserveIntersectingDirective
+    AvatarComponent
   ],
   templateUrl: './settings.html',
-  styleUrl: './settings.scss',
+  styleUrl: './settings.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-page'
