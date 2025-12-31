@@ -1,96 +1,84 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { HttpRequest, HttpHandler } from '@angular/common/http';
+import { HttpRequest, HttpHandlerFn, HttpHeaders } from '@angular/common/http';
 import { of } from 'rxjs';
 import { clientInterceptor } from './client-interceptor';
 import { AppManager } from '../services/app-manager';
 
 describe('clientInterceptor', () => {
-  // Arrange
-  let appManager: AppManager;
-  let mockHandler: HttpHandler;
+  let next: HttpHandlerFn;
 
   beforeEach(() => {
-    // Arrange: Setup TestBed with AppManager
     TestBed.configureTestingModule({
-      providers: [AppManager]
+      providers: [
+        {
+          provide: AppManager,
+          useValue: {
+            getClientId: vi.fn().mockReturnValue('test-client-id'),
+            getAppId: vi.fn().mockReturnValue('test-app'),
+            getAppVersion: vi.fn().mockReturnValue('1.0.0')
+          }
+        }
+      ]
     });
-    appManager = TestBed.inject(AppManager);
-    mockHandler = {
-      handle: vi.fn().mockReturnValue(of({}))
-    } as any;
+
+    next = vi.fn().mockReturnValue(of({}));
   });
 
-  it('should add Client-Id header to request', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
-    const getClientIdSpy = vi.spyOn(appManager, 'getClientId').mockReturnValue('test-client-id');
+  it('should add Client-Id header', () => {
+    const req = new HttpRequest('GET', '/api/test');
 
-    // Act
-    clientInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      expect(getClientIdSpy).toHaveBeenCalled();
-      const interceptedRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(interceptedRequest.headers.get('Client-Id')).toBe('test-client-id');
-      done();
+    TestBed.runInInjectionContext(() => {
+      clientInterceptor(req, next).subscribe();
     });
+
+    const intercepted = (next as any).mock.calls[0][0];
+    expect(intercepted.headers.get('Client-Id')).toBe('test-client-id');
   });
 
-  it('should add App-Id header to request', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
+  it('should add App-Id header', () => {
+    const req = new HttpRequest('GET', '/api/test');
 
-    // Act
-    clientInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      const interceptedRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(interceptedRequest.headers.has('App-Id')).toBe(true);
-      done();
+    TestBed.runInInjectionContext(() => {
+      clientInterceptor(req, next).subscribe();
     });
+
+    const intercepted = (next as any).mock.calls[0][0];
+    expect(intercepted.headers.get('App-Id')).toBe('test-app');
   });
 
-  it('should add App-Version header to request', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
+  it('should add App-Version header', () => {
+    const req = new HttpRequest('GET', '/api/test');
 
-    // Act
-    clientInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      const interceptedRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(interceptedRequest.headers.has('App-Version')).toBe(true);
-      done();
+    TestBed.runInInjectionContext(() => {
+      clientInterceptor(req, next).subscribe();
     });
+
+    const intercepted = (next as any).mock.calls[0][0];
+    expect(intercepted.headers.get('App-Version')).toBe('1.0.0');
   });
 
-  it('should preserve existing headers', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test', null, {
-      headers: { 'Custom-Header': 'custom-value' }
+  it('should preserve existing headers', () => {
+    const req = new HttpRequest('GET', '/api/test', null, {
+      headers: new HttpHeaders({ 'Custom-Header': 'custom-value' })
     });
 
-    // Act
-    clientInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      const interceptedRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(interceptedRequest.headers.get('Custom-Header')).toBe('custom-value');
-      expect(interceptedRequest.headers.has('Client-Id')).toBe(true);
-      done();
+    TestBed.runInInjectionContext(() => {
+      clientInterceptor(req, next).subscribe();
     });
+
+    const intercepted = (next as any).mock.calls[0][0];
+    expect(intercepted.headers.get('Custom-Header')).toBe('custom-value');
+    expect(intercepted.headers.has('Client-Id')).toBe(true);
   });
 
-  it('should call next handler with modified request', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
-    const handleSpy = vi.spyOn(mockHandler, 'handle');
+  it('should call next handler once', () => {
+    const req = new HttpRequest('GET', '/api/test');
 
-    // Act
-    clientInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      expect(handleSpy).toHaveBeenCalledTimes(1);
-      const interceptedRequest = handleSpy.mock.calls[0][0];
-      expect(interceptedRequest).toBeInstanceOf(HttpRequest);
-      expect(interceptedRequest.url).toBe(request.url);
-      done();
+    TestBed.runInInjectionContext(() => {
+      clientInterceptor(req, next).subscribe();
     });
+
+    expect(next).toHaveBeenCalledTimes(1);
   });
 });

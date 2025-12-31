@@ -6,6 +6,7 @@ import { Language } from './language';
 import { AppManager } from '@/core/services/app-manager';
 import { StorageService, Language as LanguageModel } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
+import { signal } from '@angular/core';
 
 describe('Language', () => {
   // Arrange
@@ -19,7 +20,7 @@ describe('Language', () => {
     // Arrange: Create mocks
     mockAppManager = {
       getLocale: vi.fn().mockReturnValue('en'),
-      languages: vi.fn().mockReturnValue([
+      languages: signal<LanguageModel[]>([
         { code: 'en', name: 'English' },
         { code: 'es', name: 'Español' }
       ])
@@ -72,7 +73,7 @@ describe('Language', () => {
     it('should save language to storage and reload page', async () => {
       // Arrange
       const language: LanguageModel = { code: 'es', name: 'Español' };
-      const reloadSpy = vi.spyOn(location, 'reload').mockImplementation(() => {});
+      const reloadSpy = vi.spyOn(window.location, 'reload').mockImplementation(() => {});
 
       // Act
       await component.select(language);
@@ -90,7 +91,7 @@ describe('Language', () => {
     it('should save English language to storage', async () => {
       // Arrange
       const language: LanguageModel = { code: 'en', name: 'English' };
-      const reloadSpy = vi.spyOn(location, 'reload').mockImplementation(() => {});
+      const reloadSpy = vi.spyOn(window.location, 'reload').mockImplementation(() => {});
 
       // Act
       await component.select(language);

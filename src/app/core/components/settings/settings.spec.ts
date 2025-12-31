@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
+import { Settings as SettingsModel } from '@/core/models/settings';
 import { Settings } from './settings';
 import { AppManager } from '@/core/services/app-manager';
 import { LayoutManager } from '@/core/services/layout-manager';
@@ -10,6 +11,8 @@ import { AuthProvider } from '@/core/services/auth.provider';
 import { Session } from '@/core/services/session';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 import { LANGUAGES } from '@/core/constants/languages';
+import { computed, signal } from '@angular/core';
+import { User } from '@/core/models/user';
 
 describe('Settings', () => {
   // Arrange
@@ -30,9 +33,9 @@ describe('Settings', () => {
     paramMapSubject = new Subject<ParamMap>();
     mockAppManager = {
       checkForUpdates: vi.fn(),
-      languages: vi.fn().mockReturnValue(LANGUAGES),
+      languages: signal(LANGUAGES),
       getLocale: vi.fn().mockReturnValue('en'),
-      updateStatus: vi.fn().mockReturnValue('done'),
+      updateStatus: signal<string | null>('done'),
       name: 'Test App',
       version: '1.0.0'
     };
@@ -43,8 +46,8 @@ describe('Settings', () => {
     };
     mockLayoutManager = {};
     mockSession = {
-      user: vi.fn().mockReturnValue(null),
-      settings: vi.fn().mockReturnValue(null)
+      user: computed<User | null>(() => null),
+      settings: computed<SettingsModel | null>(() => null)
     };
     mockGoogleTagManagerService = {
       addVariable: vi.fn()
@@ -182,7 +185,7 @@ describe('Settings', () => {
     it('should share app when navigator.share is available', async () => {
       // Arrange
       const mockShare = vi.fn().mockResolvedValue(undefined);
-      Object.defineProperty(navigator, 'share', {
+      Object.defineProperty(window.navigator, 'share', {
         writable: true,
         value: mockShare
       });
@@ -191,7 +194,7 @@ describe('Settings', () => {
       component.shareApp();
 
       // Assert
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 100));
       expect(mockShare).toHaveBeenCalledWith({
         title: expect.any(String),
         text: expect.any(String),
@@ -202,7 +205,7 @@ describe('Settings', () => {
     it('should track share success event', async () => {
       // Arrange
       const mockShare = vi.fn().mockResolvedValue(undefined);
-      Object.defineProperty(navigator, 'share', {
+      Object.defineProperty(window.navigator, 'share', {
         writable: true,
         value: mockShare
       });
@@ -211,7 +214,7 @@ describe('Settings', () => {
       component.shareApp();
 
       // Assert
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 100));
       expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
         event: 'share_app_success'
       });
@@ -221,7 +224,7 @@ describe('Settings', () => {
       // Arrange
       const error = new Error('Share failed');
       const mockShare = vi.fn().mockRejectedValue(error);
-      Object.defineProperty(navigator, 'share', {
+      Object.defineProperty(window.navigator, 'share', {
         writable: true,
         value: mockShare
       });
@@ -230,7 +233,7 @@ describe('Settings', () => {
       component.shareApp();
 
       // Assert
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 100));
       expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
         event: 'share_app_error',
         message: 'Share failed'
@@ -239,7 +242,7 @@ describe('Settings', () => {
 
     it('should not throw error when navigator.share is not available', () => {
       // Arrange
-      Object.defineProperty(navigator, 'share', {
+      Object.defineProperty(window.navigator, 'share', {
         writable: true,
         value: undefined
       });

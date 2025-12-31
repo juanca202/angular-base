@@ -1,4 +1,4 @@
-import { Injectable, Injector, PLATFORM_ID, signal, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, signal, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { loadTranslations } from '@angular/localize';
 import { registerLocaleData } from '@angular/common';
@@ -36,7 +36,6 @@ registerLocaleData(localeEs, 'es');
 export class AppManager {
   private readonly authService = inject(AuthProvider);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
-  private readonly injector = inject(Injector);
   private readonly location = inject(Location);
   private readonly platformId = inject<object>(PLATFORM_ID);
   private readonly router = inject(Router);
@@ -47,11 +46,11 @@ export class AppManager {
 
   public readonly allowSignup: boolean = true;
   public readonly allowAuthFederation: boolean = false;
-  public readonly id = '';
-  public readonly name = '';
-  public initialized = false;
+  public readonly id: string = '';
+  public readonly name: string = '';
+  public initialized: boolean = false;
   private installPrompt: any = null; // BeforeInstallPromptEvent;
-  public readonly version = versionInfo.git.raw;
+  public readonly version: string = versionInfo.git.raw;
   public readonly updateStatus = signal<string | null>('done');
   private readonly defaultLocale = 'en';
   public readonly languages = signal<Language[]>(LANGUAGES);

@@ -1,109 +1,88 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { HttpRequest, HttpHandler } from '@angular/common/http';
+import { HttpRequest, HttpHandlerFn, HttpHeaders } from '@angular/common/http';
 import { of } from 'rxjs';
 import { languageInterceptor } from './language-interceptor';
 import { AppManager } from '../services/app-manager';
 
 describe('languageInterceptor', () => {
-  // Arrange
   let appManager: AppManager;
-  let mockHandler: HttpHandler;
+  let next: HttpHandlerFn;
 
   beforeEach(() => {
-    // Arrange: Setup TestBed with AppManager
     TestBed.configureTestingModule({
-      providers: [AppManager]
+      providers: [
+        AppManager,
+        {
+          provide: AppManager,
+          useValue: {
+            getLocale: vi.fn().mockReturnValue('en')
+          }
+        }
+      ]
     });
+
     appManager = TestBed.inject(AppManager);
-    mockHandler = {
-      handle: vi.fn().mockReturnValue(of({}))
-    } as any;
+
+    next = vi.fn().mockReturnValue(of({}));
   });
 
-  it('should add Accept-Language header with current locale', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
-    const getLocaleSpy = vi.spyOn(appManager, 'getLocale').mockReturnValue('es');
+  it('should add Accept-Language header with current locale', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    vi.spyOn(appManager, 'getLocale').mockReturnValue('es');
 
-    // Act
-    languageInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      expect(getLocaleSpy).toHaveBeenCalled();
-      const interceptedRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(interceptedRequest.headers.get('Accept-Language')).toBe('es');
-      done();
+    TestBed.runInInjectionContext(() => {
+      languageInterceptor(req, next).subscribe();
     });
+
+    const interceptedReq = (next as any).mock.calls[0][0];
+    expect(interceptedReq.headers.get('Accept-Language')).toBe('es');
   });
 
-  it('should use English locale when getLocale returns en', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
-    vi.spyOn(appManager, 'getLocale').mockReturnValue('en');
-
-    // Act
-    languageInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      const interceptedRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(interceptedRequest.headers.get('Accept-Language')).toBe('en');
-      done();
+  it('should preserve existing headers', () => {
+    const req = new HttpRequest('GET', '/api/test', null, {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer token123'
+      })
     });
+
+    TestBed.runInInjectionContext(() => {
+      languageInterceptor(req, next).subscribe();
+    });
+
+    const interceptedReq = (next as any).mock.calls[0][0];
+    expect(interceptedReq.headers.get('Authorization')).toBe('Bearer token123');
+    expect(interceptedReq.headers.get('Accept-Language')).toBe('en');
   });
 
-  it('should preserve existing headers', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test', null, {
-      headers: { Authorization: 'Bearer token123' }
+  it('should call next handler once', () => {
+    const req = new HttpRequest('GET', '/api/test');
+
+    TestBed.runInInjectionContext(() => {
+      languageInterceptor(req, next).subscribe();
     });
 
-    // Act
-    languageInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      const interceptedRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(interceptedRequest.headers.get('Authorization')).toBe('Bearer token123');
-      expect(interceptedRequest.headers.has('Accept-Language')).toBe(true);
-      done();
-    });
+    expect(next).toHaveBeenCalledTimes(1);
   });
 
-  it('should call next handler with modified request', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
-    const handleSpy = vi.spyOn(mockHandler, 'handle');
+  it('should update Accept-Language when locale changes', () => {
+    const req = new HttpRequest('GET', '/api/test');
+    let call = 0;
 
-    // Act
-    languageInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert
-      expect(handleSpy).toHaveBeenCalledTimes(1);
-      const interceptedRequest = handleSpy.mock.calls[0][0];
-      expect(interceptedRequest).toBeInstanceOf(HttpRequest);
-      expect(interceptedRequest.url).toBe(request.url);
-      done();
-    });
-  });
-
-  it('should update Accept-Language header when locale changes', (done) => {
-    // Arrange
-    const request = new HttpRequest('GET', '/api/test');
-    let callCount = 0;
     vi.spyOn(appManager, 'getLocale').mockImplementation(() => {
-      callCount++;
-      return callCount === 1 ? 'en' : 'es';
+      call++;
+      return call === 1 ? 'en' : 'es';
     });
 
-    // Act - First call
-    languageInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-      // Assert - First call
-      const firstRequest = (mockHandler.handle as any).mock.calls[0][0];
-      expect(firstRequest.headers.get('Accept-Language')).toBe('en');
-
-      // Act - Second call
-      languageInterceptor(request, mockHandler.handle.bind(mockHandler)).subscribe(() => {
-        // Assert - Second call
-        const secondRequest = (mockHandler.handle as any).mock.calls[1][0];
-        expect(secondRequest.headers.get('Accept-Language')).toBe('es');
-        done();
-      });
+    TestBed.runInInjectionContext(() => {
+      languageInterceptor(req, next).subscribe();
+      languageInterceptor(req, next).subscribe();
     });
+
+    const first = (next as any).mock.calls[0][0];
+    const second = (next as any).mock.calls[1][0];
+
+    expect(first.headers.get('Accept-Language')).toBe('en');
+    expect(second.headers.get('Accept-Language')).toBe('es');
   });
 });

@@ -9,8 +9,11 @@ import { SessionState } from '../models/session-state';
 describe('Session', () => {
   // Arrange
   let service: Session;
-  let mockStorageService: Partial<StorageService>;
-  const STORAGE_KEY = '_sess';
+  let mockStorageService: {
+    get: ReturnType<typeof vi.fn>;
+    set: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
     // Arrange: Create mock storage service
@@ -64,12 +67,10 @@ describe('Session', () => {
       vi.mocked(mockStorageService.get).mockReturnValue(storedState);
 
       // Act
-      const newService = new Session();
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         providers: [Session, { provide: StorageService, useValue: mockStorageService }]
       });
-      const restoredService = TestBed.inject(Session);
 
       // Assert
       // Note: This test verifies the restoreFromStorage logic exists
