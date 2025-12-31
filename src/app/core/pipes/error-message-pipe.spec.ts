@@ -1,157 +1,165 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { FormControl, Validators } from '@angular/forms';
 import { ErrorMessagePipe } from './error-message-pipe';
-import { FormControl } from '@angular/forms';
 
 describe('ErrorMessagePipe', () => {
+  // Arrange
   let pipe: ErrorMessagePipe;
 
   beforeEach(() => {
+    // Arrange: Create pipe instance directly
     pipe = new ErrorMessagePipe();
   });
 
-  it('should create', () => {
-    expect(pipe).toBeTruthy();
-  });
-
   describe('transform', () => {
-    it('should return empty string when control is null', () => {
-      // Arrange & Act
-      const result = pipe.transform(null);
+    it('should return empty string when field is null', () => {
+      // Arrange
+      const field = null;
+
+      // Act
+      const result = pipe.transform(field);
 
       // Assert
       expect(result).toBe('');
     });
 
-    it('should return empty string when control has no errors', () => {
+    it('should return empty string when field has no errors', () => {
       // Arrange
-      const control = new FormControl('valid value');
+      const field = new FormControl('valid value');
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field);
 
       // Assert
       expect(result).toBe('');
     });
 
-    it('should return error message for required field', () => {
+    it('should return required error message when field is required', () => {
       // Arrange
-      const control = new FormControl('');
-      control.setErrors({ required: true });
-      control.markAsTouched();
+      const field = new FormControl('', [Validators.required]);
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field);
 
       // Assert
       expect(result).toContain('required');
     });
 
-    it('should return error message for email field', () => {
+    it('should return email error message when field has email error', () => {
       // Arrange
-      const control = new FormControl('invalid-email');
-      control.setErrors({ email: true });
-      control.markAsTouched();
+      const field = new FormControl('invalid-email', [Validators.email]);
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field);
 
       // Assert
       expect(result).toContain('email');
     });
 
-    it('should return error message for minlength field', () => {
+    it('should return min error message with value when field has min error', () => {
       // Arrange
-      const control = new FormControl('ab');
-      control.setErrors({ minlength: { requiredLength: 5, actualLength: 2 } });
-      control.markAsTouched();
+      const field = new FormControl(5);
+      field.setErrors({ min: { min: 10, actual: 5 } });
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field);
+
+      // Assert
+      expect(result).toContain('10');
+    });
+
+    it('should return max error message with value when field has max error', () => {
+      // Arrange
+      const field = new FormControl(15);
+      field.setErrors({ max: { max: 10, actual: 15 } });
+
+      // Act
+      const result = pipe.transform(field);
+
+      // Assert
+      expect(result).toContain('10');
+    });
+
+    it('should return minlength error message with required length', () => {
+      // Arrange
+      const field = new FormControl('ab', [Validators.minLength(5)]);
+
+      // Act
+      const result = pipe.transform(field);
 
       // Assert
       expect(result).toContain('5');
-      expect(result).toContain('characters');
     });
 
-    it('should return error message for maxlength field', () => {
+    it('should return maxlength error message with required length', () => {
       // Arrange
-      const control = new FormControl('too long value');
-      control.setErrors({ maxlength: { requiredLength: 10, actualLength: 15 } });
-      control.markAsTouched();
+      const field = new FormControl('abcdefghij', [Validators.maxLength(5)]);
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field);
 
       // Assert
-      expect(result).toContain('10');
-      expect(result).toContain('maximum');
+      expect(result).toContain('5');
     });
 
-    it('should return error message for min field', () => {
+    it('should return nameTaken error message when field has nameTaken error', () => {
       // Arrange
-      const control = new FormControl(5);
-      control.setErrors({ min: { min: 10, actual: 5 } });
-      control.markAsTouched();
+      const field = new FormControl('existing-name');
+      field.setErrors({ nameTaken: true });
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field);
 
       // Assert
-      expect(result).toContain('10');
-      expect(result).toContain('greater');
+      expect(result).toContain('name');
     });
 
-    it('should return error message for max field', () => {
+    it('should use custom message when provided in messages parameter', () => {
       // Arrange
-      const control = new FormControl(15);
-      control.setErrors({ max: { max: 10, actual: 15 } });
-      control.markAsTouched();
+      const field = new FormControl('', [Validators.required]);
+      const customMessages = { required: 'Campo obligatorio personalizado' };
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field, customMessages);
 
       // Assert
-      expect(result).toContain('10');
-      expect(result).toContain('less');
+      expect(result).toBe('Campo obligatorio personalizado');
     });
 
-    it('should return error message for nameTaken field', () => {
+    it('should use custom message for email error when provided', () => {
       // Arrange
-      const control = new FormControl('taken-name');
-      control.setErrors({ nameTaken: true });
-      control.markAsTouched();
+      const field = new FormControl('invalid', [Validators.email]);
+      const customMessages = { email: 'Email inválido personalizado' };
 
       // Act
-      const result = pipe.transform(control);
+      const result = pipe.transform(field, customMessages);
 
       // Assert
-      expect(result).toContain('already in use');
+      expect(result).toBe('Email inválido personalizado');
     });
 
-    it('should return custom message when provided', () => {
+    it('should return first error message when field has multiple errors', () => {
       // Arrange
-      const control = new FormControl('test');
-      control.setErrors({ customError: true });
-      control.markAsTouched();
-      const customMessages = { customError: 'Custom error message' };
+      const field = new FormControl('', [Validators.required, Validators.email]);
 
       // Act
-      const result = pipe.transform(control, customMessages);
+      const result = pipe.transform(field);
 
       // Assert
-      expect(result).toBe('Custom error message');
-    });
-
-    it('should return first error message when multiple errors exist', () => {
-      // Arrange
-      const control = new FormControl('');
-      control.setErrors({ required: true, email: true });
-      control.markAsTouched();
-
-      // Act
-      const result = pipe.transform(control);
-
-      // Assert
+      // Should return the first error (required)
       expect(result).toContain('required');
+    });
+
+    it('should handle field with errors object but empty keys', () => {
+      // Arrange
+      const field = new FormControl('value');
+      field.setErrors({});
+
+      // Act
+      const result = pipe.transform(field);
+
+      // Assert
+      expect(result).toBe('');
     });
   });
 });

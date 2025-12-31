@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class LayoutManager {
   public getRandomNumber(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + 160;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
   public setOverlapped(event: boolean, element: HTMLElement | any): void {
     const targetElement = element instanceof HTMLElement ? element : element?.nativeElement;

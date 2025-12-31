@@ -21,12 +21,6 @@
     "compodoc:serve": "compodoc -s",
     "icons:pack": "node generate-icons.js"
   },
-  "lint-staged": {
-    "src/**/*.{ts,js,html,scss,json,md}": [
-      "prettier --write",
-      "eslint --fix"
-    ]
-  },
   "private": true,
   "dependencies": {
     "@angular/cdk": "~21.0.3",
@@ -56,11 +50,13 @@
     "@angular/cli": "^21.0.3",
     "@angular/compiler-cli": "^21.0.5",
     "@angular/localize": "^21.0.5",
+    "@angular/platform-browser-dynamic": "^21.0.5",
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@compodoc/compodoc": "^1.1.32",
+    "@tailwindcss/postcss": "^4.1.12",
     "@typescript-eslint/eslint-plugin": "^8.44.1",
     "@typescript-eslint/parser": "^8.44.1",
     "@vitest/coverage-v8": "^4.0.15",
@@ -74,13 +70,12 @@
     "husky": "^9.1.7",
     "jsdom": "^27.0.0",
     "lint-staged": "^15.2.10",
+    "postcss": "^8.5.3",
     "prettier": "^3.3.3",
     "svgo": "^4.0.0",
+    "tailwindcss": "^4.1.12",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
-    "vitest": "^4.0.15",
-    "postcss": "^8.5.3",
-    "@tailwindcss/postcss": "^4.1.12",
-    "tailwindcss": "^4.1.12"
+    "vitest": "^4.0.15"
   }
 }
