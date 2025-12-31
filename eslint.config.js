@@ -198,7 +198,22 @@ module.exports = [
         afterEach: 'readonly',
         expect: 'readonly',
         vi: 'readonly',
-        HTMLElement: 'readonly'
+        HTMLElement: 'readonly',
+        // Browser globals for testing
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        navigator: 'readonly',
+        location: 'readonly',
+        history: 'readonly',
+        performance: 'readonly',
+        crypto: 'readonly',
+        fetch: 'readonly',
+        globalThis: 'readonly'
       }
     },
     rules: {
