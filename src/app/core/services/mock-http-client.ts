@@ -168,9 +168,9 @@ export class MockHttpClient {
 
   private applyFilters(data: any[], params: Record<string, any>): any[] {
     // Excluir parámetros de paginación del filtrado
-    const { ...filters } = params;
+    const { page, pageSize, ...filters } = params;
 
-    return data.filter((item) =>
+    let filteredData = data.filter((item) =>
       Object.entries(filters).every(([key, value]) => {
         if (Array.isArray(value)) {
           return value.includes(item[key]);
@@ -178,6 +178,14 @@ export class MockHttpClient {
         return item[key] == value;
       })
     );
+
+    // Aplicar paginación con page y pageSize
+    if (pageSize && page) {
+      const start = (Number(page) - 1) * Number(pageSize);
+      filteredData = filteredData.slice(start, start + Number(pageSize));
+    }
+
+    return filteredData;
   }
 
   private applyPagination(data: any[], params: Record<string, any>): any[] {

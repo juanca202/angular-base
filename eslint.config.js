@@ -199,6 +199,9 @@ module.exports = [
         expect: 'readonly',
         vi: 'readonly',
         HTMLElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        Event: 'readonly',
+        ErrorEvent: 'readonly',
         // Browser globals for testing
         window: 'readonly',
         document: 'readonly',
