@@ -94,6 +94,7 @@ export class ResetPassword {
           })
         );
         this.submitting.set(false);
+        this.form.enable();
         this.router.navigateByUrl('/');
         setTimeout(() => {
           this.messageService.show($localize`Your password was changed successfully.`);

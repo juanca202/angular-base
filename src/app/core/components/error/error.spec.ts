@@ -7,20 +7,7 @@ import { AuthProvider } from '@/core/services/auth.provider';
 import { StorageService } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
-
-function createNavigation(router: Router, state?: Record<string, unknown>): Navigation {
-  const url: UrlTree = router.parseUrl('/error');
-
-  return {
-    id: 1,
-    initialUrl: url,
-    extractedUrl: url,
-    trigger: 'imperative',
-    extras: { state },
-    previousNavigation: null,
-    abort: () => {}
-  };
-}
+import { EMPTY } from 'rxjs';
 
 describe('Error', () => {
   let component: Error;
@@ -45,6 +32,13 @@ describe('Error', () => {
     } as any;
 
     mockRouter = {
+      navigateByUrl: vi.fn(),
+      parseUrl: vi.fn().mockImplementation(() => {
+        return {} as UrlTree;
+      }),
+      createUrlTree: vi.fn().mockReturnValue({} as UrlTree),
+      serializeUrl: vi.fn().mockReturnValue(''),
+      events: EMPTY,
       currentNavigation: signal<Navigation | null>(null)
     };
 
@@ -119,10 +113,23 @@ describe('Error', () => {
     it('should use message from router state when available', () => {
       const customMessage = 'Custom error message';
 
+      const navigation: Navigation = {
+        id: 1,
+        initialUrl: {} as UrlTree,
+        extractedUrl: {} as UrlTree,
+        trigger: 'imperative',
+        extras: { state: { message: customMessage } },
+        previousNavigation: null,
+        abort: () => {}
+      };
+
       mockRouter = {
-        currentNavigation: signal(
-          createNavigation(mockRouter as Router, { message: customMessage })
-        )
+        navigateByUrl: vi.fn(),
+        parseUrl: vi.fn().mockReturnValue({} as UrlTree),
+        createUrlTree: vi.fn().mockReturnValue({} as UrlTree),
+        serializeUrl: vi.fn().mockReturnValue(''),
+        events: EMPTY,
+        currentNavigation: signal<Navigation | null>(navigation)
       };
 
       mockActivatedRoute = {
@@ -198,10 +205,32 @@ describe('Error', () => {
 
   describe('reload', () => {
     it('should reload the page', () => {
-      const reloadSpy = vi.spyOn(window.location, 'reload').mockImplementation(() => {});
+      // Arrange
+      const reloadSpy = vi.fn();
+      // Mock location completamente
+      const originalLocation = window.location;
+      const mockLocation = {
+        ...originalLocation,
+        reload: reloadSpy
+      };
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: mockLocation
+      });
+
+      // Act
       component.reload();
+
+      // Assert
       expect(reloadSpy).toHaveBeenCalled();
-      reloadSpy.mockRestore();
+
+      // Cleanup
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: originalLocation
+      });
     });
   });
 });

@@ -167,6 +167,7 @@ export class MockHttpClient {
   }
 
   private applyFilters(data: any[], params: Record<string, any>): any[] {
+    // Excluir parámetros de paginación del filtrado
     const { ...filters } = params;
 
     return data.filter((item) =>

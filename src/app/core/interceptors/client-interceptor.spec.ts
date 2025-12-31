@@ -15,8 +15,8 @@ describe('clientInterceptor', () => {
           provide: AppManager,
           useValue: {
             getClientId: vi.fn().mockReturnValue('test-client-id'),
-            getAppId: vi.fn().mockReturnValue('test-app'),
-            getAppVersion: vi.fn().mockReturnValue('1.0.0')
+            id: 'test-app',
+            version: '1.0.0'
           }
         }
       ]

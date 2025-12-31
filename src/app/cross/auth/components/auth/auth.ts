@@ -98,10 +98,6 @@ export class Auth implements OnInit {
       this.signupForm.enable();
     }
   }
-  public forgetUser(): void {
-    this.storageService.delete(`${environment.sessionPrefix}_lus`, 'local');
-    this.signinForm.patchValue({ email: '', password: '' });
-  }
   public forgotPassword(): void {
     this.dialog.open(ForgotPassword, {
       panelClass: 'ft-dialog',
@@ -129,15 +125,17 @@ export class Auth implements OnInit {
   public async submitSignin(): Promise<void> {
     if (this.signinForm.valid) {
       this.errorMessage.set('');
-      this.signinForm.disable();
-      this.submitting.set(true);
       try {
+        this.signinForm.disable();
+        this.submitting.set(true);
         await this.authService.signin(this.signinForm.value);
         this.googleTagManagerService.addVariable({
           event: 'login',
           user_id: this.signinForm.value.username,
           app_id: this.appManager.name
         });
+        this.signinForm.enable();
+        this.submitting.set(false);
       } catch (err: unknown) {
         this.signinForm.enable();
         this.submitting.set(false);

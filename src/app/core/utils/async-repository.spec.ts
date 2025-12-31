@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError, Observable } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import {
   getResource,
   getResourceCollection,
@@ -57,7 +57,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(of({ id: '1', name: 'Test' }));
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
 
       // Assert
       expect(resource.value()).toBeNull();
@@ -71,7 +71,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(of(testData));
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
       const result = await resource.load();
 
       // Assert
@@ -87,7 +87,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(Promise.resolve(testData));
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
       const result = await resource.load();
 
       // Assert
@@ -102,7 +102,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(of(testData));
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
       const loadPromise = resource.load();
 
       // Assert - loading should be true during load
@@ -117,7 +117,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(throwError(() => error));
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
 
       // Assert
       await expect(resource.load()).rejects.toThrow();
@@ -131,7 +131,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(throwError(() => error));
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
 
       // Assert
       await expect(resource.load(undefined, { notifyError: false })).rejects.toThrow();
@@ -144,7 +144,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(of(testData));
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
       await resource.load(['param1']);
       await resource.refresh();
 
@@ -162,14 +162,14 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(promise);
 
       // Act
-      const resource = getResource(factory);
+      const resource = TestBed.runInInjectionContext(() => getResource(factory));
       const loadPromise = resource.load();
       resource.destroy();
       resolvePromise!({ id: '1' });
 
       // Assert
-      await expect(loadPromise).resolves.toBeDefined();
-      // After destroy, the resource should still work but the subscription is closed
+      // When resource is destroyed, the promise should reject because the subscription is cancelled
+      await expect(loadPromise).rejects.toBeDefined();
     });
   });
 
@@ -179,7 +179,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(of([{ id: '1' }]));
 
       // Act
-      const resource = getResourceCollection(factory);
+      const resource = TestBed.runInInjectionContext(() => getResourceCollection(factory));
 
       // Assert
       expect(resource.value()).toBeNull();
@@ -193,7 +193,7 @@ describe('async-repository', () => {
       const factory = vi.fn().mockReturnValue(of(testData));
 
       // Act
-      const resource = getResourceCollection(factory);
+      const resource = TestBed.runInInjectionContext(() => getResourceCollection(factory));
       const result = await resource.load();
 
       // Assert
@@ -212,7 +212,7 @@ describe('async-repository', () => {
         .mockReturnValueOnce(of(secondData));
 
       // Act
-      const resource = getResourceCollection(factory);
+      const resource = TestBed.runInInjectionContext(() => getResourceCollection(factory));
       await resource.load();
       await resource.load(undefined, { append: true });
 
@@ -230,7 +230,7 @@ describe('async-repository', () => {
         .mockReturnValueOnce(of(secondData));
 
       // Act
-      const resource = getResourceCollection(factory);
+      const resource = TestBed.runInInjectionContext(() => getResourceCollection(factory));
       await resource.load();
       await resource.load(undefined, { append: false });
 
@@ -248,7 +248,7 @@ describe('async-repository', () => {
       };
 
       // Act
-      const mutations = getMutations(factories);
+      const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
 
       // Assert
       expect(mutations.create.submitting()).toBe(false);
@@ -265,7 +265,7 @@ describe('async-repository', () => {
       };
 
       // Act
-      const mutations = getMutations(factories);
+      const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
       const result = await mutations.create({ name: 'Test' });
 
       // Assert
@@ -287,7 +287,7 @@ describe('async-repository', () => {
       };
 
       // Act
-      const mutations = getMutations(factories);
+      const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
       const mutationPromise = mutations.create({});
 
       // Assert - submitting should be true during execution
@@ -305,7 +305,7 @@ describe('async-repository', () => {
       };
 
       // Act
-      const mutations = getMutations(factories);
+      const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
 
       // Assert
       await expect(mutations.create({})).rejects.toThrow();
@@ -321,7 +321,7 @@ describe('async-repository', () => {
       };
 
       // Act
-      const mutations = getMutations(factories);
+      const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
 
       // Assert
       await expect(mutations.create({}, { notifyError: false })).rejects.toThrow();
@@ -336,7 +336,7 @@ describe('async-repository', () => {
       };
 
       // Act
-      const mutations = getMutations(factories);
+      const mutations = TestBed.runInInjectionContext(() => getMutations(factories));
       await mutations.create({});
 
       // Assert

@@ -3,7 +3,9 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "schematicCollections": ["@angular-eslint/schematics"],
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
     "analytics": false
   },
   "newProjectRoot": "projects",
@@ -30,7 +32,9 @@
               "src/theme/material.scss",
               "src/styles.css"
             ],
-            "polyfills": ["@angular/localize/init"]
+            "polyfills": [
+              "@angular/localize/init"
+            ]
           },
           "configurations": {
             "production": {
@@ -88,7 +92,21 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "angular-base-project:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "angular-base-project:serve:production"
+            }
           }
         }
       }

@@ -1,12 +1,18 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { Language } from './language';
 import { AppManager } from '@/core/services/app-manager';
 import { StorageService, Language as LanguageModel } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
+import {
+  createMockTitle,
+  createMockRouter,
+  createMockActivatedRoute,
+  createMockStorageService,
+  COMMON_TEST_PROVIDERS
+} from '@/core/testing/test-mocks';
 
 describe('Language', () => {
   // Arrange
@@ -14,10 +20,12 @@ describe('Language', () => {
   let fixture: ComponentFixture<Language>;
   let mockAppManager: Partial<AppManager>;
   let mockStorageService: Partial<StorageService>;
-  let mockTitle: Title;
+  let mockTitle: ReturnType<typeof createMockTitle>;
+  let mockRouter: ReturnType<typeof createMockRouter>;
+  let mockActivatedRoute: ReturnType<typeof createMockActivatedRoute>;
 
   beforeEach(async () => {
-    // Arrange: Create mocks
+    // Arrange: Create mocks using factory functions
     mockAppManager = {
       getLocale: vi.fn().mockReturnValue('en'),
       languages: signal<LanguageModel[]>([
@@ -25,19 +33,24 @@ describe('Language', () => {
         { code: 'es', name: 'Español' }
       ])
     };
-    mockStorageService = {
+    mockStorageService = createMockStorageService({
       set: vi.fn()
-    };
-    mockTitle = {
-      setTitle: vi.fn()
-    } as any;
+    });
+    mockTitle = createMockTitle();
+    mockRouter = createMockRouter();
+    mockActivatedRoute = createMockActivatedRoute();
 
     await TestBed.configureTestingModule({
       imports: [Language, RouterModule],
       providers: [
         { provide: AppManager, useValue: mockAppManager },
         { provide: StorageService, useValue: mockStorageService },
-        { provide: Title, useValue: mockTitle }
+        ...COMMON_TEST_PROVIDERS.getCommonProviders({
+          router: mockRouter,
+          activatedRoute: mockActivatedRoute,
+          title: mockTitle,
+          storageService: mockStorageService
+        })
       ]
     }).compileComponents();
 
@@ -73,7 +86,17 @@ describe('Language', () => {
     it('should save language to storage and reload page', async () => {
       // Arrange
       const language: LanguageModel = { code: 'es', name: 'Español' };
-      const reloadSpy = vi.spyOn(window.location, 'reload').mockImplementation(() => {});
+      const reloadSpy = vi.fn();
+      const originalLocation = window.location;
+      const mockLocation = {
+        ...originalLocation,
+        reload: reloadSpy
+      };
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: mockLocation
+      });
 
       // Act
       await component.select(language);
@@ -85,13 +108,29 @@ describe('Language', () => {
         'local'
       );
       expect(reloadSpy).toHaveBeenCalled();
-      reloadSpy.mockRestore();
+
+      // Cleanup
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: originalLocation
+      });
     });
 
     it('should save English language to storage', async () => {
       // Arrange
       const language: LanguageModel = { code: 'en', name: 'English' };
-      const reloadSpy = vi.spyOn(window.location, 'reload').mockImplementation(() => {});
+      const reloadSpy = vi.fn();
+      const originalLocation = window.location;
+      const mockLocation = {
+        ...originalLocation,
+        reload: reloadSpy
+      };
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: mockLocation
+      });
 
       // Act
       await component.select(language);
@@ -102,7 +141,14 @@ describe('Language', () => {
         'en',
         'local'
       );
-      reloadSpy.mockRestore();
+      expect(reloadSpy).toHaveBeenCalled();
+
+      // Cleanup
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: originalLocation
+      });
     });
   });
 });

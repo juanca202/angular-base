@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterModule, UrlTree } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
+import { Subject, EMPTY } from 'rxjs';
 import { Settings as SettingsModel } from '@/core/models/settings';
 import { Settings } from './settings';
 import { AppManager } from '@/core/services/app-manager';
@@ -10,6 +10,7 @@ import { LayoutManager } from '@/core/services/layout-manager';
 import { AuthProvider } from '@/core/services/auth.provider';
 import { Session } from '@/core/services/session';
 import { GoogleTagManagerService } from '@factor_ec/utils';
+import { UI_OPTIONS } from '@factor_ec/ui';
 import { LANGUAGES } from '@/core/constants/languages';
 import { computed, signal } from '@angular/core';
 import { User } from '@/core/models/user';
@@ -56,7 +57,11 @@ describe('Settings', () => {
       setTitle: vi.fn()
     } as any;
     mockRouter = {
-      navigateByUrl: vi.fn()
+      navigateByUrl: vi.fn(),
+      createUrlTree: vi.fn().mockReturnValue({} as UrlTree),
+      parseUrl: vi.fn().mockReturnValue({} as UrlTree),
+      serializeUrl: vi.fn().mockReturnValue(''),
+      events: EMPTY
     };
     mockActivatedRoute = {
       paramMap: paramMapSubject.asObservable()
@@ -72,7 +77,16 @@ describe('Settings', () => {
         { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
         { provide: Title, useValue: mockTitle },
         { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: UI_OPTIONS,
+          useValue: {
+            iconSettings: {
+              path: 'images',
+              collection: 'factoricons-regular'
+            }
+          }
+        }
       ]
     }).compileComponents();
 
@@ -111,15 +125,13 @@ describe('Settings', () => {
     });
 
     it('should set current language from AppManager if available', () => {
-      // Arrange
-      const currentLanguage = LANGUAGES.find((l) => l.code === 'en');
-      mockAppManager.getLocale = vi.fn().mockReturnValue('en');
-
-      // Act
-      // Component is already created, but we can check the language
+      // Arrange & Act
+      // Component is already created with getLocale returning 'en' in beforeEach
       const language = component.language();
+      const currentLanguage = LANGUAGES.find((l) => l.code === 'en');
 
       // Assert
+      expect(mockAppManager.getLocale).toHaveBeenCalled();
       if (currentLanguage) {
         expect(language.code).toBe('en');
       }
