@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -13,11 +8,6 @@ import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { Entity } from '@/features/templates/models/entity';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
 
 describe('EntitySearch', () => {
   let component: EntitySearch;

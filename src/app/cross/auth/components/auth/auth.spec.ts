@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
@@ -16,13 +11,21 @@ import { AuthService } from '@/cross/auth/auth-service';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of } from 'rxjs';
 import { environment } from '@/environments/environment';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
+import {
+  createMockRouter,
+  createMockActivatedRoute,
+  createMockStorageService,
+  createMockTitle,
+  COMMON_TEST_PROVIDERS
+} from '@/test/mocks/angular-mocks';
+import {
+  createMockAppManager,
+  createMockAuthService,
+  createMockGoogleTagManagerService,
+  createMockMessageService,
+  createMockMatDialog
+} from '@/test/mocks/service-mocks';
 
 describe('Auth', () => {
   let component: Auth;
@@ -38,48 +41,21 @@ describe('Auth', () => {
   let mockDialog: Partial<MatDialog>;
 
   beforeEach(async () => {
-    // Arrange: Create mocks
-    mockAppManager = {
-      name: 'Test App'
-    };
-
-    mockAuthService = {
-      connect: vi.fn().mockResolvedValue(true),
-      signin: vi.fn().mockResolvedValue({}),
-      signup: vi.fn().mockResolvedValue({})
-    };
-
-    mockGoogleTagManagerService = {
-      addVariable: vi.fn()
-    };
-
-    mockMessageService = {
-      show: vi.fn().mockReturnValue(of(undefined))
-    };
-
-    mockStorageService = {
-      get: vi.fn().mockReturnValue(null),
-      delete: vi.fn()
-    };
-
-    mockRouter = {
-      navigateByUrl: vi.fn().mockResolvedValue(true)
-    };
-
-    mockActivatedRoute = {
+    // Arrange: Create mocks using factory functions
+    mockAppManager = createMockAppManager({ name: 'Test App' });
+    mockAuthService = createMockAuthService();
+    mockGoogleTagManagerService = createMockGoogleTagManagerService();
+    mockMessageService = createMockMessageService();
+    mockStorageService = createMockStorageService();
+    mockRouter = createMockRouter({ navigateByUrl: vi.fn().mockResolvedValue(true) });
+    mockActivatedRoute = createMockActivatedRoute({
       snapshot: {
         data: { mode: 'signin' }
       } as any
-    };
-
-    mockTitle = {
-      setTitle: vi.fn(),
-      getTitle: vi.fn().mockReturnValue('Sign in')
-    } as any;
-
-    mockDialog = {
-      open: vi.fn()
-    };
+    });
+    mockTitle = createMockTitle();
+    (mockTitle as any).getTitle = vi.fn().mockReturnValue('Sign in');
+    mockDialog = createMockMatDialog();
 
     // Override component before configuring the module
     TestBed.overrideComponent(Auth, {
@@ -94,11 +70,13 @@ describe('Auth', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
         { provide: MessageService, useValue: mockMessageService },
-        { provide: StorageService, useValue: mockStorageService },
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: Title, useValue: mockTitle },
-        { provide: MatDialog, useValue: mockDialog }
+        { provide: MatDialog, useValue: mockDialog },
+        ...COMMON_TEST_PROVIDERS.getCommonProviders({
+          router: mockRouter,
+          activatedRoute: mockActivatedRoute,
+          title: mockTitle,
+          storageService: mockStorageService
+        })
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();

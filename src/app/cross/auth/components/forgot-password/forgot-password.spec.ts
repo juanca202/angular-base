@@ -1,25 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ForgotPassword } from './forgot-password';
 import { MessageService } from '@factor_ec/ui';
 import { GoogleTagManagerService } from '@factor_ec/utils';
-import { of } from 'rxjs';
 import { environment } from '@/environments/environment';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
+import {
+  createMockGoogleTagManagerService,
+  createMockMessageService
+} from '@/test/mocks/service-mocks';
 
 describe('ForgotPassword', () => {
   let component: ForgotPassword;
@@ -35,13 +29,8 @@ describe('ForgotPassword', () => {
       close: vi.fn()
     };
 
-    mockMessageService = {
-      show: vi.fn().mockReturnValue(of(undefined))
-    };
-
-    mockGoogleTagManagerService = {
-      addVariable: vi.fn()
-    };
+    mockMessageService = createMockMessageService();
+    mockGoogleTagManagerService = createMockGoogleTagManagerService();
 
     // Override component before configuring the module
     TestBed.overrideComponent(ForgotPassword, {
@@ -50,8 +39,10 @@ describe('ForgotPassword', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [ForgotPassword, ReactiveFormsModule, MatDialogModule, HttpClientTestingModule],
+      imports: [ForgotPassword, ReactiveFormsModule, MatDialogModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MessageService, useValue: mockMessageService },
         { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService }

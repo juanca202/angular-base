@@ -1,11 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { signal, computed, EventEmitter } from '@angular/core';
@@ -18,12 +13,7 @@ import {
   createMockRouter,
   createMockActivatedRoute,
   COMMON_TEST_PROVIDERS
-} from '@/core/testing/test-mocks';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
+} from '@/test/mocks/angular-mocks';
 
 describe('MainLayout', () => {
   let component: MainLayout;

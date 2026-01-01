@@ -1,14 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { NO_ERRORS_SCHEMA, computed } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { DeleteUser } from './delete-user';
 import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
@@ -18,14 +14,16 @@ import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 import { User } from '@/core/models/user';
-import { of } from 'rxjs';
 import moment from 'moment';
 import { getApiUrl } from '@/core/utils/async-repository';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
+import {
+  createMockAppManager,
+  createMockAuthService,
+  createMockMessageService,
+  createMockSession
+} from '@/test/mocks/service-mocks';
+import { createMockStorageService } from '@/test/mocks/angular-mocks';
+import { of } from 'rxjs';
 
 describe('DeleteUser', () => {
   let component: DeleteUser;
@@ -76,8 +74,10 @@ describe('DeleteUser', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [DeleteUser, ReactiveFormsModule, MatDialogModule, HttpClientTestingModule],
+      imports: [DeleteUser, ReactiveFormsModule, MatDialogModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AppManager, useValue: mockAppManager },
         { provide: AuthService, useValue: mockAuthService },
         { provide: Session, useValue: mockSession },
@@ -175,8 +175,10 @@ describe('DeleteUser', () => {
         add: { template: '<div>Test</div>', styles: [] }
       });
       TestBed.configureTestingModule({
-        imports: [DeleteUser, ReactiveFormsModule, MatDialogModule, HttpClientTestingModule],
+        imports: [DeleteUser, ReactiveFormsModule, MatDialogModule],
         providers: [
+          provideHttpClient(),
+          provideHttpClientTesting(),
           { provide: AppManager, useValue: mockAppManager },
           { provide: AuthService, useValue: mockAuthService },
           { provide: Session, useValue: mockSession },

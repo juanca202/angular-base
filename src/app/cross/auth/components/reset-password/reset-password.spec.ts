@@ -1,14 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { ResetPassword } from './reset-password';
@@ -16,12 +12,13 @@ import { AppManager } from '@/core/services/app-manager';
 import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
+import { createMockAppManager, createMockMessageService } from '@/test/mocks/service-mocks';
+import {
+  createMockRouter,
+  createMockActivatedRoute,
+  createMockTitle
+} from '@/test/mocks/angular-mocks';
 import { of } from 'rxjs';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
 
 describe('ResetPassword', () => {
   let component: ResetPassword;
@@ -64,8 +61,10 @@ describe('ResetPassword', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [ResetPassword, ReactiveFormsModule, MatDialogModule, HttpClientTestingModule],
+      imports: [ResetPassword, ReactiveFormsModule, MatDialogModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AppManager, useValue: mockAppManager },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },

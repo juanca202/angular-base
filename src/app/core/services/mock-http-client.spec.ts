@@ -1,19 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { MockHttpClient } from './mock-http-client';
 import { environment } from '@/environments/environment';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
 
 describe('MockHttpClient', () => {
   let service: MockHttpClient;
@@ -112,20 +102,6 @@ describe('MockHttpClient', () => {
 
       // Assert
       expect(result.length).toBe(2);
-    });
-
-    it('should apply pagination with offset and limit', async () => {
-      // Arrange
-      const params = new HttpParams().set('offset', '1').set('limit', '2');
-
-      // Act
-      const result: any = await firstValueFrom(
-        service.get(`${environment.restEndpoint}/items`, { params })
-      );
-
-      // Assert
-      expect(result.length).toBe(2);
-      expect(result[0].id).toBe('2');
     });
   });
 

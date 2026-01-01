@@ -1,25 +1,20 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ChangePassword } from './change-password';
 import { AppManager } from '@/core/services/app-manager';
 import { MessageService } from '@factor_ec/ui';
-import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getApiUrl } from '@/core/utils/async-repository';
-
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
+import {
+  createMockAppManager,
+  createMockMessageService,
+  createMockMatDialogRef
+} from '@/test/mocks/service-mocks';
 
 describe('ChangePassword', () => {
   let component: ChangePassword;
@@ -31,15 +26,9 @@ describe('ChangePassword', () => {
 
   beforeEach(async () => {
     // Arrange: Create mocks
-    mockAppManager = {};
-
-    mockDialogRef = {
-      close: vi.fn()
-    };
-
-    mockMessageService = {
-      show: vi.fn().mockReturnValue(of(undefined))
-    };
+    mockAppManager = createMockAppManager();
+    mockDialogRef = createMockMatDialogRef<ChangePassword>();
+    mockMessageService = createMockMessageService();
 
     // Override component before configuring the module
     TestBed.overrideComponent(ChangePassword, {
@@ -48,8 +37,10 @@ describe('ChangePassword', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [ChangePassword, ReactiveFormsModule, MatDialogModule, HttpClientTestingModule],
+      imports: [ChangePassword, ReactiveFormsModule, MatDialogModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: AppManager, useValue: mockAppManager },
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MessageService, useValue: mockMessageService }

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { Language } from './language';
 import { AppManager } from '@/core/services/app-manager';
-import { StorageService, Language as LanguageModel } from '@factor_ec/utils';
+import { Language as LanguageModel, StorageService } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
 import {
@@ -12,27 +12,29 @@ import {
   createMockActivatedRoute,
   createMockStorageService,
   COMMON_TEST_PROVIDERS
-} from '@/core/testing/test-mocks';
+} from '@/test/mocks/angular-mocks';
+import { createMockAppManager } from '@/test/mocks/service-mocks';
+import { withMockLocation } from '@/test/helpers/window-helpers';
 
 describe('Language', () => {
   // Arrange
   let component: Language;
   let fixture: ComponentFixture<Language>;
-  let mockAppManager: Partial<AppManager>;
-  let mockStorageService: Partial<StorageService>;
+  let mockAppManager: ReturnType<typeof createMockAppManager>;
+  let mockStorageService: ReturnType<typeof createMockStorageService>;
   let mockTitle: ReturnType<typeof createMockTitle>;
   let mockRouter: ReturnType<typeof createMockRouter>;
   let mockActivatedRoute: ReturnType<typeof createMockActivatedRoute>;
 
   beforeEach(async () => {
     // Arrange: Create mocks using factory functions
-    mockAppManager = {
+    mockAppManager = createMockAppManager({
       getLocale: vi.fn().mockReturnValue('en'),
       languages: signal<LanguageModel[]>([
         { code: 'en', name: 'English' },
         { code: 'es', name: 'Español' }
       ])
-    };
+    });
     mockStorageService = createMockStorageService({
       set: vi.fn()
     });
@@ -84,70 +86,38 @@ describe('Language', () => {
 
   describe('select', () => {
     it('should save language to storage and reload page', async () => {
-      // Arrange
-      const language: LanguageModel = { code: 'es', name: 'Español' };
-      const reloadSpy = vi.fn();
-      const originalLocation = window.location;
-      const mockLocation = {
-        ...originalLocation,
-        reload: reloadSpy
-      };
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: mockLocation
-      });
+      await withMockLocation(async ({ reloadSpy }) => {
+        // Arrange
+        const language: LanguageModel = { code: 'es', name: 'Español' };
 
-      // Act
-      await component.select(language);
+        // Act
+        await component.select(language);
 
-      // Assert
-      expect(mockStorageService.set).toHaveBeenCalledWith(
-        `${environment.sessionPrefix}_loc`,
-        'es',
-        'local'
-      );
-      expect(reloadSpy).toHaveBeenCalled();
-
-      // Cleanup
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: originalLocation
+        // Assert
+        expect(mockStorageService.set).toHaveBeenCalledWith(
+          `${environment.sessionPrefix}_loc`,
+          'es',
+          'local'
+        );
+        expect(reloadSpy).toHaveBeenCalled();
       });
     });
 
     it('should save English language to storage', async () => {
-      // Arrange
-      const language: LanguageModel = { code: 'en', name: 'English' };
-      const reloadSpy = vi.fn();
-      const originalLocation = window.location;
-      const mockLocation = {
-        ...originalLocation,
-        reload: reloadSpy
-      };
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: mockLocation
-      });
+      await withMockLocation(async ({ reloadSpy }) => {
+        // Arrange
+        const language: LanguageModel = { code: 'en', name: 'English' };
 
-      // Act
-      await component.select(language);
+        // Act
+        await component.select(language);
 
-      // Assert
-      expect(mockStorageService.set).toHaveBeenCalledWith(
-        `${environment.sessionPrefix}_loc`,
-        'en',
-        'local'
-      );
-      expect(reloadSpy).toHaveBeenCalled();
-
-      // Cleanup
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: originalLocation
+        // Assert
+        expect(mockStorageService.set).toHaveBeenCalledWith(
+          `${environment.sessionPrefix}_loc`,
+          'en',
+          'local'
+        );
+        expect(reloadSpy).toHaveBeenCalled();
       });
     });
   });

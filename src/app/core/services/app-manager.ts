@@ -183,11 +183,17 @@ export class AppManager {
     const locale = userLocale || systemLocale || this.defaultLocale;
     this.storageService.set(this.localeKey, locale, 'local');
 
-    // Load translation file
-    const localeTranslationsModule = await import(`../../../../public/i18n/${locale}.js`);
+    // Load base translations
+    try {
+      const localeBaseTranslations = await import(`../../../../public/i18n/${locale}-base.js`);
+      loadTranslations(localeBaseTranslations.default);
+    } catch (error) {
+      console.error(`Error loading base translations for ${locale}:`, error);
+    }
 
-    // Load translations for the current locale at run-time
-    loadTranslations(localeTranslationsModule.default);
+    // Load translation file
+    const localeTranslations = await import(`../../../../public/i18n/${locale}.js`);
+    loadTranslations(localeTranslations.default);
 
     // Moment internationalization
     moment.locale(locale);

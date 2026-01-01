@@ -6,6 +6,11 @@ import { Language } from '@/core/components/language/language';
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'entities',
+    pathMatch: 'full'
+  },
+  {
+    path: '',
     loadChildren: () =>
       import('./features/templates/templates-routes').then((m) => m.templatesRoutes)
   },

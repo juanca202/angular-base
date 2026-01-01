@@ -62,6 +62,33 @@ async function readJsFile(jsFilePath) {
 }
 
 /**
+ * Get all IDs from files with the language prefix (e.g., es-base.js, es-module.js)
+ */
+async function getPrefixedFileIds(langCode) {
+  const prefixedIds = new Set();
+  
+  // Read all files in the i18n directory
+  const files = fs.readdirSync(i18nDir);
+  
+  // Filter files that start with {langCode}- and end with .js, but exclude the main file itself
+  const prefixPattern = new RegExp(`^${langCode}-.+\\.js$`);
+  const prefixedFiles = files.filter(file => prefixPattern.test(file));
+  
+  console.log(`- Found ${prefixedFiles.length} prefixed file(s) for ${langCode}: ${prefixedFiles.join(', ')}`);
+  
+  // Read each prefixed file and collect all IDs
+  for (const file of prefixedFiles) {
+    const filePath = path.join(i18nDir, file);
+    const translations = await readJsFile(filePath);
+    const ids = Object.keys(translations);
+    ids.forEach(id => prefixedIds.add(id));
+    console.log(`  - ${file}: ${ids.length} translation(s)`);
+  }
+  
+  return prefixedIds;
+}
+
+/**
  * Generate or update the target language file
  */
 async function generateLanguage(langCode) {
@@ -71,15 +98,23 @@ async function generateLanguage(langCode) {
   }
 
   const targetJsPath = path.join(i18nDir, `${langCode}.js`);
-  const missingPath = path.join(i18nDir, `${langCode}_missing.json`);
+  const missingPath = path.join(i18nDir, `${langCode}-missing.json`);
 
   const baseTranslations = await readJsFile(baseJsPath);
   const targetTranslations = await readJsFile(targetJsPath);
+  
+  // Get all IDs that already exist in prefixed files (e.g., es-base.js)
+  const prefixedIds = await getPrefixedFileIds(langCode);
 
   const orderedTranslations = {};
   const missingTranslations = {};
 
   Object.keys(baseTranslations).forEach((key) => {
+    // Skip IDs that are already in prefixed files
+    if (prefixedIds.has(key)) {
+      return;
+    }
+    
     if (targetTranslations.hasOwnProperty(key)) {
       orderedTranslations[key] = targetTranslations[key];
     } else {
@@ -99,6 +134,9 @@ async function generateLanguage(langCode) {
   const content = `export default ${JSON.stringify(orderedTranslations, null, 2)};`;
   fs.writeFileSync(targetJsPath, content, 'utf-8');
   console.log(`- File ${targetJsPath} updated successfully.`);
+  if (prefixedIds.size > 0) {
+    console.log(`- Excluded ${prefixedIds.size} ID(s) that already exist in prefixed files.`);
+  }
 }
 
 /**
@@ -124,13 +162,27 @@ function validateLanguageCode(langCode) {
 }
 
 // Function to generate `en.js`
-function generateEnJsFile(enTranslations, enFilePath) {
-  const enFileContent = `export default ${JSON.stringify(enTranslations, null, 2)};`;
+async function generateEnJsFile(enTranslations, enFilePath) {
+  // Get all IDs that already exist in prefixed files (e.g., en-base.js)
+  const prefixedIds = await getPrefixedFileIds('en');
+  
+  // Filter out IDs that are already in prefixed files
+  const filteredTranslations = {};
+  Object.keys(enTranslations).forEach((key) => {
+    if (!prefixedIds.has(key)) {
+      filteredTranslations[key] = enTranslations[key];
+    }
+  });
+  
+  const enFileContent = `export default ${JSON.stringify(filteredTranslations, null, 2)};`;
   fs.writeFileSync(enFilePath, enFileContent, 'utf-8');
   console.log(`- File ${enFilePath} generated successfully.`);
+  if (prefixedIds.size > 0) {
+    console.log(`- Excluded ${prefixedIds.size} ID(s) that already exist in prefixed files.`);
+  }
 }
 
-function processFiles(langCode) {
+async function processFiles(langCode) {
   // Check if the basesJsonPath file (en.json) exists
   if (fs.existsSync(basesJsonPath)) {
     // Read `en.json`
@@ -138,14 +190,14 @@ function processFiles(langCode) {
     const enTranslations = enJson.translations;
 
     // Generate `en.js`
-    generateEnJsFile(enTranslations, baseJsPath);
+    await generateEnJsFile(enTranslations, baseJsPath);
 
     // Remove `en.json`
     fs.unlinkSync(basesJsonPath);
   }
 
   // Update the target language file
-  generateLanguage(langCode);
+  await generateLanguage(langCode);
 }
 
 // === CLI ===
@@ -165,9 +217,11 @@ try {
   process.exit(1);
 }
 
-try {
-  processFiles(langCode);
-} catch (error) {
-  console.error(error.message);
-  process.exit(1);
-}
+(async () => {
+  try {
+    await processFiles(langCode);
+  } catch (error) {
+    console.error(error.message);
+    process.exit(1);
+  }
+})();

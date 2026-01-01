@@ -8,55 +8,46 @@ import { StorageService } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
 import { EMPTY } from 'rxjs';
+import {
+  createMockRouter,
+  createMockActivatedRoute,
+  createMockStorageService,
+  createMockTitle,
+  COMMON_TEST_PROVIDERS
+} from '@/test/mocks/angular-mocks';
+import { createMockAuthProvider } from '@/test/mocks/service-mocks';
+import { withMockLocation } from '@/test/helpers/window-helpers';
 
 describe('Error', () => {
   let component: Error;
   let fixture: ComponentFixture<Error>;
 
   let mockAuthProvider: Partial<AuthProvider>;
-  let mockStorageService: Partial<StorageService>;
-  let mockTitle: Title;
-  let mockRouter: Partial<Router>;
-  let mockActivatedRoute: Partial<ActivatedRoute>;
+  let mockStorageService: ReturnType<typeof createMockStorageService>;
+  let mockTitle: ReturnType<typeof createMockTitle>;
+  let mockRouter: ReturnType<typeof createMockRouter>;
+  let mockActivatedRoute: ReturnType<typeof createMockActivatedRoute>;
 
   beforeEach(async () => {
-    mockAuthProvider = {};
-
-    mockStorageService = {
+    mockAuthProvider = createMockAuthProvider();
+    mockStorageService = createMockStorageService({
       get: vi.fn().mockReturnValue(null),
       delete: vi.fn()
-    };
-
-    mockTitle = {
-      setTitle: vi.fn()
-    } as any;
-
-    mockRouter = {
-      navigateByUrl: vi.fn(),
-      parseUrl: vi.fn().mockImplementation(() => {
-        return {} as UrlTree;
-      }),
-      createUrlTree: vi.fn().mockReturnValue({} as UrlTree),
-      serializeUrl: vi.fn().mockReturnValue(''),
-      events: EMPTY,
-      currentNavigation: signal<Navigation | null>(null)
-    };
-
-    mockActivatedRoute = {
-      snapshot: {
-        params: {},
-        data: {}
-      } as any
-    };
+    });
+    mockTitle = createMockTitle();
+    mockRouter = createMockRouter();
+    mockActivatedRoute = createMockActivatedRoute();
 
     await TestBed.configureTestingModule({
       imports: [Error, RouterModule],
       providers: [
         { provide: AuthProvider, useValue: mockAuthProvider },
-        { provide: StorageService, useValue: mockStorageService },
-        { provide: Title, useValue: mockTitle },
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        ...COMMON_TEST_PROVIDERS.getCommonProviders({
+          router: mockRouter,
+          activatedRoute: mockActivatedRoute,
+          title: mockTitle,
+          storageService: mockStorageService
+        })
       ]
     }).compileComponents();
 
@@ -162,10 +153,10 @@ describe('Error', () => {
     it('should use message from storage when router state is not available', () => {
       const storageMessage = 'Storage error message';
 
-      mockStorageService = {
+      mockStorageService = createMockStorageService({
         get: vi.fn().mockReturnValue(storageMessage),
         delete: vi.fn()
-      };
+      });
 
       mockRouter = {
         currentNavigation: signal(null)
@@ -204,32 +195,13 @@ describe('Error', () => {
   });
 
   describe('reload', () => {
-    it('should reload the page', () => {
-      // Arrange
-      const reloadSpy = vi.fn();
-      // Mock location completamente
-      const originalLocation = window.location;
-      const mockLocation = {
-        ...originalLocation,
-        reload: reloadSpy
-      };
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: mockLocation
-      });
+    it('should reload the page', async () => {
+      await withMockLocation(async ({ reloadSpy }) => {
+        // Act
+        component.reload();
 
-      // Act
-      component.reload();
-
-      // Assert
-      expect(reloadSpy).toHaveBeenCalled();
-
-      // Cleanup
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: originalLocation
+        // Assert
+        expect(reloadSpy).toHaveBeenCalled();
       });
     });
   });

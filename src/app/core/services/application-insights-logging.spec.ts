@@ -1,54 +1,31 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
 import { ApplicationInsightsLogging } from './application-insights-logging';
+import {
+  mockTrackPageView,
+  mockTrackEvent,
+  mockTrackMetric,
+  mockTrackException,
+  mockTrackTrace,
+  setupApplicationInsightsMock,
+  clearApplicationInsightsMocks
+} from '@/test/mocks/application-insights';
+import { setupEnvironmentMock } from '@/test/mocks/environment';
 
-// Inicializar el entorno de pruebas de Angular si no está inicializado
-if (!getTestBed().platform) {
-  getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-}
-
-// Mock ApplicationInsights
-const mockTrackPageView = vi.fn();
-const mockTrackEvent = vi.fn();
-const mockTrackMetric = vi.fn();
-const mockTrackException = vi.fn();
-const mockTrackTrace = vi.fn();
-const mockLoadAppInsights = vi.fn();
-
-vi.mock('@microsoft/applicationinsights-web', () => {
-  class MockApplicationInsights {
-    loadAppInsights = mockLoadAppInsights;
-    trackPageView = mockTrackPageView;
-    trackEvent = mockTrackEvent;
-    trackMetric = mockTrackMetric;
-    trackException = mockTrackException;
-    trackTrace = mockTrackTrace;
+// Setup mocks
+setupApplicationInsightsMock();
+setupEnvironmentMock({
+  appInsights: {
+    instrumentationKey: 'test-key'
   }
-  return {
-    ApplicationInsights: MockApplicationInsights
-  };
 });
-
-// Mock environment
-vi.mock('@/environments/environment', () => ({
-  environment: {
-    appInsights: {
-      instrumentationKey: 'test-key'
-    }
-  }
-}));
 
 describe('ApplicationInsightsLogging', () => {
   let service: ApplicationInsightsLogging;
 
   beforeEach(() => {
     // Limpiar mocks antes de cada test
-    vi.clearAllMocks();
+    clearApplicationInsightsMocks();
 
     TestBed.configureTestingModule({
       providers: [ApplicationInsightsLogging]
