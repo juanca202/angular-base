@@ -24,19 +24,19 @@ Cada ADR sigue un formato estándar:
 
 ## ADRs Actuales
 
-- [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001.md)
-- [ADR-002: Adopción de la Guía de Estilo Oficial de Angular](./ADR-002.md)
-- [ADR-003: Uso de Tailwind CSS para Clases Utilitarias y Creación de Componentes](./ADR-003.md)
-- [ADR-004: Reglas de Desarrollo Asistido por IA](./ADR-004.md)
-- [ADR-005: Estrategia de Internacionalización (i18n)](./ADR-005.md)
-- [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006.md)
-- [ADR-007: Estrategia de Testing](./ADR-007.md)
-- [ADR-008: Estrategia de Validación de Formularios](./ADR-008.md)
-- [ADR-009: Calidad de Código y Herramientas](./ADR-009.md)
-- [ADR-010: Estrategia de Uso de Iconos](./ADR-010.md)
-- [ADR-011: Estrategia de Documentación](./ADR-011.md)
-- [ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./ADR-012.md)
-- [ADR-013: Layout y Estructura de Formularios](./ADR-013.md)
+- [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
+- [ADR-002: Adopción de la Guía de Estilo Oficial de Angular](./ADR-002-angular-style-guide.md)
+- [ADR-003: Uso de Tailwind CSS para Clases Utilitarias y Creación de Componentes](./ADR-003-tailwind-css-utilities.md)
+- [ADR-004: Reglas de Desarrollo Asistido por IA](./ADR-004-ai-assisted-development-rules.md)
+- [ADR-005: Estrategia de Internacionalización (i18n)](./ADR-005-internationalization-strategy.md)
+- [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006-repository-pattern-rest.md)
+- [ADR-007: Estrategia de Testing](./ADR-007-testing-strategy.md)
+- [ADR-008: Estrategia de Validación de Formularios](./ADR-008-form-validation-strategy.md)
+- [ADR-009: Calidad de Código y Herramientas](./ADR-009-code-quality-tooling.md)
+- [ADR-010: Estrategia de Uso de Iconos](./ADR-010-icon-usage-strategy.md)
+- [ADR-011: Estrategia de Documentación](./ADR-011-documentation-strategy.md)
+- [ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./ADR-012-typescript-access-modifiers.md)
+- [ADR-013: Layout y Estructura de Formularios](./ADR-013-form-layout-structure.md)
 
 ## Crear un Nuevo ADR
 

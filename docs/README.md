@@ -97,43 +97,43 @@ Este proyecto sigue el formato de Architectural Decision Records (ADR) para docu
 
 ### Índice de ADRs
 
-- **[ADR-001: Separación de Responsabilidades - Core, Shared y Features](./adr/ADR-001.md)**  
+- **[ADR-001: Separación de Responsabilidades - Core, Shared y Features](./adr/ADR-001-separation-of-responsibilities.md)**  
   Define la arquitectura de tres capas (Core, Shared, Features) con reglas de dependencia claras y separación de concerns.
 
-- **[ADR-002: Adopción de la Guía de Estilo Oficial de Angular](./adr/ADR-002.md)**  
+- **[ADR-002: Adopción de la Guía de Estilo Oficial de Angular](./adr/ADR-002-angular-style-guide.md)**  
   Establece la adherencia a la guía de estilo oficial de Angular para patrones de código consistentes y mejores prácticas.
 
-- **[ADR-003: Uso de Tailwind CSS para Clases Utilitarias y Creación de Componentes](./adr/ADR-003.md)**  
+- **[ADR-003: Uso de Tailwind CSS para Clases Utilitarias y Creación de Componentes](./adr/ADR-003-tailwind-css-utilities.md)**  
   Establece el uso de Tailwind CSS para clases utilitarias mientras reserva CSS personalizado con prefijo `ft-` para estilos específicos de componentes siguiendo BEM.
 
-- **[ADR-004: Reglas de Desarrollo Asistido por IA](./adr/ADR-004.md)**  
+- **[ADR-004: Reglas de Desarrollo Asistido por IA](./adr/ADR-004-ai-assisted-development-rules.md)**  
   Documenta reglas para desarrollo asistido por IA para asegurar generación de código consistente alineada con decisiones arquitectónicas.
 
-- **[ADR-005: Estrategia de Internacionalización (i18n)](./adr/ADR-005.md)**  
+- **[ADR-005: Estrategia de Internacionalización (i18n)](./adr/ADR-005-internationalization-strategy.md)**  
   Define la estrategia de internacionalización usando Angular i18n con carga de traducciones en runtime y gestión automatizada de traducciones.
 
-- **[ADR-006: Patrón de Repositorio para Servicios REST](./adr/ADR-006.md)**  
+- **[ADR-006: Patrón de Repositorio para Servicios REST](./adr/ADR-006-repository-pattern-rest.md)**  
   Establece el patrón de repositorio con `getMutations()` y `getResource()` para comunicación REST API estandarizada y gestión de estado.
 
-- **[ADR-007: Estrategia de Testing](./adr/ADR-007.md)**  
+- **[ADR-007: Estrategia de Testing](./adr/ADR-007-testing-strategy.md)**  
   Define el enfoque de testing usando Vitest para tests unitarios/integración y Playwright para tests E2E, siguiendo el patrón AAA y objetivos de cobertura.
 
-- **[ADR-008: Estrategia de Validación de Formularios](./adr/ADR-008.md)**  
+- **[ADR-008: Estrategia de Validación de Formularios](./adr/ADR-008-form-validation-strategy.md)**  
   Estandariza la validación de formularios usando Reactive Forms con pipe errorMessage, jerarquía de validadores y patrones de visualización de errores consistentes.
 
-- **[ADR-009: Calidad de Código y Herramientas](./adr/ADR-009.md)**  
+- **[ADR-009: Calidad de Código y Herramientas](./adr/ADR-009-code-quality-tooling.md)**  
   Documenta la cadena de herramientas de calidad de código incluyendo ESLint, Prettier, Husky, Commitlint y aplicación automatizada de calidad.
 
-- **[ADR-010: Estrategia de Uso de Iconos](./adr/ADR-010.md)**  
+- **[ADR-010: Estrategia de Uso de Iconos](./adr/ADR-010-icon-usage-strategy.md)**  
   Define la estrategia de uso de iconos usando un componente unificado `<ft-icon />` con soporte para colecciones predefinidas e iconos personalizados.
 
-- **[ADR-011: Estrategia de Documentación](./adr/ADR-011.md)**  
+- **[ADR-011: Estrategia de Documentación](./adr/ADR-011-documentation-strategy.md)**  
   Establece estándares de documentación que requieren documentación solo en inglés, formato JSDoc/TSDoc y Compodoc para generación automática de documentación de API.
 
-- **[ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./adr/ADR-012.md)**  
+- **[ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./adr/ADR-012-typescript-access-modifiers.md)**  
   Establece convenciones para el uso de modificadores de acceso y readonly en TypeScript.
 
-- **[ADR-013: Layout y Estructura de Formularios](./adr/ADR-013.md)**  
+- **[ADR-013: Layout y Estructura de Formularios](./adr/ADR-013-form-layout-structure.md)**  
   Define la estructura y layout estándar para formularios en la aplicación.
 
 ## Crear Nuevos ADRs

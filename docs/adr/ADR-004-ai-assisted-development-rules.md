@@ -48,10 +48,10 @@ docs/
 ├── README.md                # Arquitectura general y diagramas C4
 ├── css-styling.md                 # Guías de CSS y Tailwind
 └── adr/                          # Registros de Decisiones Arquitectónicas
-    ├── ADR-001.md
-    ├── ADR-002.md
-    ├── ADR-003.md
-    ├── ADR-004.md
+    ├── ADR-001-separation-of-responsibilities.md
+    ├── ADR-002-angular-style-guide.md
+    ├── ADR-003-tailwind-css-utilities.md
+    ├── ADR-004-ai-assisted-development-rules.md
     └── ...
 ```
 
@@ -65,7 +65,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 
 #### 1. Reglas de Estructura del Proyecto
 
-**Ubicación:** Ver [ADR-001](./ADR-001.md) para decisiones arquitectónicas detalladas.
+**Ubicación:** Ver [ADR-001](./ADR-001-separation-of-responsibilities.md) para decisiones arquitectónicas detalladas.
 
 **Cubre:**
 - Organización de capas Core, Shared y Features
@@ -74,7 +74,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 - Patrones de estructura de carpetas
 - Patrones de definición de rutas
 
-**Referencia:** Ver [ADR-001](./ADR-001.md) para decisiones arquitectónicas detalladas.
+**Referencia:** Ver [ADR-001](./ADR-001-separation-of-responsibilities.md) para decisiones arquitectónicas detalladas.
 
 #### 2. Reglas de Estilos CSS
 
@@ -91,11 +91,11 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 - Usar BEM con prefijo `ft-` solo para estilos específicos de componentes
 - NO usar `ngClass` o `ngStyle`, usar bindings `[class]` y `[style]`
 
-**Referencia:** Ver [ADR-003](./ADR-003.md) para decisiones CSS detalladas.
+**Referencia:** Ver [ADR-003](./ADR-003-tailwind-css-utilities.md) para decisiones CSS detalladas.
 
 #### 3. Reglas de Validación de Formularios
 
-**Ubicación:** Ver [ADR-008](./ADR-008.md) para decisiones detalladas de validación de formularios.
+**Ubicación:** Ver [ADR-008](./ADR-008-form-validation-strategy.md) para decisiones detalladas de validación de formularios.
 
 **Cubre:**
 - Patrones de formularios reactivos
@@ -104,11 +104,11 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 - Creación de validadores personalizados
 - Orden de resolución de validadores: Angular → Shared → Feature
 
-**Referencia:** Ver [ADR-008](./ADR-008.md) para decisiones detalladas de validación de formularios.
+**Referencia:** Ver [ADR-008](./ADR-008-form-validation-strategy.md) para decisiones detalladas de validación de formularios.
 
 #### 4. Reglas de Uso de Iconos
 
-**Ubicación:** Ver [ADR-010](./ADR-010.md) para decisiones detalladas de uso de iconos.
+**Ubicación:** Ver [ADR-010](./ADR-010-icon-usage-strategy.md) para decisiones detalladas de uso de iconos.
 
 **Cubre:**
 - Usar el componente `<ft-icon />`
@@ -116,11 +116,11 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 - Creación de iconos personalizados en `public/images/icons.svg`
 - Modificadores de tamaño
 
-**Referencia:** Ver [ADR-010](./ADR-010.md) para decisiones detalladas de uso de iconos.
+**Referencia:** Ver [ADR-010](./ADR-010-icon-usage-strategy.md) para decisiones detalladas de uso de iconos.
 
 #### 5. Reglas de Servicios REST
 
-**Ubicación:** Ver [ADR-006](./ADR-006.md) para decisiones detalladas de servicios REST.
+**Ubicación:** Ver [ADR-006](./ADR-006-repository-pattern-rest.md) para decisiones detalladas de servicios REST.
 
 **Cubre:**
 - Implementación del patrón Repository
@@ -130,11 +130,11 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 - Mutaciones (POST, PUT, DELETE) con `getMutations`
 - Recursos con `getResource` para peticiones GET
 
-**Referencia:** Ver [ADR-006](./ADR-006.md) para decisiones detalladas de servicios REST.
+**Referencia:** Ver [ADR-006](./ADR-006-repository-pattern-rest.md) para decisiones detalladas de servicios REST.
 
 #### 6. Reglas de Testing Unitario
 
-**Ubicación:** Ver [ADR-007](./ADR-007.md) para decisiones detalladas de testing.
+**Ubicación:** Ver [ADR-007](./ADR-007-testing-strategy.md) para decisiones detalladas de testing.
 
 **Cubre:**
 - Configuración de Vitest
@@ -143,7 +143,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 - Patrones de testing de signals
 - Testing de casos positivos y negativos
 
-**Referencia:** Ver [ADR-007](./ADR-007.md) para decisiones detalladas de testing.
+**Referencia:** Ver [ADR-007](./ADR-007-testing-strategy.md) para decisiones detalladas de testing.
 
 #### 7. Resumen de Arquitectura
 
@@ -325,12 +325,12 @@ Para más información sobre ADRs, ver [Registros de Decisiones Arquitectónicas
 
 ## Referencias
 
-- [ADR-001: Separación de Responsabilidades](./ADR-001.md)
+- [ADR-001: Separación de Responsabilidades](./ADR-001-separation-of-responsibilities.md)
 - [Documentación de Arquitectura](../README.md)
-- [Guía de Estilos CSS](../css-styling.md)
-- [ADR-006: Patrón Repository para Servicios REST](./ADR-006.md)
-- [ADR-007: Estrategia de Testing](./ADR-007.md)
-- [ADR-008: Estrategia de Validación de Formularios](./ADR-008.md)
-- [ADR-010: Estrategia de Uso de Iconos](./ADR-010.md)
+- [Guía de Estilos CSS](../specs/rules/css-styling.md)
+- [ADR-006: Patrón Repository para Servicios REST](./ADR-006-repository-pattern-rest.md)
+- [ADR-007: Estrategia de Testing](./ADR-007-testing-strategy.md)
+- [ADR-008: Estrategia de Validación de Formularios](./ADR-008-form-validation-strategy.md)
+- [ADR-010: Estrategia de Uso de Iconos](./ADR-010-icon-usage-strategy.md)
 - [Guía de Estilo de Angular](https://angular.dev/style-guide)
 - [Archivo de Configuración de Ejemplo](../../../.cursor/rules.json) - Ejemplo de cómo se pueden configurar las reglas para herramientas de desarrollo asistido por IA

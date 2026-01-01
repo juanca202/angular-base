@@ -323,4 +323,4 @@ Compodoc escanea automáticamente el código base en busca de comentarios JSDoc/
 - [Documentación de TSDoc](https://tsdoc.org/)
 - [Documentación de JSDoc](https://jsdoc.app/)
 - [Mejores Prácticas de Documentación de Angular](https://angular.dev/style-guide)
-- [ADR-009: Calidad de Código y Herramientas](./ADR-009.md) - Decisiones relacionadas con herramientas
+- [ADR-009: Calidad de Código y Herramientas](./ADR-009-code-quality-tooling.md) - Decisiones relacionadas con herramientas

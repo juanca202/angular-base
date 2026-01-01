@@ -38,8 +38,8 @@ Este proyecto es una aplicación base desarrollada con **Angular**, diseñada si
 
 #### Internacionalización (i18n)
 
-- **`npm run extract-i18n`**: Extrae todas las cadenas de internacionalización del código fuente y genera el archivo base `en.json` (ver [ADR-005](./docs/adr/ADR-005.md))
-- **`npm run i18n -- [LOCALE]`**: Genera o actualiza archivos de traducción para el idioma indicado (ej: `npm run i18n -- es`) (ver [ADR-005](./docs/adr/ADR-005.md))
+- **`npm run extract-i18n`**: Extrae todas las cadenas de internacionalización del código fuente y genera el archivo base `en.json` (ver [ADR-005](./docs/adr/ADR-005-internationalization-strategy.md))
+- **`npm run i18n -- [LOCALE]`**: Genera o actualiza archivos de traducción para el idioma indicado (ej: `npm run i18n -- es`) (ver [ADR-005](./docs/adr/ADR-005-internationalization-strategy.md))
 
 #### Calidad de Código
 
@@ -59,11 +59,11 @@ Este proyecto es una aplicación base desarrollada con **Angular**, diseñada si
 
 ### Internacionalización (i18n)
 
-Este proyecto incluye soporte para múltiples idiomas. Para más detalles sobre la estrategia de internacionalización, flujo de trabajo y uso de scripts, consulta [ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005.md).
+Este proyecto incluye soporte para múltiples idiomas. Para más detalles sobre la estrategia de internacionalización, flujo de trabajo y uso de scripts, consulta [ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005-internationalization-strategy.md).
 
 ### Convención de Mensajes de Commit
 
-Este proyecto usa la convención **Conventional Commits**. Para más detalles sobre los tipos permitidos, formato y reglas, consulta [ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009.md).
+Este proyecto usa la convención **Conventional Commits**. Para más detalles sobre los tipos permitidos, formato y reglas, consulta [ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009-code-quality-tooling.md).
 
 ---
 
@@ -97,19 +97,19 @@ Documentación completa de la arquitectura del proyecto, incluyendo:
 
 Este proyecto documenta todas las decisiones arquitectónicas importantes en ADRs:
 
-- **[ADR-001: Separación de Responsabilidades](./docs/adr/ADR-001.md)** - Arquitectura de tres capas (Core, Shared, Features)
-- **[ADR-002: Adopción de la Guía de Estilo de Angular](./docs/adr/ADR-002.md)** - Convenciones y mejores prácticas
-- **[ADR-003: Uso de Tailwind CSS](./docs/adr/ADR-003.md)** - Estrategia de estilos CSS
-- **[ADR-004: Reglas de Desarrollo Asistido por IA](./docs/adr/ADR-004.md)** - Reglas de desarrollo asistido por IA
-- **[ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005.md)** - i18n y gestión de traducciones
-- **[ADR-006: Patrón Repository para REST](./docs/adr/ADR-006.md)** - Comunicación con APIs
-- **[ADR-007: Estrategia de Testing](./docs/adr/ADR-007.md)** - Vitest y Playwright
-- **[ADR-008: Estrategia de Validación de Formularios](./docs/adr/ADR-008.md)** - Formularios reactivos
-- **[ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009.md)** - ESLint, Prettier, Husky
-- **[ADR-010: Estrategia de Uso de Iconos](./docs/adr/ADR-010.md)** - Componente `<ft-icon />`
-- **[ADR-011: Estrategia de Documentación](./docs/adr/ADR-011.md)** - JSDoc/TSDoc, Compodoc
-- **[ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./docs/adr/ADR-012.md)** - Convenciones de TypeScript
-- **[ADR-013: Layout y Estructura de Formularios](./docs/adr/ADR-013.md)** - Estructura de formularios
+- **[ADR-001: Separación de Responsabilidades](./docs/adr/ADR-001-separation-of-responsibilities.md)** - Arquitectura de tres capas (Core, Shared, Features)
+- **[ADR-002: Adopción de la Guía de Estilo de Angular](./docs/adr/ADR-002-angular-style-guide.md)** - Convenciones y mejores prácticas
+- **[ADR-003: Uso de Tailwind CSS](./docs/adr/ADR-003-tailwind-css-utilities.md)** - Estrategia de estilos CSS
+- **[ADR-004: Reglas de Desarrollo Asistido por IA](./docs/adr/ADR-004-ai-assisted-development-rules.md)** - Reglas de desarrollo asistido por IA
+- **[ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005-internationalization-strategy.md)** - i18n y gestión de traducciones
+- **[ADR-006: Patrón Repository para REST](./docs/adr/ADR-006-repository-pattern-rest.md)** - Comunicación con APIs
+- **[ADR-007: Estrategia de Testing](./docs/adr/ADR-007-testing-strategy.md)** - Vitest y Playwright
+- **[ADR-008: Estrategia de Validación de Formularios](./docs/adr/ADR-008-form-validation-strategy.md)** - Formularios reactivos
+- **[ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009-code-quality-tooling.md)** - ESLint, Prettier, Husky
+- **[ADR-010: Estrategia de Uso de Iconos](./docs/adr/ADR-010-icon-usage-strategy.md)** - Componente `<ft-icon />`
+- **[ADR-011: Estrategia de Documentación](./docs/adr/ADR-011-documentation-strategy.md)** - JSDoc/TSDoc, Compodoc
+- **[ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./docs/adr/ADR-012-typescript-access-modifiers.md)** - Convenciones de TypeScript
+- **[ADR-013: Layout y Estructura de Formularios](./docs/adr/ADR-013-form-layout-structure.md)** - Estructura de formularios
 
 **Útil para:** Entender las decisiones arquitectónicas del proyecto y las razones detrás de ellas.
 
