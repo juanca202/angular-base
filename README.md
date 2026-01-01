@@ -1,117 +1,139 @@
-**📖 [English](./README.md) | [Español](./README.es.md)**
+Este proyecto es una aplicación base desarrollada con **Angular**, diseñada siguiendo una arquitectura modular y escalable. El proyecto implementa las mejores prácticas de Angular, usando componentes standalone, signals para gestión de estado, y una estructura organizada en capas (Core, Shared, Features).
 
-This project is a base application developed with **Angular**, designed following a modular and scalable architecture. The project implements Angular best practices, using standalone components, signals for state management, and an organized layered structure (Core, Shared, Features).
+### Características Principales
 
-### Main Features
+- **Arquitectura modular**: Separación clara de responsabilidades
+- **PWA (Progressive Web App)**: Lista para instalar y usar offline
+- **Angular Material (MDC)**: Componentes UI basados en Material Design
+- **Tailwind CSS**: Utilidades CSS para layout y estilos comunes
+- **Calidad de código**: ESLint, Prettier y Husky (hooks para validación)
+- **Testing unitario y E2E**: Vitest y Playwright
+- **Monitoreo de errores**: Sentry, Azure Application Insights
+- **Documentación**: JSDoc/TSDoc con Compodoc
+- **Internacionalización (i18n)**: Localize
+- **Despliegue en la nube**: Configuración para despliegue en Azure, AWS y Google Cloud
+- **Marketing y analytics**: Google Tag Manager y Firebase (Analytics, Messaging)
+- **Desarrollo asistido por IA**: Reglas documentadas para mantener consistencia
 
-- **Modular architecture**: Clear separation of responsibilities between Core, Shared, and Features
-- **PWA (Progressive Web App)**: Ready to install and use offline
-- **Angular Material (MDC)**: UI components based on Material Design
-- **Tailwind CSS**: CSS utilities for layout and common styles
-- **Code quality**: ESLint, Prettier, and Husky (hooks for validation)
-- **Unit and E2E testing**: Jest and Playwright
-- **Error monitoring**: Sentry, Azure Application Insights
-- **Documentation**: JSDoc/TSDoc with Compodoc
-- **Internationalization (i18n)**: Localize
-- **Cloud deployment**: Configuration for deployment on Azure, AWS, and Google Cloud
-- **Marketing and analytics**: Google Tag Manager and Firebase (Analytics, Messaging)
-- **AI-assisted development**: Documented rules to maintain consistency
+### Tecnologías Clave
 
-### Key Technologies
-
-- Angular (standalone components, signals)
-- TypeScript (strict mode)
+- Angular (componentes standalone, signals)
+- TypeScript (modo estricto)
 - Angular Material (MDC)
 - Tailwind CSS
-- Jest (testing)
+- Vitest (testing)
 
-### Available Scripts
+### Scripts Disponibles
 
-- **`npm run start`**: Generates the Git version and starts the development server
-- **`npm run build`**: Generates the Git version and compiles the application for deployment
-- **`npm run extract-i18n -- [LOCALE]`**: Extracts all internationalization strings from the source code (see [ADR-005](./docs/en/decisions/ADR-005.md))
-- **`npm run i18n -- [LOCALE]`**: Generates or updates translation files for the indicated language (see [ADR-005](./docs/en/decisions/ADR-005.md))
-- **`npm run watch`**: Compiles the application in development mode with automatic reload
-- **`npm run test`**: Runs unit tests
-- **`npm run prettier`**: Automatically formats source code using Prettier
+#### Desarrollo
 
-### Internationalization (i18n)
+- **`npm run start`**: Genera la versión de Git e inicia el servidor de desarrollo
+- **`npm run build`**: Genera la versión de Git y compila la aplicación para despliegue
+- **`npm run watch`**: Compila la aplicación en modo desarrollo con recarga automática
 
-This project includes support for multiple languages. For more details on the internationalization strategy, workflow, and script usage, see [ADR-005: Internationalization Strategy](./docs/en/decisions/ADR-005.md).
+#### Testing
 
-### Commit Message Convention
+- **`npm run test`**: Ejecuta tests unitarios con Vitest
+- **`npm run e2e`**: Ejecuta tests end-to-end con Playwright
 
-This project uses the **Conventional Commits** convention. For more details on allowed types, format, and rules, see [ADR-009: Code Quality & Tooling](./docs/en/decisions/ADR-009.md).
+#### Internacionalización (i18n)
 
----
+- **`npm run extract-i18n`**: Extrae todas las cadenas de internacionalización del código fuente y genera el archivo base `en.json` (ver [ADR-005](./docs/adr/ADR-005.md))
+- **`npm run i18n -- [LOCALE]`**: Genera o actualiza archivos de traducción para el idioma indicado (ej: `npm run i18n -- es`) (ver [ADR-005](./docs/adr/ADR-005.md))
 
-## Quick Access to Documentation
+#### Calidad de Código
 
-Direct links to all available documentation:
+- **`npm run lint`**: Ejecuta ESLint para verificar problemas en el código
+- **`npm run lint:fix`**: Ejecuta ESLint y corrige automáticamente los problemas que pueda
+- **`npm run prettier`**: Formatea automáticamente el código fuente usando Prettier
 
-- 🚀 [Getting Started](./docs/en/getting-started.md) - How to use this base project
-- 📐 [Architecture](./docs/en/architecture.md) - General structure and design decisions
-- 🎨 [CSS Styling](./docs/en/css-styling.md) - CSS rules and conventions
-- 📋 [Architectural Decision Records (ADRs)](./docs/en/decisions/README.md) - Documented architectural decisions
+#### Documentación
 
-**📖 [View documentation in Spanish](./README.es.md)**
+- **`npm run compodoc:build`**: Genera la documentación de la API usando Compodoc
+- **`npm run compodoc:build-and-serve`**: Genera la documentación y la sirve en un servidor local
+- **`npm run compodoc:serve`**: Sirve la documentación existente en un servidor local
 
----
+#### Utilidades
 
-## Documentation Index
+- **`npm run icons:pack`**: Genera el archivo de iconos SVG empaquetado
 
-### 📐 [Architecture](./docs/en/architecture.md)
+### Internacionalización (i18n)
 
-Complete documentation of the project architecture, including:
-- Architectural objectives and scope
-- C4 diagrams (Components and internal modules)
-- Architectural decisions (ADRs)
-- Layer structure (Core, Shared, Features)
-- Security, performance, and optimizations
+Este proyecto incluye soporte para múltiples idiomas. Para más detalles sobre la estrategia de internacionalización, flujo de trabajo y uso de scripts, consulta [ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005.md).
 
-**Useful for:** Understanding the general project structure, design decisions, and how components are organized.
+### Convención de Mensajes de Commit
+
+Este proyecto usa la convención **Conventional Commits**. Para más detalles sobre los tipos permitidos, formato y reglas, consulta [ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009.md).
 
 ---
 
-### 📋 [Architectural Decision Records (ADRs)](./docs/en/decisions/README.md)
+## Acceso Rápido a la Documentación
 
-This project documents all significant architectural decisions in ADRs:
+Enlaces directos a toda la documentación disponible:
 
-- **[ADR-001: Separation of Responsibilities](./docs/en/decisions/ADR-001.md)** - Three-layer architecture (Core, Shared, Features)
-- **[ADR-002: Adoption of Angular Style Guide](./docs/en/decisions/ADR-002.md)** - Conventions and best practices
-- **[ADR-003: Use of Tailwind CSS](./docs/en/decisions/ADR-003.md)** - CSS styling strategy
-- **[ADR-004: AI-Assisted Development Rules](./docs/en/decisions/ADR-004.md)** - AI-assisted development rules
-- **[ADR-005: Internationalization Strategy](./docs/en/decisions/ADR-005.md)** - i18n and translation management
-- **[ADR-006: Repository Pattern for REST](./docs/en/decisions/ADR-006.md)** - API communication
-- **[ADR-007: Testing Strategy](./docs/en/decisions/ADR-007.md)** - Jest and Playwright
-- **[ADR-008: Form Validation Strategy](./docs/en/decisions/ADR-008.md)** - Reactive forms
-- **[ADR-009: Code Quality & Tooling](./docs/en/decisions/ADR-009.md)** - ESLint, Prettier, Husky
-- **[ADR-010: Icon Usage Strategy](./docs/en/decisions/ADR-010.md)** - `<ft-icon />` component
-- **[ADR-011: Documentation Strategy](./docs/en/decisions/ADR-011.md)** - JSDoc/TSDoc, Compodoc
-
-**Useful for:** Understanding the project's architectural decisions and the reasoning behind them.
+- 🚀 [Comenzando](./docs/specs/rules/getting-started.md) - Cómo usar este proyecto base
+- 📐 [Arquitectura](./docs/README.md) - Estructura general y decisiones de diseño
+- 🎨 [Estilos CSS](./docs/specs/rules/css-styling.md) - Reglas y convenciones CSS
+- 📋 [Registros de Decisiones Arquitectónicas (ADRs)](./docs/adr/README.md) - Decisiones arquitectónicas documentadas
 
 ---
 
-### 🎨 [CSS Styling](./docs/en/css-styling.md)
+## Índice de Documentación
 
-Rules and conventions for CSS usage in the project:
-- BEM with `ft-` prefix for custom classes
-- Tailwind CSS prioritization for utilities
-- CSS variables for themes and consistency
-- Responsive design with Tailwind breakpoints
+### 📐 [Arquitectura](./docs/README.md)
 
-**Useful for:** Applying consistent styles, deciding when to use Tailwind vs. custom classes.
+Documentación completa de la arquitectura del proyecto, incluyendo:
+- Objetivos y alcance arquitectónicos
+- Diagramas C4 (Componentes y módulos internos)
+- Decisiones arquitectónicas (ADRs)
+- Estructura de capas (Core, Shared, Features)
+- Seguridad, rendimiento y optimizaciones
+
+**Útil para:** Entender la estructura general del proyecto, decisiones de diseño y cómo se organizan los componentes.
 
 ---
 
-## Contributing
+### 📋 [Registros de Decisiones Arquitectónicas (ADRs)](./docs/adr/README.md)
 
-When adding new documentation:
-- Keep Markdown format consistent
-- Include code examples when relevant
-- Update this index with links and descriptions
-- Follow conventions established in existing documents
+Este proyecto documenta todas las decisiones arquitectónicas importantes en ADRs:
+
+- **[ADR-001: Separación de Responsabilidades](./docs/adr/ADR-001.md)** - Arquitectura de tres capas (Core, Shared, Features)
+- **[ADR-002: Adopción de la Guía de Estilo de Angular](./docs/adr/ADR-002.md)** - Convenciones y mejores prácticas
+- **[ADR-003: Uso de Tailwind CSS](./docs/adr/ADR-003.md)** - Estrategia de estilos CSS
+- **[ADR-004: Reglas de Desarrollo Asistido por IA](./docs/adr/ADR-004.md)** - Reglas de desarrollo asistido por IA
+- **[ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005.md)** - i18n y gestión de traducciones
+- **[ADR-006: Patrón Repository para REST](./docs/adr/ADR-006.md)** - Comunicación con APIs
+- **[ADR-007: Estrategia de Testing](./docs/adr/ADR-007.md)** - Vitest y Playwright
+- **[ADR-008: Estrategia de Validación de Formularios](./docs/adr/ADR-008.md)** - Formularios reactivos
+- **[ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009.md)** - ESLint, Prettier, Husky
+- **[ADR-010: Estrategia de Uso de Iconos](./docs/adr/ADR-010.md)** - Componente `<ft-icon />`
+- **[ADR-011: Estrategia de Documentación](./docs/adr/ADR-011.md)** - JSDoc/TSDoc, Compodoc
+- **[ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./docs/adr/ADR-012.md)** - Convenciones de TypeScript
+- **[ADR-013: Layout y Estructura de Formularios](./docs/adr/ADR-013.md)** - Estructura de formularios
+
+**Útil para:** Entender las decisiones arquitectónicas del proyecto y las razones detrás de ellas.
+
+---
+
+### 🎨 [Estilos CSS](./docs/specs/rules/css-styling.md)
+
+Reglas y convenciones para el uso de CSS en el proyecto:
+- BEM con prefijo `ft-` para clases personalizadas
+- Priorización de Tailwind CSS para utilidades
+- Variables CSS para temas y consistencia
+- Diseño responsivo con breakpoints de Tailwind
+
+**Útil para:** Aplicar estilos consistentes, decidir cuándo usar Tailwind vs. clases personalizadas.
+
+---
+
+## Contribuir
+
+Al agregar nueva documentación:
+- Mantener el formato Markdown consistente
+- Incluir ejemplos de código cuando sea relevante
+- Actualizar este índice con enlaces y descripciones
+- Seguir las convenciones establecidas en los documentos existentes
 
 ## Enlaces
 
@@ -120,4 +142,3 @@ When adding new documentation:
 - [Angular Material](https://material.angular.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Sentry](https://docs.sentry.io/)
-
