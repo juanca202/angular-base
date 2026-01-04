@@ -24,7 +24,7 @@ import { AuthService } from '@/cross/auth/auth-service';
 import { environment } from '@/environments/environment';
 import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { getApiUrl } from '@/core/utils/async-repository';
+import { getApiUrl } from '@/core/utils/async-resources';
 import { Session } from '@/core/services/session';
 
 /**

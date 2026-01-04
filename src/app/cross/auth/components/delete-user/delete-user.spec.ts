@@ -15,7 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 import { User } from '@/core/models/user';
 import moment from 'moment';
-import { getApiUrl } from '@/core/utils/async-repository';
+import { getApiUrl } from '@/core/utils/async-resources';
 import {
   createMockAppManager,
   createMockAuthService,

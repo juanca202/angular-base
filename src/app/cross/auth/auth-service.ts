@@ -33,7 +33,7 @@ import {
 import { environment } from '@/environments/environment';
 import { DeleteUser } from '@/cross/auth/components/delete-user/delete-user';
 import { ChangePassword } from '@/cross/auth/components/change-password/change-password';
-import { getApiUrl } from '@/core/utils/async-repository';
+import { getApiUrl } from '@/core/utils/async-resources';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
   identity: {
