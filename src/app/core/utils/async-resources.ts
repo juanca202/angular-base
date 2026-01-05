@@ -57,7 +57,7 @@ export interface Resource<TParams, TResult> {
   readonly load: (
     params?: TParams extends void ? undefined : TParams,
     options?: Options
-  ) => Promise<TResult | null>;
+  ) => Promise<TResult>;
   readonly refresh: () => Promise<TResult | null>;
   readonly destroy: () => void;
 }
@@ -71,7 +71,7 @@ export interface ResourceCollection<TParams, TResult extends unknown[]>
   readonly load: (
     params?: TParams extends void ? undefined : TParams,
     options?: CollectionOptions
-  ) => Promise<TResult | null>;
+  ) => Promise<TResult>;
 }
 
 /**
@@ -194,7 +194,7 @@ export function getResource<TParams, TResult>(
   const load = async (
     params?: TParams extends void ? undefined : TParams,
     options?: Options
-  ): Promise<TResult | null> => {
+  ): Promise<TResult> => {
     const { notifyError = true } = options || {};
     lastParams = params as any;
     lastOptions = options;
@@ -222,7 +222,7 @@ export function getResource<TParams, TResult>(
       takeUntil(destroy$)
     );
 
-    return firstValueFrom(request$);
+    return await firstValueFrom(request$);
   };
 
   const refresh = () => load(lastParams, lastOptions);
@@ -259,7 +259,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
   const load = async (
     params?: TParams extends void ? undefined : TParams,
     options?: CollectionOptions
-  ): Promise<TResult | null> => {
+  ): Promise<TResult> => {
     const { notifyError = true, append = false } = options || {};
     lastParams = params as any;
     lastOptions = options;
@@ -300,7 +300,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
       takeUntil(destroy$)
     );
 
-    return firstValueFrom(request$);
+    return await firstValueFrom(request$);
   };
 
   const refresh = () => load(lastParams, { ...lastOptions, append: false });
