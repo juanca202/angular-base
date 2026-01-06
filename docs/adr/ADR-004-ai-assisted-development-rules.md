@@ -188,7 +188,7 @@ Esta configuración asegura que:
 ```typescript
 // ✅ El código generado sigue todas las reglas
 @Component({
-  selector: 'ft-sales-list',
+  selector: 'app-sales-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, SaleItemComponent],

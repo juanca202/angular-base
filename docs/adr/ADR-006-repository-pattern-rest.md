@@ -152,7 +152,7 @@ customers.destroy();
 
 ```typescript
 @Component({
-  selector: 'ft-customer-list',
+  selector: 'app-customer-list',
   template: `
     @if (customers.loading()) {
       <app-spinner />
