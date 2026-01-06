@@ -1,0 +1,123 @@
+[
+  {
+    "id": 1,
+    "name": "Requirement Enero 2026",
+    "customer": {
+      "id": 1,
+      "name": "Cliente A",
+      "clientMargin": 0.15,
+      "divisions": [
+        {
+          "id": 1,
+          "name": "División 1"
+        }
+      ]
+    },
+    "divisions": [
+      {
+        "id": 1,
+        "name": "División 1"
+      }
+    ],
+    "sellByDate": "2026-02-15T00:00:00Z",
+    "type": {
+      "id": 1,
+      "name": "Tipo A",
+      "description": "Tipo de requirement A",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    "salesProbability": {
+      "id": 1,
+      "name": "Alta",
+      "description": "Alta probabilidad de venta",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    "salesPriority": {
+      "id": 1,
+      "name": "Alta",
+      "description": "Alta prioridad",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    "description": "Descripción del requirement",
+    "customerStrategy": {
+      "id": 1,
+      "name": "Estrategia A",
+      "description": "Estrategia del cliente",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    "entryDate": "2026-01-01T00:00:00Z",
+    "startDate": "2026-01-15T00:00:00Z",
+    "dueDate": "2026-02-01T00:00:00Z",
+    "updatedAt": "2026-01-05T12:00:00Z",
+    "estimatedDevelopmentTime": 120,
+    "remainingTime": 100,
+    "status": {
+      "id": 1,
+      "name": "Pendiente",
+      "description": "Requirement pendiente",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    "approvalStatus": {
+      "id": 1,
+      "name": "En Revisión",
+      "description": "En proceso de revisión",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    "requestedBy": {
+      "id": 1,
+      "name": "Usuario A",
+      "email": "usuario.a@example.com",
+      "phone": "+34 600 000 000"
+    },
+    "items": [
+      {
+        "id": 1,
+        "name": "RequirementItem 1",
+        "status": {
+          "id": 1,
+          "name": "Activo",
+          "description": "Estado activo",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z"
+        },
+        "category": {
+          "id": 1,
+          "name": "Categoría A",
+          "description": "Categoría del ítem",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z"
+        },
+        "recipesCount": 2,
+        "clientMargin": 0.15,
+        "retailMaxPrice": 100.0,
+        "retailMinPrice": 80.0,
+        "quantityPerWeek": 50,
+        "season": {
+          "id": 1,
+          "name": "Invierno",
+          "description": "Temporada de invierno",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z"
+        },
+        "isWet": true,
+        "tags": [],
+        "specialInstructions": [],
+        "createdAt": "2026-01-01T00:00:00Z",
+        "updatedAt": "2026-01-01T00:00:00Z",
+        "assignedTo": {
+          "id": 1,
+          "name": "Usuario A",
+          "email": "usuario.a@example.com",
+          "phone": "+34 600 000 000"
+        }
+      }
+    ]
+  }
+]
+

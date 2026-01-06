@@ -1,0 +1,63 @@
+<div #headerElement class="ft-page__header">
+  <div class="ft-actions"></div>
+  <div i18n>Requirements</div>
+  <div class="ft-actions">
+    <button
+      type="button"
+      matIconButton
+      i18n-title
+      title="Refresh"
+      [disabled]="requirements.loading()"
+      (click)="requirements.refresh()"
+    >
+      <ft-icon name="refresh" class="text-2xl" [class.ft-anim-rotate]="requirements.loading()" />
+    </button>
+  </div>
+</div>
+<div class="ft-page__content ft-anim-enter">
+  @if (!requirements.error() && (!requirements.loading() || requirements.value()?.length)) {
+    <table class="ft-table">
+      <thead>
+        <tr>
+          <th class="!ps-6" i18n>Name</th>
+          <th i18n>Customer</th>
+          <th i18n>Status</th>
+          <th i18n>Due Date</th>
+          <th class="w-[57px]"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (requirement of requirements.value(); track requirement.id) {
+          <tr class="ft-table__item--action" (click)="viewDetail(requirement.id)">
+            <td class="!ps-6">{{ requirement.name }}</td>
+            <td>{{ requirement.customer.name }}</td>
+            <td>{{ requirement.status.name }}</td>
+            <td>{{ requirement.dueDate | date }}</td>
+            <td>
+              <button
+                type="button"
+                matIconButton
+                (click)="$event.stopPropagation(); viewDetail(requirement.id)"
+              >
+                <ft-icon name="chevron-right" class="text-2xl" />
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else if (requirements.loading()) {
+    <div class="ft-center">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
+    </div>
+  } @else if (requirements.error()) {
+    <div class="ft-center p-6">
+      <ft-icon name="warning" collection="factoricons-slim" class="ft-icon--4" />
+      <p class="text-gray-500 mb-4">{{ requirements.error() }}</p>
+      <button i18n type="button" matButton="filled" (click)="requirements.refresh()">Retry</button>
+    </div>
+  } @else if (!requirements.value()?.length) {
+    <div class="ft-center" i18n>No requirements available</div>
+  }
+</div>

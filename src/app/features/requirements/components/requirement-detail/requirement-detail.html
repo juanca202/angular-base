@@ -1,0 +1,105 @@
+<div #headerElement class="ft-page__header">
+  <div class="ft-actions">
+    <button type="button" matIconButton i18n-title title="Back" (click)="goBack()">
+      <ft-icon name="arrow-left" class="text-2xl" />
+    </button>
+  </div>
+  <div>{{ requirement.value()?.name }}</div>
+  <div class="ft-actions"></div>
+</div>
+<div class="ft-page__content ft-anim-enter">
+  @if (!requirement.loading() && requirement.value()) {
+    <div class="ft-container flex flex-col gap-6 pt-4">
+      <!-- Requirement Information -->
+      <div class="flex flex-col gap-4">
+        <h2 i18n class="text-xl font-semibold">Requirement Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div class="text-sm text-gray-500" i18n>Customer</div>
+            <div class="font-medium">{{ requirement.value()?.customer.name }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500" i18n>Status</div>
+            <div class="font-medium">{{ requirement.value()?.status.name }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500" i18n>Entry Date</div>
+            <div class="font-medium">{{ requirement.value()?.entryDate | date }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500" i18n>Due Date</div>
+            <div class="font-medium">{{ requirement.value()?.dueDate | date }}</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500" i18n>Estimated Development Time</div>
+            <div i18n class="font-medium">
+              {{ requirement.value()?.estimatedDevelopmentTime }} hours
+            </div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500" i18n>Remaining Time</div>
+            <div i18n class="font-medium">{{ requirement.value()?.remainingTime }} hours</div>
+          </div>
+        </div>
+        @if (requirement.value()?.description) {
+          <div>
+            <div class="text-sm text-gray-500" i18n>Description</div>
+            <div class="font-medium">{{ requirement.value()?.description }}</div>
+          </div>
+        }
+      </div>
+
+      <!-- RequirementItems -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h2 i18n class="text-xl font-semibold">Items</h2>
+        </div>
+        @if (requirement.value()?.items && requirement.value()!.items!.length > 0) {
+          <table class="ft-table">
+            <thead>
+              <tr>
+                <th class="!ps-6" i18n>Name</th>
+                <th i18n>Category</th>
+                <th i18n>Status</th>
+                <th i18n>Recipes Count</th>
+                <th class="w-[57px]"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of requirement.value()!.items!; track item.id) {
+                <tr class="ft-table__item--action" (click)="viewItemDetail(item.id)">
+                  <td class="!ps-6">{{ item.name }}</td>
+                  <td>{{ item.category.name }}</td>
+                  <td>{{ item.status.name }}</td>
+                  <td>{{ item.recipesCount }}</td>
+                  <td>
+                    <button
+                      type="button"
+                      matIconButton
+                      (click)="$event.stopPropagation(); viewItemDetail(item.id)"
+                    >
+                      <ft-icon name="chevron-right" class="text-2xl" />
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <div class="ft-center p-6" i18n>No items available</div>
+        }
+      </div>
+    </div>
+  } @else if (requirement.loading()) {
+    <div class="ft-center">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
+    </div>
+  } @else if (requirement.error()) {
+    <div class="ft-center p-6">
+      <ft-icon name="warning" collection="factoricons-slim" class="ft-icon--4" />
+      <p class="text-gray-500 mb-4">{{ requirement.error() }}</p>
+      <button i18n type="button" matButton="filled" (click)="goBack()">Go Back</button>
+    </div>
+  }
+</div>
