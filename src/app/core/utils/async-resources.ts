@@ -14,22 +14,17 @@ import {
 } from 'rxjs';
 
 /**
- * Factory function that can return either an Observable or a Promise.
- * Used to unify async handling across resources and mutations.
+ * Factory function that returns an Observable or a Promise.
+ * Receives a SINGLE optional parameter (primitive or object).
  */
 export type AsyncFactory<TParams, TResult> = (
-  ...params: TParams extends any[] ? TParams : TParams extends void ? [] : [TParams]
+  params: TParams extends void ? undefined : TParams
 ) => Observable<TResult> | Promise<TResult>;
 
 /**
- * Extracts the inner value type from an Observable or a Promise.
+ * Unwraps Observable<T> or Promise<T> to T
  */
 type UnwrapAsync<T> = T extends Observable<infer U> ? U : T extends Promise<infer U> ? U : T;
-
-/**
- * Arguments accepted by `load()`
- */
-type LoadArgs<TParams> = TParams extends any[] ? TParams : TParams extends void ? [] : [TParams];
 
 /**
  * Options for load and mutate methods.
@@ -59,7 +54,10 @@ export interface Resource<TParams, TResult> {
   readonly value: Signal<TResult | null>;
   readonly loading: Signal<boolean>;
   readonly error: Signal<unknown | null>;
-  readonly load: (params?: LoadArgs<TParams>, options?: Options) => Promise<TResult | null>;
+  readonly load: (
+    params?: TParams extends void ? undefined : TParams,
+    options?: Options
+  ) => Promise<TResult>;
   readonly refresh: () => Promise<TResult | null>;
   readonly destroy: () => void;
 }
@@ -67,13 +65,13 @@ export interface Resource<TParams, TResult> {
 /**
  * State container for a GET collection resource.
  */
-interface ResourceCollection<TParams, TResult extends unknown[]>
+export interface ResourceCollection<TParams, TResult extends unknown[]>
   extends Resource<TParams, TResult> {
   readonly accumulated: Signal<TResult | null>;
   readonly load: (
-    params?: LoadArgs<TParams>,
+    params?: TParams extends void ? undefined : TParams,
     options?: CollectionOptions
-  ) => Promise<TResult | null>;
+  ) => Promise<TResult>;
 }
 
 /**
@@ -109,7 +107,7 @@ export function getApiUrl(path: string): string {
 /**
  * Creates a set of mutation handlers (POST / PUT / DELETE).
  */
-export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>(
+export function getMutations<T extends Record<string, AsyncFactory<any, any>>>(
   factories: T
 ): {
   [K in keyof T]: Mutate<UnwrapAsync<ReturnType<T[K]>>>;
@@ -146,12 +144,14 @@ export function getMutations<T extends Record<string, AsyncFactory<any[], any>>>
 
           error.set(msg);
           globalError.set(msg);
+
           if (notifyError) {
             messageService.show(msg, {
               class: 'ft-message--danger',
               icon: 'warning'
             });
           }
+
           throw new ResourceException(msg, err);
         }),
         finalize(() => {
@@ -187,44 +187,45 @@ export function getResource<TParams, TResult>(
   const value = signal<TResult | null>(null);
   const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
-  let lastParams: LoadArgs<TParams> | null = null;
+
+  let lastParams: TParams extends void ? undefined : TParams;
   let lastOptions: Options | undefined;
 
-  const load = async (params?: LoadArgs<TParams>, options?: Options): Promise<TResult | null> => {
-    const paramsToUse = (params ?? [undefined as any]) as LoadArgs<TParams>;
+  const load = async (
+    params?: TParams extends void ? undefined : TParams,
+    options?: Options
+  ): Promise<TResult> => {
     const { notifyError = true } = options || {};
-    lastParams = paramsToUse;
+    lastParams = params as any;
     lastOptions = options;
+
     loading.set(true);
     error.set(null);
 
-    const request$ = toObservable(factory(...(paramsToUse as any))).pipe(
-      tap((result) => value.set((result ?? null) as TResult | null)),
+    const request$ = toObservable(factory(params as any)).pipe(
+      tap((result) => value.set(result ?? null)),
       catchError((err) => {
         const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
 
         error.set(msg);
+
         if (notifyError) {
           messageService.show(msg, {
             class: 'ft-message--danger',
             icon: 'warning'
           });
         }
+
         throw new ResourceException(msg, err);
       }),
       finalize(() => loading.set(false)),
       takeUntil(destroy$)
     );
 
-    return firstValueFrom(request$);
+    return await firstValueFrom(request$);
   };
 
-  const refresh = async (): Promise<TResult | null> => {
-    if (lastParams === null) {
-      return load(undefined, lastOptions);
-    }
-    return load(lastParams, lastOptions);
-  };
+  const refresh = () => load(lastParams, lastOptions);
 
   return {
     value: value.asReadonly(),
@@ -241,9 +242,6 @@ export function getResource<TParams, TResult>(
 
 /**
  * Creates a reactive resource (GET) with support for accumulable collections.
- * - `value`: latest result.
- * - `accumulated`: accumulation of all previous results.
- * - `load(params, options?)`: options can include `notifyError` (default true) and `append` (default false for collections).
  */
 export function getResourceCollection<TParams, TResult extends unknown[]>(
   factory: AsyncFactory<TParams, TResult>
@@ -254,68 +252,58 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
   const accumulated = signal<TResult | null>(null);
   const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
-  let lastParams: LoadArgs<TParams> | null = null;
-  let lastOptions: Options | undefined;
+
+  let lastParams: TParams extends void ? undefined : TParams;
+  let lastOptions: CollectionOptions | undefined;
 
   const load = async (
-    params?: LoadArgs<TParams>,
+    params?: TParams extends void ? undefined : TParams,
     options?: CollectionOptions
-  ): Promise<TResult | null> => {
-    const paramsToUse = (params ?? [undefined as any]) as LoadArgs<TParams>;
+  ): Promise<TResult> => {
     const { notifyError = true, append = false } = options || {};
-    lastParams = paramsToUse;
+    lastParams = params as any;
     lastOptions = options;
+
     loading.set(true);
     error.set(null);
     value.set(null);
+
     if (!append) {
       accumulated.set(null);
     }
 
-    const request$ = toObservable(factory(...(paramsToUse as any))).pipe(
-      tap((result: TResult | null) => {
-        value.set((result ?? null) as TResult | null);
-        if (append) {
-          const prev = accumulated() as unknown;
-          // If both previous accumulated and new result are arrays, concatenate them.
-          if (Array.isArray(prev) && Array.isArray(result)) {
-            // concat previous accumulated array with the new result array
-            accumulated.set((prev as unknown[]).concat(result as unknown[]) as TResult);
-          } else if (Array.isArray(prev) && result == null) {
-            // nothing new to append, keep previous accumulated
-            accumulated.set(prev as TResult);
-          } else {
-            // Fallback: replace accumulated with the result (which can be null)
-            accumulated.set((result ?? null) as TResult | null);
-          }
+    const request$ = toObservable(factory(params as any)).pipe(
+      tap((result) => {
+        value.set(result ?? null);
+
+        if (append && accumulated() && result) {
+          accumulated.set([...(accumulated() as unknown[]), ...(result as unknown[])] as TResult);
         } else {
-          accumulated.set((result ?? null) as TResult | null);
+          accumulated.set(result ?? null);
         }
       }),
       catchError((err) => {
         const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
 
         error.set(msg);
+
         if (notifyError) {
           messageService.show(msg, {
             class: 'ft-message--danger',
             icon: 'warning'
           });
         }
+
         throw new ResourceException(msg, err);
       }),
       finalize(() => loading.set(false)),
       takeUntil(destroy$)
     );
-    return firstValueFrom(request$);
+
+    return await firstValueFrom(request$);
   };
 
-  const refresh = async (): Promise<TResult | null> => {
-    if (lastParams === null) {
-      return load(undefined, { append: false });
-    }
-    return load(lastParams, { ...lastOptions, append: false });
-  };
+  const refresh = () => load(lastParams, { ...lastOptions, append: false });
 
   return {
     value: value.asReadonly(),

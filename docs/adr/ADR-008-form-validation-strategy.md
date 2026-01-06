@@ -63,7 +63,7 @@ import { MatInputModule } from '@angular/material/input';
 import { emailValidator } from '@/shared/validators/email.validator';
 
 @Component({
-  selector: 'ft-user-form',
+  selector: 'app-user-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -263,7 +263,7 @@ import { emailValidator } from '@/shared/validators/email.validator';
 import { phoneValidator } from '@/shared/validators/phone.validator';
 
 @Component({
-  selector: 'ft-user-profile',
+  selector: 'app-user-profile',
   standalone: true,
   imports: [
     ReactiveFormsModule,

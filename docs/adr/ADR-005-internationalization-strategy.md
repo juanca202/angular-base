@@ -280,7 +280,7 @@ import { Component, inject } from '@angular/core';
 import { NotificationService } from '@factor_ec/utils';
 
 @Component({
-  selector: 'ft-user-profile',
+  selector: 'app-user-profile',
   standalone: true,
   template: `
     <div>

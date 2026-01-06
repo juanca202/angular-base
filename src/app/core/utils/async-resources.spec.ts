@@ -7,11 +7,11 @@ import {
   getMutations,
   getApiUrl,
   ResourceException
-} from './async-repository';
+} from './async-resources';
 import { MessageService } from '@factor_ec/ui';
 import { environment } from '@/environments/environment';
 
-describe('async-repository', () => {
+describe('async-resources', () => {
   // Arrange
   let mockMessageService: Partial<MessageService>;
 
@@ -145,7 +145,7 @@ describe('async-repository', () => {
 
       // Act
       const resource = TestBed.runInInjectionContext(() => getResource(factory));
-      await resource.load(['param1']);
+      await resource.load('param1');
       await resource.refresh();
 
       // Assert

@@ -126,7 +126,7 @@ export class SalesService {
 import { Component, input, output } from '@angular/core';
 
 @Component({
-  selector: 'ft-user-card',
+  selector: 'app-user-card',
   template: `...`
 })
 export class UserCard {
@@ -229,12 +229,12 @@ export class SalesList {
 ```typescript
 // ✅ Correcto - usando prefijo 'ft'
 @Component({
-  selector: 'ft-user-card',
+  selector: 'app-user-card',
   // ...
 })
 
 @Component({
-  selector: 'ft-sales-list',
+  selector: 'app-sales-list',
   // ...
 })
 
@@ -278,7 +278,7 @@ export class UserView { }
 ```typescript
 // ✅ Correcto - componente standalone (por defecto)
 @Component({
-  selector: 'ft-user-card',
+  selector: 'app-user-card',
   standalone: true,  // o omitir, ya que es el defecto
   imports: [CommonModule, Button],
   template: `...`

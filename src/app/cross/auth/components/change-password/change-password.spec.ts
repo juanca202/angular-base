@@ -9,7 +9,7 @@ import { ChangePassword } from './change-password';
 import { AppManager } from '@/core/services/app-manager';
 import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
-import { getApiUrl } from '@/core/utils/async-repository';
+import { getApiUrl } from '@/core/utils/async-resources';
 import {
   createMockAppManager,
   createMockMessageService,

@@ -1,17 +1,18 @@
 import { inject, Injectable } from '@angular/core';
+import { map, tap } from 'rxjs';
+
 import {
   Entity,
   EntityRequestCreate,
   EntityRequestUpdate,
   EntitySearchParams
 } from '@/features/templates/models/entity';
-import { getApiUrl, getMutations, getResource } from '@/core/utils/async-repository';
+import { getApiUrl, getMutations, getResource } from '@/core/utils/async-resources';
 import { MockHttpClient } from '@/core/services/mock-http-client';
-import repositoryMock from '@/test/mocks/repositories/entities.json';
-import { map, tap } from 'rxjs';
 import { BaseRepository } from '@/core/services/base-repository';
 import { HttpParams } from '@angular/common/http';
 import { HttpApiResponse } from '@/core/models/http-api-response';
+import repositoryMock from '@/test/mocks/repositories/entities.json';
 
 /**
  * Repository that encapsulates all data access required by the demo entity feature.
@@ -52,21 +53,23 @@ export class EntityRepository extends BaseRepository {
     });
   }
   public find() {
-    return getResource<string, Entity>((id) => {
+    return getResource<string, Entity>((id: string) => {
       return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);
     });
   }
   public findBy() {
-    return getResource<EntitySearchParams | undefined, Entity[]>((searchParams?) => {
-      let params = new HttpParams();
-      if (searchParams) {
-        Object.entries(searchParams).forEach(([key, value]) => {
-          if (value !== null && value !== undefined) {
-            params = params.set(key, String(value));
-          }
-        });
+    return getResource<EntitySearchParams | undefined, Entity[]>(
+      (searchParams?: EntitySearchParams) => {
+        let params = new HttpParams();
+        if (searchParams) {
+          Object.entries(searchParams).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+              params = params.set(key, String(value));
+            }
+          });
+        }
+        return this.httpClient.get<Entity[]>(`${this.baseUrl}`, { params });
       }
-      return this.httpClient.get<Entity[]>(`${this.baseUrl}`, { params });
-    });
+    );
   }
 }

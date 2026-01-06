@@ -144,7 +144,7 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 
 ```typescript
 @Component({
-  selector: 'ft-button',
+  selector: 'app-button',
   template: `
     <button
       [class]="buttonClasses()"
