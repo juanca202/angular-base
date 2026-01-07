@@ -17,11 +17,10 @@ export interface Entity {
 export type EntityRequestCreate = Omit<Entity, 'id'> & { id?: string };
 export type EntityRequestUpdate = Pick<Entity, 'id'> & Partial<Omit<Entity, 'id'>>;
 
-export interface EntityFilters {
+export interface EntitySearchParams extends CollectionQueryParams {
   email?: string;
   company?: string;
   isActive?: boolean;
 }
 
-export type EntitySearchParams = CollectionQueryParams<EntityFilters>;
 export type EntityContext = (typeof ENTITY_CONTEXT)[keyof typeof ENTITY_CONTEXT];

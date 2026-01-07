@@ -1,9 +1,6 @@
-export interface CollectionQueryParams<TFilters = unknown> {
+export interface CollectionQueryParams {
   page?: number;
   pageSize?: number;
-  sort?: {
-    field: string;
-    direction: 'asc' | 'desc';
-  };
-  filters?: TFilters;
+  sort?: string;
+  order?: 'asc' | 'desc';
 }
