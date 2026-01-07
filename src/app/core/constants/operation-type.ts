@@ -3,5 +3,3 @@ export const OPERATION_TYPE = {
   UPDATE: 'update',
   DELETE: 'delete'
 };
-
-export type OperationType = (typeof OPERATION_TYPE)[keyof typeof OPERATION_TYPE];
