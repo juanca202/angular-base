@@ -7,11 +7,16 @@
 **Location**: `docs/specs/001-sdp-manager/spec.md` (per project constitution)
 
 **Note**: Este feature utiliza los DTOs definidos en `docs/contracts/requirements/`:
-- RequirementDTO (representa un Requirement/SDP)
-- RequirementItemDTO (representa un ítem de un Requirement)
-- RecipeDTO (representa una receta)
+- Requirement (representa un Requirement/SDP)
+- RequirementItem (representa un ítem de un Requirement)
+- Recipe (representa una receta)
+- RecipeGroup (representa un grupo de recetas)
+
+**API Coverage**: Esta feature DEBE implementar TODOS los endpoints de API definidos en los contratos de `docs/contracts/requirements/`. Los repositories deben cubrir todos los endpoints especificados en cada contrato, incluyendo subrecursos (files, notes, flowers, dry-goods, cases) y operaciones CRUD completas.
 
 **Architecture Compliance**: Esta feature DEBE cumplir con la Constitución del Proyecto Angular Base y los ADRs relevantes en `docs/adr/`.
+
+**Implementation Scope**: Los templates HTML (archivos `.html`) y CSS (archivos `.css`) DEBEN ser creados pero pueden estar vacíos. El contenido de estos archivos se dejará para implementación posterior por un humano. Solo se deben crear los componentes TypeScript (controladoras) y exponer todo lo necesario (signals, properties públicas, methods públicos) para que se pueda consumir desde el HTML. Los componentes deben estar completamente funcionales desde el punto de vista de la lógica de negocio y estado, pero sin implementación de contenido en templates.
 
 ## Clarifications
 
@@ -22,6 +27,37 @@
 - Q: ¿Dónde está la referencia visual para el botón de notes? → A: La referencia visual para el botón de notes está en `docs/specs/001-sdp-manager/assets/note-popup.png`.
 - Q: ¿Cuáles son las referencias visuales para los RequirementItems según su estado? → A: La referencia visual de un RequirementItem es `docs/specs/001-sdp-manager/assets/requirement-item-recipe.png` cuando tiene recipes, o `docs/specs/001-sdp-manager/assets/requirement-item-empty.png` cuando no tiene recipes.
 - Q: ¿Cómo se manejan las peticiones HTTP en la implementación? → A: De momento no hay APIs reales, por tanto se deben usar mocks para todas las peticiones HTTP. Todos los repositories deben utilizar MockHttpClient en lugar de HttpClient real.
+
+### Session 2026-01-07
+
+- Q: ¿Qué endpoints de los contratos en `docs/contracts/requirements/` deben implementarse en esta feature? → A: TODOS los endpoints definidos en los contratos de `docs/contracts/requirements/` DEBEN implementarse en esta feature. Esto incluye: Requirement (GET, GET con id, GET/POST files), RequirementItem (GET, GET con id, GET/POST files, GET/POST recipes), Recipe (GET/POST notes, GET/POST flowers, GET/POST dry-goods, GET/POST cases), y RecipeGroup (GET con filtro, POST, POST recipes, PUT para mover recipes). Los repositories deben implementar todos estos endpoints usando MockHttpClient según NFR-001.
+- Q: ¿Qué estructura de páginas y diálogos se debe crear en esta feature? → A: Se debe crear una ruta `/requirements` para mostrar todos los Requirements (página de lista). Para ver el detalle de un RequirementItem se debe usar un diálogo completo (`ft-dialog--full` según ADR-014) que incluye la gestión de Recipes directamente dentro del diálogo (NO es un diálogo separado). Adicionalmente se deben crear diálogos simples (`ft-dialog`) para acciones específicas: Notes y Files.
+- Q: ¿Qué alcance tiene la implementación de componentes en esta feature? → A: Los templates HTML (.html) NO se implementarán en esta feature y se dejarán para que un humano los cree posteriormente. Solo se deben crear los componentes TypeScript (controladoras) y exponer todo lo necesario (signals, properties públicas, methods públicos) para que se pueda consumir desde el HTML. Los componentes deben estar completamente funcionales desde el punto de vista de la lógica de negocio y estado, pero sin implementación de templates.
+- Q: ¿Cómo se estructura la gestión de Recipes, Files y Notes en los componentes? → A: La gestión de Recipes NO es un componente separado ni un diálogo independiente, se maneja directamente dentro del RequirementItemDetail.
+- Q: ¿Deben crearse los archivos HTML y CSS aunque no se implementen? → A: Sí, los archivos HTML (.html) y CSS (.css) DEBEN ser creados aunque estén vacíos. Solo el contenido de estos archivos se dejará para implementación posterior por un humano. Los archivos deben existir en la estructura del proyecto.
+
+## UI Structure *(mandatory)*
+
+### Pages (Routes)
+
+- **`/requirements`**: Página de lista que muestra todos los Requirements disponibles. Implementa User Story 1. Permite seleccionar un Requirement para ver sus detalles y RequirementItems asociados.
+
+### Dialogs
+
+#### Diálogo Completo (`ft-dialog--full`)
+
+- **`RequirementItemDetail`**: Diálogo completo que muestra el detalle completo de un RequirementItem, incluyendo información general, Recipes asociadas, y acceso a acciones de gestión. Se abre desde la página `/requirements` cuando el usuario hace clic en el botón "detail" de un RequirementItem. Implementa User Story 2 y proporciona el contexto para User Story 3. Debe seguir ADR-014 para diálogos completos.
+
+#### Diálogos Simples (`ft-dialog`)
+
+Cada diálogo simple se abre desde el `RequirementItemDetail` para acciones específicas:
+
+- **`Notes`**: Diálogo simple para gestionar Notes asociadas a un RequirementItem (crear, editar, eliminar, visualizar). Placeholder para funcionalidad futura según FR-005.1.
+- **`Files`**: Diálogo simple para gestionar Files asociados a un RequirementItem (listar, agregar, eliminar).
+
+**Nota**: La gestión de Recipes (agregar, editar, eliminar) se maneja directamente dentro del `RequirementItemDetail`, NO es un diálogo separado. Implementa User Story 3.
+
+**Nota**: Todos los diálogos DEBEN seguir ADR-014. Ver `docs/adr/ADR-014-dialog-master-detail.md`.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -102,21 +138,25 @@ Los siguientes edge cases DEBEN ser manejados y validados durante la implementac
 - **FR-003.1**: El sistema DEBE permitir filtrar los RequirementItems por categoría usando un combo de selección "all categories", mostrando todos los RequirementItems cuando no se especifica una categoría o se selecciona "all categories"
 - **FR-003.2**: El sistema DEBE mostrar visualmente diferentes estados de RequirementItems: RequirementItems con Recipes asociadas deben mostrar un estado visual distinto a aquellos sin Recipes
 - **FR-004**: El sistema DEBE permitir a los usuarios ver el detalle de un RequirementItem específico dentro de una Requirement mediante un botón "detail"
-- **FR-004.1**: El sistema DEBE abrir un diálogo modal cuando el usuario hace clic en el botón "detail" de un RequirementItem
-- **FR-005**: El sistema DEBE mostrar todas las Recipes asociadas a un RequirementItem en el diálogo de detalles del RequirementItem
-- **FR-005.1**: El sistema DEBE proporcionar un botón "notes" en el diálogo de detalles del RequirementItem. Este botón está presente como placeholder para funcionalidad futura. La gestión completa de notas (crear, editar, eliminar y visualizar) será especificada e implementada en una feature posterior dedicada a la gestión de notas.
-- **FR-006**: El sistema DEBE permitir a los usuarios agregar una Recipe a un RequirementItem
-- **FR-007**: El sistema DEBE permitir a los usuarios eliminar una Recipe de un RequirementItem
+- **FR-004.1**: El sistema DEBE abrir un diálogo completo (`ft-dialog--full` según ADR-014) cuando el usuario hace clic en el botón "detail" de un RequirementItem. Este diálogo debe mostrar el detalle completo del RequirementItem y sus Recipes asociadas.
+- **FR-005**: El sistema DEBE mostrar todas las Recipes asociadas a un RequirementItem en el diálogo completo de detalles del RequirementItem
+- **FR-005.1**: El sistema DEBE proporcionar un botón "notes" en el diálogo completo de detalles del RequirementItem. Este botón abre un diálogo simple (`ft-dialog`) llamado `Notes` para gestión de notas. Este botón está presente como placeholder para funcionalidad futura. La gestión completa de notas (crear, editar, eliminar y visualizar) será especificada e implementada en una feature posterior dedicada a la gestión de notas.
+- **FR-006**: El sistema DEBE permitir a los usuarios agregar una Recipe a un RequirementItem directamente dentro del RequirementItemDetail
+- **FR-007**: El sistema DEBE permitir a los usuarios eliminar una Recipe de un RequirementItem directamente dentro del RequirementItemDetail
 - **FR-008**: El sistema DEBE prevenir que se agreguen Recipes duplicadas al mismo RequirementItem
 - **FR-009**: El sistema DEBE mostrar mensajes apropiados cuando no hay Requirements, RequirementItems o Recipes disponibles
+- **FR-010**: El sistema DEBE proporcionar un diálogo simple (`ft-dialog`) llamado `Files` para gestionar Files asociados a un RequirementItem (listar, agregar, eliminar). Este diálogo se abre desde el diálogo completo del RequirementItem.
+- **FR-011**: Todos los diálogos DEBEN seguir ADR-014. Ver `docs/adr/ADR-014-dialog-master-detail.md`.
 
 ### Key Entities *(include if feature involves data)*
 
-- **Requirement**: Representa un Requirement (Solicitud de Desarrollo de Producto) que contiene uno o más RequirementItems. Definido en `docs/contracts/requirements/requirement.md`.
+- **Requirement**: Representa un Requirement (Solicitud de Desarrollo de Producto) que contiene uno o más RequirementItems. Definido en `docs/contracts/requirements/requirement.md`. Incluye endpoints para gestión de archivos asociados.
 
-- **RequirementItem**: Representa un RequirementItem individual dentro de un Requirement. Cada RequirementItem puede tener una o más Recipes asociadas que definen cómo se debe producir ese RequirementItem. Definido en `docs/contracts/requirements/requirement-item.md`.
+- **RequirementItem**: Representa un RequirementItem individual dentro de un Requirement. Cada RequirementItem puede tener una o más Recipes asociadas que definen cómo se debe producir ese RequirementItem. Definido en `docs/contracts/requirements/requirement-item.md`. Incluye endpoints para gestión de archivos y Recipes asociados.
 
-- **Recipe**: Representa una Recipe asociada a un RequirementItem. Las Recipes definen los requisitos o instrucciones necesarias para la producción de un RequirementItem específico. Definido en `docs/contracts/requirements/recipe.md`.
+- **Recipe**: Representa una Recipe asociada a un RequirementItem. Las Recipes definen los requisitos o instrucciones necesarias para la producción de un RequirementItem específico. Definido en `docs/contracts/requirements/recipe.md`. Incluye endpoints para gestión de notas, flowers, dry-goods y cases asociados.
+
+- **RecipeGroup**: Representa un grupo de recetas en el sistema. Definido en `docs/contracts/requirements/recipe-group.md`. Incluye endpoints para creación, listado filtrado por RequirementItem, y gestión de Recipes dentro del grupo.
 
 ## Success Criteria *(mandatory)*
 
@@ -138,4 +178,6 @@ Los siguientes edge cases DEBEN ser manejados y validados durante la implementac
 - **NFR-001**: El sistema DEBE utilizar MockHttpClient para todas las peticiones HTTP durante el desarrollo inicial, ya que no hay APIs reales disponibles. Todos los repositories deben estar configurados para usar mocks hasta que las APIs reales estén disponibles.
 - **NFR-002**: Los mocks DEBEN proporcionar datos de prueba realistas que permitan validar todos los flujos de usuario y casos de uso definidos en las User Stories. La cobertura de los mocks DEBE validarse verificando que incluyen datos para todos los escenarios de aceptación de las User Stories 1, 2 y 3, incluyendo casos con Requirements vacíos, RequirementItems sin Recipes, y RequirementItems con múltiples Recipes.
 - **NFR-003**: La implementación DEBE facilitar la transición futura de mocks a APIs reales sin cambios significativos en la lógica de negocio de los componentes.
+- **NFR-004**: Los repositories DEBEN implementar TODOS los endpoints de API definidos en los contratos de `docs/contracts/requirements/`. Esto incluye: RequirementRepository (GET /requirements, GET /requirements/:id, GET/POST /requirements/:id/files), RequirementItemRepository (GET /requirement-items, GET /requirement-items/:id, GET/POST /requirement-items/:id/files, GET/POST /requirement-items/:id/recipes), RecipeRepository (GET/POST /recipes/:id/notes, GET/POST /recipes/:id/flowers, GET/POST /recipes/:id/dry-goods, GET/POST /recipes/:id/cases), y RecipeGroupRepository (GET /recipe-groups?requirementItemId=:id, POST /recipe-groups, POST /recipe-groups/:id/recipes, PUT /recipe-groups/:id/recipes/:recipeId). Todos los endpoints deben usar MockHttpClient según NFR-001.
+- **NFR-005**: Los componentes TypeScript DEBEN implementarse completamente con toda su lógica de negocio y gestión de estado. Los archivos HTML (`.html`) y CSS (`.css`) DEBEN ser creados pero pueden estar vacíos. El contenido de estos archivos se dejará para implementación posterior por un humano. Los componentes DEBEN exponer signals, properties públicas y methods públicos necesarios para que el HTML pueda consumirlos. Todos los componentes deben estar funcionales desde el punto de vista de la lógica, incluyendo: gestión de estado reactivo (signals), manejo de eventos, validaciones, y comunicación con repositories.
 

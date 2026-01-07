@@ -6,7 +6,7 @@
 
 ## Overview
 
-Esta guía rápida proporciona los pasos esenciales para comenzar a trabajar con la feature Administrador de SDPs.
+Esta guía rápida proporciona los pasos esenciales para comenzar a trabajar con la feature Administrador de Requirements.
 
 ## Prerequisites
 
@@ -34,6 +34,7 @@ Los modelos están definidos como DTOs en `docs/contracts/requirements/`:
 - `requirement.md` - Requirement
 - `requirement-item.md` - RequirementItem  
 - `recipe.md` - Recipe
+- `recipe-group.md` - RecipeGroup
 
 Los tipos TypeScript deben importarse desde donde se generen los DTOs o referenciarse directamente.
 
@@ -47,7 +48,7 @@ Crea `RequirementRepository` en `src/app/features/requirements/repositories/requ
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { getResource, getMutations, getApiUrl } from '@/core/utils/async-repository';
-import { RequirementDTO, RequirementSearchParams } from '@/contracts/requirements/requirement.dto';
+import { Requirement, RequirementSearchParams } from '@/contracts/requirements/requirement';
 
 @Injectable({ providedIn: 'root' })
 export class RequirementRepository extends BaseRepository {
@@ -55,14 +56,14 @@ export class RequirementRepository extends BaseRepository {
   private readonly baseUrl = getApiUrl('v1/requirements');
 
   findBy() {
-    return getResource<RequirementSearchParams | void, RequirementDTO[]>((params) => {
-      return this.httpClient.get<RequirementDTO[]>(this.baseUrl, { params });
+    return getResource<RequirementSearchParams | void, Requirement[]>((params) => {
+      return this.httpClient.get<Requirement[]>(this.baseUrl, { params });
     });
   }
 
   find() {
-    return getResource<number, RequirementDTO>((id) => {
-      return this.httpClient.get<RequirementDTO>(`${this.baseUrl}/${id}`);
+    return getResource<number, Requirement>((id) => {
+      return this.httpClient.get<Requirement>(`${this.baseUrl}/${id}`);
     });
   }
 }

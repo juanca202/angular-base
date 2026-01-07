@@ -1,0 +1,32 @@
+# angular-base-project Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2026-01-07
+
+## Active Technologies
+- REST APIs (Repository Pattern) - see [ADR-006](./docs/adr/ADR-006-repository-pattern-rest.md) (001-sdp-manager)
+
+- TypeScript 5.9+ / Angular 21.0+ + Angular Core, Angular Material (MDC), Tailwind CSS, @factor_ec/ui (001-sdp-manager)
+
+## Project Structure
+
+```text
+backend/
+frontend/
+tests/
+```
+
+## Commands
+
+npm test && npm run lint
+
+## Code Style
+
+TypeScript 5.9+ / Angular 21.0+: Follow standard conventions
+
+## Recent Changes
+- 001-sdp-manager: Added TypeScript 5.9+ / Angular 21.0+ + Angular Core, Angular Material (MDC), Tailwind CSS, @factor_ec/ui
+
+- 001-sdp-manager: Added TypeScript 5.9+ / Angular 21.0+ + Angular Core, Angular Material (MDC), Tailwind CSS, @factor_ec/ui
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

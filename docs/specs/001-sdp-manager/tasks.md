@@ -1,14 +1,12 @@
 # Tasks: Administrador de Requirements
 
 **Input**: Design documents from `docs/specs/001-sdp-manager/`  
-**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md  
+**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/  
 **Location**: `docs/specs/001-sdp-manager/tasks.md` (per project constitution)
 
-**Tests**: Tests are included following ADR-007 testing strategy (Vitest for unit/integration, Playwright for E2E).
+**Tests**: Tests are included per ADR-007. All tests follow AAA pattern with Vitest (unit/integration) and Playwright (E2E).
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
-
-**Mock Strategy**: Per NFR-001, all repositories MUST use MockHttpClient for HTTP requests since real APIs are not available. Mock data is provided in `test/mocks/repositories/requirements.json`.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -22,18 +20,17 @@
 - **Tests**: `test/` for unit/integration, `e2e/` for E2E tests
 - **Feature location**: `src/app/features/requirements/`
 - **Layer dependencies**: Features → (Shared, Cross) → Core (see ADR-001)
-- **DTOs**: Defined in `docs/contracts/requirements/` (RequirementDTO, RequirementItemDTO, RecipeDTO)
-- **Mocks**: MockHttpClient used in all repositories per NFR-001
+- Paths follow Angular Base Project structure per plan.md
 
 ## Phase 1: Setup (Shared Infrastructure)
 
 **Purpose**: Project initialization and basic structure for the requirements feature
 
 - [x] T001 Create feature directory structure in src/app/features/requirements/
-- [x] T002 [P] Create components directory structure: requirement-list/, requirement-detail/, requirement-item-detail/, recipe-management/
+- [x] T002 [P] Create components directory structure: requirement-list/, requirement-detail/, requirement-item-detail/, files/, notes/
 - [x] T003 [P] Create repositories directory in src/app/features/requirements/repositories/
 - [x] T004 [P] Create managers directory in src/app/features/requirements/managers/
-- [x] T005 Create requirements-routes.ts file in src/app/features/requirements/
+- [x] T005 Create requirements-routes.ts in src/app/features/requirements/requirements-routes.ts
 
 ---
 
@@ -43,11 +40,38 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [x] T006 Create RequirementRepository class in src/app/features/requirements/repositories/requirement-repository.ts extending BaseRepository (using MockHttpClient per NFR-001)
-- [x] T007 [P] Create RecipeRepository class in src/app/features/requirements/repositories/recipe-repository.ts extending BaseRepository (using MockHttpClient per NFR-001)
-- [x] T008 [P] Create RequirementItemRepository class in src/app/features/requirements/repositories/requirement-item-repository.ts extending BaseRepository (using MockHttpClient per NFR-001)
-- [x] T009 [P] Create mock data file for tests in test/mocks/repositories/requirements.json (realistic data per NFR-002)
-- [x] T010 Configure routes in src/app/features/requirements/requirements-routes.ts with base route structure
+### Mock Data Setup
+
+- [ ] T006 [P] Create mock data file for Requirements in test/mocks/repositories/requirements.json (per NFR-002, must cover all acceptance scenarios: empty, single, multiple items, different categories)
+- [ ] T007 [P] Create mock data file for RequirementItems in test/mocks/repositories/requirement-items.json (per NFR-002, must cover all acceptance scenarios: with/without recipes, different categories)
+
+### Repository Implementations (All Endpoints per NFR-004)
+
+- [ ] T008 [P] Create RequirementRepository in src/app/features/requirements/repositories/requirement-repository.ts with findBy() method using getResource() (GET /requirements with params, MockHttpClient per NFR-001)
+- [ ] T009 [P] Implement RequirementRepository.find() method using getResource() in src/app/features/requirements/repositories/requirement-repository.ts (GET /requirements/:id, MockHttpClient per NFR-001)
+- [ ] T010 [P] Implement RequirementRepository.getFiles() method using getResource() in src/app/features/requirements/repositories/requirement-repository.ts (GET /requirements/:id/files, MockHttpClient per NFR-004)
+- [ ] T011 [P] Implement RequirementRepository.mutations().addFile() method using getMutations() in src/app/features/requirements/repositories/requirement-repository.ts (POST /requirements/:id/files, MockHttpClient per NFR-004)
+- [ ] T012 [P] Create RequirementItemRepository in src/app/features/requirements/repositories/requirement-item-repository.ts with findBy() method using getResource() (GET /requirement-items with params, MockHttpClient per NFR-001)
+- [ ] T013 [P] Implement RequirementItemRepository.find() method using getResource() in src/app/features/requirements/repositories/requirement-item-repository.ts (GET /requirement-items/:id, MockHttpClient per NFR-001)
+- [ ] T014 [P] Implement RequirementItemRepository.getFiles() method using getResource() in src/app/features/requirements/repositories/requirement-item-repository.ts (GET /requirement-items/:id/files, MockHttpClient per NFR-004)
+- [ ] T015 [P] Implement RequirementItemRepository.mutations().addFile() method using getMutations() in src/app/features/requirements/repositories/requirement-item-repository.ts (POST /requirement-items/:id/files, MockHttpClient per NFR-004)
+- [ ] T016 [P] Create RecipeRepository in src/app/features/requirements/repositories/recipe-repository.ts with findByRequirementItem() method using getResource() (GET /requirement-items/:id/recipes, MockHttpClient per NFR-001)
+- [ ] T017 [P] Implement RecipeRepository.getNotes() method using getResource() in src/app/features/requirements/repositories/recipe-repository.ts (GET /recipes/:id/notes, MockHttpClient per NFR-004)
+- [ ] T018 [P] Implement RecipeRepository.mutations().addNote() method using getMutations() in src/app/features/requirements/repositories/recipe-repository.ts (POST /recipes/:id/notes, MockHttpClient per NFR-004)
+- [ ] T019 [P] Implement RecipeRepository.getFlowers() method using getResource() in src/app/features/requirements/repositories/recipe-repository.ts (GET /recipes/:id/flowers, MockHttpClient per NFR-004)
+- [ ] T020 [P] Implement RecipeRepository.mutations().addFlower() method using getMutations() in src/app/features/requirements/repositories/recipe-repository.ts (POST /recipes/:id/flowers, MockHttpClient per NFR-004)
+- [ ] T021 [P] Implement RecipeRepository.getDryGoods() method using getResource() in src/app/features/requirements/repositories/recipe-repository.ts (GET /recipes/:id/dry-goods, MockHttpClient per NFR-004)
+- [ ] T022 [P] Implement RecipeRepository.mutations().addDryGood() method using getMutations() in src/app/features/requirements/repositories/recipe-repository.ts (POST /recipes/:id/dry-goods, MockHttpClient per NFR-004)
+- [ ] T023 [P] Implement RecipeRepository.getCases() method using getResource() in src/app/features/requirements/repositories/recipe-repository.ts (GET /recipes/:id/cases, MockHttpClient per NFR-004)
+- [ ] T024 [P] Implement RecipeRepository.mutations().addCase() method using getMutations() in src/app/features/requirements/repositories/recipe-repository.ts (POST /recipes/:id/cases, MockHttpClient per NFR-004)
+- [ ] T025 [P] Create RecipeGroupRepository in src/app/features/requirements/repositories/recipe-group-repository.ts with findByRequirementItem() method using getResource() (GET /recipe-groups?requirementItemId=:id, MockHttpClient per NFR-004)
+- [ ] T026 [P] Implement RecipeGroupRepository.mutations().create() method using getMutations() in src/app/features/requirements/repositories/recipe-group-repository.ts (POST /recipe-groups, MockHttpClient per NFR-004)
+- [ ] T027 [P] Implement RecipeGroupRepository.mutations().addRecipe() method using getMutations() in src/app/features/requirements/repositories/recipe-group-repository.ts (POST /recipe-groups/:id/recipes, MockHttpClient per NFR-004)
+- [ ] T028 [P] Implement RecipeGroupRepository.mutations().moveRecipe() method using getMutations() in src/app/features/requirements/repositories/recipe-group-repository.ts (PUT /recipe-groups/:id/recipes/:recipeId, MockHttpClient per NFR-004)
+
+### Entity Manager Setup
+
+- [ ] T029 Create RequirementItemManager in src/app/features/requirements/managers/requirement-item-manager.ts (orchestrates dialog opening per ADR-014, ADR-015)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -55,136 +79,130 @@
 
 ## Phase 3: User Story 1 - Listar y Visualizar Requirements (Priority: P1) 🎯 MVP
 
-**Goal**: Permitir a los usuarios ver una lista de todas las Requirements disponibles y seleccionar una para ver sus detalles completos con RequirementItems asociados, incluyendo filtrado por categoría.
+**Goal**: Users can view a list of all Requirements and select one to see its details and associated RequirementItems. This is the base functionality that enables access to Requirement information.
 
-**Independent Test**: Verificar que cuando existen Requirements en el sistema, el usuario puede acceder a la lista, seleccionar una Requirement y ver su información básica de identificación junto con sus RequirementItems asociados. Puede probarse independientemente sin necesidad de otras funcionalidades.
+**Independent Test**: Can be tested independently by verifying that when Requirements exist in the system, the user can access the list and select a Requirement to see its basic identification information and associated RequirementItems.
 
 ### Tests for User Story 1
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
-
-- [x] T011 [P] [US1] Unit test for RequirementRepository.findBy() in test/features/requirements/repositories/requirement-repository.spec.ts (Vitest, AAA pattern)
-- [x] T012 [P] [US1] Unit test for RequirementRepository.find() in test/features/requirements/repositories/requirement-repository.spec.ts (Vitest, AAA pattern)
-- [x] T013 [P] [US1] Unit test for RequirementListComponent in test/features/requirements/components/requirement-list/requirement-list.spec.ts (Vitest, AAA pattern)
-- [x] T014 [P] [US1] Unit test for RequirementDetailComponent in test/features/requirements/components/requirement-detail/requirement-detail.spec.ts (Vitest, AAA pattern)
-- [x] T015 [P] [US1] E2E test for listing and viewing Requirements in e2e/requirements.spec.ts (Playwright)
+- [ ] T030 [P] [US1] Unit test for RequirementRepository.findBy() in test/features/requirements/repositories/requirement-repository.spec.ts (Vitest, AAA pattern)
+- [ ] T031 [P] [US1] Unit test for RequirementRepository.find() in test/features/requirements/repositories/requirement-repository.spec.ts (Vitest, AAA pattern)
+- [ ] T032 [P] [US1] Unit test for RequirementListComponent in test/features/requirements/components/requirement-list/requirement-list.spec.ts (Vitest, AAA pattern)
+- [ ] T033 [P] [US1] Unit test for RequirementDetailComponent in test/features/requirements/components/requirement-detail/requirement-detail.spec.ts (Vitest, AAA pattern)
+- [ ] T034 [P] [US1] E2E test for listing and viewing Requirements in e2e/requirements.spec.ts (Playwright, covers acceptance scenarios 1-5)
 
 ### Implementation for User Story 1
 
-- [x] T016 [US1] Implement RequirementRepository.findBy() method using getResource() in src/app/features/requirements/repositories/requirement-repository.ts (GET /api/v1/requirements, using MockHttpClient)
-- [x] T017 [US1] Implement RequirementRepository.find() method using getResource() in src/app/features/requirements/repositories/requirement-repository.ts (GET /api/v1/requirements/:id, using MockHttpClient)
-- [x] T018 [US1] Create RequirementListComponent in src/app/features/requirements/components/requirement-list/requirement-list.ts (standalone, OnPush, inject())
-- [x] T019 [US1] Create RequirementListComponent template in src/app/features/requirements/components/requirement-list/requirement-list.html (Tailwind CSS, signals binding)
-- [x] T020 [US1] Create RequirementListComponent styles in src/app/features/requirements/components/requirement-list/requirement-list.css (Tailwind prioritized, BEM ft- prefix if needed)
-- [x] T021 [US1] Implement loading state handling in RequirementListComponent (show ProgressComponent while loading)
-- [x] T022 [US1] Implement error state handling in RequirementListComponent (show error message)
-- [x] T023 [US1] Implement empty state handling in RequirementListComponent (show message when no Requirements)
-- [x] T024 [US1] Create RequirementDetailComponent in src/app/features/requirements/components/requirement-detail/requirement-detail.ts (standalone, OnPush, inject())
-- [x] T025 [US1] Create RequirementDetailComponent template in src/app/features/requirements/components/requirement-detail/requirement-detail.html (display RequirementDTO fields and RequirementItems)
-- [x] T026 [US1] Create RequirementDetailComponent styles in src/app/features/requirements/components/requirement-detail/requirement-detail.css (Tailwind prioritized, BEM ft- prefix if needed)
-- [x] T027 [US1] Implement category filter combo in RequirementDetailComponent (all categories selector per FR-003.1)
-- [x] T028 [US1] Implement category filtering logic in RequirementDetailComponent (filter RequirementItems by category per FR-003.1)
-- [x] T029 [US1] Implement visual state differentiation for RequirementItems (with/without Recipes per FR-003.2)
-- [x] T030 [US1] Implement navigation from RequirementListComponent to RequirementDetailComponent in src/app/features/requirements/components/requirement-list/requirement-list.ts
-- [x] T031 [US1] Add route for RequirementListComponent in src/app/features/requirements/requirements-routes.ts
-- [x] T032 [US1] Add route for RequirementDetailComponent in src/app/features/requirements/requirements-routes.ts
-- [x] T033 [US1] Integrate routes in app.routes.ts (lazy load requirements-routes)
+- [ ] T035 [US1] Create RequirementListComponent in src/app/features/requirements/components/requirement-list/requirement-list.ts (standalone, OnPush, inject(), per ADR-002)
+- [ ] T036 [US1] Implement RequirementListComponent to load and display Requirements list using RequirementRepository.findBy() (per FR-001, NFR-005: TypeScript only, expose signals/properties/methods for HTML)
+- [ ] T037 [US1] Implement RequirementListComponent to handle Requirement selection and navigation to detail view (per FR-002)
+- [ ] T038 [US1] Create RequirementDetailComponent in src/app/features/requirements/components/requirement-detail/requirement-detail.ts (standalone, OnPush, inject(), per ADR-002)
+- [ ] T039 [US1] Implement RequirementDetailComponent to load and display Requirement details using RequirementRepository.find() (per FR-002, NFR-005: TypeScript only)
+- [ ] T040 [US1] Implement RequirementDetailComponent to load and display RequirementItems using RequirementItemRepository.findByRequirement() (per FR-003, NFR-005: TypeScript only)
+- [ ] T041 [US1] Implement category filter functionality in RequirementDetailComponent (combo "all categories" per FR-003.1, NFR-005: TypeScript only)
+- [ ] T042 [US1] Implement visual state differentiation for RequirementItems (with/without recipes per FR-003.2, NFR-005: TypeScript only)
+- [ ] T043 [US1] Implement empty state handling in RequirementListComponent (per FR-009, NFR-005: TypeScript only)
+- [ ] T044 [US1] Implement empty state handling in RequirementDetailComponent (per FR-009, NFR-005: TypeScript only)
+- [ ] T045 [US1] Configure route for /requirements in src/app/features/requirements/requirements-routes.ts
+- [ ] T046 [US1] Register requirements routes in src/app/app.routes.ts
 
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. Users can list Requirements and view their details with RequirementItems, including category filtering.
+**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. Users can list Requirements, view details, filter RequirementItems by category, and see visual states.
 
 ---
 
 ## Phase 4: User Story 2 - Visualizar Recipes de un RequirementItem (Priority: P2)
 
-**Goal**: Permitir a los usuarios ver las Recipes asociadas a cada RequirementItem de una Requirement para entender qué Recipes están configuradas para la producción.
+**Goal**: Users can view the Recipes associated with each RequirementItem of a Requirement to understand what Recipes are configured for production.
 
-**Independent Test**: Verificar que cuando un usuario hace clic en el botón "detail" de un RequirementItem, se abre un diálogo modal que muestra todas las Recipes asociadas a ese RequirementItem. Puede probarse independientemente sin necesidad de gestionar Recipes (US3).
+**Independent Test**: Can be tested independently by verifying that when a user clicks the "detail" button of a RequirementItem, a modal dialog opens showing all Recipes associated with that RequirementItem.
 
 ### Tests for User Story 2
 
-- [x] T034 [P] [US2] Unit test for RecipeRepository.findByRequirementItem() in test/features/requirements/repositories/recipe-repository.spec.ts (Vitest, AAA pattern)
-- [x] T035 [P] [US2] Unit test for RequirementItemRepository.find() in test/features/requirements/repositories/requirement-item-repository.spec.ts (Vitest, AAA pattern)
-- [x] T036 [P] [US2] Unit test for RequirementItemDetailComponent in test/features/requirements/components/requirement-item-detail/requirement-item-detail.spec.ts (Vitest, AAA pattern)
-- [x] T037 [P] [US2] E2E test for viewing RequirementItem details with Recipes in e2e/requirements.spec.ts (Playwright)
+- [ ] T047 [P] [US2] Unit test for RequirementItemRepository.find() in test/features/requirements/repositories/requirement-item-repository.spec.ts (Vitest, AAA pattern)
+- [ ] T048 [P] [US2] Unit test for RecipeRepository.findByRequirementItem() in test/features/requirements/repositories/recipe-repository.spec.ts (Vitest, AAA pattern)
+- [ ] T049 [P] [US2] Unit test for RequirementItemDetail component in test/features/requirements/components/requirement-item-detail/requirement-item-detail.spec.ts (Vitest, AAA pattern)
+- [ ] T050 [P] [US2] E2E test for viewing RequirementItem details and Recipes in e2e/requirements.spec.ts (Playwright, covers acceptance scenarios 1-3)
 
 ### Implementation for User Story 2
 
-- [x] T038 [US2] Implement RequirementItemRepository.find() method using getResource() in src/app/features/requirements/repositories/requirement-item-repository.ts (GET /api/v1/requirement-items/:id, using MockHttpClient)
-- [x] T039 [US2] Implement RecipeRepository.findByRequirementItem() method using getResource() in src/app/features/requirements/repositories/recipe-repository.ts (GET /api/v1/requirement-items/:requirementItemId/recipes, using MockHttpClient)
-- [x] T040 [US2] Create RequirementItemManager in src/app/features/requirements/managers/requirement-item-manager.ts (orchestrates dialog opening per FR-005.1)
-- [x] T041 [US2] Create RequirementItemDetailComponent in src/app/features/requirements/components/requirement-item-detail/requirement-item-detail.ts (standalone, OnPush, inject(), dialog component)
-- [x] T042 [US2] Create RequirementItemDetailComponent template in src/app/features/requirements/components/requirement-item-detail/requirement-item-detail.html (display RequirementItemDTO fields and Recipes list with tabs per FR-005)
-- [x] T043 [US2] Create RequirementItemDetailComponent styles in src/app/features/requirements/components/requirement-item-detail/requirement-item-detail.css (Tailwind prioritized, BEM ft- prefix if needed)
-- [x] T044 [US2] Implement loading state handling in RequirementItemDetailComponent (show ProgressComponent while loading)
-- [x] T045 [US2] Implement error state handling in RequirementItemDetailComponent (show error message)
-- [x] T046 [US2] Implement empty state handling for Recipes in RequirementItemDetailComponent (show message when no Recipes per FR-005)
-- [x] T047 [US2] Implement notes button in RequirementItemDetailComponent (button per FR-005.1, reference: docs/specs/001-sdp-manager/assets/note-popup.png)
-- [x] T048 [US2] Implement dialog opening from RequirementDetailComponent using RequirementItemManager in src/app/features/requirements/components/requirement-detail/requirement-detail.ts (per FR-004.1)
+- [ ] T051 [US2] Create RequirementItemDetail component in src/app/features/requirements/components/requirement-item-detail/requirement-item-detail.ts (standalone, OnPush, inject(), full-screen dialog per ADR-014, NFR-005: TypeScript only)
+- [ ] T052 [US2] Configure RequirementItemDetail as full-screen dialog (ft-dialog--full) per ADR-014 in RequirementItemDetail
+- [ ] T053 [US2] Implement RequirementItemDetail to load and display RequirementItem details using RequirementItemRepository.find() (per FR-004.1, NFR-005: TypeScript only)
+- [ ] T054 [US2] Implement RequirementItemDetail to load and display Recipes using RecipeRepository.findByRequirementItem() (per FR-005, NFR-005: TypeScript only)
+- [ ] T055 [US2] Implement empty state for Recipes in RequirementItemDetail (per FR-009, NFR-005: TypeScript only)
+- [ ] T056 [US2] Implement dialog close functionality in RequirementItemDetail (per acceptance scenario 3, NFR-005: TypeScript only)
+- [ ] T057 [US2] Integrate RequirementItemManager to open RequirementItemDetail from RequirementDetailComponent (per FR-011, ADR-014, ADR-015)
+- [ ] T058 [US2] Create placeholder notes component (Notes class) in src/app/features/requirements/components/notes/notes.ts (standalone, OnPush, inject(), dialog component per FR-005.1, NFR-005: TypeScript only)
+- [ ] T059 [US2] Create files component (Files class) in src/app/features/requirements/components/files/files.ts (standalone, OnPush, inject(), dialog component per FR-010, NFR-005: TypeScript only)
+- [ ] T060 [US2] Implement files component to load and display Files using RequirementItemRepository.getFiles() (per FR-010, NFR-005: TypeScript only)
+- [ ] T061 [US2] Integrate notes and files components opening from RequirementItemDetail via RequirementItemManager (per FR-011, ADR-014, ADR-015)
 
-**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Users can list Requirements, view details, and see RequirementItems with their associated Recipes in a modal dialog.
+**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Users can list Requirements, view details, filter RequirementItems, and open RequirementItemDetail to see Recipes.
 
 ---
 
 ## Phase 5: User Story 3 - Gestionar Recipes de un RequirementItem (Priority: P3)
 
-**Goal**: Permitir a los usuarios agregar y eliminar Recipes de los RequirementItems de una Requirement para configurar correctamente las Recipes requeridas para la producción.
+**Goal**: Users can add and remove Recipes from RequirementItems of a Requirement to correctly configure the Recipes required for production.
 
-**Independent Test**: Verificar que cuando un usuario agrega una Recipe a un RequirementItem, la Recipe aparece en la lista, y cuando elimina una Recipe, esta desaparece de la lista. Puede probarse independientemente verificando las mutaciones.
+**Independent Test**: Can be tested independently by verifying that when a user adds a Recipe to a RequirementItem, the Recipe appears in the RequirementItem's Recipe list, and when they delete a Recipe, it disappears from the list.
 
 ### Tests for User Story 3
 
-- [x] T049 [P] [US3] Unit test for RecipeRepository.mutations().create() in test/features/requirements/repositories/recipe-repository.spec.ts (Vitest, AAA pattern)
-- [x] T050 [P] [US3] Unit test for RecipeRepository.mutations().delete() in test/features/requirements/repositories/recipe-repository.spec.ts (Vitest, AAA pattern)
-- [x] T051 [P] [US3] Unit test for RecipeManagementComponent in test/features/requirements/components/recipe-management/recipe-management.spec.ts (Vitest, AAA pattern)
-- [x] T052 [P] [US3] E2E test for adding and removing Recipes in e2e/requirements.spec.ts (Playwright)
+- [ ] T062 [P] [US3] Unit test for RecipeRepository.mutations().create() in test/features/requirements/repositories/recipe-repository.spec.ts (Vitest, AAA pattern)
+- [ ] T063 [P] [US3] Unit test for RecipeRepository.mutations().delete() in test/features/requirements/repositories/recipe-repository.spec.ts (Vitest, AAA pattern)
+- [ ] T064 [P] [US3] Unit test for Recipe management functionality in RequirementItemDetail in test/features/requirements/components/requirement-item-detail/requirement-item-detail.spec.ts (Vitest, AAA pattern)
+- [ ] T065 [P] [US3] E2E test for adding and removing Recipes in e2e/requirements.spec.ts (Playwright, covers acceptance scenarios 1-3)
 
 ### Implementation for User Story 3
 
-- [x] T053 [US3] Implement RecipeRepository.mutations() method using getMutations() in src/app/features/requirements/repositories/recipe-repository.ts (POST /api/v1/requirement-items/:requirementItemId/recipes, DELETE /api/v1/requirement-items/:requirementItemId/recipes/:recipeId, using MockHttpClient)
-- [x] T054 [US3] Create RecipeManagementComponent in src/app/features/requirements/components/recipe-management/recipe-management.ts (standalone, OnPush, inject())
-- [x] T055 [US3] Create RecipeManagementComponent template in src/app/features/requirements/components/recipe-management/recipe-management.html (form to add Recipe, list with delete action per FR-006, FR-007)
-- [x] T056 [US3] Create RecipeManagementComponent styles in src/app/features/requirements/components/recipe-management/recipe-management.css (Tailwind prioritized, BEM ft- prefix if needed)
-- [x] T057 [US3] Implement form for adding Recipe in RecipeManagementComponent using reactive forms (RecipeRequestCreate per FR-006)
-- [x] T058 [US3] Implement validation for Recipe form in RecipeManagementComponent (required fields, positive numbers)
-- [x] T059 [US3] Implement add Recipe functionality in RecipeManagementComponent (call mutations.create(), refresh list per FR-006)
-- [x] T060 [US3] Implement delete Recipe functionality in RecipeManagementComponent (call mutations.delete(), refresh list per FR-007)
-- [x] T061 [US3] Implement duplicate Recipe prevention in RecipeManagementComponent (check existing Recipes before adding per FR-008)
-- [x] T062 [US3] Implement error handling for Recipe mutations in RecipeManagementComponent (show error messages)
-- [x] T063 [US3] Integrate RecipeManagementComponent into RequirementItemDetailComponent in src/app/features/requirements/components/requirement-item-detail/requirement-item-detail.html
+- [ ] T066 [US3] Implement form for adding Recipe in RequirementItemDetail using reactive forms (RecipeRequestCreate per FR-006, NFR-005: TypeScript only)
+- [ ] T067 [US3] Implement validation for Recipe form in RequirementItemDetail (required fields, positive numbers per FR-006, NFR-005: TypeScript only)
+- [ ] T068 [US3] Implement add Recipe functionality in RequirementItemDetail (call RecipeRepository.mutations().create(), refresh list per FR-006, NFR-005: TypeScript only)
+- [ ] T069 [US3] Implement delete Recipe functionality in RequirementItemDetail (call RecipeRepository.mutations().delete(), refresh list per FR-007, NFR-005: TypeScript only)
+- [ ] T070 [US3] Implement duplicate Recipe prevention in RequirementItemDetail (check existing Recipes before adding per FR-008, NFR-005: TypeScript only)
+- [ ] T071 [US3] Implement error handling for Recipe mutations in RequirementItemDetail (show error messages per FR-009, NFR-005: TypeScript only)
+- [ ] T072 [US3] Expose all necessary signals, properties, and methods in RequirementItemDetail for HTML consumption (per NFR-005)
 
-**Checkpoint**: All user stories should now be independently functional. Users can list Requirements, view details, see RequirementItems with Recipes, and manage Recipes (add/delete).
+**Checkpoint**: All user stories should now be independently functional. Users can list Requirements, view details, filter RequirementItems, open RequirementItemDetail to see Recipes, and add/remove Recipes.
 
 ---
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-**Purpose**: Improvements that affect multiple user stories
+**Purpose**: Improvements that affect multiple user stories and ensure completeness
 
-- [x] T064 [P] Add JSDoc/TSDoc comments to all components in src/app/features/requirements/components/
-- [x] T065 [P] Add JSDoc/TSDoc comments to all repositories in src/app/features/requirements/repositories/
-- [x] T066 [P] Add JSDoc/TSDoc comments to RequirementItemManager in src/app/features/requirements/managers/requirement-item-manager.ts
-- [x] T067 [P] Verify all components use ChangeDetectionStrategy.OnPush
-- [x] T068 [P] Verify all components use inject() instead of constructors
-- [x] T069 [P] Verify all components use signals for reactive state
-- [x] T070 [P] Verify Tailwind CSS is prioritized over custom CSS classes
-- [x] T071 [P] Verify BEM ft- prefix is used only for component-specific styles
-- [x] T072 [P] Verify all repositories use MockHttpClient per NFR-001
-- [x] T073 [P] Verify mock data in test/mocks/repositories/requirements.json is realistic and covers all use cases per NFR-002
-- [x] T088 [P] Validate mock data coverage: Verify that mocks include data for all acceptance scenarios in User Stories 1, 2, and 3, including empty Requirements, RequirementItems without Recipes, and RequirementItems with multiple Recipes per NFR-002 - Validado: requirements.json incluye Requirements con y sin items; requirement-items.json incluye items con 0, 1, 2 y 3 recipes; múltiples categorías representadas
-- [x] T074 [P] Run ESLint and fix any issues in src/app/features/requirements/
-- [x] T075 [P] Run Prettier and format code in src/app/features/requirements/ (Prettier script not available, but code follows formatting standards)
-- [x] T076 Verify all ngOnDestroy() methods call destroy() on resources
-- [x] T077 Verify error handling is consistent across all components
-- [x] T078 Verify loading states are handled consistently
-- [x] T079 Verify empty states are handled consistently
-- [x] T080 Run test coverage check (≥80% for critical paths per ADR-007) - Tests unitarios creados para todos los componentes y repositories. Cobertura verificada mediante tests existentes. Nota: Ejecutar `npm run test:coverage` para obtener métricas específicas de cobertura y documentar resultados.
-- [x] T081 Update documentation in docs/specs/001-sdp-manager/ if needed - Documentación actualizada durante análisis de consistencia
-- [x] T082 Run quickstart.md validation - Quickstart.md existe y está actualizado con estructura correcta
-- [ ] T083 [P] Validate edge case EC-001: Handle Requirements with >100 RequirementItems (performance validation per SC-007). Validar métricas: tiempo de renderizado inicial ≤3s, tiempo de respuesta a interacciones ≤500ms, tasa de frames ≥30 FPS durante scroll. Requiere tests E2E con datos de prueba grandes.
-- [ ] T084 [P] Validate edge case EC-002: Handle RequirementItems with >50 Recipes (performance validation per SC-008). Validar métricas: tiempo de renderizado del diálogo ≤2s, tiempo de respuesta a interacciones ≤500ms, tasa de frames ≥30 FPS durante interacción con la lista. Requiere tests E2E con datos de prueba grandes.
-- [x] T085 [P] Validate edge case EC-003: Allow deleting last Recipe from RequirementItem (show appropriate empty state) - Implementado: el componente muestra estado vacío cuando no hay recipes
-- [x] T086 [P] Validate edge case EC-004: Handle network/service unavailability (error messages and retry functionality) - Implementado: todos los componentes manejan estados de error consistentemente
-- [ ] T087 [P] Validate edge case EC-005: Handle concurrent modifications (conflict resolution, validated via E2E tests) - Requiere tests E2E para validar resolución de conflictos
+### Edge Case Validation
+
+- [ ] T073 [P] Validate edge case EC-001: Handle Requirements with >100 RequirementItems (performance validation per SC-007). Requires E2E tests with large test data and performance metrics: render time ≤3s, interaction response ≤500ms, FPS ≥30 during scroll.
+- [ ] T074 [P] Validate edge case EC-002: Handle RequirementItems with >50 Recipes (performance validation per SC-008). Validate metrics: dialog render time ≤2s, interaction response ≤500ms, FPS ≥30 during list interaction. Requires E2E tests with large test data.
+- [ ] T075 [P] Validate edge case EC-003: Handle deletion of last Recipe from RequirementItem (per EC-003, show appropriate empty state)
+- [ ] T076 [P] Validate edge case EC-004: Handle network errors and service unavailability (show error messages, allow retry per EC-004)
+- [ ] T077 [P] Validate edge case EC-005: Handle concurrent modifications (conflict resolution, validated via E2E tests per EC-005)
+
+### Mock Data Coverage Validation
+
+- [ ] T078 [P] Validate mock data coverage against all acceptance scenarios (per NFR-002): empty Requirements, single Requirement, multiple Requirements, RequirementItems with/without Recipes, different categories
+
+### Code Quality & Documentation
+
+- [ ] T079 [P] Run ESLint and Prettier on all new files (per ADR-009)
+- [ ] T080 [P] Run test coverage validation: npm run test:coverage (ensure ≥80% coverage for critical paths per ADR-007)
+- [ ] T081 [P] Add JSDoc/TSDoc comments to all public methods and classes (per ADR-009)
+- [ ] T082 [P] Verify all components expose necessary public API for HTML consumption (signals, properties, methods per NFR-005)
+
+### Integration & Routes
+
+- [ ] T083 Verify all routes are properly configured and accessible
+- [ ] T084 Verify all dialogs open correctly via entity managers (per ADR-014, ADR-015)
+
+### Performance Validation
+
+- [ ] T085 Validate SC-001: Requirements list loads in <3s (performance testing)
+- [ ] T086 Validate SC-002: Requirement details load in <2s (performance testing)
+- [ ] T087 Validate SC-003: RequirementItem details load in <2s (performance testing)
+- [ ] T088 Validate SC-004: Add Recipe completes in <5s (performance testing)
+- [ ] T089 Validate SC-005: Delete Recipe completes in <3s (performance testing)
 
 ---
 
@@ -202,25 +220,25 @@
 ### User Story Dependencies
 
 - **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
-- **User Story 2 (P2)**: Can start after Foundational (Phase 2) - Depends on US1 for navigation flow but can be tested independently
-- **User Story 3 (P3)**: Can start after Foundational (Phase 2) - Depends on US2 for RequirementItemDetailComponent but can be tested independently
+- **User Story 2 (P2)**: Can start after Foundational (Phase 2) - Depends on US1 for RequirementDetailComponent integration
+- **User Story 3 (P3)**: Can start after Foundational (Phase 2) - Depends on US2 for RequirementItemDetail
 
 ### Within Each User Story
 
-- Tests MUST be written and FAIL before implementation
-- Repository methods before components
-- Components before routes
-- Core implementation before integration
+- Tests (if included) MUST be written and FAIL before implementation
+- Repositories before components
+- Components before integration
+- Core implementation before edge cases
 - Story complete before moving to next priority
 
 ### Parallel Opportunities
 
 - All Setup tasks marked [P] can run in parallel
 - All Foundational tasks marked [P] can run in parallel (within Phase 2)
-- Once Foundational phase completes, all user stories can start in parallel (if team capacity allows)
+- Once Foundational phase completes, User Story 1 can start
 - All tests for a user story marked [P] can run in parallel
-- Different components within a story marked [P] can run in parallel
-- Different user stories can be worked on in parallel by different team members
+- Different repository methods marked [P] can run in parallel
+- User Stories 2 and 3 can start after their dependencies are met
 
 ---
 
@@ -234,9 +252,11 @@ Task: "Unit test for RequirementListComponent in test/features/requirements/comp
 Task: "Unit test for RequirementDetailComponent in test/features/requirements/components/requirement-detail/requirement-detail.spec.ts"
 Task: "E2E test for listing and viewing Requirements in e2e/requirements.spec.ts"
 
-# Launch all components for User Story 1 together (after repository):
-Task: "Create RequirementListComponent in src/app/features/requirements/components/requirement-list/requirement-list.ts"
-Task: "Create RequirementDetailComponent in src/app/features/requirements/components/requirement-detail/requirement-detail.ts"
+# Launch all repository implementations together (Phase 2):
+Task: "Create RequirementRepository in src/app/features/requirements/repositories/requirement-repository.ts"
+Task: "Create RequirementItemRepository in src/app/features/requirements/repositories/requirement-item-repository.ts"
+Task: "Create RecipeRepository in src/app/features/requirements/repositories/recipe-repository.ts"
+Task: "Create RecipeGroupRepository in src/app/features/requirements/repositories/recipe-group-repository.ts"
 ```
 
 ---
@@ -265,9 +285,9 @@ With multiple developers:
 
 1. Team completes Setup + Foundational together
 2. Once Foundational is done:
-   - Developer A: User Story 1
-   - Developer B: User Story 2 (can start after US1 navigation is ready)
-   - Developer C: User Story 3 (can start after US2 component is ready)
+   - Developer A: User Story 1 (can start immediately)
+   - Developer B: User Story 2 (starts after US1 RequirementDetailComponent is ready)
+   - Developer C: User Story 3 (starts after US2 RequirementItemDetail is ready)
 3. Stories complete and integrate independently
 
 ---
@@ -280,13 +300,8 @@ With multiple developers:
 - Verify tests fail before implementing
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
-- DTOs are defined in `docs/contracts/requirements/` - import types from there
-- **MockHttpClient MUST be used in all repositories per NFR-001** - no real APIs available
-- Mock data must be realistic per NFR-002 to validate all user flows
-- Implementation should facilitate future transition to real APIs per NFR-003
-- Follow ADR-001 layer separation: Features → (Shared, Cross) → Core
-- Follow ADR-002 Angular Style Guide: standalone, OnPush, inject(), signals
-- Follow ADR-003 CSS Strategy: Tailwind prioritized, BEM ft- prefix
-- Follow ADR-006 Repository Pattern: getResource(), getMutations()
-- Follow ADR-007 Testing Strategy: Vitest (AAA pattern), Playwright (E2E), ≥80% coverage
+- **NFR-005**: All components are TypeScript-only (no HTML templates). Components must expose signals, public properties, and public methods for HTML consumption.
+- **NFR-004**: All repository endpoints from contracts must be implemented, even if not directly used by user stories
+- **ADR-014**: All dialogs must open via entity managers, not directly from components
+- **ADR-015**: Entity managers orchestrate dialog opening and entity interactions
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

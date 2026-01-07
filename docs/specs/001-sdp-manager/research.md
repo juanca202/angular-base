@@ -47,17 +47,44 @@ Los modelos de datos están definidos como DTOs en `docs/contracts/requirements/
    - Define requisitos/instrucciones para producción
    - Fuente: `docs/contracts/requirements/recipe.md`
 
+4. **RecipeGroup**
+   - Representa un grupo de recetas en el sistema
+   - Puede estar asociado a un RequirementItem
+   - Fuente: `docs/contracts/requirements/recipe-group.md`
+
 ### Endpoints de API Esperados
 
-Basado en el patrón Repository y los requisitos funcionales:
+Basado en el patrón Repository y los requisitos funcionales (per NFR-004, todos los endpoints de los contratos deben implementarse):
 
+**Requirement Endpoints:**
 - `GET /api/v1/requirements` - Listar todas las Requirements
 - `GET /api/v1/requirements/:id` - Obtener detalle de una Requirement
-- `GET /api/v1/requirements/:id/items` - Obtener RequirementItems de una Requirement (o incluidos en el detalle)
+- `GET /api/v1/requirements/:id/files` - Obtener archivos asociados a un Requirement
+- `POST /api/v1/requirements/:id/files` - Agregar archivo a un Requirement
+
+**RequirementItem Endpoints:**
+- `GET /api/v1/requirement-items` - Listar RequirementItems (con filtros)
 - `GET /api/v1/requirement-items/:id` - Obtener detalle de un RequirementItem
-- `GET /api/v1/requirement-items/:id/recipes` - Obtener Recipes de un RequirementItem (o incluidos en el detalle)
+- `GET /api/v1/requirement-items/:id/files` - Obtener archivos asociados a un RequirementItem
+- `POST /api/v1/requirement-items/:id/files` - Agregar archivo a un RequirementItem
+- `GET /api/v1/requirement-items/:id/recipes` - Obtener Recipes de un RequirementItem
 - `POST /api/v1/requirement-items/:id/recipes` - Agregar Recipe a un RequirementItem
-- `DELETE /api/v1/requirement-items/:itemId/recipes/:recipeId` - Eliminar Recipe de un RequirementItem
+
+**Recipe Endpoints:**
+- `GET /api/v1/recipes/:id/notes` - Obtener notas asociadas a un Recipe
+- `POST /api/v1/recipes/:id/notes` - Crear nota asociada a un Recipe
+- `GET /api/v1/recipes/:id/flowers` - Obtener flowers asociados a un Recipe
+- `POST /api/v1/recipes/:id/flowers` - Crear flower asociado a un Recipe
+- `GET /api/v1/recipes/:id/dry-goods` - Obtener dry-goods asociados a un Recipe
+- `POST /api/v1/recipes/:id/dry-goods` - Crear dry-good asociado a un Recipe
+- `GET /api/v1/recipes/:id/cases` - Obtener cases asociados a un Recipe
+- `POST /api/v1/recipes/:id/cases` - Crear case asociado a un Recipe
+
+**RecipeGroup Endpoints:**
+- `GET /api/v1/recipe-groups?requirementItemId=:id` - Listar RecipeGroups filtrados por RequirementItem
+- `POST /api/v1/recipe-groups` - Crear nuevo RecipeGroup
+- `POST /api/v1/recipe-groups/:id/recipes` - Crear Recipe asociado a un RecipeGroup
+- `PUT /api/v1/recipe-groups/:id/recipes/:recipeId` - Mover Recipe a otro RecipeGroup
 
 ### Consideraciones de Rendimiento
 
@@ -80,12 +107,24 @@ Basado en el patrón Repository y los requisitos funcionales:
 - **E2E Tests**: Flujos completos de usuario con Playwright
 - **Cobertura objetivo**: ≥80% para rutas críticas
 
+### Alcance de Implementación
+
+- **Componentes TypeScript**: Se implementarán completamente con toda la lógica de negocio y gestión de estado
+- **Templates HTML**: NO se implementarán en esta feature (per NFR-005), se dejarán para creación posterior por un humano
+- **Estilos CSS**: NO se implementarán en esta feature (per NFR-005), se dejarán para creación posterior por un humano
+- **Exposición pública**: Los componentes TypeScript deben exponer signals, properties públicas y methods públicos necesarios para que el HTML pueda consumirlos
+- **Diálogos**: Uso de diálogos según ADR-014:
+  - Diálogo completo (`ft-dialog--full`) para RequirementItemDetail (incluye gestión de Recipes directamente dentro del diálogo)
+  - Diálogos simples (`ft-dialog`) para acciones específicas: Notes y Files
+  - Todos los diálogos deben abrirse a través de entity managers, no directamente desde componentes
+
 ### Referencias
 
 - [ADR-001: Separación de Responsabilidades](../../adr/ADR-001-separation-of-responsibilities.md)
 - [ADR-002: Guía de Estilo de Angular](../../adr/ADR-002-angular-style-guide.md)
 - [ADR-006: Patrón Repository para REST](../../adr/ADR-006-repository-pattern-rest.md)
 - [ADR-007: Estrategia de Testing](../../adr/ADR-007-testing-strategy.md)
+- [ADR-014: Uso de Diálogos para Interacciones Maestro–Detalle](../../adr/ADR-014-dialog-master-detail.md)
 - [Feature Template Example](../../../src/app/features/templates/) - Referencia de estructura
 - [Contratos Source](../../contracts/requirements/) - DTOs definidos en contracts
 

@@ -6,142 +6,33 @@
 
 ## Contratos Source
 
-Los modelos de datos están definidos como DTOs en `docs/contracts/requirements/`:
+Los modelos de datos están definidos en los contratos de `docs/contracts/requirements/`:
 
 - **Requirement** - [requirement.md](../../contracts/requirements/requirement.md)
 - **RequirementItem** - [requirement-item.md](../../contracts/requirements/requirement-item.md)
 - **Recipe** - [recipe.md](../../contracts/requirements/recipe.md)
+- **RecipeGroup** - [recipe-group.md](../../contracts/requirements/recipe-group.md)
 
 ## Entity Relationships
 
 ```
-RequirementDTO (Requirement)
-  ├── 1:N → RequirementItemDTO (RequirementItem)
-        └── 1:N → RecipeDTO (Recipe)
+Requirement
+  ├── 1:N → RequirementItem
+        ├── 1:N → Recipe
+        │         ├── 1:N → Note
+        │         ├── 1:N → Flower
+        │         ├── 1:N → DryGood
+        │         └── 1:N → Case
+        ├── 1:N → File
+        └── 0:1 → RecipeGroup
+                  └── 1:N → Recipe
 ```
 
-## Entity Definitions
+**Nota**: Las definiciones completas de campos, tipos y constraints están en los contratos referenciados arriba. Este documento solo documenta las relaciones y tipos específicos del feature.
 
-### RequirementDTO
+## Related Entities
 
-Representa un Requirement (Solicitud de Desarrollo de Producto) en el sistema.
-
-**Source**: `docs/contracts/requirements/requirement.md`
-
-**Fields**:
-- `id: number` - Identificador único del Requirement
-- `name: string` - Nombre del Requirement
-- `customer: CustomerDTO` - Cliente asociado
-- `divisions: DivisionDTO[]` - Divisiones asociadas
-- `sellByDate: date` - Fecha de venta
-- `type: ItemCatalogDTO` - Tipo de Requirement
-- `salesProbability: ItemCatalogDTO` - Probabilidad de venta
-- `salesPriority: ItemCatalogDTO` - Prioridad de venta
-- `description: string` - Descripción
-- `customerStrategy: ItemCatalogDTO` - Estrategia del cliente
-- `entryDate: date` - Fecha de entrada
-- `startDate: date` - Fecha de inicio
-- `dueDate: date` - Fecha de vencimiento
-- `updatedAt: date` - Fecha de última actualización
-- `estimatedDevelopmentTime: number` - Tiempo estimado de desarrollo
-- `remainingTime: number` - Tiempo restante
-- `status: ItemCatalogDTO` - Estado del Requirement
-- `approvalStatus: ItemCatalogDTO` - Estado de aprobación
-- `requestedBy: UserDTO` - Usuario que solicitó
-
-**Constraints**:
-- El nombre es obligatorio
-- El cliente debe estar definido
-- Debe tener al menos una división asociada
-- La fecha de vencimiento debe ser posterior a la fecha de inicio
-- El tiempo estimado de desarrollo debe ser un número positivo
-- El tiempo restante debe ser un número no negativo
-- El estado y el estado de aprobación deben estar definidos
-- El usuario solicitante debe estar definido
-
-**TypeScript Interface** (generado desde DTO):
-```typescript
-import { RequirementDTO } from '@/contracts/requirements/requirement.dto';
-```
-
-### RequirementItemDTO
-
-Representa un ítem individual dentro de un Requirement. Cada ítem puede tener una o más recetas asociadas.
-
-**Source**: `docs/contracts/requirements/requirement-item.md`
-
-**Fields**:
-- `id: number` - Identificador único del RequirementItem
-- `name: string` - Nombre del ítem
-- `status: ItemCatalogDTO` - Estado del ítem
-- `category: ItemCatalogDTO` - Categoría del ítem
-- `recipesCount: number` - Cantidad de recetas asociadas
-- `clientMargin: decimal` - Margen del cliente
-- `retailMaxPrice: decimal` - Precio máximo al por menor
-- `retailMinPrice: decimal` - Precio mínimo al por menor
-- `quantityPerWeek: number` - Cantidad por semana
-- `season: ItemCatalogDTO` - Temporada
-- `isWet: boolean` - Indica si es húmedo
-- `tags: ItemCatalogDTO[]` - Etiquetas asociadas
-- `specialInstructions: NoteDTO[]` - Instrucciones especiales
-- `createdAt: date` - Fecha de creación
-- `updatedAt: date` - Fecha de última actualización
-- `assignedTo: UserDTO` - Usuario asignado
-
-**Constraints**:
-- El nombre es obligatorio
-- El estado y la categoría deben estar definidos
-- El precio máximo debe ser mayor o igual al precio mínimo
-- Los valores monetarios usan precisión decimal fija
-- La cantidad por semana debe ser un número positivo
-- Las instrucciones especiales son opcionales
-
-**TypeScript Interface** (generado desde DTO):
-```typescript
-import { RequirementItemDTO } from '@/contracts/requirements/requirement-item.dto';
-```
-
-### RecipeDTO
-
-Representa una receta asociada a un RequirementItem. Las recetas definen los requisitos o instrucciones necesarias para la producción de un ítem específico.
-
-**Source**: `docs/contracts/requirements/recipe.md`
-
-**Fields**:
-- `id: number` - Identificador único de la Recipe
-- `category: ItemCatalogDTO` - Categoría de la receta
-- `construction: ItemCatalogDTO` - Construcción
-- `bouquetType: ItemCatalogDTO` - Tipo de ramo
-- `bouquetLength: number` - Longitud del ramo
-- `bouquetPhotos: FileDTO[]` - Fotos del ramo
-- `flowers: FlowerDTO[]` - Flores asociadas
-- `seasonCases: SeasonCaseDTO[]` - Casos de temporada
-- `agreements: AgreementDTO[]` - Acuerdos asociados
-- `name: string` - Nombre de la receta
-- `origin: ItemCatalogDTO` - Origen
-- `originCase: CaseDTO` - Caso de origen
-- `description: string` - Descripción
-- `waste: decimal` - Desperdicio
-- `laborCost: decimal` - Costo de mano de obra
-- `createdAt: date` - Fecha de creación
-- `updatedAt: date` - Fecha de última actualización
-
-**Constraints**:
-- El nombre es obligatorio
-- La categoría, construcción y tipo de ramo deben estar definidos
-- La longitud del ramo debe ser un número positivo
-- El desperdicio y el costo de mano de obra deben ser valores positivos
-- Los valores monetarios usan precisión decimal fija
-- Los acuerdos asociados son opcionales
-
-**TypeScript Interface** (generado desde DTO):
-```typescript
-import { RecipeDTO } from '@/contracts/requirements/recipe.dto';
-```
-
-## Related DTOs
-
-Los DTOs principales referencian otros DTOs:
+Las entidades principales referencian otras entidades definidas en contratos:
 
 - **Customer** - `docs/contracts/customers/customer.md`
 - **Division** - `docs/contracts/customers/division.md`
@@ -153,6 +44,8 @@ Los DTOs principales referencian otros DTOs:
 - **SeasonCase** - `docs/contracts/requirements/season-case.md`
 - **Agreement** - `docs/contracts/requirements/agreement.md`
 - **Case** - `docs/contracts/master/case.md`
+
+**Nota**: Todas las definiciones completas están en los contratos. Los tipos TypeScript deben importarse desde donde se generen los tipos desde los contratos.
 
 ## Request/Response Types
 
@@ -169,8 +62,9 @@ export interface RequirementSearchParams extends CollectionQueryParams {
 }
 
 // Para crear/actualizar Requirement (si se necesita en el futuro)
-export type RequirementRequestCreate = Omit<RequirementDTO, 'id' | 'updatedAt'> & { id?: number };
-export type RequirementRequestUpdate = Pick<RequirementDTO, 'id'> & Partial<Omit<RequirementDTO, 'id' | 'updatedAt'>>;
+// Los tipos Requirement se importan desde los contratos
+export type RequirementRequestCreate = Omit<Requirement, 'id' | 'updatedAt'> & { id?: number };
+export type RequirementRequestUpdate = Pick<Requirement, 'id'> & Partial<Omit<Requirement, 'id' | 'updatedAt'>>;
 ```
 
 ### RequirementItem Requests
@@ -184,26 +78,47 @@ export interface RequirementItemSearchParams extends CollectionQueryParams {
 }
 
 // Para crear/actualizar RequirementItem (si se necesita en el futuro)
-export type RequirementItemRequestCreate = Omit<RequirementItemDTO, 'id' | 'createdAt' | 'updatedAt'> & { id?: number };
-export type RequirementItemRequestUpdate = Pick<RequirementItemDTO, 'id'> & Partial<Omit<RequirementItemDTO, 'id' | 'createdAt' | 'updatedAt'>>;
+// Los tipos RequirementItem se importan desde los contratos
+export type RequirementItemRequestCreate = Omit<RequirementItem, 'id' | 'createdAt' | 'updatedAt'> & { id?: number };
+export type RequirementItemRequestUpdate = Pick<RequirementItem, 'id'> & Partial<Omit<RequirementItem, 'id' | 'createdAt' | 'updatedAt'>>;
 ```
 
 ### Recipe Requests
 
 ```typescript
 // Para agregar receta a un RequirementItem
+// Los tipos Recipe, ItemCatalog se importan desde los contratos
 export interface RecipeRequestCreate {
   requirementItemId: number;
   name: string;
-  category: ItemCatalogDTO;
-  construction: ItemCatalogDTO;
-  bouquetType: ItemCatalogDTO;
+  category: ItemCatalog;
+  construction: ItemCatalog;
+  bouquetType: ItemCatalog;
   bouquetLength: number;
-  // ... otros campos según RecipeDTO
+  // ... otros campos según Recipe (ver docs/contracts/requirements/recipe.md)
 }
 
 // Para actualizar receta (si se necesita en el futuro)
-export type RecipeRequestUpdate = Pick<RecipeDTO, 'id'> & Partial<Omit<RecipeDTO, 'id' | 'createdAt' | 'updatedAt'>>;
+export type RecipeRequestUpdate = Pick<Recipe, 'id'> & Partial<Omit<Recipe, 'id' | 'createdAt' | 'updatedAt'>>;
+```
+
+### RecipeGroup Requests
+
+```typescript
+// Para crear un RecipeGroup
+// Los tipos RecipeGroup, Division, ItemCatalog se importan desde los contratos
+export interface RecipeGroupRequestCreate {
+  name: string;
+  divisions: Division[];
+  requirementItemId?: number;
+  draft?: boolean;
+  enabled?: boolean;
+  tags?: ItemCatalog[];
+  description?: string;
+  destiny?: ItemCatalog;
+  season?: ItemCatalog;
+  // ... otros campos según RecipeGroup (ver docs/contracts/requirements/recipe-group.md)
+}
 ```
 
 ## Repository Methods
@@ -211,59 +126,125 @@ export type RecipeRequestUpdate = Pick<RecipeDTO, 'id'> & Partial<Omit<RecipeDTO
 ### RequirementRepository
 
 ```typescript
+// Los tipos Requirement, File se importan desde los contratos
 export class RequirementRepository extends BaseRepository {
   // Listar todas las Requirements
-  findBy(): SignalGet<RequirementSearchParams | void, RequirementDTO[]>;
+  findBy(): SignalGet<RequirementSearchParams | void, Requirement[]>;
   
   // Obtener una Requirement por ID (con ítems opcionales)
-  find(): SignalGet<number, RequirementDTO>;
+  find(): SignalGet<number, Requirement>;
   
-  // Mutaciones (si se necesitan en el futuro)
-  mutations(): Mutations<RequirementRequestCreate, RequirementRequestUpdate, number>;
+  // Obtener archivos asociados a un Requirement
+  getFiles(requirementId: number): SignalGet<void, File[]>;
+  
+  // Mutaciones
+  mutations(): {
+    addFile: (requirementId: number, file: File) => Promise<File>;
+  };
 }
 ```
 
-### RequirementItemRepository (opcional, puede estar en RequirementRepository)
+### RequirementItemRepository
 
 ```typescript
+// Los tipos RequirementItem, File se importan desde los contratos
 export class RequirementItemRepository extends BaseRepository {
   // Obtener RequirementItems de un Requirement
-  findByRequirement(requirementId: number): SignalGet<void, RequirementItemDTO[]>;
+  findByRequirement(requirementId: number): SignalGet<void, RequirementItem[]>;
   
   // Obtener un RequirementItem por ID (con recetas opcionales)
-  find(): SignalGet<number, RequirementItemDTO>;
+  find(): SignalGet<number, RequirementItem>;
+  
+  // Obtener archivos asociados a un RequirementItem
+  getFiles(requirementItemId: number): SignalGet<void, File[]>;
+  
+  // Mutaciones
+  mutations(): {
+    addFile: (requirementItemId: number, file: File) => Promise<File>;
+  };
 }
 ```
 
 ### RecipeRepository
 
 ```typescript
+// Los tipos Recipe, Note, Flower, DryGood, Case se importan desde los contratos
 export class RecipeRepository extends BaseRepository {
   // Obtener Recipes de un RequirementItem
-  findByRequirementItem(requirementItemId: number): SignalGet<void, RecipeDTO[]>;
+  findByRequirementItem(requirementItemId: number): SignalGet<void, Recipe[]>;
+  
+  // Obtener notas asociadas a un Recipe
+  getNotes(recipeId: number): SignalGet<void, Note[]>;
+  
+  // Obtener flowers asociados a un Recipe
+  getFlowers(recipeId: number): SignalGet<void, Flower[]>;
+  
+  // Obtener dry-goods asociados a un Recipe
+  getDryGoods(recipeId: number): SignalGet<void, DryGood[]>;
+  
+  // Obtener cases asociados a un Recipe
+  getCases(recipeId: number): SignalGet<void, Case[]>;
   
   // Mutaciones: agregar y eliminar recetas
   mutations(): {
-    create: (recipe: RecipeRequestCreate) => Promise<RecipeDTO>;
+    create: (recipe: RecipeRequestCreate) => Promise<Recipe>;
     delete: (requirementItemId: number, recipeId: number) => Promise<void>;
+    addNote: (recipeId: number, note: Note) => Promise<Note>;
+    addFlower: (recipeId: number, flower: Flower) => Promise<Flower>;
+    addDryGood: (recipeId: number, dryGood: DryGood) => Promise<DryGood>;
+    addCase: (recipeId: number, case: Case) => Promise<Case>;
+  };
+}
+```
+
+### RecipeGroupRepository
+
+```typescript
+// Los tipos RecipeGroup, Recipe se importan desde los contratos
+export class RecipeGroupRepository extends BaseRepository {
+  // Obtener RecipeGroups filtrados por RequirementItem
+  findByRequirementItem(requirementItemId: number): SignalGet<void, RecipeGroup[]>;
+  
+  // Mutaciones
+  mutations(): {
+    create: (recipeGroup: RecipeGroupRequestCreate) => Promise<RecipeGroup>;
+    addRecipe: (recipeGroupId: number, recipe: Recipe) => Promise<Recipe>;
+    moveRecipe: (recipeGroupId: number, recipeId: number) => Promise<void>;
   };
 }
 ```
 
 ## Data Flow
 
-1. **Listar Requirements**: `RequirementRepository.findBy().load()` → Retorna `RequirementDTO[]` (sin ítems)
-2. **Ver detalle Requirement**: `RequirementRepository.find().load(id)` → Retorna `RequirementDTO` (con ítems incluidos o cargados por separado)
-3. **Ver detalle RequirementItem**: `RequirementItemRepository.find().load(id)` o desde el Requirement → Retorna `RequirementItemDTO` (con recetas opcionales)
-4. **Ver Recipes de RequirementItem**: `RecipeRepository.findByRequirementItem(itemId).load()` → Retorna `RecipeDTO[]`
-5. **Agregar Recipe**: `RecipeRepository.mutations().create(recipe)` → Retorna `RecipeDTO`
-6. **Eliminar Recipe**: `RecipeRepository.mutations().delete(requirementItemId, recipeId)` → Promise<void>
+1. **Listar Requirements**: `RequirementRepository.findBy().load()` → Retorna `Requirement[]` (sin ítems)
+2. **Ver detalle Requirement**: `RequirementRepository.find().load(id)` → Retorna `Requirement` (con ítems incluidos o cargados por separado)
+3. **Ver archivos de Requirement**: `RequirementRepository.getFiles(requirementId).load()` → Retorna `File[]`
+4. **Agregar archivo a Requirement**: `RequirementRepository.mutations().addFile(requirementId, file)` → Retorna `File`
+5. **Ver detalle RequirementItem**: `RequirementItemRepository.find().load(id)` o desde el Requirement → Retorna `RequirementItem` (con recetas opcionales)
+6. **Ver archivos de RequirementItem**: `RequirementItemRepository.getFiles(requirementItemId).load()` → Retorna `File[]`
+7. **Agregar archivo a RequirementItem**: `RequirementItemRepository.mutations().addFile(requirementItemId, file)` → Retorna `File`
+8. **Ver Recipes de RequirementItem**: `RecipeRepository.findByRequirementItem(itemId).load()` → Retorna `Recipe[]`
+9. **Agregar Recipe**: `RecipeRepository.mutations().create(recipe)` → Retorna `Recipe`
+10. **Eliminar Recipe**: `RecipeRepository.mutations().delete(requirementItemId, recipeId)` → Promise<void>
+11. **Ver notas de Recipe**: `RecipeRepository.getNotes(recipeId).load()` → Retorna `Note[]`
+12. **Agregar nota a Recipe**: `RecipeRepository.mutations().addNote(recipeId, note)` → Retorna `Note`
+13. **Ver flowers de Recipe**: `RecipeRepository.getFlowers(recipeId).load()` → Retorna `Flower[]`
+14. **Agregar flower a Recipe**: `RecipeRepository.mutations().addFlower(recipeId, flower)` → Retorna `Flower`
+15. **Ver dry-goods de Recipe**: `RecipeRepository.getDryGoods(recipeId).load()` → Retorna `DryGood[]`
+16. **Agregar dry-good a Recipe**: `RecipeRepository.mutations().addDryGood(recipeId, dryGood)` → Retorna `DryGood`
+17. **Ver cases de Recipe**: `RecipeRepository.getCases(recipeId).load()` → Retorna `Case[]`
+18. **Agregar case a Recipe**: `RecipeRepository.mutations().addCase(recipeId, case)` → Retorna `Case`
+19. **Listar RecipeGroups por RequirementItem**: `RecipeGroupRepository.findByRequirementItem(requirementItemId).load()` → Retorna `RecipeGroup[]`
+20. **Crear RecipeGroup**: `RecipeGroupRepository.mutations().create(recipeGroup)` → Retorna `RecipeGroup`
+21. **Agregar Recipe a RecipeGroup**: `RecipeGroupRepository.mutations().addRecipe(recipeGroupId, recipe)` → Retorna `Recipe`
+22. **Mover Recipe a otro RecipeGroup**: `RecipeGroupRepository.mutations().moveRecipe(recipeGroupId, recipeId)` → Promise<void>
 
 ## Notes
 
-- Los DTOs son la fuente de verdad y están definidos en `docs/contracts/requirements/`
-- Los tipos TypeScript deben generarse desde los DTOs o importarse desde la ubicación donde se generen
-- Los campos opcionales pueden no estar presentes en todas las respuestas de API
-- Las relaciones anidadas (ítems en Requirement, recetas en ítem) pueden cargarse por separado o incluirse en la respuesta según el endpoint
-- Las fechas siguen formato ISO 8601 para consistencia
-- Los IDs son números (number) según los DTOs definidos
+- **Los contratos son la fuente de verdad**: Todas las definiciones de entidades (campos, tipos, constraints) están en `docs/contracts/requirements/` y NO deben duplicarse aquí
+- **Referencias únicamente**: Este documento solo documenta relaciones, tipos de request específicos del feature, métodos de repositories y flujos de datos
+- **Tipos TypeScript**: Los tipos deben importarse desde donde se generen desde los contratos (no usar sufijos DTO en este documento)
+- **Campos opcionales**: Pueden no estar presentes en todas las respuestas de API según el endpoint
+- **Relaciones anidadas**: Las relaciones anidadas (ítems en Requirement, recetas en ítem) pueden cargarse por separado o incluirse en la respuesta según el endpoint
+- **Formato de fechas**: Siguen formato ISO 8601 para consistencia
+- **IDs**: Son números (number) según los contratos definidos
