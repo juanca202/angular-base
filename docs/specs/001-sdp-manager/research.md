@@ -30,22 +30,22 @@
 
 ### Estructura de Datos Identificada
 
-Los modelos de datos están definidos como DTOs en `docs/contracts/dtos/requirements/`:
+Los modelos de datos están definidos como DTOs en `docs/contracts/requirements/`:
 
-1. **RequirementDTO** (antes SDP)
+1. **Requirement** (antes SDP)
    - Representa un Requirement (Solicitud de Desarrollo de Producto)
    - Relación 1:N con RequirementItems
-   - Fuente: `docs/contracts/dtos/requirements/requirement.dto.md`
+   - Fuente: `docs/contracts/requirements/requirement.md`
 
-2. **RequirementItemDTO** (antes Item)
+2. **RequirementItem** (antes Item)
    - Pertenece a un Requirement
    - Relación 1:N con Recipes
-   - Fuente: `docs/contracts/dtos/requirements/requirement-item.dto.md`
+   - Fuente: `docs/contracts/requirements/requirement-item.md`
 
-3. **RecipeDTO**
+3. **Recipe**
    - Pertenece a un RequirementItem
    - Define requisitos/instrucciones para producción
-   - Fuente: `docs/contracts/dtos/requirements/recipe.dto.md`
+   - Fuente: `docs/contracts/requirements/recipe.md`
 
 ### Endpoints de API Esperados
 
@@ -87,5 +87,5 @@ Basado en el patrón Repository y los requisitos funcionales:
 - [ADR-006: Patrón Repository para REST](../../adr/ADR-006-repository-pattern-rest.md)
 - [ADR-007: Estrategia de Testing](../../adr/ADR-007-testing-strategy.md)
 - [Feature Template Example](../../../src/app/features/templates/) - Referencia de estructura
-- [DTOs Source](../../contracts/dtos/requirements/) - DTOs definidos en contracts/dtos
+- [Contratos Source](../../contracts/requirements/) - DTOs definidos en contracts
 

@@ -1,6 +1,7 @@
 # ADR-008: Estrategia de Validación de Formularios
 **Estado:** Aceptado  
-**Fecha:** 2025  
+**Fecha de Creación:** 06/01/2026  
+**Última Actualización:** 06/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto

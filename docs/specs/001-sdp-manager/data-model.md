@@ -4,13 +4,13 @@
 **Feature**: [spec.md](./spec.md)  
 **Plan**: [plan.md](./plan.md)
 
-## DTOs Source
+## Contratos Source
 
-Los modelos de datos están definidos como DTOs en `docs/contracts/dtos/requirements/`:
+Los modelos de datos están definidos como DTOs en `docs/contracts/requirements/`:
 
-- **RequirementDTO** - [requirement.dto.md](../../contracts/dtos/requirements/requirement.dto.md)
-- **RequirementItemDTO** - [requirement-item.dto.md](../../contracts/dtos/requirements/requirement-item.dto.md)
-- **RecipeDTO** - [recipe.dto.md](../../contracts/dtos/requirements/recipe.dto.md)
+- **Requirement** - [requirement.md](../../contracts/requirements/requirement.md)
+- **RequirementItem** - [requirement-item.md](../../contracts/requirements/requirement-item.md)
+- **Recipe** - [recipe.md](../../contracts/requirements/recipe.md)
 
 ## Entity Relationships
 
@@ -26,7 +26,7 @@ RequirementDTO (Requirement)
 
 Representa un Requirement (Solicitud de Desarrollo de Producto) en el sistema.
 
-**Source**: `docs/contracts/dtos/requirements/requirement.dto.md`
+**Source**: `docs/contracts/requirements/requirement.md`
 
 **Fields**:
 - `id: number` - Identificador único del Requirement
@@ -61,14 +61,14 @@ Representa un Requirement (Solicitud de Desarrollo de Producto) en el sistema.
 
 **TypeScript Interface** (generado desde DTO):
 ```typescript
-import { RequirementDTO } from '@/contracts/dtos/requirements/requirement.dto';
+import { RequirementDTO } from '@/contracts/requirements/requirement.dto';
 ```
 
 ### RequirementItemDTO
 
 Representa un ítem individual dentro de un Requirement. Cada ítem puede tener una o más recetas asociadas.
 
-**Source**: `docs/contracts/dtos/requirements/requirement-item.dto.md`
+**Source**: `docs/contracts/requirements/requirement-item.md`
 
 **Fields**:
 - `id: number` - Identificador único del RequirementItem
@@ -98,14 +98,14 @@ Representa un ítem individual dentro de un Requirement. Cada ítem puede tener 
 
 **TypeScript Interface** (generado desde DTO):
 ```typescript
-import { RequirementItemDTO } from '@/contracts/dtos/requirements/requirement-item.dto';
+import { RequirementItemDTO } from '@/contracts/requirements/requirement-item.dto';
 ```
 
 ### RecipeDTO
 
 Representa una receta asociada a un RequirementItem. Las recetas definen los requisitos o instrucciones necesarias para la producción de un ítem específico.
 
-**Source**: `docs/contracts/dtos/requirements/recipe.dto.md`
+**Source**: `docs/contracts/requirements/recipe.md`
 
 **Fields**:
 - `id: number` - Identificador único de la Recipe
@@ -136,23 +136,23 @@ Representa una receta asociada a un RequirementItem. Las recetas definen los req
 
 **TypeScript Interface** (generado desde DTO):
 ```typescript
-import { RecipeDTO } from '@/contracts/dtos/requirements/recipe.dto';
+import { RecipeDTO } from '@/contracts/requirements/recipe.dto';
 ```
 
 ## Related DTOs
 
 Los DTOs principales referencian otros DTOs:
 
-- **CustomerDTO** - `docs/contracts/dtos/customers/customer.dto.md`
-- **DivisionDTO** - `docs/contracts/dtos/customers/division.dto.md`
-- **ItemCatalogDTO** - `docs/contracts/dtos/core/item-catalog.dto.md`
-- **UserDTO** - `docs/contracts/dtos/core/user.dto.md`
-- **NoteDTO** - `docs/contracts/dtos/core/note.dto.md`
-- **FileDTO** - `docs/contracts/dtos/core/file.dto.md`
-- **FlowerDTO** - `docs/contracts/dtos/master/flower.dto.md`
-- **SeasonCaseDTO** - `docs/contracts/dtos/requirements/season-case.dto.md`
-- **AgreementDTO** - `docs/contracts/dtos/requirements/agreement.dto.md`
-- **CaseDTO** - `docs/contracts/dtos/master/case.dto.md`
+- **Customer** - `docs/contracts/customers/customer.md`
+- **Division** - `docs/contracts/customers/division.md`
+- **ItemCatalog** - `docs/contracts/core/item-catalog.md`
+- **User** - `docs/contracts/core/user.md`
+- **Note** - `docs/contracts/core/note.md`
+- **File** - `docs/contracts/core/file.md`
+- **Flower** - `docs/contracts/master/flower.md`
+- **SeasonCase** - `docs/contracts/requirements/season-case.md`
+- **Agreement** - `docs/contracts/requirements/agreement.md`
+- **Case** - `docs/contracts/master/case.md`
 
 ## Request/Response Types
 
@@ -261,7 +261,7 @@ export class RecipeRepository extends BaseRepository {
 
 ## Notes
 
-- Los DTOs son la fuente de verdad y están definidos en `docs/contracts/dtos/requirements/`
+- Los DTOs son la fuente de verdad y están definidos en `docs/contracts/requirements/`
 - Los tipos TypeScript deben generarse desde los DTOs o importarse desde la ubicación donde se generen
 - Los campos opcionales pueden no estar presentes en todas las respuestas de API
 - Las relaciones anidadas (ítems en Requirement, recetas en ítem) pueden cargarse por separado o incluirse en la respuesta según el endpoint

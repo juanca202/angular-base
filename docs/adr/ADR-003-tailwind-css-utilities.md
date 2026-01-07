@@ -1,6 +1,7 @@
 # ADR-003: Uso de Tailwind CSS para Clases de Utilidad y Creación de Componentes
 **Estado:** Aceptado  
-**Fecha:** 2025  
+**Fecha de Creación:** 06/01/2026  
+**Última Actualización:** 06/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto

@@ -1,7 +1,8 @@
 # ADR-007: Estrategia de Testing
 
 **Estado:** Aceptado  
-**Fecha:** 2025  
+**Fecha de Creación:** 31/12/2025  
+**Última Actualización:** 06/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ---

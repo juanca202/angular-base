@@ -1,13 +1,13 @@
 # Implementation Plan: Administrador de Requirements
 
 **Branch**: `001-requirements` | **Date**: 2026-01-06 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `docs/specs/001-requirements/spec.md`
+**Input**: Feature specification from `docs/specs/001-sdp-manager/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-Esta feature implementa un administrador centralizado para gestionar Requirements (Solicitudes de Producción), permitiendo a los usuarios listar Requirements, visualizar sus detalles, explorar RequirementItems y gestionar Recipes asociadas. La implementación seguirá la arquitectura de capas del proyecto (Core, Shared, Cross, Features) usando el patrón Repository para comunicación con APIs, componentes standalone de Angular con signals para estado reactivo, y Tailwind CSS para estilos. Los modelos de datos están definidos en los DTOs ubicados en `docs/contracts/dtos/`.
+Esta feature implementa un administrador centralizado para gestionar Requirements (Solicitudes de Producción), permitiendo a los usuarios listar Requirements, visualizar sus detalles, explorar RequirementItems y gestionar Recipes asociadas. La implementación seguirá la arquitectura de capas del proyecto (Core, Shared, Cross, Features) usando el patrón Repository para comunicación con APIs, componentes standalone de Angular con signals para estado reactivo, y Tailwind CSS para estilos. Los modelos de datos están definidos en los DTOs ubicados en `docs/contracts/`.
 
 ## Technical Context
 
@@ -30,7 +30,7 @@ Verify compliance with Angular Base Project Constitution:
 - ✅ **Layer Architecture**: Feature follows Core → Shared/Cross → Features dependency rules (ADR-001)
   - Feature ubicada en `src/app/features/requirements/`
   - Repository en `features/requirements/repositories/`
-  - Modelos DTOs referenciados desde `docs/contracts/dtos/requirements/` (RequirementDTO, RequirementItemDTO, RecipeDTO)
+  - Modelos DTOs referenciados desde `docs/contracts/requirements/` (RequirementDTO, RequirementItemDTO, RecipeDTO)
   - Componentes en `features/requirements/components/`
   - Puede usar Shared para componentes UI reutilizables
   - Puede usar Core para servicios globales (HttpClient, MessageService)
@@ -74,18 +74,16 @@ Verify compliance with Angular Base Project Constitution:
 ### Documentation (this feature)
 
 ```text
-docs/specs/001-requirements/
+docs/specs/001-sdp-manager/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── spec.md              # Feature specification
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
 ├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-│   └── api-contracts.md # API endpoint contracts
 └── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
-**Note**: Los DTOs están definidos en `docs/contracts/dtos/requirements/`:
+**Note**: Los DTOs están definidos en `docs/contracts/requirements/`:
 - RequirementDTO
 - RequirementItemDTO
 - RecipeDTO
@@ -137,10 +135,10 @@ src/app/
         │   └── requirement-manager.ts (orquestación de acciones si es necesario)
         └── requirements-routes.ts
 
-docs/contracts/dtos/requirements/  # DTOs (fuente de verdad)
-├── requirement.dto.md              # RequirementDTO
-├── requirement-item.dto.md         # RequirementItemDTO
-└── recipe.dto.md                   # RecipeDTO
+docs/contracts/requirements/  # DTOs (fuente de verdad)
+├── requirement.md                  # Requirement
+├── requirement-item.md             # RequirementItem
+└── recipe.md                       # Recipe
 
 test/                    # Tests unitarios e integración
 ├── helpers/
@@ -152,7 +150,7 @@ e2e/                     # Tests E2E con Playwright
 └── sdp-manager.spec.ts
 ```
 
-**Structure Decision**: La feature sigue la arquitectura de capas definida en ADR-001. Todos los componentes están en `features/requirements/components/`, el repository en `features/requirements/repositories/`. Los modelos de datos están definidos como DTOs en `docs/contracts/dtos/requirements/` (RequirementDTO, RequirementItemDTO, RecipeDTO) y serán referenciados desde allí. La feature puede usar componentes de Shared si son reutilizables, y servicios de Core para infraestructura global. No depende de otras Features.
+**Structure Decision**: La feature sigue la arquitectura de capas definida en ADR-001. Todos los componentes están en `features/requirements/components/`, el repository en `features/requirements/repositories/`. Los modelos de datos están definidos como DTOs en `docs/contracts/requirements/` (RequirementDTO, RequirementItemDTO, RecipeDTO) y serán referenciados desde allí. La feature puede usar componentes de Shared si son reutilizables, y servicios de Core para infraestructura global. No depende de otras Features.
 
 ## Complexity Tracking
 

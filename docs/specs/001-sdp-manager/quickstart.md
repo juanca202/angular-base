@@ -29,11 +29,11 @@ src/app/features/requirements/
 
 ### 2. Referenciar DTOs
 
-Los modelos están definidos como DTOs en `docs/contracts/dtos/requirements/`:
+Los modelos están definidos como DTOs en `docs/contracts/requirements/`:
 
-- `requirement.dto.md` - RequirementDTO
-- `requirement-item.dto.md` - RequirementItemDTO  
-- `recipe.dto.md` - RecipeDTO
+- `requirement.md` - Requirement
+- `requirement-item.md` - RequirementItem  
+- `recipe.md` - Recipe
 
 Los tipos TypeScript deben importarse desde donde se generen los DTOs o referenciarse directamente.
 
@@ -47,7 +47,7 @@ Crea `RequirementRepository` en `src/app/features/requirements/repositories/requ
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { getResource, getMutations, getApiUrl } from '@/core/utils/async-repository';
-import { RequirementDTO, RequirementSearchParams } from '@/contracts/dtos/requirements/requirement.dto';
+import { RequirementDTO, RequirementSearchParams } from '@/contracts/requirements/requirement.dto';
 
 @Injectable({ providedIn: 'root' })
 export class RequirementRepository extends BaseRepository {
@@ -232,8 +232,7 @@ async addRecipe(recipe: RecipeRequestCreate) {
 - [Spec](./spec.md) - Especificación completa
 - [Plan](./plan.md) - Plan de implementación
 - [Data Model](./data-model.md) - Modelo de datos (referencias a DTOs)
-- [API Contracts](./contracts/api-contracts.md) - Contratos de API
 - [ADR-006: Repository Pattern](../../adr/ADR-006-repository-pattern-rest.md)
 - [ADR-007: Testing Strategy](../../adr/ADR-007-testing-strategy.md)
-- [DTOs Source](../../contracts/dtos/requirements/) - DTOs definidos en contracts/dtos
+- [Contratos Source](../../contracts/requirements/) - DTOs definidos en contracts
 

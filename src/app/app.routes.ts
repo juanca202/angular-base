@@ -18,11 +18,6 @@ export const routes: Routes = [
     path: '',
     loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
   },
-  {
-    path: 'requirements',
-    loadChildren: () =>
-      import('./features/requirements/requirements-routes').then((m) => m.requirementsRoutes)
-  },
   { path: 'settings', component: Settings },
   { path: 'settings/language', component: Language },
   { path: 'error/:code', component: Error, title: $localize`Error` },
