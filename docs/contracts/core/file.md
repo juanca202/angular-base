@@ -1,7 +1,7 @@
 DTO: File
 
 Description:
-Representación de un archivo en el sistema.
+Representación de un archivo en el sistema utilizado para almacenar documentos, imágenes, videos u otros tipos de archivos asociados a diferentes entidades del sistema.
 
 Fields:
 - id: number

@@ -1,7 +1,7 @@
 DTO: SeasonCase
 
 Description:
-Representación de un ramo con combinaciones de colores.
+Representación de un ramo con combinaciones de colores organizadas por temporada. Define las combinaciones de colores específicas para una temporada determinada.
 
 Fields:
 - season: ItemCatalog

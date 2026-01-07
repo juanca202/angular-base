@@ -1,7 +1,7 @@
 DTO: RequirementItem
 
 Description:
-Representación de un requerimiento de desarrollo en el sistema.
+Representación de un requerimiento específico de desarrollo de producto (también conocido como "Item Index") asociado a una solicitud de desarrollo de producto (SDP). Representa los productos individuales que se desarrollan dentro de una solicitud, cada uno con sus propias características y especificaciones.
 
 Fields:
 - id: number

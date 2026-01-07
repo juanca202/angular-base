@@ -1,7 +1,7 @@
 DTO: Flower
 
 Description:
-Representación de una flor en el sistema.
+Representación de una flor del catálogo maestro en el sistema. Almacena la información completa de cada tipo de flor utilizada en la producción de arreglos florales, incluyendo su identificación, clasificación, costos y características.
 
 Fields:
 - id: number

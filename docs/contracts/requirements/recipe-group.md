@@ -1,7 +1,7 @@
 DTO: RecipeGroup
 
 Description:
-Representación de un grupo de recetas en el sistema.
+Representación de un grupo de recetas utilizado para procesos de cotización. Actúa como una cabecera que agrupa diferentes combinaciones de recetas y cajas, permitiendo definir paquetes que se cotizan como un todo.
 
 Fields:
 - id: number

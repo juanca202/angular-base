@@ -1,7 +1,7 @@
 DTO: RecipeDryGood
 
 Description:
-Representación de un bien seco asociado a una receta con su cantidad y costo.
+Representación de un material seco asociado a una receta con su cantidad y costo. Los materiales secos incluyen materiales como cintas, papel, alambres, espuma floral, etc.
 
 Fields:
 - dryGood: DryGood
@@ -9,7 +9,7 @@ Fields:
 - cost: decimal
 
 Constraints:
-- El bien seco debe estar definido
+- El material seco debe estar definido
 - La cantidad debe ser un número positivo
 - El costo debe ser un valor positivo
 - Los valores monetarios usan precisión decimal fija

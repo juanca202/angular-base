@@ -1,7 +1,7 @@
 DTO: Agreement
 
 Description:
-Representación de un acuerdo o autorización en el sistema.
+Representación de un acuerdo de negocio en el sistema. Permite aplicar condiciones especiales o modificaciones a los costos y condiciones estándar de productos cotizados, documentando el motivo y los detalles de los cambios.
 
 Fields:
 - id: number

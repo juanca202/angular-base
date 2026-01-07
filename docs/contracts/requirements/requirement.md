@@ -1,7 +1,7 @@
 DTO: Requirement
 
 Description:
-Representación de un SDP (Solictud de Desarrollo de Producto) en el sistema.
+Representación de un SDP (Solicitud de Desarrollo de Producto) en el sistema. Representa una solicitud de desarrollo de un nuevo producto floral, desde su creación hasta su finalización, incluyendo información del cliente solicitante, características del producto requerido, información temporal, clasificaciones y contexto comercial.
 
 Fields:
 - id: number

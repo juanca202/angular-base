@@ -1,7 +1,7 @@
 DTO: Recipe
 
 Description:
-Representación de una receta individual en el sistema.
+Representación de una receta de arreglo floral en el sistema. Define la composición completa de un arreglo floral incluyendo sus características físicas, clasificaciones comerciales, información logística y componentes (flores y bienes secos).
 
 Fields:
 - id: number
@@ -18,6 +18,7 @@ Fields:
 - originCase: Case
 - description: string
 - waste: decimal
+- taxes: Tax
 - laborCost: decimal
 - createdAt: date
 - updatedAt: date
@@ -29,6 +30,28 @@ Constraints:
 - El desperdicio y el costo de mano de obra deben ser valores positivos
 - Los valores monetarios usan precisión decimal fija
 - Los acuerdos asociados son opcionales
+
+
+---
+
+DTO: Tax
+
+Description:
+Representación de un impuesto o tarifa aplicable a una receta en el sistema. Incluye tipos como Tariff, ATPDEA e Intercompany, con valores sugeridos y actuales.
+
+Fields:
+
+- id: number
+- name: string
+- percentage: TaxPercentage
+
+---
+
+DTO: TaxPercentage
+- suggestedValue: number
+- currentValue: number
+
+---
 
 API Endpoints:
 - GET /recipes/:id/notes - Obtiene un listado de notas asociadas a un recipe

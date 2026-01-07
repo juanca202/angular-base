@@ -1,7 +1,7 @@
 DTO: Note
 
 Description:
-Representación de una nota en el sistema, que puede contener respuestas anidadas.
+Representación de una nota en el sistema, que puede contener respuestas anidadas de otros usuarios.
 
 Fields:
 - id: number

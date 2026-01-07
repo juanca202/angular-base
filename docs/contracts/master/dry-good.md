@@ -1,7 +1,7 @@
 DTO: DryGood
 
 Description:
-Representación de un bien seco en el sistema.
+Representación de un material seco del catálogo maestro en el sistema. Almacena la información completa de cada tipo de material seco utilizado en la producción de arreglos florales, como cintas, papel, alambres, espuma floral, etc.
 
 Fields:
 - id: number

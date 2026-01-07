@@ -1,7 +1,7 @@
 DTO: Customer
 
 Description:
-Representación de un cliente en el sistema.
+Representación de un cliente en el sistema. Almacena la información del cliente incluyendo su margen comercial y las divisiones asociadas.
 
 Fields:
 - id: number

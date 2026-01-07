@@ -1,7 +1,7 @@
 DTO: RecipeFlower
 
 Description:
-Representación de una flor asociada a una receta con su cantidad y sustitutos.
+Representación de una flor asociada a una receta con su cantidad, costo y flores sustitutas. Permite definir alternativas cuando la flor principal no está disponible.
 
 Fields:
 - flower: Flower
