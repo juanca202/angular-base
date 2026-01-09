@@ -6,19 +6,19 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [
-    // Resuelve los paths de TypeScript (@/*, @/core/*, etc.)
+    // Resolves TypeScript paths (@/*, @/core/*, etc.)
     tsconfigPaths({
       root: path.resolve(__dirname)
     })
   ],
   test: {
-    // Habilitar globals (describe, it, expect, etc.) sin necesidad de importarlos
+    // Enable globals (describe, it, expect, etc.) without needing to import them
     globals: true,
-    // Entorno DOM para pruebas unitarias de componentes Angular
+    // DOM environment for Angular component unit tests
     environment: 'jsdom',
-    // Excluir archivos (Angular CLI maneja la detección de archivos de prueba)
+    // Exclude files (Angular CLI handles test file detection)
     exclude: ['node_modules', 'dist', '.angular'],
-    // Configuración de cobertura
+    // Coverage configuration
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -31,15 +31,15 @@ export default defineConfig({
         'src/main.ts'
       ]
     },
-    // Configuración para mejorar la compatibilidad con Angular
+    // Configuration to improve Angular compatibility
     setupFiles: [],
-    // Timeout para pruebas
+    // Test timeout
     testTimeout: 10000,
-    // Configuración de hooks
+    // Hook configuration
     hookTimeout: 10000
   },
-  // Resolver extensiones de archivo y alias
-  // IMPORTANTE: Los alias más específicos deben ir antes que los genéricos
+  // Resolve file extensions and aliases
+  // IMPORTANT: More specific aliases must come before generic ones
   resolve: {
     extensions: ['.ts', '.js', '.json'],
     alias: {
