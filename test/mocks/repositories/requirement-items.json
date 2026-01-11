@@ -1,0 +1,175 @@
+[
+  {
+    "id": 1,
+    "name": "Ramo de Rosas Rojas",
+    "status": { "id": 1, "name": "Activo", "code": "ACTIVE" },
+    "category": { "id": 1, "name": "Ramos", "code": "BOUQUETS" },
+    "recipesCount": 2,
+    "clientMargin": 0.35,
+    "retailMaxPrice": 45.99,
+    "retailMinPrice": 35.99,
+    "quantityPerWeek": 50,
+    "season": { "id": 1, "name": "Primavera", "code": "SPRING" },
+    "isWet": true,
+    "tags": [
+      { "id": 1, "name": "Romántico", "code": "ROMANTIC" },
+      { "id": 2, "name": "Premium", "code": "PREMIUM" }
+    ],
+    "specialInstructions": [],
+    "createdAt": "2024-01-15",
+    "updatedAt": "2024-01-20",
+    "assignedTo": {
+      "id": 1,
+      "name": "María García",
+      "email": "maria.garcia@email.com",
+      "phone": "+34 612 345 678"
+    },
+    "requirementId": 1,
+    "recipes": [
+      {
+        "id": 1,
+        "category": { "id": 1, "name": "Ramos", "code": "BOUQUETS" },
+        "construction": { "id": 1, "name": "Espiral", "code": "SPIRAL" },
+        "bouquetType": { "id": 1, "name": "Redondo", "code": "ROUND" },
+        "bouquetLength": 50,
+        "bouquetPhotos": [],
+        "flowers": [],
+        "seasonCases": [],
+        "agreements": [],
+        "name": "Ramo Clásico de Rosas",
+        "origin": { "id": 1, "name": "Ecuador", "code": "EC" },
+        "originCase": null,
+        "description": "Ramo tradicional de rosas rojas",
+        "waste": 0.05,
+        "laborCost": 12.50,
+        "createdAt": "2024-01-15",
+        "updatedAt": "2024-01-20"
+      },
+      {
+        "id": 2,
+        "category": { "id": 1, "name": "Ramos", "code": "BOUQUETS" },
+        "construction": { "id": 2, "name": "Lineal", "code": "LINEAR" },
+        "bouquetType": { "id": 2, "name": "Moderno", "code": "MODERN" },
+        "bouquetLength": 60,
+        "bouquetPhotos": [],
+        "flowers": [],
+        "seasonCases": [],
+        "agreements": [],
+        "name": "Ramo Moderno de Rosas",
+        "origin": { "id": 1, "name": "Ecuador", "code": "EC" },
+        "originCase": null,
+        "description": "Ramo moderno con diseño lineal",
+        "waste": 0.03,
+        "laborCost": 15.00,
+        "createdAt": "2024-01-16",
+        "updatedAt": "2024-01-21"
+      }
+    ],
+    "files": []
+  },
+  {
+    "id": 2,
+    "name": "Centro de Mesa Primaveral",
+    "status": { "id": 1, "name": "Activo", "code": "ACTIVE" },
+    "category": { "id": 2, "name": "Centros", "code": "CENTERPIECES" },
+    "recipesCount": 0,
+    "clientMargin": 0.40,
+    "retailMaxPrice": 65.99,
+    "retailMinPrice": 55.99,
+    "quantityPerWeek": 30,
+    "season": { "id": 1, "name": "Primavera", "code": "SPRING" },
+    "isWet": true,
+    "tags": [
+      { "id": 3, "name": "Decorativo", "code": "DECORATIVE" }
+    ],
+    "specialInstructions": [],
+    "createdAt": "2024-01-15",
+    "updatedAt": "2024-01-20",
+    "assignedTo": {
+      "id": 2,
+      "name": "Carlos Rodríguez",
+      "email": "carlos.rodriguez@email.com",
+      "phone": "+34 623 456 789"
+    },
+    "requirementId": 1,
+    "recipes": [],
+    "files": []
+  },
+  {
+    "id": 3,
+    "name": "Ramo de Girasoles",
+    "status": { "id": 2, "name": "Inactivo", "code": "INACTIVE" },
+    "category": { "id": 1, "name": "Ramos", "code": "BOUQUETS" },
+    "recipesCount": 1,
+    "clientMargin": 0.30,
+    "retailMaxPrice": 38.99,
+    "retailMinPrice": 28.99,
+    "quantityPerWeek": 40,
+    "season": { "id": 2, "name": "Verano", "code": "SUMMER" },
+    "isWet": false,
+    "tags": [
+      { "id": 4, "name": "Verano", "code": "SUMMER" }
+    ],
+    "specialInstructions": [],
+    "createdAt": "2024-03-01",
+    "updatedAt": "2024-03-05",
+    "assignedTo": {
+      "id": 1,
+      "name": "María García",
+      "email": "maria.garcia@email.com",
+      "phone": "+34 612 345 678"
+    },
+    "requirementId": 2,
+    "recipes": [
+      {
+        "id": 3,
+        "category": { "id": 1, "name": "Ramos", "code": "BOUQUETS" },
+        "construction": { "id": 1, "name": "Espiral", "code": "SPIRAL" },
+        "bouquetType": { "id": 1, "name": "Redondo", "code": "ROUND" },
+        "bouquetLength": 45,
+        "bouquetPhotos": [],
+        "flowers": [],
+        "seasonCases": [],
+        "agreements": [],
+        "name": "Ramo de Girasoles Clásico",
+        "origin": { "id": 2, "name": "Colombia", "code": "CO" },
+        "originCase": null,
+        "description": "Ramo alegre de girasoles",
+        "waste": 0.04,
+        "laborCost": 10.00,
+        "createdAt": "2024-03-01",
+        "updatedAt": "2024-03-05"
+      }
+    ],
+    "files": []
+  },
+  {
+    "id": 4,
+    "name": "Arreglo Floral de Otoño",
+    "status": { "id": 3, "name": "Borrador", "code": "DRAFT" },
+    "category": { "id": 3, "name": "Arreglos", "code": "ARRANGEMENTS" },
+    "recipesCount": 0,
+    "clientMargin": 0.35,
+    "retailMaxPrice": 55.99,
+    "retailMinPrice": 45.99,
+    "quantityPerWeek": 25,
+    "season": { "id": 3, "name": "Otoño", "code": "AUTUMN" },
+    "isWet": true,
+    "tags": [
+      { "id": 5, "name": "Otoño", "code": "AUTUMN" }
+    ],
+    "specialInstructions": [],
+    "createdAt": "2024-05-01",
+    "updatedAt": "2024-05-10",
+    "assignedTo": {
+      "id": 1,
+      "name": "María García",
+      "email": "maria.garcia@email.com",
+      "phone": "+34 612 345 678"
+    },
+    "requirementId": 3,
+    "recipes": [],
+    "files": []
+  }
+]
+

@@ -40,14 +40,15 @@ export class MockHttpClient {
   }
 
   /**
-   * Parses the URL and extracts the collection name and optional item ID.
+   * Parses the URL and extracts the collection name, optional item ID, and optional subresource.
    *
    * Examples:
-   *   "/mocks/contacts.json"     → { collection: "contacts", id: undefined }
-   *   "/mocks/contacts/123.json" → { collection: "123", id: "contacts" } (not typical)
-   *   "/contacts/123"            → { collection: "contacts", id: "123" }
+   *   "/mocks/contacts.json"           → { collection: "contacts", id: undefined, subresource: undefined }
+   *   "/mocks/contacts/123.json"       → { collection: "123", id: "contacts", subresource: undefined } (not typical)
+   *   "/contacts/123"                  → { collection: "contacts", id: "123", subresource: undefined }
+   *   "/requirement-items/1/recipes"   → { collection: "requirement-items", id: "1", subresource: "recipes" }
    */
-  private parseUrl(url: string): { collection: string; id?: string } {
+  private parseUrl(url: string): { collection: string; id?: string; subresource?: string } {
     const base = environment.restEndpoint.replace(/\/+$/, '');
     url = url.replace(base, '');
 
@@ -56,8 +57,9 @@ export class MockHttpClient {
 
     const collection = parts[0] || '';
     const id = parts[1];
+    const subresource = parts[2];
 
-    return { collection, id };
+    return { collection, id, subresource };
   }
 
   // ---------------------------------------------------------------------------
@@ -66,6 +68,7 @@ export class MockHttpClient {
 
   /**
    * Simulates an HTTP GET request.
+   * - If a subresource is present (e.g., /items/1/recipes), returns the subresource array from the item.
    * - If an ID is present in the URL, returns a single item.
    * - Otherwise returns the entire collection.
    */
@@ -73,7 +76,7 @@ export class MockHttpClient {
     url: string,
     options?: { params?: HttpParams | Record<string, any> }
   ): Observable<T> {
-    const { collection, id } = this.parseUrl(url);
+    const { collection, id, subresource } = this.parseUrl(url);
 
     if (!this.db[collection]) {
       return throwError(() => new Error(`Collection '${collection}' not loaded`));
@@ -81,8 +84,26 @@ export class MockHttpClient {
 
     let data = structuredClone(this.db[collection]);
 
+    // Handle subresources (e.g., /requirement-items/1/recipes)
+    if (id && subresource) {
+      const item = this.db[collection].find((x) => x.id == id);
+      if (!item) {
+        return throwError(
+          () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
+        );
+      }
+      // Return the subresource array from the item, or empty array if not found
+      const subresourceData = item[subresource] || [];
+      return of({ data: subresourceData } as unknown as T).pipe(delay(this.latency));
+    }
+
     if (id) {
       const item = this.db[collection].find((x) => x.id == id);
+      if (!item) {
+        return throwError(
+          () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
+        );
+      }
       return of(structuredClone(item)).pipe(delay(this.latency));
     }
 
@@ -92,7 +113,6 @@ export class MockHttpClient {
     data = this.applyPagination(data, params);
 
     return of(data as unknown as T).pipe(delay(this.latency));
-    //return of(structuredClone(this.db[collection]) as unknown as T).pipe(delay(this.latency));
   }
 
   // ---------------------------------------------------------------------------
@@ -101,11 +121,28 @@ export class MockHttpClient {
 
   /**
    * Simulates an HTTP POST request.
-   * - Creates a new item.
+   * - If a subresource is present (e.g., /items/1/recipes), adds to the subresource array.
+   * - Otherwise creates a new item in the collection.
    * - Automatically assigns a UUID as its ID.
    */
   public post<T>(url: string, body: any): Observable<T> {
-    const { collection } = this.parseUrl(url);
+    const { collection, id, subresource } = this.parseUrl(url);
+
+    // Handle subresources (e.g., POST /requirement-items/1/recipes)
+    if (id && subresource) {
+      const item = this.db[collection]?.find((x) => x.id == id);
+      if (!item) {
+        return throwError(
+          () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
+        );
+      }
+      if (!item[subresource]) {
+        item[subresource] = [];
+      }
+      const newSubItem = { id: crypto.randomUUID(), ...body };
+      item[subresource].unshift(newSubItem);
+      return of({ data: structuredClone(newSubItem) } as unknown as T).pipe(delay(this.latency));
+    }
 
     if (!this.db[collection]) this.db[collection] = [];
 
@@ -139,12 +176,35 @@ export class MockHttpClient {
 
   /**
    * Simulates an HTTP DELETE request.
-   * Removes the item with the given ID from the collection.
+   * - If a subresource is present (e.g., /items/1/recipes/2), removes from the subresource array.
+   * - Otherwise removes the item with the given ID from the collection.
    */
   public delete<T>(url: string): Observable<T> {
-    const { collection, id } = this.parseUrl(url);
+    const base = environment.restEndpoint.replace(/\/+$/, '');
+    const cleanUrl = url.replace(base, '').replace(/^\/+|\/+$/g, '');
+    const urlParts = cleanUrl.split('/');
+
+    const collection = urlParts[0] || '';
+    const id = urlParts[1];
+    const subresource = urlParts[2];
+    const subresourceId = urlParts[3];
 
     if (!id) return throwError(() => new Error('Missing id for DELETE'));
+
+    // Handle subresources (e.g., DELETE /requirement-items/1/recipes/2)
+    if (subresource && subresourceId) {
+      const item = this.db[collection]?.find((x) => x.id == id);
+      if (!item) {
+        return throwError(
+          () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
+        );
+      }
+      if (!item[subresource]) {
+        item[subresource] = [];
+      }
+      item[subresource] = item[subresource].filter((x: any) => String(x.id) != subresourceId);
+      return of(true as any).pipe(delay(this.latency));
+    }
 
     this.db[collection] = this.db[collection]?.filter((x) => x.id != id) ?? [];
 

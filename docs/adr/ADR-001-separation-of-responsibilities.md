@@ -1,6 +1,7 @@
 # ADR-001: Separación de Responsabilidades - Core, Shared y Features
 **Estado:** Aceptado  
-**Fecha:** 2025
+**Fecha de Creación:** 06/01/2026  
+**Última Actualización:** 06/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -16,7 +17,24 @@ Sin una estructura bien definida, los desarrolladores podrían colocar código e
 
 ## Decisión
 
-Organizaremos la aplicación en cuatro capas distintas con responsabilidades claras:
+Organizaremos la aplicación en cuatro capas distintas con responsabilidades claras, utilizando un **enfoque híbrido** que combina **Feature-Based Architecture** y **Layer-Based Architecture**.
+
+### Enfoque Híbrido: Feature-Based + Layer-Based
+
+Esta arquitectura híbrida aprovecha lo mejor de ambos enfoques:
+
+- **Layer-Based Architecture (Capas Core, Shared, Cross):** Organiza el código por tipo de responsabilidad técnica (servicios, componentes, modelos, etc.), facilitando la reutilización y el mantenimiento de infraestructura común.
+
+- **Feature-Based Architecture (Capa Features):** Organiza el código por funcionalidad de negocio dentro de cada feature, agrupando todos los artefactos relacionados (componentes, servicios, modelos, etc.) en módulos autocontenidos.
+
+**Ventajas del enfoque híbrido:**
+- **Separación clara:** Las capas (Core, Shared, Cross) proporcionan infraestructura y utilidades, mientras que las features encapsulan lógica de negocio específica
+- **Reutilización:** Los componentes y servicios compartidos en las capas pueden ser consumidos por múltiples features
+- **Escalabilidad:** Nuevas features pueden agregarse sin afectar la infraestructura existente
+- **Mantenibilidad:** Cambios en una feature no impactan otras, y cambios en infraestructura se centralizan en las capas correspondientes
+- **Claridad:** Los desarrolladores pueden ubicar rápidamente código de infraestructura (en capas) o código de negocio (en features)
+
+Esta combinación permite mantener una estructura predecible y escalable, donde la infraestructura común vive en capas y la lógica de negocio se organiza por features.
 
 ### Capa Core (`src/app/core/`)
 
@@ -44,8 +62,48 @@ Contiene componentes UI reutilizables y utilidades que pueden ser usadas por mú
 - **Pipes:** Pipes de formateo UI (ej: currency, formateo de fechas)
 - **Validators:** Validadores de formularios comunes
 - **Types/Interfaces:** Definiciones de tipos compartidas para componentes UI
+- **Contracts:** Ports (interfaces) y modelos que definen contratos para comunicación entre features mediante providers (patrón Ports and Adapters)
 
 **Principio clave:** Shared no debe depender de Features, pero puede depender de Core y Cross.
+
+#### Comunicación entre Features mediante Contracts
+
+Cuando dos features necesitan comunicarse sin crear dependencias directas, se utiliza el patrón de **Contracts** en `shared/contracts/`. Este enfoque permite:
+
+- **Definir interfaces (ports):** Las features pueden definir contratos que otras features pueden implementar
+- **Inyección mediante providers:** Las features pueden proporcionar implementaciones de estos contratos usando el sistema de providers de Angular
+- **Desacoplamiento:** Las features no dependen directamente de otras features, sino de los contratos compartidos
+
+**Ejemplo de uso:**
+```typescript
+// shared/contracts/sales/sales-port.contract.ts
+export interface ISalesPort {
+  getSales(): Observable<Sale[]>;
+  createSale(sale: Sale): Observable<Sale>;
+}
+
+// shared/contracts/sales/sale.model.ts
+export interface Sale {
+  id: string;
+  amount: number;
+  date: Date;
+}
+
+// features/payments/payments.component.ts
+import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
+
+@Component({...})
+export class PaymentsComponent {
+  constructor(@Inject(ISalesPort) private salesPort: ISalesPort) {}
+  
+  // Usa el port sin depender directamente de la feature sales
+}
+```
+
+**Reglas para Contracts:**
+- Los contracts deben contener solo interfaces, tipos y modelos (sin implementaciones)
+- Las features pueden implementar estos contracts y proporcionarlos mediante providers
+- Los contracts deben estar en `shared/contracts/{dominio}/` organizados por dominio
 
 ### Capa Cross (`src/app/cross/{dominio}/`)
 
@@ -81,6 +139,7 @@ Contiene funcionalidad específica del dominio organizada por feature:
 - Cada feature es independiente y autocontenida
 - Las features pueden depender de Core, Shared y Cross, pero no de otras Features
 - Las features no deben importar directamente de otras features
+- Las features pueden comunicarse entre sí mediante **contracts** definidos en `shared/contracts/` usando providers de Angular
 
 ## Ejemplo de Estructura
 
@@ -106,6 +165,10 @@ src/
     │   │   │   └── button.component.ts
     │   │   └── modal/
     │   │       └── modal.component.ts
+    │   ├── contracts/
+    │   │   └── sales/
+    │   │       ├── sales-port.contract.ts
+    │   │       └── sale.model.ts
     │   ├── pipes/
     │   │   └── currency.pipe.ts
     │   └── validators/
@@ -176,6 +239,37 @@ import { CurrencyPipe } from '@/shared/pipes/currency.pipe';
 import { AuthService } from '@/cross/auth/services/auth.service';
 ```
 
+✅ **Feature → Shared Contracts (para comunicación entre features):** Permitido
+```typescript
+// payments/components/payment-form.component.ts
+import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
+import { Sale } from '@/shared/contracts/sales/sale.model';
+
+@Component({...})
+export class PaymentFormComponent {
+  constructor(@Inject(ISalesPort) private salesPort: ISalesPort) {}
+  
+  // Usa el port para comunicarse con la feature sales sin dependencia directa
+}
+```
+
+**Nota:** La feature `sales` debe proporcionar la implementación del contract mediante providers:
+```typescript
+// sales/sales-routes.ts o sales.module.ts
+import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
+import { SalesService } from './services/sales.service';
+
+export const salesRoutes: Routes = [
+  {
+    path: '',
+    providers: [
+      { provide: ISalesPort, useClass: SalesService }
+    ],
+    // ... rutas
+  }
+];
+```
+
 ✅ **Shared → Core:** Permitido
 ```typescript
 // shared/components/modal/modal.component.ts
@@ -228,11 +322,13 @@ import { ButtonComponent } from '@/shared/components/button/button.component';
 import { SalesService } from '@/features/sales/services/sales.service';
 ```
 
-❌ **Feature → Feature:** No permitido
+❌ **Feature → Feature (importación directa):** No permitido
 ```typescript
 // ❌ NO HACER: sales/services/sales.service.ts
 import { PaymentService } from '@/features/payments/services/payment.service';
 ```
+
+**Alternativa permitida:** Usar contracts en `shared/contracts/` para comunicación entre features mediante providers (ver ejemplo en "Dependencias Permitidas").
 
 ## Definición de Rutas
 

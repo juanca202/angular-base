@@ -17,7 +17,9 @@ Cada ADR sigue un formato estándar:
 
 - **Título:** Título claro y descriptivo
 - **Estado:** Estado actual (Accepted, Proposed, Deprecated, etc.)
-- **Fecha:** Cuándo se tomó la decisión
+- **Fecha de Creación:** Cuándo se creó el ADR
+- **Última Actualización:** Cuándo se actualizó por última vez el ADR
+- **Decisores:** Quién tomó la decisión
 - **Contexto:** La situación y problema que llevó a esta decisión
 - **Decisión:** La elección arquitectónica que se tomó
 - **Consecuencias:** Impactos positivos y negativos de la decisión
@@ -37,6 +39,8 @@ Cada ADR sigue un formato estándar:
 - [ADR-011: Estrategia de Documentación](./ADR-011-documentation-strategy.md)
 - [ADR-012: Convención de modificadores de acceso y uso de readonly en TypeScript](./ADR-012-typescript-access-modifiers.md)
 - [ADR-013: Layout y Estructura de Formularios](./ADR-013-form-layout-structure.md)
+- [ADR-014: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-014-dialog-master-detail.md)
+- [ADR-015: Patrón Manager para Coordinación de Flujos de Negocio](./ADR-015-manager-pattern.md)
 
 ## Crear un Nuevo ADR
 

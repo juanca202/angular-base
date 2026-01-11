@@ -1,6 +1,7 @@
 # ADR-006: Patrón Repository para Servicios REST
 **Estado:** Aceptado  
-**Fecha:** 2025  
+**Fecha de Creación:** 06/01/2026  
+**Última Actualización:** 06/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -77,14 +78,74 @@ export class CustomerRepository {
 
 ### Resolución de Endpoints de API
 
-Siempre usar `getApiUrl()` para resolver endpoints de API:
+Siempre usar `getApiUrl()` para resolver endpoints de API. La función `getApiUrl()` ya incluye la URL base y el prefijo `/api/v1/` desde `environment.restEndpoint`, por lo que solo se debe pasar el nombre del recurso:
 
 ```typescript
-// ✅ Correcto
-private readonly baseUrl = getApiUrl('v1/customers');
+// ✅ Correcto - solo el nombre del recurso
+private readonly baseUrl = getApiUrl('requirements');
+// Resultado: `${environment.restEndpoint}/requirements`
+// Si restEndpoint = 'https://api.example.com/api/v1'
+// Entonces: 'https://api.example.com/api/v1/requirements'
+
+// ✅ Correcto - recurso con versión si es necesario
+private readonly baseUrl = getApiUrl('v2/customers');
+
+// ❌ Incorrecto - incluir /api/v1/ manualmente
+private readonly baseUrl = getApiUrl('api/v1/requirements');
 
 // ❌ Incorrecto - URL hardcodeada
-private readonly baseUrl = 'https://api.example.com/v1/customers';
+private readonly baseUrl = 'https://api.example.com/api/v1/requirements';
+```
+
+### Convenciones de Rutas en Contratos API
+
+Al documentar contratos de API:
+
+1. **NO incluir `/api/v1/`** en las rutas: Este prefijo se resuelve automáticamente por `getApiUrl()` desde `environment.restEndpoint`
+
+2. **NO usar rutas con subrecursos anidados**: Asumir que todos los recursos son independientes. En lugar de rutas anidadas como `/parent-resource/:parentId/child-resource`, usar recursos independientes con query parameters o filtros.
+
+```typescript
+// ✅ Correcto en contratos API
+GET entities
+GET entities/:id
+GET items
+GET items/:id
+GET children
+GET children/:id
+
+// ❌ Incorrecto en contratos API
+GET /api/v1/entities
+GET /api/v1/parent-resource/:parentId/child-resource
+DELETE /api/v1/parent-resource/:parentId/child-resource/:childId
+```
+
+**Ejemplo de implementación correcta:**
+
+```typescript
+// En el Repository
+@Injectable({ providedIn: 'root' })
+export class ChildRepository {
+  private readonly baseUrl = getApiUrl('children');
+  
+  // Para filtrar por parentId, usar query params
+  public findByParent(parentId: number) {
+    return getResource<void, Child[]>(() => {
+      return this.httpClient.get<Child[]>(this.baseUrl, {
+        params: { parentId }
+      });
+    });
+  }
+}
+```
+
+**En el contrato API:**
+```markdown
+### Listar Children
+
+**GET** `children?parentId=:parentId`
+
+Lista todas las Children, opcionalmente filtradas por Parent.
 ```
 
 ### Mutations (Operaciones de Escritura)
@@ -152,7 +213,7 @@ customers.destroy();
 
 ```typescript
 @Component({
-  selector: 'ft-customer-list',
+  selector: 'app-customer-list',
   template: `
     @if (customers.loading()) {
       <app-spinner />

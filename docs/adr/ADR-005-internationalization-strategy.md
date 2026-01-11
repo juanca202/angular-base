@@ -1,6 +1,7 @@
 # ADR-005: Estrategia de Internacionalización (i18n)
 **Estado:** Aceptado  
-**Fecha:** 2025  
+**Fecha de Creación:** 06/01/2026  
+**Última Actualización:** 06/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -280,7 +281,7 @@ import { Component, inject } from '@angular/core';
 import { NotificationService } from '@factor_ec/utils';
 
 @Component({
-  selector: 'ft-user-profile',
+  selector: 'app-user-profile',
   standalone: true,
   template: `
     <div>

@@ -1,6 +1,7 @@
 # ADR-004: Reglas de Desarrollo Asistido por IA
 **Estado:** Aceptado  
-**Fecha:** 2025  
+**Fecha de Creación:** 06/01/2026  
+**Última Actualización:** 06/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -188,7 +189,7 @@ Esta configuración asegura que:
 ```typescript
 // ✅ El código generado sigue todas las reglas
 @Component({
-  selector: 'ft-sales-list',
+  selector: 'app-sales-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, SaleItemComponent],
