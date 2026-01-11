@@ -50,7 +50,7 @@ describe('EntityList', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: vi.fn().mockResolvedValue(mockEntities),
-        refresh: vi.fn().mockResolvedValue(mockEntities),
+        reload: vi.fn().mockResolvedValue(mockEntities),
         destroy: vi.fn()
       }),
       change: signal(undefined)
@@ -114,7 +114,7 @@ describe('EntityList', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: loadSpy,
-        refresh: vi.fn().mockResolvedValue([]),
+        reload: vi.fn().mockResolvedValue([]),
         destroy: vi.fn()
       };
       mockEntityRepository.findBy = vi.fn().mockReturnValue(entitiesResource);
@@ -156,7 +156,7 @@ describe('EntityList', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: vi.fn().mockResolvedValue([]),
-        refresh: vi.fn().mockResolvedValue([]),
+        reload: vi.fn().mockResolvedValue([]),
         destroy: destroySpy
       };
       mockEntityRepository.findBy = vi.fn().mockReturnValue(entitiesResource);
@@ -191,13 +191,13 @@ describe('EntityList', () => {
   describe('entities effect', () => {
     it('should refresh entities when repository change occurs', async () => {
       // Arrange
-      const refreshSpy = vi.fn().mockResolvedValue([]);
+      const reloadSpy = vi.fn().mockResolvedValue([]);
       const entitiesResource = {
         value: vi.fn().mockReturnValue([]),
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: vi.fn().mockResolvedValue([]),
-        refresh: refreshSpy,
+        reload: reloadSpy,
         destroy: vi.fn()
       };
       const mockChange = { type: 'create' as const, ids: ['1'] };
@@ -232,7 +232,7 @@ describe('EntityList', () => {
       // Assert
       // The effect should trigger refresh when change is detected
       // Note: This test may need adjustment based on how effects work in the test environment
-      expect(refreshSpy).toHaveBeenCalled();
+      expect(reloadSpy).toHaveBeenCalled();
     });
   });
 });

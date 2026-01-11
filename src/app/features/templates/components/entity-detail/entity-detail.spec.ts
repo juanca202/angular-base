@@ -57,7 +57,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: vi.fn().mockResolvedValue(mockEntity),
-        refresh: vi.fn().mockResolvedValue(mockEntity),
+        reload: vi.fn().mockResolvedValue(mockEntity),
         destroy: vi.fn()
       }),
       findBy: vi.fn().mockReturnValue({
@@ -65,7 +65,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: vi.fn().mockResolvedValue(mockRelatedEntities),
-        refresh: vi.fn().mockResolvedValue(mockRelatedEntities),
+        reload: vi.fn().mockResolvedValue(mockRelatedEntities),
         destroy: vi.fn()
       }),
       change: signal(undefined),
@@ -161,7 +161,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: entityLoadSpy,
-        refresh: vi.fn().mockResolvedValue(null),
+        reload: vi.fn().mockResolvedValue(null),
         destroy: vi.fn()
       };
       const relatedResource = {
@@ -169,7 +169,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: relatedLoadSpy,
-        refresh: vi.fn().mockResolvedValue([]),
+        reload: vi.fn().mockResolvedValue([]),
         destroy: vi.fn()
       };
       mockEntityRepository.find = vi.fn().mockReturnValue(entityResource);
@@ -213,7 +213,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: entityLoadSpy,
-        refresh: vi.fn().mockResolvedValue(mockEntity),
+        reload: vi.fn().mockResolvedValue(mockEntity),
         destroy: vi.fn()
       };
       const relatedResource = {
@@ -221,7 +221,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: relatedLoadSpy,
-        refresh: vi.fn().mockResolvedValue(mockRelatedEntities),
+        reload: vi.fn().mockResolvedValue(mockRelatedEntities),
         destroy: vi.fn()
       };
       mockEntityRepository.find = vi.fn().mockReturnValue(entityResource);
@@ -265,7 +265,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: entityLoadSpy,
-        refresh: vi.fn().mockResolvedValue(null),
+        reload: vi.fn().mockResolvedValue(null),
         destroy: vi.fn()
       };
       const relatedResource = {
@@ -273,7 +273,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: relatedLoadSpy,
-        refresh: vi.fn().mockResolvedValue([]),
+        reload: vi.fn().mockResolvedValue([]),
         destroy: vi.fn()
       };
       mockEntityRepository.find = vi.fn().mockReturnValue(entityResource);
@@ -311,7 +311,7 @@ describe('EntityDetail', () => {
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: vi.fn().mockResolvedValue(mockEntity),
-        refresh: vi.fn().mockResolvedValue(mockEntity),
+        reload: vi.fn().mockResolvedValue(mockEntity),
         destroy: destroySpy
       };
       const testMockEntityRepository: Partial<EntityRepository> = {
@@ -363,13 +363,13 @@ describe('EntityDetail', () => {
   describe('entity effect', () => {
     it('should refresh entity when repository change occurs', async () => {
       // Arrange
-      const refreshSpy = vi.fn().mockResolvedValue(mockEntity);
+      const reloadSpy = vi.fn().mockResolvedValue(mockEntity);
       const entityResource = {
         value: vi.fn().mockReturnValue(null),
         loading: vi.fn().mockReturnValue(false),
         error: vi.fn().mockReturnValue(null),
         load: vi.fn().mockResolvedValue(mockEntity),
-        refresh: refreshSpy,
+        reload: reloadSpy,
         destroy: vi.fn()
       };
       const mockChange = { type: 'update' as const, ids: ['1'] };
@@ -408,7 +408,7 @@ describe('EntityDetail', () => {
       // Assert
       // The effect should trigger refresh when change is detected
       // Note: This test may need adjustment based on how effects work in the test environment
-      expect(refreshSpy).toHaveBeenCalled();
+      expect(reloadSpy).toHaveBeenCalled();
     });
   });
 });
