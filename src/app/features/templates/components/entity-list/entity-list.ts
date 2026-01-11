@@ -47,7 +47,7 @@ export class EntityList implements OnInit, OnDestroy {
     effect(() => {
       const change = this.entityRepository.change();
       if (!change) return;
-      this.entities.refresh();
+      this.entities.reload();
     });
   }
 

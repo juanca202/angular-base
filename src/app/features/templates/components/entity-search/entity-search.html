@@ -35,7 +35,7 @@
       <div class="ft-center p-6">
         <ft-icon name="warning" collection="factoricons-slim" class="ft-icon--4" />
         <p class="text-gray-500 mb-4">{{ entities.error() }}</p>
-        <button i18n type="button" matButton="filled" (click)="entities.refresh()">Retry</button>
+        <button i18n type="button" matButton="filled" (click)="entities.reload()">Retry</button>
       </div>
     } @else if (!entities.value()?.length) {
       <div class="ft-center" i18n>No records</div>
