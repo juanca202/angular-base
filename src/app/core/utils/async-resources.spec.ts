@@ -146,7 +146,7 @@ describe('async-resources', () => {
       // Act
       const resource = TestBed.runInInjectionContext(() => getResource(factory));
       await resource.load('param1');
-      await resource.refresh();
+      await resource.reload();
 
       // Assert
       expect(factory).toHaveBeenCalledTimes(2);

@@ -58,7 +58,7 @@ export interface Resource<TParams, TResult> {
     params?: TParams extends void ? undefined : TParams,
     options?: Options
   ) => Promise<TResult>;
-  readonly refresh: () => Promise<TResult | null>;
+  readonly reload: () => Promise<TResult | null>;
   readonly destroy: () => void;
 }
 
@@ -225,14 +225,14 @@ export function getResource<TParams, TResult>(
     return await firstValueFrom(request$);
   };
 
-  const refresh = () => load(lastParams, lastOptions);
+  const reload = () => load(lastParams, lastOptions);
 
   return {
     value: value.asReadonly(),
     loading: loading.asReadonly(),
     error: error.asReadonly(),
     load,
-    refresh,
+    reload,
     destroy: () => {
       destroy$.next();
       destroy$.complete();
@@ -303,7 +303,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
     return await firstValueFrom(request$);
   };
 
-  const refresh = () => load(lastParams, { ...lastOptions, append: false });
+  const reload = () => load(lastParams, { ...lastOptions, append: false });
 
   return {
     value: value.asReadonly(),
@@ -311,7 +311,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
     loading: loading.asReadonly(),
     error: error.asReadonly(),
     load,
-    refresh,
+    reload,
     destroy: () => {
       destroy$.next();
       destroy$.complete();

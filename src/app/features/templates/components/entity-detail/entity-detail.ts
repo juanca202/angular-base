@@ -61,7 +61,7 @@ export class EntityDetail implements OnInit, OnDestroy {
     effect(() => {
       const change = this.entityRepository.change();
       if (!change) return;
-      this.entity.refresh();
+      this.entity.reload();
     });
   }
 
