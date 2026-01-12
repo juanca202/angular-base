@@ -70,15 +70,6 @@ export const appConfig: ApplicationConfig = {
       }
     },
     {
-      provide: 'FactorUiConfiguration',
-      useValue: {
-        icon: {
-          collection: 'factoricons-regular',
-          mode: null
-        }
-      }
-    },
-    {
       provide: LOCALE_ID,
       useFactory: (appManager: AppManager) => appManager.getLocale(),
       deps: [AppManager]

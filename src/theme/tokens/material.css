@@ -1,30 +1,30 @@
 html {
   /* Colores del sistema Material */
-  --md-sys-color-primary: var(--ft-primary-color);
-  --md-sys-color-on-primary: var(--ft-dark-color);
+  --md-sys-color-primary: var(--ft-color-primary);
+  --md-sys-color-on-primary: var(--ft-color-dark);
 
-  --md-sys-color-secondary: var(--ft-secondary-color);
-  --md-sys-color-on-secondary: var(--ft-light-color);
+  --md-sys-color-secondary: var(--ft-color-secondary);
+  --md-sys-color-on-secondary: var(--ft-color-light);
 
-  --md-sys-color-tertiary: var(--ft-tertiary-color);
+  --md-sys-color-tertiary: var(--ft-color-tertiary);
 
-  --md-sys-color-error: var(--ft-danger-color);
-  --md-sys-color-warning: var(--ft-warning-color);
-  --md-sys-color-success: var(--ft-success-color);
+  --md-sys-color-error: var(--ft-color-danger);
+  --md-sys-color-warning: var(--ft-color-warning);
+  --md-sys-color-success: var(--ft-color-success);
 
   /* Background + Surface */
   --md-sys-color-background: var(--ft-color-bg);
   --md-sys-color-surface: var(--ft-color-bg);
 
   /* Tipografías */
-  --md-sys-typescale-body-medium-font: var(--ft-text-font-family);
-  --md-sys-typescale-body-medium-size: var(--ft-text-font-size-md);
-  --md-sys-typescale-body-medium-weight: var(--ft-text-font-weight);
+  --md-sys-typescale-body-medium-font: var(--ft-font-family-base);
+  --md-sys-typescale-body-medium-size: var(--ft-font-size-md);
+  --md-sys-typescale-body-medium-weight: var(--ft-font-weight-regular);
 
   /* Espaciados */
-  --md-ref-spacing-small: var(--ft-spacer-1);
-  --md-ref-spacing-medium: var(--ft-spacer-3);
-  --md-ref-spacing-large: var(--ft-spacer-5);
+  --md-ref-spacing-small: var(--ft-space-1);
+  --md-ref-spacing-medium: var(--ft-space-3);
+  --md-ref-spacing-large: var(--ft-space-5);
 
   --mat-sys-corner-extra-large: 1rem;
 }
