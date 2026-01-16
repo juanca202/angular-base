@@ -34,4 +34,16 @@
       @apply flex flex-col h-dvh;
     }
   }
+  &.ft-dialog--full {
+    animation: ft-dialog-stacked-animation 0.4s;
+    .mdc-dialog__surface {
+      @apply rounded-none bg-(--ft-color-bg);
+    }
+    .mdc-dialog__content {
+      @apply max-h-none;
+    }
+    form {
+      @apply flex flex-col h-dvh;
+    }
+  }
 }
