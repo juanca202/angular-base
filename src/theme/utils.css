@@ -1,0 +1,17 @@
+/**
+ * Centers an element both vertically and horizontally.
+ * Uses flexbox to achieve centering on both axes.
+ */
+.ft-center {
+    @apply flex flex-col gap-2 h-full items-center justify-center;
+}
+
+/**
+ * Applies a shadow to the element that overlaps other elements.
+ * Uses box-shadow to create the elevation effect and z-index to ensure
+ * the element appears above other elements.
+ */
+.ft-overlapped {
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, .14), 0 0 6px 0 rgba(0, 0, 0, .12);
+    z-index: 1;
+}

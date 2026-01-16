@@ -4,7 +4,7 @@
 </form>
 <div mat-dialog-content class="!p-2">
   <div class="ft-list">
-    @if (!entities.error() && (!entities.loading() || entities.value()?.length)) {
+    @if (!entities.error() && !entities.loading() && entities.value()?.length) {
       @for (entity of entities.value(); track entity.id) {
         <button type="button" class="ft-list__item" matButton (click)="select(entity)">
           <div class="flex gap-4 items-center">
