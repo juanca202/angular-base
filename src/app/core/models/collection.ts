@@ -4,3 +4,10 @@ export interface CollectionQueryParams {
   sort?: string;
   order?: 'asc' | 'desc';
 }
+
+export interface CollectionResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  perPage: number;
+}
