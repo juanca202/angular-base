@@ -200,6 +200,7 @@ module.exports = [
         vi: 'readonly',
         HTMLElement: 'readonly',
         HTMLInputElement: 'readonly',
+        HTMLButtonElement: 'readonly',
         Event: 'readonly',
         ErrorEvent: 'readonly',
         // Browser globals for testing

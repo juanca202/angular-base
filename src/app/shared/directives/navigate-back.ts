@@ -29,17 +29,19 @@ import { Router } from '@angular/router';
   standalone: true,
   selector: '[appNavigateBack]',
   host: {
-    '(click)': 'onClick()'
+    '(click)': 'handleClick()'
   }
 })
 export class NavigateBack {
-  public readonly fallback = input<string | null>(null);
-
+  // Dependency injection
   private readonly location = inject(Location);
   private readonly router = inject(Router);
 
-  protected onClick() {
-    if (history.length > 1) {
+  // Properties
+  public readonly fallback = input<string | null>(null);
+
+  protected handleClick(): void {
+    if (window.history.length > 1) {
       this.location.back();
     } else if (this.fallback()) {
       this.router.navigate([this.fallback()!]);
