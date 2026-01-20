@@ -18,7 +18,7 @@
   </div>
 </div>
 <div class="ft-page__content ft-anim-enter">
-  @if (!entities.error() && !entities.loading() && entities.value()?.length) {
+  @if (!entities.error() && (!entities.loading() || entities.value()?.length)) {
     <table class="ft-table">
       <thead>
         <tr>
