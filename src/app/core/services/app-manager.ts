@@ -137,14 +137,14 @@ export class AppManager {
     // If authenticated, initialize with local data
     if (this.session.isLoggedIn()) {
       timerStart = performance.now();
-      await this.initData(false);
+      await this.initSession(false);
       console.log('init local data in:', (performance.now() - timerStart).toFixed(2), 'ms');
     }
     // Upon authentication, a server synchronization is required
     this.session.loggedIn.pipe(skip(this.session.isLoggedIn() ? 1 : 0)).subscribe(async (value) => {
       if (value) {
         timerStart = performance.now();
-        await this.initData(true);
+        await this.initSession(true);
         // If a redirect is found use it; otherwise load the home page
         const redirect = this.storageService.get(`${environment.sessionPrefix}_rdi`);
         if (redirect) {
@@ -157,7 +157,7 @@ export class AppManager {
       }
     });
   }
-  private async initData(networkOnly: boolean): Promise<void> {
+  private async initSession(networkOnly: boolean): Promise<void> {
     // Load initial configuration
     await this.authService.getSettings(networkOnly, this.pushToken);
     this.initialized = true;
