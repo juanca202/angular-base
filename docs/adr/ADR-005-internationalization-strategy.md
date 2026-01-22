@@ -375,6 +375,25 @@ export class UserProfileComponent {
 - **Comentarios de código y documentación** deben estar en inglés
 - **Nombres de variables y funciones** deben estar en inglés
 
+#### Consideraciones Adicionales
+
+- **El texto visible en la UI NO debe estar hardcodeado.**
+  - Cualquier cadena mostrada en la interfaz de usuario debe usar **localización de Angular (`i18n`)**.
+  - Ejemplo correcto:
+    ```html
+    <button i18n>Save</button>
+    ```
+  - Ejemplo incorrecto:
+    ```html
+    <button>Save</button>
+    ```
+
+- **Traducción automática de contenido externo:**
+  - Si el sistema recibe contenido en un idioma diferente, debe traducirlo automáticamente a **inglés natural** preservando el significado.
+
+- **Detección y reemplazo de cadenas hardcodeadas:**
+  - Si se detectan cadenas hardcodeadas en la UI, deben ser reemplazadas con el uso apropiado de Angular `i18n` y se debe sugerir un ID i18n apropiado si falta.
+
 ### Guías de Traducción
 
 - **Idioma base:** Siempre inglés (`en`)

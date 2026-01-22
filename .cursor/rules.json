@@ -1,9 +1,30 @@
 [
   {
-    "name": "Base architecture docs",
-    "description": "Load all architecture documentation for better suggestions.",
+    "name": "Architecture Decision Records (ADRs)",
+    "description": "Load all architectural decision documentation for the project. Contains architectural rules and principles that must be followed during development.",
     "priority": "high",
     "match": ["**/*"],
     "paths": ["docs/adr/**/*.md"]
+  },
+  {
+    "name": "Contracts - Models, APIs and Agreements",
+    "description": "Load contracts defined for the project, including data models, API definitions, conditions, and agreements that must be used in implementation.",
+    "priority": "high",
+    "match": ["**/*"],
+    "paths": ["docs/contracts/**/*.md"]
+  },
+  {
+    "name": "Glossary - Project Terminology",
+    "description": "Load the glossary of terms and definitions used within the project to maintain consistency in nomenclature and domain understanding.",
+    "priority": "medium",
+    "match": ["**/*"],
+    "paths": ["docs/glossary/**/*.md"]
+  },
+  {
+    "name": "Specifications - Feature Implementation",
+    "description": "Load detailed specifications for feature implementation, including planning, data models, tasks, and requirement checklists.",
+    "priority": "high",
+    "match": ["**/*"],
+    "paths": ["docs/specs/**/*.md"]
   }
 ]

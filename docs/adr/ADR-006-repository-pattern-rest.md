@@ -1,7 +1,7 @@
 # ADR-006: Patrón Repository para Servicios REST
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 07/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -75,6 +75,136 @@ export class CustomerRepository {
   }
 }
 ```
+
+### Repositorios Mock para Desarrollo
+
+Cuando no hay una implementación de backend real disponible, **se debe crear automáticamente un repositorio mock** que permita desarrollar y probar componentes sin depender de APIs externas.
+
+#### Requisitos para Repositorios Mock
+
+1. **Uso de MockHttpClient**: Los repositorios mock deben usar `MockHttpClient` en lugar de `HttpClient` de Angular.
+
+2. **Datos desde archivos JSON**: Los datos mock deben leerse desde archivos JSON ubicados en `test/mocks/repositories/`. Estos archivos deben simular estructuras de datos realistas para que los componentes puedan renderizar con UI completamente poblada.
+
+3. **Carga en el constructor**: Los datos mock deben cargarse usando un import directo y luego llamando a `this.httpClient.loadCollection()` en el constructor.
+
+4. **Solo datos raw**: Los archivos JSON **nunca deben contener strings de UI hardcodeados**, solo datos estructurados (raw data).
+
+5. **Reemplazo automático**: Los repositorios mock deben ser reemplazados automáticamente una vez que se cree un repositorio respaldado por API real.
+
+#### Ejemplo de Repositorio Mock
+
+```typescript
+import { inject, Injectable } from '@angular/core';
+import { getApiUrl, getMutations, getResource } from '@/core/utils/async-resources';
+import { MockHttpClient } from '@/core/services/mock-http-client';
+import { BaseRepository } from '@/core/services/base-repository';
+import { HttpParams } from '@angular/common/http';
+import { Entity, EntityRequestCreate, EntityRequestUpdate } from '@/features/templates/models/entity';
+import entitiesMock from '@/test/mocks/repositories/entities.json';
+
+@Injectable({ providedIn: 'root' })
+export class EntityRepository extends BaseRepository {
+  // TODO: Replace with real http client when API is available
+  private readonly httpClient = inject(MockHttpClient);
+  private readonly baseUrl = getApiUrl('entities');
+
+  constructor() {
+    super();
+    // Cargar datos mock desde archivo JSON
+    this.httpClient.loadCollection('entities', entitiesMock);
+  }
+
+  public mutations() {
+    return getMutations({
+      create: (entity: EntityRequestCreate) =>
+        this.httpClient.post<Entity>(this.baseUrl, entity),
+      update: (entity: EntityRequestUpdate) =>
+        this.httpClient.put<Entity>(`${this.baseUrl}/${entity.id}`, entity),
+      delete: (id: string) =>
+        this.httpClient.delete<void>(`${this.baseUrl}/${id}`)
+    });
+  }
+
+  public find() {
+    return getResource<string, Entity>((id: string) => {
+      return this.httpClient.get<Entity>(`${this.baseUrl}/${id}`);
+    });
+  }
+
+  public findBy() {
+    return getResource<void, Entity[]>(() => {
+      return this.httpClient.get<Entity[]>(this.baseUrl);
+    });
+  }
+}
+```
+
+#### Estructura de Archivos Mock
+
+Los archivos JSON deben ubicarse en `test/mocks/repositories/` y seguir la estructura de datos de la entidad:
+
+```
+test/mocks/repositories/
+  entities.json
+  requirements.json
+  requirement-items.json
+  customers.json
+```
+
+**Ejemplo de archivo JSON (entities.json):**
+
+```json
+[
+  {
+    "id": "1",
+    "firstName": "María",
+    "lastName": "García",
+    "phone": "+34 612 345 678",
+    "email": "maria.garcia@email.com"
+  },
+  {
+    "id": "2",
+    "firstName": "Carlos",
+    "lastName": "Rodríguez",
+    "phone": "+34 623 456 789",
+    "email": "carlos.rodriguez@email.com"
+  }
+]
+```
+
+**⚠️ Importante**: Los archivos JSON deben contener **solo datos estructurados**, sin strings de UI como "Crear", "Editar", mensajes de error, etc. Estos deben manejarse en el código de la aplicación, no en los datos mock.
+
+#### Migración de Mock a API Real
+
+Cuando el backend real esté disponible, el proceso de migración es simple:
+
+1. **Reemplazar MockHttpClient por HttpClient**:
+   ```typescript
+   // Antes (Mock)
+   private readonly httpClient = inject(MockHttpClient);
+   
+   // Después (Real)
+   private readonly httpClient = inject(HttpClient);
+   ```
+
+2. **Eliminar la carga de datos mock**:
+   ```typescript
+   // Eliminar estas líneas del constructor
+   import entitiesMock from '@/test/mocks/repositories/entities.json';
+   // ...
+   constructor() {
+     super();
+     // Eliminar esta línea
+     // this.httpClient.loadCollection('entities', entitiesMock);
+   }
+   ```
+
+3. **Eliminar el TODO**: Remover el comentario `// TODO: Replace with real http client`
+
+4. **Mantener los archivos JSON**: Los archivos mock pueden mantenerse para testing, pero ya no se usarán en el repositorio de producción.
+
+El resto del código del repositorio (métodos `mutations()`, `find()`, `findBy()`, etc.) **permanece idéntico**, lo que facilita la migración sin cambios en los componentes que usan el repositorio.
 
 ### Resolución de Endpoints de API
 
@@ -361,6 +491,41 @@ try {
 mutations.create(data);  // Sin manejo de errores
 ```
 
+### 6. Usar MockHttpClient cuando no hay Backend Disponible
+
+```typescript
+// ✅ Correcto - MockHttpClient con datos desde JSON
+import entitiesMock from '@/test/mocks/repositories/entities.json';
+
+@Injectable({ providedIn: 'root' })
+export class EntityRepository extends BaseRepository {
+  // TODO: Replace with real http client when API is available
+  private readonly httpClient = inject(MockHttpClient);
+  
+  constructor() {
+    super();
+    this.httpClient.loadCollection('entities', entitiesMock);
+  }
+}
+
+// ❌ Incorrecto - usar HttpClient sin backend disponible
+private readonly httpClient = inject(HttpClient);  // Fallará sin API real
+
+// ❌ Incorrecto - datos hardcodeados en el código
+constructor() {
+  super();
+  this.httpClient.loadCollection('entities', [
+    { id: '1', name: 'Test' }  // Datos hardcodeados
+  ]);
+}
+```
+
+**Reglas para archivos JSON mock:**
+- ✅ Ubicar en `test/mocks/repositories/`
+- ✅ Contener solo datos estructurados (raw data)
+- ✅ Simular estructuras realistas para UI completa
+- ❌ Nunca incluir strings de UI (botones, mensajes, etc.)
+
 ## Consecuencias
 
 ### Positivas
@@ -372,6 +537,8 @@ mutations.create(data);  // Sin manejo de errores
 - **Experiencia del Desarrollador:** Menos código boilerplate, gestión automática de estado
 - **Manejo de Errores:** Manejo de errores consistente en toda la aplicación
 - **Rendimiento:** Limpieza automática previene memory leaks
+- **Desarrollo Sin Backend:** Los repositorios mock permiten desarrollar componentes completos sin depender de APIs externas, facilitando el desarrollo paralelo frontend/backend
+- **Migración Fácil:** La transición de mock a API real es sencilla, solo requiere cambiar el cliente HTTP inyectado
 
 ### Negativas
 
