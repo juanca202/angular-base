@@ -11,139 +11,150 @@ Templates requiring updates:
 Follow-up TODOs: None
 -->
 
-# Angular Base Project Constitution
+# 📜 Constitución del Proyecto – Angular
 
-## Core Principles
+## 1. Propósito del proyecto
 
-### I. Arquitectura de Capas (Core, Shared, Cross, Features)
-La aplicación DEBE seguir la arquitectura de capas definida en ADR-001. Esta separación es NO-NEGOCIABLE y DEBE hacerse cumplir mediante linting y revisiones de código.
+Desarrollar una aplicación web moderna, escalable y mantenible utilizando **Angular**, siguiendo principios de **arquitectura limpia**, **Spec Driven Development** y documentación estructurada.
 
-**Referencia**: [ADR-001: Separación de Responsabilidades](./docs/adr/ADR-001-separation-of-responsibilities.md)
+La IA se utiliza como apoyo para definir, planificar y ejecutar el desarrollo, siempre bajo control humano.
 
-### II. Guía de Estilo de Angular
-TODOS los componentes DEBEN seguir la Guía de Estilo de Angular oficial según ADR-002. Estas convenciones son obligatorias y DEBEN verificarse mediante ESLint y revisiones de código.
+---
 
-**Referencia**: [ADR-002: Adopción de la Guía de Estilo de Angular](./docs/adr/ADR-002-angular-style-guide.md)
+## 2. Idioma y comunicación
 
-### III. Estrategia de Estilos CSS
-La estrategia de estilos CSS DEBE seguir las reglas definidas en ADR-003. Esta estrategia DEBE aplicarse consistentemente en todo el proyecto.
+* **Idioma oficial:** Español (LatAm)
+* Toda la documentación, especificaciones, planes y tareas deben generarse en español.
+* Evitar anglicismos innecesarios.
+* Usar terminología clara y consistente.
+* Cuando existan dudas de significado, **consultar y referenciar el glosario del proyecto**.
 
-**Referencia**: [ADR-003: Uso de Tailwind CSS](./docs/adr/ADR-003-tailwind-css-utilities.md)
+---
 
-### IV. Testing (NON-NEGOTIABLE)
-Testing DEBE seguir la estrategia multi-capa definida en ADR-007. Esta sección es NO-NEGOCIABLE y DEBE aplicarse en todas las features.
+## 3. Stack tecnológico
 
-**Referencia**: [ADR-007: Estrategia de Testing](./docs/adr/ADR-007-testing-strategy.md)
+* Framework: **Angular (v21+)**
+* Lenguaje: **TypeScript**
+* Arquitectura: **Standalone Components**
+* Estilos: CSS / Tailwind
+* Gestión de estado: Signals y servicios
+* Testing: Vitest / Playwright
+* Calidad de código: ESLint + Prettier
 
-### V. Calidad de Código y Herramientas
-Las herramientas de calidad de código DEBEN configurarse y usarse según ADR-009. Estas herramientas DEBEN integrarse en el flujo de trabajo y CI/CD.
+---
 
-**Referencia**: [ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009-code-quality-tooling.md)
+## 4. Principios de arquitectura
 
-### VI. Documentación de Decisiones Arquitectónicas
-TODAS las decisiones arquitectónicas significativas DEBEN documentarse como ADRs según ADR-011. La documentación DEBE servir tanto para humanos como para herramientas de desarrollo asistido por IA según ADR-004.
+* Separación clara de responsabilidades.
+* Componentes enfocados en presentación y orquestación ligera.
+* La lógica de negocio reside en **servicios**.
+* Evitar lógica compleja en templates.
+* Uso explícito y consciente de dependencias (`inject`).
 
-**Referencia**: [ADR-004: Reglas de Desarrollo Asistido por IA](./docs/adr/ADR-004-ai-assisted-development-rules.md), [ADR-011: Estrategia de Documentación](./docs/adr/ADR-011-documentation-strategy.md)
+---
 
-### VII. Patrón Repository para REST
-Comunicación con APIs DEBE usar el patrón Repository definido en ADR-006. Este patrón DEBE aplicarse en todas las features que requieran comunicación con APIs.
+## 5. Decisiones de arquitectura (ADR)
 
-**Referencia**: [ADR-006: Patrón Repository para REST](./docs/adr/ADR-006-repository-pattern-rest.md)
+* Todas las decisiones técnicas relevantes deben documentarse mediante **Architecture Decision Records (ADR)**.
+* Los ADR deben almacenarse en la ruta: `docs/adr`.
+* Cada ADR debe incluir:
 
-### VIII. Internacionalización (i18n)
-El proyecto DEBE seguir la estrategia de internacionalización definida en ADR-005.
+  * Contexto
+  * Decisión
+  * Alternativas consideradas
+  * Consecuencias
 
-**Referencia**: [ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005-internationalization-strategy.md)
+Ninguna decisión arquitectónica relevante debe introducirse sin su ADR correspondiente.
 
-## Stack Tecnológico
+---
 
-### Framework y Lenguaje
-- **Angular**: 21.0+ (componentes standalone, signals)
-- **TypeScript**: 5.9+ (modo estricto)
-- **Node.js**: Compatible con npm 10.8.2+
+## 6. Contratos y modelos
 
-### UI y Estilos
-- **Angular Material (MDC)**: Componentes UI basados en Material Design
-- **Tailwind CSS**: Utilidades CSS para layout y estilos
-- **Factor UI**: Componentes UI de Factor (`@factor_ec/ui`)
+* Todos los **contratos** del proyecto deben almacenarse en la ruta: `docs/contracts`.
 
-### Testing
-- **Vitest**: Testing unitario e integración (integrado con Angular CLI)
-- **Playwright**: Testing end-to-end
-- **Angular Testing Utilities**: TestBed, ComponentFixture
+* Todo **modelo de dominio** debe definirse mediante contratos claros (interfaces o tipos).
 
-### Calidad de Código
-- **ESLint**: Linting con reglas de Angular y TypeScript
-- **Prettier**: Formateo automático
-- **Husky**: Git hooks
-- **lint-staged**: Linting en archivos staged
-- **Commitlint**: Validación de Conventional Commits
+* Los contratos de modelos deben:
 
-### Documentación
-- **Compodoc**: Generación de documentación API
-- **JSDoc/TSDoc**: Comentarios de documentación
+  * Ser explícitos
+  * Estar versionados cuando aplique
+  * Evitar ambigüedades semánticas
 
-### Monitoreo y Analytics
-- **Sentry**: Monitoreo de errores
-- **Azure Application Insights**: Telemetría
-- **Google Tag Manager**: Analytics
-- **Firebase**: Analytics y Messaging
+* Los contratos de **API** deben definirse antes de la implementación.
 
-### Despliegue
-- **PWA**: Progressive Web App con Service Worker
-- **Azure/AWS/Google Cloud**: Configuración para despliegue en la nube
+* Las respuestas y solicitudes deben respetar estrictamente los contratos definidos.
 
-## Desarrollo y Workflow
+---
 
-### Estructura de Documentación
-- **ADRs**: `docs/adr/` - Todas las decisiones arquitectónicas
-- **Specs**: `docs/specs/` - Especificaciones de features
-- **Arquitectura**: `docs/README.md` - Documentación general de arquitectura
-- **Glosario**: `docs/glossary/` - Términos y definiciones
+## 7. Uso del glosario
 
-### Convenciones de Código
-- **Commits**: Conventional Commits según ADR-009
-- **Nombres de archivos**: Seguir ADR-002
-- **Selectores de componentes**: Seguir ADR-002
-- **Modificadores de acceso**: Seguir [ADR-012](./docs/adr/ADR-012-typescript-access-modifiers.md)
+* El proyecto debe mantener un **glosario de términos** compartido.
 
-### Validación de Formularios
-La validación de formularios DEBE seguir la estrategia definida en ADR-008.
+* El glosario debe almacenarse en la ruta: `docs/glossary`.
 
-**Referencia**: [ADR-008: Estrategia de Validación de Formularios](./docs/adr/ADR-008-form-validation-strategy.md)
+* Cualquier término de negocio o técnico relevante debe:
 
-### Uso de Iconos
-El uso de iconos DEBE seguir la estrategia definida en ADR-010.
+  * Definirse en el glosario
+  * Usarse de forma consistente en specs, ADRs y código
 
-**Referencia**: [ADR-010: Estrategia de Uso de Iconos](./docs/adr/ADR-010-icon-usage-strategy.md)
+* Si un término no está claro, **no se asume**: se agrega o se consulta en el glosario.
 
-## Governance
+---
 
-Esta constitución SUPERA todas las demás prácticas y decisiones del proyecto. Las decisiones arquitectónicas documentadas en ADRs DEBEN seguirse estrictamente. Cualquier desviación DEBE justificarse y documentarse.
+## 8. Convenciones de código
 
-### Proceso de Enmienda
-1. Identificar necesidad de cambio o adición de principio
-2. Documentar propuesta como ADR en `docs/adr/`
-3. Revisión y aprobación del equipo de arquitectura
-4. Actualizar esta constitución con versión incrementada
-5. Actualizar templates y documentación relacionada
-6. Comunicar cambios al equipo
+* Usar Standalone Components por defecto.
+* Preferir Signals sobre RxJS cuando sea posible.
+* Código en inglés, documentación en español.
+* Tipado estricto obligatorio.
+* Prohibido el uso de `any`.
+* Priorizar legibilidad y mantenibilidad.
 
-### Versionado
-La constitución usa versionado semántico (MAJOR.MINOR.PATCH):
-- **MAJOR**: Cambios incompatibles, remoción o redefinición de principios
-- **MINOR**: Nuevos principios o secciones agregadas
-- **PATCH**: Clarificaciones, correcciones de texto, refinamientos no semánticos
+---
 
-### Cumplimiento
-- TODOS los PRs y revisiones DEBEN verificar cumplimiento con esta constitución
-- ESLint y herramientas de calidad DEBEN hacer cumplir reglas técnicas
-- La complejidad DEBE justificarse cuando se desvíe de principios
-- Los ADRs DEBEN referenciarse en decisiones de implementación
+## 9. Calidad y buenas prácticas
 
-### Desarrollo Asistido por IA
-Las herramientas de desarrollo asistido por IA (Cursor, Copilot, etc.) DEBEN cargar automáticamente la documentación de `docs/` para mantener consistencia. Las reglas arquitectónicas DEBEN aplicarse automáticamente durante la generación de código.
+* Código legible > código complejo.
+* Evitar optimizaciones prematuras.
+* Validar accesibilidad básica (a11y).
+* No introducir dependencias sin justificación.
+* Todo cambio significativo debe tener especificación previa.
 
-**Referencia**: [ADR-004: Reglas de Desarrollo Asistido por IA](./docs/adr/ADR-004-ai-assisted-development-rules.md)
+---
+
+## 10. Uso de IA (Speckit)
+
+La IA debe:
+
+* Generar especificaciones antes del código.
+* Respetar ADRs, contratos y glosario existentes.
+* Explicar decisiones técnicas cuando sea relevante.
+* Generar tareas accionables y verificables.
+
+La IA no debe:
+
+* Inventar requisitos.
+* Introducir decisiones arquitectónicas sin ADR.
+* Modificar contratos sin impacto documentado.
+
+---
+
+## 11. Flujo Spec Driven obligatorio
+
+1. `/speckit.specify` → Requisitos y casos de uso (almacenados en `docs/specs`)
+2. `/speckit.plan` → Diseño técnico y arquitectura
+3. `/speckit.tasks` → Tareas de implementación
+4. Implementación
+5. Revisión
+
+---
+
+## 12. Criterios de éxito
+
+* La funcionalidad cumple la especificación.
+* Las decisiones están documentadas en ADRs.
+* Los contratos son claros y respetados.
+* El glosario elimina ambigüedades.
+* El proyecto es escalable y mantenible.
 
 **Version**: 1.1.0 | **Ratified**: 2026-01-05 | **Last Amended**: 2026-01-07

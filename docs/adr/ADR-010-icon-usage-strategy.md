@@ -118,11 +118,11 @@ Para ajustar el tamaño del icono, usar la **clase modificadora de tamaño** `ft
 
 **Tamaños Personalizados:**
 
-Si se requiere un tamaño específico más allá de la escala predefinida, aplicar un tamaño personalizado usando `font-size`:
+Si se requiere un tamaño específico más allá de la escala predefinida, usar una clase de Tailwind con valor arbitrario:
 
 ```html
-<!-- ✅ Correcto - tamaño personalizado -->
-<ft-icon name="user" style="font-size: 32px;" />
+<!-- ✅ Correcto - tamaño personalizado usando Tailwind -->
+<ft-icon name="user" class="text-[32px]" />
 ```
 
 ### Ejemplos de Uso

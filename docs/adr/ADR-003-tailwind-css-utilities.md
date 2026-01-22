@@ -1,7 +1,7 @@
 # ADR-003: Uso de Tailwind CSS para Clases de Utilidad y Creación de Componentes
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 07/01/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -41,6 +41,8 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 - Estilos que necesitan reutilizarse en múltiples instancias del mismo componente
 
 **Convención de Nombres:** `ft-{component-name}__{element}--{modifier}`
+
+**Uso de `@apply`:** Cuando se crean clases CSS personalizadas, siempre se debe usar `@apply` de Tailwind para aplicar clases utilitarias donde sea posible. Esto mantiene la consistencia con el sistema de diseño y aprovecha las utilidades de Tailwind dentro de las clases personalizadas.
 
 ## Ejemplos
 
@@ -93,21 +95,14 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 ```
 
 ```scss
-// Estilos específicos del componente usando BEM
+// Estilos específicos del componente usando BEM con @apply
 .ft-user-card__avatar {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  overflow: hidden;
+  @apply relative w-12 h-12 rounded-full overflow-hidden;
   
   // Animación compleja que Tailwind no puede manejar fácilmente
   &::after {
     content: '';
-    position: absolute;
-    inset: 0;
-    border: 2px solid transparent;
-    border-radius: 50%;
+    @apply absolute inset-0 border-2 border-transparent rounded-full;
     transition: border-color 0.3s ease;
   }
   
@@ -117,8 +112,7 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 }
 
 .ft-user-card__content {
-  flex: 1;
-  min-width: 0; // Soporte para truncamiento de texto
+  @apply flex-1 min-w-0; // Soporte para truncamiento de texto
 }
 ```
 
@@ -159,22 +153,16 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
   styles: [`
     .ft-button__icon {
       // Posicionamiento específico del icono del componente
-      margin-right: 0.5rem;
-      vertical-align: middle;
+      @apply mr-2 align-middle;
     }
     
     .ft-button--loading {
       // Animación de estado de carga
-      position: relative;
-      color: transparent;
+      @apply relative text-transparent;
       
       &::after {
         content: '';
-        position: absolute;
-        inset: 0;
-        border: 2px solid currentColor;
-        border-top-color: transparent;
-        border-radius: 50%;
+        @apply absolute inset-0 border-2 border-current border-t-transparent rounded-full;
         animation: spin 0.6s linear infinite;
       }
     }
@@ -204,6 +192,82 @@ export class ButtonComponent {
     
     return `${base} ${variants[this.variant()]} ${sizes[this.size()]} ${state} ${loading}`;
   });
+}
+```
+
+### Ejemplo 5: Uso de @apply en Clases Personalizadas
+
+```scss
+// ✅ Correcto - Usando @apply para aplicar utilidades de Tailwind
+.ft-card {
+  @apply bg-white rounded-lg shadow-md p-6;
+  
+  &__header {
+    @apply flex items-center justify-between mb-4 pb-4 border-b border-gray-200;
+  }
+  
+  &__title {
+    @apply text-2xl font-bold text-gray-900;
+  }
+  
+  &__body {
+    @apply text-gray-700 leading-relaxed;
+  }
+  
+  &__footer {
+    @apply mt-4 pt-4 border-t border-gray-200 flex gap-2;
+  }
+  
+  // Modificador con @apply
+  &--highlighted {
+    @apply border-2 border-blue-500 bg-blue-50;
+  }
+  
+  // Estados con @apply
+  &:hover {
+    @apply shadow-lg transition-shadow duration-200;
+  }
+}
+
+// ❌ Incorrecto - Escribiendo CSS manualmente en lugar de usar @apply
+.ft-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+```
+
+**Nota importante:** `@apply` debe usarse principalmente para utilidades simples. Para estilos complejos que no pueden expresarse con utilidades de Tailwind (como animaciones personalizadas, pseudo-elementos complejos, o lógica CSS específica), se puede combinar `@apply` con CSS personalizado.
+
+```scss
+// ✅ Correcto - Combinando @apply con CSS personalizado cuando es necesario
+.ft-modal {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50;
+  
+  // Animación personalizada que requiere CSS específico
+  animation: fadeIn 0.3s ease-out;
+  
+  &__content {
+    @apply bg-white rounded-lg shadow-xl max-w-md w-full p-6;
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 ```
 
@@ -269,6 +333,8 @@ Usar CSS personalizado con el prefijo `ft-` cuando:
 3. **Integración de Terceros:** Estilizar componentes de terceros que no pueden usar Tailwind
 4. **Rendimiento:** Estilos críticos que necesitan optimizarse por separado
 5. **Reutilización:** Estilos de componentes que se reutilizarán en toda la aplicación
+
+**Importante:** Siempre que se creen clases CSS personalizadas, se debe usar `@apply` para aplicar clases utilitarias de Tailwind donde sea posible. Esto mantiene la consistencia del sistema de diseño y reduce la duplicación de código CSS.
 
 ## Referencias
 

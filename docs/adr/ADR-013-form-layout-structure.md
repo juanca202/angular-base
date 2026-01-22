@@ -137,6 +137,8 @@ Los campos de formulario deben ser simples y limpios:
 
 ## Ejemplo Completo de Formulario
 
+**Nota:** `ft-container` es una clase personalizada válida que usa `@apply` con clases de Tailwind (`max-w-[960px] mx-auto`) según ADR-003.
+
 ```html
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div mat-dialog-content>
