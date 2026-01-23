@@ -3,4 +3,5 @@
 @import './reboot.css';
 @import './tokens/index.css';
 @import './components/base/index.css';
+@import './components/ui/index.css';
 @import 'tailwindcss';
