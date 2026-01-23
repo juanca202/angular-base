@@ -1,0 +1,59 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div mat-dialog-title>
+    <div class="ft-actions">
+      <button type="button" matIconButton i18n-title title="Close" mat-dialog-close>
+        <ft-icon name="arrow-left" class="text-2xl" />
+      </button>
+    </div>
+    <div i18n>New Task</div>
+    <div class="ft-actions"></div>
+  </div>
+  <div mat-dialog-content class="!pt-4">
+    <div class="ft-container">
+      <div class="grid grid-cols-1 gap-y-2 gap-x-4">
+        <mat-form-field>
+          <mat-label i18n>Title</mat-label>
+          <input matInput type="text" formControlName="title" maxlength="50" />
+          @if (form.get('title')?.invalid && form.get('title')?.touched) {
+            <mat-error>{{ form.get('title') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label i18n>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4" maxlength="250"></textarea>
+          @if (form.get('description')?.invalid && form.get('description')?.touched) {
+            <mat-error>{{ form.get('description') | errorMessage }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label i18n>Due Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dueAt" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      type="button"
+      matButton="outlined"
+      [disabled]="taskMutations.submitting()"
+      mat-dialog-close
+      i18n
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      matButton="filled"
+      color="primary"
+      [disabled]="form.invalid || taskMutations.submitting()"
+      i18n
+    >
+      Create
+    </button>
+  </div>
+</form>

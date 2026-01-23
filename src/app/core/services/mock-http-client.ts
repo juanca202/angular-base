@@ -171,6 +171,45 @@ export class MockHttpClient {
   }
 
   // ---------------------------------------------------------------------------
+  // PATCH
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Simulates an HTTP PATCH request.
+   * - Partially updates an existing item.
+   * - Throws an error if the ID is missing or not found.
+   */
+  public patch<T>(url: string, body: any): Observable<T> {
+    const { collection, id, subresource } = this.parseUrl(url);
+    if (!id) return throwError(() => new Error('Missing id for PATCH'));
+    const index = this.db[collection]?.findIndex((x) => x.id == id);
+    if (index === -1) return throwError(() => new Error('Item not found'));
+
+    // Handle subresources (e.g., PATCH /tasks/1/status)
+    if (subresource) {
+      const item = this.db[collection][index];
+      if (!item[subresource]) {
+        item[subresource] = {};
+      }
+      item[subresource] = { ...item[subresource], ...body };
+      // For status updates, update the main status field
+      if (subresource === 'status' && body.status) {
+        item.status = body.status;
+        item.updatedAt = new Date().toISOString();
+      }
+      return of(structuredClone(item)).pipe(delay(this.latency));
+    }
+
+    // Partial update of main item
+    this.db[collection][index] = {
+      ...this.db[collection][index],
+      ...body,
+      updatedAt: new Date().toISOString()
+    };
+    return of(structuredClone(this.db[collection][index])).pipe(delay(this.latency));
+  }
+
+  // ---------------------------------------------------------------------------
   // DELETE
   // ---------------------------------------------------------------------------
 

@@ -8,6 +8,7 @@ Fields:
 - title: string
 - description: string
 - status: string
+- dueAt: date
 - createdAt: date
 - updatedAt: date
 - createdBy: User

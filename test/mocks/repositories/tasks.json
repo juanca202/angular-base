@@ -4,6 +4,7 @@
     "title": "Complete project documentation",
     "description": "Write comprehensive documentation for the new feature",
     "status": "pending",
+    "dueAt": "2026-01-30T10:00:00Z",
     "createdAt": "2026-01-20T10:00:00Z",
     "updatedAt": "2026-01-20T10:00:00Z",
     "createdBy": {
@@ -20,6 +21,7 @@
     "title": "Review code changes",
     "description": "",
     "status": "completed",
+    "dueAt": null,
     "createdAt": "2026-01-19T14:30:00Z",
     "updatedAt": "2026-01-21T09:15:00Z",
     "createdBy": {
@@ -36,6 +38,7 @@
     "title": "Update dependencies",
     "description": "Wait for team approval before proceeding",
     "status": "frozen",
+    "dueAt": "2026-02-15T08:00:00Z",
     "createdAt": "2026-01-18T08:00:00Z",
     "updatedAt": "2026-01-19T16:45:00Z",
     "createdBy": {
@@ -52,6 +55,7 @@
     "title": "Implement user authentication",
     "description": "Add login and registration functionality",
     "status": "pending",
+    "dueAt": "2026-01-28T08:00:00Z",
     "createdAt": "2026-01-22T08:00:00Z",
     "updatedAt": "2026-01-22T08:00:00Z",
     "createdBy": {
@@ -68,6 +72,7 @@
     "title": "Fix bug in payment processing",
     "description": "Resolve issue with credit card validation",
     "status": "completed",
+    "dueAt": null,
     "createdAt": "2026-01-15T11:20:00Z",
     "updatedAt": "2026-01-17T15:30:00Z",
     "createdBy": {
@@ -84,8 +89,77 @@
     "title": "Design new dashboard layout",
     "description": "Create mockups and get stakeholder approval",
     "status": "frozen",
+    "dueAt": "2026-03-01T09:00:00Z",
     "createdAt": "2026-01-10T09:00:00Z",
     "updatedAt": "2026-01-12T14:00:00Z",
+    "createdBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    },
+    "updatedBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    }
+  },
+  {
+    "id": "01HZ1234567890ABCDEFGHIJKR",
+    "title": "Overdue task example",
+    "description": "This task is overdue and should be highlighted in red",
+    "status": "pending",
+    "dueAt": "2026-01-15T10:00:00Z",
+    "createdAt": "2026-01-10T10:00:00Z",
+    "updatedAt": "2026-01-10T10:00:00Z",
+    "createdBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    },
+    "updatedBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    }
+  },
+  {
+    "id": "01HZ1234567890ABCDEFGHIJKS",
+    "title": "Task due tomorrow",
+    "description": "This task is due tomorrow",
+    "status": "pending",
+    "dueAt": "2026-01-28T10:00:00Z",
+    "createdAt": "2026-01-20T10:00:00Z",
+    "updatedAt": "2026-01-20T10:00:00Z",
+    "createdBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    },
+    "updatedBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    }
+  },
+  {
+    "id": "01HZ1234567890ABCDEFGHIJKT",
+    "title": "Task without due date",
+    "description": "This task has no due date",
+    "status": "pending",
+    "dueAt": null,
+    "createdAt": "2026-01-25T10:00:00Z",
+    "updatedAt": "2026-01-25T10:00:00Z",
+    "createdBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    },
+    "updatedBy": {
+      "id": "user-001",
+      "name": "John Doe"
+    }
+  },
+  {
+    "id": "01HZ1234567890ABCDEFGHIJKU",
+    "title": "Another completed task",
+    "description": "This is another completed task",
+    "status": "completed",
+    "dueAt": "2026-01-20T10:00:00Z",
+    "createdAt": "2026-01-15T10:00:00Z",
+    "updatedAt": "2026-01-20T10:00:00Z",
     "createdBy": {
       "id": "user-001",
       "name": "John Doe"

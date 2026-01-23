@@ -1,0 +1,93 @@
+<div #headerElement class="ft-page__header">
+  <div class="ft-actions"></div>
+  <div i18n>Tasks</div>
+  <div class="ft-actions">
+    @if (!isSelectionMode()) {
+      <button
+        type="button"
+        matIconButton
+        i18n-title
+        title="Refresh"
+        [disabled]="tasks.loading()"
+        (click)="tasks.reload()"
+      >
+        <ft-icon name="refresh" class="text-2xl" [class.ft-anim-rotate]="tasks.loading()" />
+      </button>
+    }
+  </div>
+</div>
+<div class="ft-page__content ft-anim-enter">
+  <!-- Tabs -->
+  <div class="flex gap-2 mb-4 border-b">
+    <button
+      type="button"
+      class="px-4 py-2 border-b-2 transition-colors"
+      [class.border-blue-500]="currentStatus() === 'pending'"
+      [class.border-transparent]="currentStatus() !== 'pending'"
+      [class.text-blue-500]="currentStatus() === 'pending'"
+      (click)="onTabChange('pending')"
+    >
+      {{ getStatusLabel('pending') }}
+    </button>
+    <button
+      type="button"
+      class="px-4 py-2 border-b-2 transition-colors"
+      [class.border-blue-500]="currentStatus() === 'frozen'"
+      [class.border-transparent]="currentStatus() !== 'frozen'"
+      [class.text-blue-500]="currentStatus() === 'frozen'"
+      (click)="onTabChange('frozen')"
+    >
+      {{ getStatusLabel('frozen') }}
+    </button>
+    <button
+      type="button"
+      class="px-4 py-2 border-b-2 transition-colors"
+      [class.border-blue-500]="currentStatus() === 'completed'"
+      [class.border-transparent]="currentStatus() !== 'completed'"
+      [class.text-blue-500]="currentStatus() === 'completed'"
+      (click)="onTabChange('completed')"
+    >
+      {{ getStatusLabel('completed') }}
+    </button>
+  </div>
+
+  <!-- Action Bar -->
+  @if (isSelectionMode()) {
+    <div class="ft-actions mb-4">
+      <button type="button" matButton="filled" i18n (click)="completeSelected()">Completar</button>
+      <button type="button" matButton="outlined" i18n (click)="deleteSelected()">Eliminar</button>
+    </div>
+  } @else {
+    <div class="ft-actions mb-4">
+      <button type="button" matButton="filled" i18n (click)="taskManager.open()">
+        + Nueva Tarea
+      </button>
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!tasks.error() && (!tasks.loading() || tasks.value()?.length)) {
+    <div class="ft-list">
+      @for (task of tasks.value(); track task.id) {
+        <app-task-item
+          [task]="task"
+          [isSelected]="selectedTasks().has(task.id)"
+          (selectionChange)="toggleSelection(task.id, $event)"
+        />
+      }
+    </div>
+  } @else if (tasks.loading()) {
+    <div class="ft-center">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
+    </div>
+  } @else if (tasks.error()) {
+    <div class="ft-center">
+      <ft-icon name="warning" collection="factoricons-slim" class="text-4xl" />
+      <p class="text-gray-500 mb-4">{{ tasks.error() }}</p>
+      <button i18n type="button" matButton="filled" (click)="tasks.reload()">Retry</button>
+    </div>
+  } @else if (!tasks.value()?.length) {
+    <div class="ft-center" i18n>No records</div>
+  }
+</div>

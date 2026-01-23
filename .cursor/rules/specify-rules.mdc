@@ -3,6 +3,7 @@
 Auto-generated from all feature plans. Last updated: 2026-01-22
 
 ## Active Technologies
+- REST APIs (Repository Pattern) - see [ADR-006](../../adr/ADR-006-repository-pattern-rest.md) (002-task-management)
 
 - TypeScript 5.9+ / Angular 21.0+ + Angular Core, Angular Material (MDC), Tailwind CSS, @factor_ec/ui (002-task-manager)
 
@@ -23,6 +24,7 @@ npm test && npm run lint
 TypeScript 5.9+ / Angular 21.0+: Follow standard conventions
 
 ## Recent Changes
+- 002-task-management: Added TypeScript 5.9+ / Angular 21.0+ + Angular Core, Angular Material (MDC), Tailwind CSS, @factor_ec/ui
 
 - 002-task-manager: Added TypeScript 5.9+ / Angular 21.0+ + Angular Core, Angular Material (MDC), Tailwind CSS, @factor_ec/ui
 

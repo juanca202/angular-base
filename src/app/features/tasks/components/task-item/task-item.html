@@ -1,0 +1,18 @@
+<div class="ft-list__item" [class.ft-list__item--selected]="isSelected()">
+  <div class="flex items-center gap-4">
+    <input
+      type="checkbox"
+      [checked]="isSelected()"
+      (change)="onCheckboxChange($event)"
+      class="w-4 h-4"
+    />
+    <div class="grow">
+      <div class="font-medium">{{ task().title }}</div>
+      @if (task().dueAt) {
+        <div [class.text-red-600]="isOverdue(task().dueAt)" class="text-sm text-gray-500">
+          {{ formatDueDate(task().dueAt) }}
+        </div>
+      }
+    </div>
+  </div>
+</div>
