@@ -1,0 +1,172 @@
+<div #headerElement class="ft-page__header">
+  <div class="ft-actions">
+    @if (isSelectionMode()) {
+      <button type="button" matButton="outlined" i18n (click)="clearSelection()">
+        Cancel selection
+      </button>
+    }
+  </div>
+  <div i18n>Tasks</div>
+  <div class="ft-actions">
+    @if (!isSelectionMode()) {
+      <button type="button" matIconButton i18n-title title="Add task" (click)="taskManager.open()">
+        <ft-icon name="plus" class="text-2xl" />
+      </button>
+      <button
+        type="button"
+        matIconButton
+        i18n-title
+        title="Refresh"
+        [disabled]="tasks.loading()"
+        (click)="tasks.reload()"
+      >
+        <ft-icon name="refresh" class="text-2xl" [class.ft-anim-rotate]="tasks.loading()" />
+      </button>
+    } @else {
+      <button
+        type="button"
+        matButton="filled"
+        color="primary"
+        i18n
+        (click)="completeSelectedTasks()"
+      >
+        Complete
+      </button>
+      <button type="button" matButton="outlined" color="warn" i18n (click)="deleteSelectedTasks()">
+        Delete
+      </button>
+    }
+  </div>
+</div>
+<div class="ft-page__content ft-anim-enter">
+  @if (!tasks.error() && (!tasks.loading() || tasks.value()?.length)) {
+    <div class="task-list-container">
+      <!-- Pending Tasks Section -->
+      <div class="task-section">
+        <h2 class="task-section__title" i18n>Pending</h2>
+        @if (pendingTasks().length > 0) {
+          <div class="task-list">
+            <div class="task-list__header">
+              <mat-checkbox
+                [checked]="areAllTasksSelected(pendingTasks())"
+                [indeterminate]="isIndeterminate(pendingTasks())"
+                (change)="toggleAllTasksSelection(pendingTasks())"
+              ></mat-checkbox>
+              <span i18n class="task-list__count">{{ pendingTasks().length }} tasks</span>
+            </div>
+            @for (task of pendingTasks(); track task.id) {
+              <div
+                class="task-item"
+                [class.task-item--selected]="isTaskSelected(task.id)"
+                [class.task-item--overdue]="isOverdue(task)"
+              >
+                <mat-checkbox
+                  [checked]="isTaskSelected(task.id)"
+                  (change)="toggleTaskSelection(task.id)"
+                  (click)="$event.stopPropagation()"
+                ></mat-checkbox>
+                <div class="task-item__content" (click)="toggleTaskSelection(task.id)">
+                  <div class="task-item__title">{{ task.title }}</div>
+                  @if (task.dueDate) {
+                    <div class="task-item__time" [class.task-item__time--overdue]="isOverdue(task)">
+                      {{ getTimeRemaining(task) }}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="task-empty" i18n>No pending tasks</div>
+        }
+      </div>
+
+      <!-- Frozen Tasks Section -->
+      <div class="task-section">
+        <h2 class="task-section__title" i18n>Frozen</h2>
+        @if (frozenTasks().length > 0) {
+          <div class="task-list">
+            <div class="task-list__header">
+              <mat-checkbox
+                [checked]="areAllTasksSelected(frozenTasks())"
+                [indeterminate]="isIndeterminate(frozenTasks())"
+                (change)="toggleAllTasksSelection(frozenTasks())"
+              ></mat-checkbox>
+              <span i18n class="task-list__count">{{ frozenTasks().length }} tasks</span>
+            </div>
+            @for (task of frozenTasks(); track task.id) {
+              <div
+                class="task-item"
+                [class.task-item--selected]="isTaskSelected(task.id)"
+                [class.task-item--overdue]="isOverdue(task)"
+              >
+                <mat-checkbox
+                  [checked]="isTaskSelected(task.id)"
+                  (change)="toggleTaskSelection(task.id)"
+                  (click)="$event.stopPropagation()"
+                ></mat-checkbox>
+                <div class="task-item__content" (click)="toggleTaskSelection(task.id)">
+                  <div class="task-item__title">{{ task.title }}</div>
+                  @if (task.dueDate) {
+                    <div class="task-item__time" [class.task-item__time--overdue]="isOverdue(task)">
+                      {{ getTimeRemaining(task) }}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="task-empty" i18n>No frozen tasks</div>
+        }
+      </div>
+
+      <!-- Completed Tasks Section -->
+      <div class="task-section">
+        <h2 class="task-section__title" i18n>Completed</h2>
+        @if (completedTasks().length > 0) {
+          <div class="task-list">
+            <div class="task-list__header">
+              <mat-checkbox
+                [checked]="areAllTasksSelected(completedTasks())"
+                [indeterminate]="isIndeterminate(completedTasks())"
+                (change)="toggleAllTasksSelection(completedTasks())"
+              ></mat-checkbox>
+              <span i18n class="task-list__count">{{ completedTasks().length }} tasks</span>
+            </div>
+            @for (task of completedTasks(); track task.id) {
+              <div
+                class="task-item task-item--completed"
+                [class.task-item--selected]="isTaskSelected(task.id)"
+              >
+                <mat-checkbox
+                  [checked]="isTaskSelected(task.id)"
+                  (change)="toggleTaskSelection(task.id)"
+                  (click)="$event.stopPropagation()"
+                ></mat-checkbox>
+                <div class="task-item__content" (click)="toggleTaskSelection(task.id)">
+                  <div class="task-item__title">{{ task.title }}</div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="task-empty" i18n>No completed tasks</div>
+        }
+      </div>
+    </div>
+  } @else if (tasks.loading()) {
+    <div class="ft-center">
+      <ft-progress class="ft-progress--3" />
+      <div i18n>Loading...</div>
+    </div>
+  } @else if (tasks.error()) {
+    <div class="ft-center">
+      <ft-icon name="warning" collection="factoricons-slim" class="text-4xl" />
+      <p class="text-gray-500 mb-4">{{ tasks.error() }}</p>
+      <button i18n type="button" matButton="filled" (click)="tasks.reload()">Retry</button>
+    </div>
+  } @else if (!tasks.value()?.length) {
+    <div class="ft-center" i18n>No tasks</div>
+  }
+</div>

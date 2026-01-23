@@ -15,6 +15,10 @@ export const routes: Routes = [
       import('./features/templates/templates-routes').then((m) => m.templatesRoutes)
   },
   {
+    path: 'tasks',
+    loadChildren: () => import('./features/tasks/tasks-routes').then((m) => m.tasksRoutes)
+  },
+  {
     path: '',
     loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
   },

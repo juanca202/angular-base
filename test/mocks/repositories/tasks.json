@@ -1,98 +1,202 @@
 [
   {
-    "id": "01HZ1234567890ABCDEFGHIJKL",
-    "title": "Complete project documentation",
-    "description": "Write comprehensive documentation for the new feature",
+    "id": "1",
+    "title": "Revisar documentación del proyecto",
+    "description": "Revisar y actualizar la documentación técnica del proyecto",
     "status": "pending",
-    "createdAt": "2026-01-20T10:00:00Z",
-    "updatedAt": "2026-01-20T10:00:00Z",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z",
     "createdBy": {
-      "id": "user-001",
-      "name": "John Doe"
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
     },
     "updatedBy": {
-      "id": "user-001",
-      "name": "John Doe"
-    }
-  },
-  {
-    "id": "01HZ1234567890ABCDEFGHIJKM",
-    "title": "Review code changes",
-    "description": "",
-    "status": "completed",
-    "createdAt": "2026-01-19T14:30:00Z",
-    "updatedAt": "2026-01-21T09:15:00Z",
-    "createdBy": {
-      "id": "user-001",
-      "name": "John Doe"
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
     },
-    "updatedBy": {
-      "id": "user-001",
-      "name": "John Doe"
-    }
+    "dueDate": "2024-01-20T23:59:59Z"
   },
   {
-    "id": "01HZ1234567890ABCDEFGHIJKN",
-    "title": "Update dependencies",
-    "description": "Wait for team approval before proceeding",
-    "status": "frozen",
-    "createdAt": "2026-01-18T08:00:00Z",
-    "updatedAt": "2026-01-19T16:45:00Z",
-    "createdBy": {
-      "id": "user-001",
-      "name": "John Doe"
-    },
-    "updatedBy": {
-      "id": "user-001",
-      "name": "John Doe"
-    }
-  },
-  {
-    "id": "01HZ1234567890ABCDEFGHIJKO",
-    "title": "Implement user authentication",
-    "description": "Add login and registration functionality",
+    "id": "2",
+    "title": "Implementar autenticación",
+    "description": "Implementar sistema de autenticación con JWT",
     "status": "pending",
-    "createdAt": "2026-01-22T08:00:00Z",
-    "updatedAt": "2026-01-22T08:00:00Z",
+    "createdAt": "2024-01-16T09:00:00Z",
+    "updatedAt": "2024-01-16T09:00:00Z",
     "createdBy": {
-      "id": "user-001",
-      "name": "John Doe"
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
     },
     "updatedBy": {
-      "id": "user-001",
-      "name": "John Doe"
-    }
-  },
-  {
-    "id": "01HZ1234567890ABCDEFGHIJKP",
-    "title": "Fix bug in payment processing",
-    "description": "Resolve issue with credit card validation",
-    "status": "completed",
-    "createdAt": "2026-01-15T11:20:00Z",
-    "updatedAt": "2026-01-17T15:30:00Z",
-    "createdBy": {
-      "id": "user-001",
-      "name": "John Doe"
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
     },
-    "updatedBy": {
-      "id": "user-001",
-      "name": "John Doe"
-    }
+    "dueDate": "2024-01-18T23:59:59Z"
   },
   {
-    "id": "01HZ1234567890ABCDEFGHIJKQ",
-    "title": "Design new dashboard layout",
-    "description": "Create mockups and get stakeholder approval",
+    "id": "3",
+    "title": "Optimizar consultas de base de datos",
+    "description": "Revisar y optimizar las consultas SQL para mejorar el rendimiento",
     "status": "frozen",
-    "createdAt": "2026-01-10T09:00:00Z",
-    "updatedAt": "2026-01-12T14:00:00Z",
+    "createdAt": "2024-01-10T14:00:00Z",
+    "updatedAt": "2024-01-12T16:00:00Z",
     "createdBy": {
-      "id": "user-001",
-      "name": "John Doe"
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
     },
     "updatedBy": {
-      "id": "user-001",
-      "name": "John Doe"
-    }
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "dueDate": "2024-01-15T23:59:59Z"
+  },
+  {
+    "id": "4",
+    "title": "Configurar CI/CD",
+    "description": "Configurar pipeline de integración y despliegue continuo",
+    "status": "completed",
+    "createdAt": "2024-01-05T08:00:00Z",
+    "updatedAt": "2024-01-08T12:00:00Z",
+    "createdBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "updatedBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "dueDate": "2024-01-10T23:59:59Z"
+  },
+  {
+    "id": "5",
+    "title": "Escribir tests unitarios",
+    "description": "Aumentar cobertura de tests unitarios al 80%",
+    "status": "pending",
+    "createdAt": "2024-01-17T11:00:00Z",
+    "updatedAt": "2024-01-17T11:00:00Z",
+    "createdBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "updatedBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "dueDate": "2024-01-25T23:59:59Z"
+  },
+  {
+    "id": "6",
+    "title": "Actualizar dependencias",
+    "description": "Actualizar todas las dependencias del proyecto a sus últimas versiones",
+    "status": "frozen",
+    "createdAt": "2024-01-08T13:00:00Z",
+    "updatedAt": "2024-01-09T10:00:00Z",
+    "createdBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "updatedBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "dueDate": "2024-01-12T23:59:59Z"
+  },
+  {
+    "id": "7",
+    "title": "Crear documentación de API",
+    "description": "Generar documentación Swagger/OpenAPI para todos los endpoints",
+    "status": "completed",
+    "createdAt": "2024-01-03T09:00:00Z",
+    "updatedAt": "2024-01-06T15:00:00Z",
+    "createdBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "updatedBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "dueDate": "2024-01-07T23:59:59Z"
+  },
+  {
+    "id": "8",
+    "title": "Refactorizar código legacy",
+    "description": "Refactorizar módulos antiguos para mejorar mantenibilidad",
+    "status": "pending",
+    "createdAt": "2024-01-18T08:00:00Z",
+    "updatedAt": "2024-01-18T08:00:00Z",
+    "createdBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "updatedBy": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "firstName": "Admin",
+      "lastName": "User",
+      "picture": ""
+    },
+    "dueDate": "2024-01-30T23:59:59Z"
   }
 ]
