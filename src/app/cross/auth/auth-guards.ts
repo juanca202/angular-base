@@ -14,8 +14,7 @@ export const authGuard: CanActivateFn = async (route, state) => {
   // Check authentication
   if (!session.isLoggedIn() || !session.settings()) {
     sessionStorage.setItem(`${environment.sessionPrefix}_rdi`, state.url);
-    router.navigateByUrl(window.innerWidth < 1000 ? '/auth' : '/signin');
-    return false;
+    return router.createUrlTree([window.innerWidth < 1000 ? '/auth' : '/signin']);
   }
   if (!appManager.initialized) {
     return false;
@@ -36,8 +35,7 @@ export const resetGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   if (token && !session.isLoggedIn()) {
     return true;
   } else if (session.isLoggedIn()) {
-    router.navigateByUrl(`/`);
-    return false;
+    return router.createUrlTree(['/']);
   } else {
     router.navigateByUrl(`/error/403`, { skipLocationChange: true });
     return false;
