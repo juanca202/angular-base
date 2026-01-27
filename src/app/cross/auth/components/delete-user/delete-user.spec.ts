@@ -14,15 +14,7 @@ import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
 import { User } from '@/core/models/user';
-import moment from 'moment';
 import { getApiUrl } from '@/core/utils/async-resources';
-import {
-  createMockAppManager,
-  createMockAuthService,
-  createMockMessageService,
-  createMockSession
-} from '@/test/mocks/service-mocks';
-import { createMockStorageService } from '@/test/mocks/angular-mocks';
 import { of } from 'rxjs';
 
 describe('DeleteUser', () => {
@@ -165,8 +157,8 @@ describe('DeleteUser', () => {
   describe('ngOnInit', () => {
     it('should initialize code if exists in storage', () => {
       // Arrange
-      const expiresAt = moment().add(5, 'minutes');
-      mockStorageService.get = vi.fn().mockReturnValue(expiresAt.toString());
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos desde ahora
+      mockStorageService.get = vi.fn().mockReturnValue(expiresAt.toISOString());
 
       // Recreate component with new mock
       TestBed.resetTestingModule();
@@ -251,8 +243,8 @@ describe('DeleteUser', () => {
 
       const req = httpMock.expectOne(getApiUrl('generate-delete-code'));
       expect(req.request.method).toBe('POST');
-      const expiresAt = moment().add(5, 'minutes');
-      req.flush(expiresAt.toString());
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos desde ahora
+      req.flush(expiresAt.toISOString());
 
       await generatePromise;
 

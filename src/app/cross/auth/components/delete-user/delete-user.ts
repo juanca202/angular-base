@@ -15,7 +15,6 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 
 import { Subscription, interval, lastValueFrom } from 'rxjs';
-import moment from 'moment';
 import { StorageService } from '@factor_ec/utils';
 import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
 
@@ -103,7 +102,7 @@ export class DeleteUser implements OnInit, OnDestroy {
       'local'
     );
     if (deleteCodeExpiresAt) {
-      this.setCountDown(moment(deleteCodeExpiresAt));
+      this.setCountDown(new Date(deleteCodeExpiresAt));
     }
   }
   public async generateCode(): Promise<void> {
@@ -112,9 +111,13 @@ export class DeleteUser implements OnInit, OnDestroy {
         this.submitting.set(true);
         this.step1Form.disable();
         const response = await lastValueFrom(
-          this.httpClient.post(getApiUrl('generate-delete-code'), null)
+          this.httpClient.post<string | number | { expiresAt?: string | number }>(
+            getApiUrl('generate-delete-code'),
+            null
+          )
         );
-        this.setCountDown(moment(response));
+        const expiresAt = this.parseDateFromResponse(response);
+        this.setCountDown(expiresAt);
         this.submitting.set(false);
         this.step1Form.enable();
       } catch (err: unknown) {
@@ -148,23 +151,57 @@ export class DeleteUser implements OnInit, OnDestroy {
       }
     }
   }
-  private setCountDown(codeExpiresAt: moment.Moment): void {
-    this.storageService.set(`${environment.sessionPrefix}_dce`, codeExpiresAt.toString(), 'local');
-    const diff: number = codeExpiresAt.diff(moment());
+  private setCountDown(codeExpiresAt: Date): void {
+    this.storageService.set(
+      `${environment.sessionPrefix}_dce`,
+      codeExpiresAt.toISOString(),
+      'local'
+    );
+    const diff: number = codeExpiresAt.getTime() - Date.now();
     const codeExpired = diff <= 0;
     if (!codeExpired) {
-      this.codeExpiresIn.set(moment.utc(diff).format('mm:ss'));
+      this.codeExpiresIn.set(this.formatDuration(diff));
     }
     this.codeTimeInterval = interval(1000).subscribe(() => {
-      const diff: number = codeExpiresAt.diff(moment());
+      const diff: number = codeExpiresAt.getTime() - Date.now();
       const codeExpired = diff <= 0;
       if (codeExpired) {
         this.codeExpiresIn.set('');
         this.codeTimeInterval?.unsubscribe();
       } else {
-        this.codeExpiresIn.set(moment.utc(diff).format('mm:ss'));
+        this.codeExpiresIn.set(this.formatDuration(diff));
       }
     });
+  }
+
+  /**
+   * Parsea la respuesta del servidor y la convierte a Date
+   * @param response - Respuesta del servidor (string, número o objeto con expiresAt)
+   * @returns Objeto Date
+   */
+  private parseDateFromResponse(response: string | number | { expiresAt?: string | number }): Date {
+    if (typeof response === 'string' || typeof response === 'number') {
+      return new Date(response);
+    }
+    if (response && typeof response === 'object' && 'expiresAt' in response) {
+      const expiresAt = response.expiresAt;
+      if (expiresAt) {
+        return new Date(expiresAt);
+      }
+    }
+    throw new Error('Invalid date response from server');
+  }
+
+  /**
+   * Formatea milisegundos a formato mm:ss
+   * @param milliseconds - Tiempo en milisegundos
+   * @returns String en formato mm:ss
+   */
+  private formatDuration(milliseconds: number): string {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
   public submit(): void {
     this.submitted.set(true);

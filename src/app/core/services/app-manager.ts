@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import { GoogleTagManagerService, StorageService, Language } from '@factor_ec/utils';
 import { LANGUAGES } from '@/core/constants/languages';
 import { skip } from 'rxjs';
-import moment from 'moment';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
@@ -194,9 +193,6 @@ export class AppManager {
     // Load translation file
     const localeTranslations = await import(`../../../../public/i18n/${locale}.js`);
     loadTranslations(localeTranslations.default);
-
-    // Moment internationalization
-    moment.locale(locale);
 
     return locale;
   }

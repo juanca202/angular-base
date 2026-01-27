@@ -12,12 +12,6 @@ import { AppManager } from '@/core/services/app-manager';
 import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
-import { createMockAppManager, createMockMessageService } from '@/test/mocks/service-mocks';
-import {
-  createMockRouter,
-  createMockActivatedRoute,
-  createMockTitle
-} from '@/test/mocks/angular-mocks';
 import { of } from 'rxjs';
 
 describe('ResetPassword', () => {
