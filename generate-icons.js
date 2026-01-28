@@ -40,13 +40,14 @@ const $symbols = dom.load(`
 `);
 
 // leer solo SVGs del directorio (sin recursividad)
-const files = fs.readdirSync(sourcePath)
-  .filter(f => f.endsWith('.svg'))
-  .map(f => path.join(sourcePath, f));
+const files = fs
+  .readdirSync(sourcePath)
+  .filter((f) => f.endsWith('.svg'))
+  .map((f) => path.join(sourcePath, f));
 
 console.log(`Processing ${files.length} SVG icons`);
 
-files.forEach(filePath => {
+files.forEach((filePath) => {
   const raw = fs.readFileSync(filePath, 'utf8');
   const result = optimize(raw, svgoConfig);
 

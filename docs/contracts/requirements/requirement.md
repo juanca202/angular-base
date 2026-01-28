@@ -4,6 +4,7 @@ Description:
 Representación de un SDP (Solicitud de Desarrollo de Producto) en el sistema. Representa una solicitud de desarrollo de un nuevo producto floral, desde su creación hasta su finalización, incluyendo información del cliente solicitante, características del producto requerido, información temporal, clasificaciones y contexto comercial.
 
 Fields:
+
 - id: number
 - name: string
 - customer: Customer
@@ -25,6 +26,7 @@ Fields:
 - requestedBy: User
 
 Constraints:
+
 - El nombre es obligatorio
 - El cliente debe estar definido
 - Debe tener al menos una división asociada
@@ -35,6 +37,7 @@ Constraints:
 - El usuario solicitante debe estar definido
 
 API Endpoints:
+
 - GET /requirements/:id - Obtiene un requirement individual por su identificador
 - GET /requirements - Obtiene un listado de requirements con parámetros de filtrado y paginación
 - GET /requirements/:id/files - Obtiene un listado de archivos asociados a un requirement

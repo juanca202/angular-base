@@ -41,7 +41,7 @@
         "originCase": null,
         "description": "Ramo tradicional de rosas rojas",
         "waste": 0.05,
-        "laborCost": 12.50,
+        "laborCost": 12.5,
         "createdAt": "2024-01-15",
         "updatedAt": "2024-01-20"
       },
@@ -60,7 +60,7 @@
         "originCase": null,
         "description": "Ramo moderno con diseño lineal",
         "waste": 0.03,
-        "laborCost": 15.00,
+        "laborCost": 15.0,
         "createdAt": "2024-01-16",
         "updatedAt": "2024-01-21"
       }
@@ -73,15 +73,13 @@
     "status": { "id": 1, "name": "Activo", "code": "ACTIVE" },
     "category": { "id": 2, "name": "Centros", "code": "CENTERPIECES" },
     "recipesCount": 0,
-    "clientMargin": 0.40,
+    "clientMargin": 0.4,
     "retailMaxPrice": 65.99,
     "retailMinPrice": 55.99,
     "quantityPerWeek": 30,
     "season": { "id": 1, "name": "Primavera", "code": "SPRING" },
     "isWet": true,
-    "tags": [
-      { "id": 3, "name": "Decorativo", "code": "DECORATIVE" }
-    ],
+    "tags": [{ "id": 3, "name": "Decorativo", "code": "DECORATIVE" }],
     "specialInstructions": [],
     "createdAt": "2024-01-15",
     "updatedAt": "2024-01-20",
@@ -101,15 +99,13 @@
     "status": { "id": 2, "name": "Inactivo", "code": "INACTIVE" },
     "category": { "id": 1, "name": "Ramos", "code": "BOUQUETS" },
     "recipesCount": 1,
-    "clientMargin": 0.30,
+    "clientMargin": 0.3,
     "retailMaxPrice": 38.99,
     "retailMinPrice": 28.99,
     "quantityPerWeek": 40,
     "season": { "id": 2, "name": "Verano", "code": "SUMMER" },
     "isWet": false,
-    "tags": [
-      { "id": 4, "name": "Verano", "code": "SUMMER" }
-    ],
+    "tags": [{ "id": 4, "name": "Verano", "code": "SUMMER" }],
     "specialInstructions": [],
     "createdAt": "2024-03-01",
     "updatedAt": "2024-03-05",
@@ -136,7 +132,7 @@
         "originCase": null,
         "description": "Ramo alegre de girasoles",
         "waste": 0.04,
-        "laborCost": 10.00,
+        "laborCost": 10.0,
         "createdAt": "2024-03-01",
         "updatedAt": "2024-03-05"
       }
@@ -155,9 +151,7 @@
     "quantityPerWeek": 25,
     "season": { "id": 3, "name": "Otoño", "code": "AUTUMN" },
     "isWet": true,
-    "tags": [
-      { "id": 5, "name": "Otoño", "code": "AUTUMN" }
-    ],
+    "tags": [{ "id": 5, "name": "Otoño", "code": "AUTUMN" }],
     "specialInstructions": [],
     "createdAt": "2024-05-01",
     "updatedAt": "2024-05-10",
@@ -172,4 +166,3 @@
     "files": []
   }
 ]
-

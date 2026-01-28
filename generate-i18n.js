@@ -66,25 +66,27 @@ async function readJsFile(jsFilePath) {
  */
 async function getPrefixedFileIds(langCode) {
   const prefixedIds = new Set();
-  
+
   // Read all files in the i18n directory
   const files = fs.readdirSync(i18nDir);
-  
+
   // Filter files that start with {langCode}- and end with .js, but exclude the main file itself
   const prefixPattern = new RegExp(`^${langCode}-.+\\.js$`);
-  const prefixedFiles = files.filter(file => prefixPattern.test(file));
-  
-  console.log(`- Found ${prefixedFiles.length} prefixed file(s) for ${langCode}: ${prefixedFiles.join(', ')}`);
-  
+  const prefixedFiles = files.filter((file) => prefixPattern.test(file));
+
+  console.log(
+    `- Found ${prefixedFiles.length} prefixed file(s) for ${langCode}: ${prefixedFiles.join(', ')}`
+  );
+
   // Read each prefixed file and collect all IDs
   for (const file of prefixedFiles) {
     const filePath = path.join(i18nDir, file);
     const translations = await readJsFile(filePath);
     const ids = Object.keys(translations);
-    ids.forEach(id => prefixedIds.add(id));
+    ids.forEach((id) => prefixedIds.add(id));
     console.log(`  - ${file}: ${ids.length} translation(s)`);
   }
-  
+
   return prefixedIds;
 }
 
@@ -102,7 +104,7 @@ async function generateLanguage(langCode) {
 
   const baseTranslations = await readJsFile(baseJsPath);
   const targetTranslations = await readJsFile(targetJsPath);
-  
+
   // Get all IDs that already exist in prefixed files (e.g., es-base.js)
   const prefixedIds = await getPrefixedFileIds(langCode);
 
@@ -114,7 +116,7 @@ async function generateLanguage(langCode) {
     if (prefixedIds.has(key)) {
       return;
     }
-    
+
     if (targetTranslations.hasOwnProperty(key)) {
       orderedTranslations[key] = targetTranslations[key];
     } else {
@@ -165,7 +167,7 @@ function validateLanguageCode(langCode) {
 async function generateEnJsFile(enTranslations, enFilePath) {
   // Get all IDs that already exist in prefixed files (e.g., en-base.js)
   const prefixedIds = await getPrefixedFileIds('en');
-  
+
   // Filter out IDs that are already in prefixed files
   const filteredTranslations = {};
   Object.keys(enTranslations).forEach((key) => {
@@ -173,7 +175,7 @@ async function generateEnJsFile(enTranslations, enFilePath) {
       filteredTranslations[key] = enTranslations[key];
     }
   });
-  
+
   const enFileContent = `export default ${JSON.stringify(filteredTranslations, null, 2)};`;
   fs.writeFileSync(enFilePath, enFileContent, 'utf-8');
   console.log(`- File ${enFilePath} generated successfully.`);

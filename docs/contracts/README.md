@@ -14,10 +14,10 @@ Un contrato (DTO) representa un **contrato de datos** entre límites del sistema
 
 Un contrato:
 
-* Describe la **forma de los datos**
-* Es **inmutable por convención**
-* No contiene **lógica de negocio**
-* Es **independiente de frameworks de persistencia y UI**
+- Describe la **forma de los datos**
+- Es **inmutable por convención**
+- No contiene **lógica de negocio**
+- Es **independiente de frameworks de persistencia y UI**
 
 ---
 
@@ -33,9 +33,9 @@ Donde `{dominio}` es el dominio del negocio (ej: `requirements`, `customers`, `c
 
 Los contratos **nunca** deben definirse dentro de:
 
-* Specs de features
-* Entidades de dominio
-* Componentes de UI
+- Specs de features
+- Entidades de dominio
+- Componentes de UI
 
 ---
 
@@ -43,8 +43,8 @@ Los contratos **nunca** deben definirse dentro de:
 
 #### 3.1 Nombre del archivo
 
-* Usar **kebab-case**
-* Debe ser un archivo **markdown** (`.md`)
+- Usar **kebab-case**
+- Debe ser un archivo **markdown** (`.md`)
 
 Ejemplo:
 
@@ -56,8 +56,8 @@ requirement-item.md
 
 #### 3.2 Nombre del Contrato
 
-* Usar **PascalCase**
-* **No** incluir el sufijo `DTO`
+- Usar **PascalCase**
+- **No** incluir el sufijo `DTO`
 
 Ejemplo:
 
@@ -80,9 +80,11 @@ Description:
 <Descripción corta y clara del contrato de datos>
 
 Fields:
+
 - <nombreCampo>: <tipo> <modificadores opcionales>
 
 Constraints:
+
 - <restricción de negocio o técnica>
 ```
 
@@ -92,18 +94,18 @@ Constraints:
 
 #### 5.1 Nombres de campos
 
-* Usar **camelCase**
-* Usar nombres **descriptivos y orientados al negocio**
+- Usar **camelCase**
+- Usar nombres **descriptivos y orientados al negocio**
 
 Correcto:
 
-* `clientId`
-* `totalAmount`
+- `clientId`
+- `totalAmount`
 
 Incorrecto:
 
-* `client_id`
-* `amt`
+- `client_id`
+- `amt`
 
 ---
 
@@ -111,17 +113,17 @@ Incorrecto:
 
 Tipos primitivos permitidos:
 
-* `string`
-* `number`
-* `boolean`
-* `decimal`
-* `uuid`
-* `date` (string ISO 8601)
+- `string`
+- `number`
+- `boolean`
+- `decimal`
+- `uuid`
+- `date` (string ISO 8601)
 
 Tipos compuestos:
 
-* Otros contratos
-* Arreglos usando `[]`
+- Otros contratos
+- Arreglos usando `[]`
 
 Ejemplo:
 
@@ -133,7 +135,7 @@ items: EntityItem[]
 
 #### 5.3 Campos opcionales
 
-* Los campos opcionales deben marcarse explícitamente
+- Los campos opcionales deben marcarse explícitamente
 
 Ejemplo:
 
@@ -149,19 +151,19 @@ La sección `Constraints` es **obligatoria**.
 
 Las restricciones:
 
-* Describen reglas de validación
-* No deben referenciar detalles de implementación
-* Deben ser determinísticas y testeables
+- Describen reglas de validación
+- No deben referenciar detalles de implementación
+- Deben ser determinísticas y testeables
 
 Correcto:
 
-* Los valores monetarios usan precisión decimal fija
-* La lista de ítems no puede estar vacía cuando el estado es Confirmed
+- Los valores monetarios usan precisión decimal fija
+- La lista de ítems no puede estar vacía cuando el estado es Confirmed
 
 Incorrecto:
 
-* El valor se valida en la UI
-* Se almacena en la base de datos como DECIMAL(10,2)
+- El valor se valida en la UI
+- Se almacena en la base de datos como DECIMAL(10,2)
 
 ---
 
@@ -172,6 +174,7 @@ Los contratos **no describen comportamiento** y **no se incluyen en los specs**.
 Las specs **solo referencian** contratos desde `docs/contracts/{dominio}/`, nunca los incluyen directamente.
 
 **IMPORTANTE:**
+
 - Los contratos viven únicamente en `docs/contracts/{dominio}/`
 - Los specs NO deben tener carpetas `contracts/` ni archivos `api-contracts.md`
 - Los specs solo referencian los contratos existentes
@@ -180,6 +183,7 @@ Ejemplo en una spec de feature:
 
 ```md
 Uses:
+
 - DTO: Entity (definido en `docs/contracts/core/entity.md`)
 - Command: CreateEntity
 ```
@@ -190,24 +194,24 @@ Uses:
 
 Las definiciones de contratos deben ser:
 
-* Determinísticas
-* Parseables por máquina
-* Libres de lenguaje ambiguo
+- Determinísticas
+- Parseables por máquina
+- Libres de lenguaje ambiguo
 
 Esto permite la generación automática de:
 
-* Interfaces TypeScript
-* Contratos de API
-* Datos mock
+- Interfaces TypeScript
+- Contratos de API
+- Datos mock
 
 ---
 
 ### 9. Anti-patrones de Contratos (Prohibidos)
 
-* Lógica de negocio dentro de contratos
-* Campos relacionados con persistencia (por ejemplo `createdAt`, `updatedAt`, salvo que formen parte explícita del contrato)
-* Campos solo para UI
-* Tipos específicos de frameworks
+- Lógica de negocio dentro de contratos
+- Campos relacionados con persistencia (por ejemplo `createdAt`, `updatedAt`, salvo que formen parte explícita del contrato)
+- Campos solo para UI
+- Tipos específicos de frameworks
 
 ---
 
@@ -220,6 +224,7 @@ Description:
 Representación pública de una entidad del sistema.
 
 Fields:
+
 - id: uuid
 - name: string
 - status: Draft | Active | Archived
@@ -229,6 +234,7 @@ Fields:
 - owner: User
 
 Constraints:
+
 - El nombre es obligatorio
 - El estado debe estar definido
 - La lista de ítems puede estar vacía
@@ -250,12 +256,15 @@ Description:
 <Descripción corta y clara del contrato de datos>
 
 Fields:
+
 - <nombreCampo>: <tipo> <modificadores opcionales>
 
 Constraints:
+
 - <restricción de negocio o técnica>
 
 API:
+
 - GET <path> - Descripción breve
 - POST <path> - Descripción breve
 - PUT <path> - Descripción breve
@@ -272,17 +281,20 @@ API:
 
 ```markdown
 # ✅ Correcto
+
 - GET entities
 - GET entities/:id
 - POST entities
 
 # ❌ Incorrecto
+
 - GET /api/v1/entities
 - GET /api/v1/entities/:id
 - POST /api/v1/entities
 ```
 
 **Implementación en Repository:**
+
 ```typescript
 @Injectable({ providedIn: 'root' })
 export class EntityRepository {
@@ -301,22 +313,25 @@ export class EntityRepository {
 
 ```markdown
 # ✅ Correcto - recursos independientes con query params
+
 - GET children?parentId=:parentId
 - POST children (con parentId en el body)
 - DELETE children/:id
 
 # ❌ Incorrecto - subrecursos anidados
+
 - GET /api/v1/parent-resource/:parentId/child-resource
 - POST /api/v1/parent-resource/:parentId/child-resource
 - DELETE /api/v1/parent-resource/:parentId/child-resource/:childId
 ```
 
 **Implementación en Repository:**
+
 ```typescript
 @Injectable({ providedIn: 'root' })
 export class ChildRepository {
   private readonly baseUrl = getApiUrl('children');
-  
+
   // Para filtrar por parentId, usar query params
   public findByParent(parentId: number) {
     return getResource<void, Child[]>(() => {
@@ -325,12 +340,11 @@ export class ChildRepository {
       });
     });
   }
-  
+
   // Para crear, incluir parentId en el body
   public mutations() {
     return getMutations({
-      create: (child: ChildRequest) =>
-        this.httpClient.post<Child>(this.baseUrl, child)
+      create: (child: ChildRequest) => this.httpClient.post<Child>(this.baseUrl, child)
     });
   }
 }
@@ -344,6 +358,7 @@ Documentar los métodos HTTP disponibles para el recurso:
 
 ```markdown
 API:
+
 - GET entities - Lista todas las entidades
 - GET entities/:id - Obtiene una entidad por ID
 - POST entities - Crea una nueva entidad
@@ -361,6 +376,7 @@ Para operaciones POST, PUT y PATCH, definir el DTO de request. Puede ser el mism
 
 ```markdown
 API:
+
 - POST entities - Crea una nueva entidad
   Request: Entity (sin id, createdAt, updatedAt)
 ```
@@ -369,6 +385,7 @@ API:
 
 ```markdown
 API:
+
 - POST entities - Crea una nueva entidad
   Request: EntityCreateRequest
 ```
@@ -382,11 +399,13 @@ Description:
 Contrato para crear una nueva entidad.
 
 Fields:
+
 - name: string
 - status: Draft | Active
 - items: EntityItem[]
 
 Constraints:
+
 - El nombre es obligatorio
 - El estado debe estar definido
 ```
@@ -402,6 +421,7 @@ Description:
 Representación de una solicitud de producción.
 
 Fields:
+
 - id: number
 - name: string
 - customer: Customer
@@ -413,12 +433,14 @@ Fields:
 - updatedAt: date
 
 Constraints:
+
 - El nombre es obligatorio
 - El cliente debe estar definido
 - La fecha de entrada debe ser anterior o igual a la fecha de inicio
 - La fecha de inicio debe ser anterior o igual a la fecha de vencimiento
 
 API:
+
 - GET requirements - Lista todas las requirements
 - GET requirements/:id - Obtiene una requirement por ID
 - POST requirements - Crea una nueva requirement
@@ -434,10 +456,10 @@ API:
 
 Los contratos con APIs REST deben ser implementados usando el patrón Repository (ver ADR-006):
 
-* Cada recurso documentado debe tener un método correspondiente en el Repository
-* Los Repositories usan `getApiUrl()` para construir las URLs
-* Los Repositories usan `getResource()` para operaciones GET
-* Los Repositories usan `getMutations()` para operaciones POST, PUT, DELETE
+- Cada recurso documentado debe tener un método correspondiente en el Repository
+- Los Repositories usan `getApiUrl()` para construir las URLs
+- Los Repositories usan `getResource()` para operaciones GET
+- Los Repositories usan `getMutations()` para operaciones POST, PUT, DELETE
 
 ---
 

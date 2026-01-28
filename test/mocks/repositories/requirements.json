@@ -43,14 +43,10 @@
     "customer": {
       "id": 2,
       "name": "Garden Center",
-      "clientMargin": 0.30,
-      "divisions": [
-        { "id": 3, "name": "División Retail" }
-      ]
+      "clientMargin": 0.3,
+      "divisions": [{ "id": 3, "name": "División Retail" }]
     },
-    "divisions": [
-      { "id": 3, "name": "División Retail" }
-    ],
+    "divisions": [{ "id": 3, "name": "División Retail" }],
     "sellByDate": "2024-08-31",
     "type": { "id": 2, "name": "SDP Express", "code": "SDP_EXP" },
     "salesProbability": { "id": 2, "name": "Media", "code": "MEDIUM" },
@@ -80,13 +76,9 @@
       "id": 1,
       "name": "Floristería El Jardín",
       "clientMargin": 0.25,
-      "divisions": [
-        { "id": 1, "name": "División Comercial" }
-      ]
+      "divisions": [{ "id": 1, "name": "División Comercial" }]
     },
-    "divisions": [
-      { "id": 1, "name": "División Comercial" }
-    ],
+    "divisions": [{ "id": 1, "name": "División Comercial" }],
     "sellByDate": "2024-11-30",
     "type": { "id": 1, "name": "SDP Estándar", "code": "SDP_STD" },
     "salesProbability": { "id": 3, "name": "Baja", "code": "LOW" },
@@ -110,4 +102,3 @@
     "files": []
   }
 ]
-

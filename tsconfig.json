@@ -19,30 +19,14 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "paths": {
-      "@/*": [
-        "src/app/*"
-      ],
-      "@/core/*": [
-        "src/app/core/*"
-      ],
-      "@/shared/*": [
-        "src/app/shared/*"
-      ],
-      "@/cross/*": [
-        "src/app/cross/*"
-      ],
-      "@/features/*": [
-        "src/app/features/*"
-      ],
-      "@/environments/*": [
-        "src/environments/*"
-      ],
-      "@/version-info": [
-        "src/version-info"
-      ],
-      "@/test/*": [
-        "test/*"
-      ]
+      "@/*": ["src/app/*"],
+      "@/core/*": ["src/app/core/*"],
+      "@/shared/*": ["src/app/shared/*"],
+      "@/cross/*": ["src/app/cross/*"],
+      "@/features/*": ["src/app/features/*"],
+      "@/environments/*": ["src/environments/*"],
+      "@/version-info": ["src/version-info"],
+      "@/test/*": ["test/*"]
     }
   },
   "angularCompilerOptions": {

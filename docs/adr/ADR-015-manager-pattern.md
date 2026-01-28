@@ -1,4 +1,5 @@
 # ADR-015: Patrón Manager para Coordinación de Flujos de Negocio
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 06/01/2026  
@@ -54,12 +55,14 @@ Los Managers se ubican según su alcance:
 **Propósito:** Gestión de estado o orquestación de lógica de negocio específica de una feature.
 
 **Características:**
+
 - Coordinan experiencias específicas de la feature
 - Orquestan operaciones que involucran componentes y servicios de la feature
 - Pueden depender de Repositories, Services y componentes de la misma feature
 - Pueden usar servicios de Core, Shared y Cross
 
 **Ejemplo:**
+
 ```typescript
 // src/app/features/requirements/managers/requirement-item-manager.ts
 @Injectable({ providedIn: 'root' })
@@ -77,12 +80,14 @@ export class RequirementItemManager {
 **Propósito:** Coordinadores de flujos compartidos que aplican a múltiples features.
 
 **Características:**
+
 - Coordinan flujos transversales (inicio de sesión, inicialización de analytics, etc.)
 - Son reutilizados por múltiples features
 - Solo pueden depender de Core (no de Features ni Shared)
 - Encapsulan reglas de negocio transversales
 
 **Ejemplo:**
+
 ```typescript
 // src/app/cross/auth/managers/auth-manager.ts
 @Injectable({ providedIn: 'root' })
@@ -96,12 +101,14 @@ export class AuthManager {
 **Propósito:** Coordinación de infraestructura global de la aplicación.
 
 **Características:**
+
 - Coordinan inicialización y configuración global
 - Gestionan aspectos técnicos transversales (PWA, analytics, localización)
 - No dependen de Features, Shared ni Cross
 - Singleton global de la aplicación
 
 **Ejemplo:**
+
 ```typescript
 // src/app/core/services/app-manager.ts
 @Injectable({ providedIn: 'root' })
@@ -119,6 +126,7 @@ export class AppManager {
 - **Ubicación:** `managers/` dentro de la capa correspondiente
 
 **Ejemplos:**
+
 - `RequirementItemManager` → `requirement-item-manager.ts`
 - `EntityManager` → `entity-manager.ts`
 - `AuthManager` → `auth-manager.ts`
@@ -167,17 +175,20 @@ export class EntityManager {
 #### Reglas de Dependencias
 
 **Managers en Features pueden:**
+
 - ✅ Depender de Core, Shared y Cross
 - ✅ Depender de Repositories, Services y componentes de la misma feature
 - ✅ Depender de Models de la misma feature
 - ❌ Depender directamente de otras Features (usar contracts en `shared/contracts/`)
 
 **Managers en Cross pueden:**
+
 - ✅ Depender de Core
 - ✅ Depender de otros Managers, Services y Repositories de Cross
 - ❌ Depender de Features o Shared
 
 **Managers en Core pueden:**
+
 - ✅ Depender solo de otros servicios de Core
 - ❌ Depender de Features, Shared o Cross
 
@@ -226,6 +237,7 @@ export class RequirementItemManager {
 ```
 
 **Uso en componente:**
+
 ```typescript
 @Component({...})
 export class RequirementListComponent {
@@ -279,7 +291,7 @@ export class EntityManager {
         ]
       })
     );
-    
+
     if (value === 1 && id) {
       await this.mutations.delete(id);
       this.messageService.show($localize`Entity deleted successfully.`, {
@@ -301,7 +313,7 @@ export class EntityManager {
         width: '600px',
         position: { left: 'auto', right: '0' }
       };
-      
+
       if (!view) {
         const dialogRef = this.dialog.open(EntityForm, { ...config, disableClose: true });
         const sub = dialogRef.componentInstance.afterSubmit.subscribe((operation) => {
@@ -325,7 +337,7 @@ export class EntityManager {
         panelClass: ['ft-dialog'],
         width: '400px'
       });
-      
+
       const sub = dialogRef.componentInstance.selected.subscribe((entity) => {
         if (entity) {
           resolve(entity);
@@ -457,7 +469,7 @@ export class EntityManager {
    * Opens the entity detail dialog in view mode
    * @param id - The entity identifier
    */
-  public open(id: string): void { }
+  public open(id: string): void {}
 }
 ```
 
@@ -560,7 +572,7 @@ Según ADR-014, los diálogos **deben abrirse exclusivamente desde Managers**, n
 @Injectable({ providedIn: 'root' })
 export class RequirementItemManager {
   private readonly dialog = inject(MatDialog);
-  
+
   public open(id: number): void {
     this.dialog.open(RequirementItemDetailComponent, config);
   }
@@ -570,7 +582,7 @@ export class RequirementItemManager {
 @Component({...})
 export class RequirementListComponent {
   private readonly dialog = inject(MatDialog); // ❌ No hacer esto
-  
+
   onItemClick(id: number): void {
     this.dialog.open(...); // ❌ No hacer esto
   }
@@ -606,6 +618,7 @@ export class RequirementListComponent {
 ### 1. Colocar Lógica de Coordinación en Componentes
 
 **Rechazado** por:
+
 - Componentes pesados y difíciles de mantener
 - Duplicación de lógica entre componentes
 - Dificultad para reutilizar flujos complejos
@@ -614,6 +627,7 @@ export class RequirementListComponent {
 ### 2. Usar Servicios Genéricos en lugar de Managers
 
 **Rechazado** por:
+
 - Falta de claridad sobre el propósito del servicio
 - Mezcla de responsabilidades (acceso a datos vs. coordinación)
 - Dificultad para distinguir entre Services y Managers
@@ -621,6 +635,7 @@ export class RequirementListComponent {
 ### 3. Usar Facades en lugar de Managers
 
 **Rechazado** por:
+
 - El término "Manager" es más descriptivo del propósito (coordinación)
 - Facades típicamente ocultan complejidad de múltiples subsistemas
 - Managers enfatizan la coordinación de experiencias y flujos
@@ -630,4 +645,3 @@ export class RequirementListComponent {
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
 - [ADR-014: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-014-dialog-master-detail.md)
 - [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006-repository-pattern-rest.md)
-

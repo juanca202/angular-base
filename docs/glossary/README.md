@@ -28,4 +28,3 @@ Al agregar un nuevo término al glosario:
 2. Sigue el formato establecido
 3. Incluye ejemplos cuando sea apropiado
 4. Referencia el término en la documentación relevante
-

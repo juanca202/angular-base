@@ -1,4 +1,5 @@
 # ADR-012: Convención de modificadores de acceso y uso de `readonly` en TypeScript
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
 **Última Actualización:** 06/01/2026  
@@ -16,8 +17,8 @@ Adoptamos las siguientes reglas para todas las clases del código base:
 
 1. **Especificar siempre el modificador de acceso explícitamente**
 
-- `public`: miembros que forman parte de la API pública de la clase.  
-- `private`: miembros de implementación interna.  
+- `public`: miembros que forman parte de la API pública de la clase.
+- `private`: miembros de implementación interna.
 - `protected`: miembros accesibles desde subclases (herencia).
 
 2. **Usar `readonly` siempre que la propiedad no deba cambiar tras la inicialización**
@@ -53,6 +54,7 @@ Motivo: la guía de estilo de Angular no utiliza `public` en hooks y los hooks s
 5. **Reglas de linting**
 
 Configurar ESLint para advertir (warning) cuando:
+
 - Falte un modificador de acceso en una propiedad o método definido por el desarrollador.
 - Se muten propiedades que deberían ser `readonly`.
 
@@ -60,31 +62,31 @@ Además, excluir los lifecycle hooks de Angular de la regla que obliga a especif
 
 ## Implementación
 
-- Actualizar las reglas de ESLint/TSLint para avisos (warnings) sobre ausencia de modificadores y sobre mutaciones de `readonly` esperadas.  
-- Crear una tarea de refactorizado gradual para adaptar las clases existentes (priorizar nuevos archivos y cambios por PR).  
+- Actualizar las reglas de ESLint/TSLint para avisos (warnings) sobre ausencia de modificadores y sobre mutaciones de `readonly` esperadas.
+- Crear una tarea de refactorizado gradual para adaptar las clases existentes (priorizar nuevos archivos y cambios por PR).
 - Añadir ejemplos y una entrada en el guideline del repositorio con las reglas y ejemplos de uso.
 
 ## Consecuencias
 
 ### Positivas
 
-- Mayor claridad y consistencia en el código.  
-- Menos errores por mutaciones inesperadas.  
-- Facilita identificar la API pública de una clase.  
+- Mayor claridad y consistencia en el código.
+- Menos errores por mutaciones inesperadas.
+- Facilita identificar la API pública de una clase.
 - Mejor alineación con buenas prácticas de TypeScript.
 
 ### Negativas
 
-- Aumenta la cantidad de escritura al declarar miembros.  
+- Aumenta la cantidad de escritura al declarar miembros.
 - Requiere adaptar código existente para cumplir la convención.
 
 ### Mitigación
 
-- Adoptar la convención de forma gradual (priorizar código nuevo y PRs).  
-- Añadir reglas de linting que emitan warnings antes de imponer errores.  
+- Adoptar la convención de forma gradual (priorizar código nuevo y PRs).
+- Añadir reglas de linting que emitan warnings antes de imponer errores.
 - Proveer una guía y ejemplos claros en el repositorio.
 
 ## Referencias
 
-- Angular Style Guide: https://angular.io/guide/styleguide  
+- Angular Style Guide: https://angular.io/guide/styleguide
 - TSDoc / TypeScript best practices

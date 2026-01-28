@@ -1,4 +1,5 @@
 # ADR-006: Patrón Repository para Servicios REST
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 07/01/2026  
@@ -7,6 +8,7 @@
 ## Contexto
 
 A medida que la aplicación crece, gestionar la comunicación con la API se vuelve complejo:
+
 - Múltiples servicios haciendo peticiones HTTP con diferentes patrones
 - Manejo de errores inconsistente entre componentes
 - Gestión duplicada del estado de carga
@@ -15,6 +17,7 @@ A medida que la aplicación crece, gestionar la comunicación con la API se vuel
 - No hay forma estandarizada de manejar mutaciones vs. consultas
 
 Sin un patrón consistente, los desarrolladores podrían:
+
 - Crear llamadas HTTP ad-hoc en componentes
 - Duplicar lógica de manejo de errores
 - Gestionar estados de carga manualmente en cada componente
@@ -51,12 +54,10 @@ export class CustomerRepository {
   // Mutations (POST, PUT, DELETE)
   public mutations() {
     return getMutations({
-      create: (customer: CustomerRequest) =>
-        this.httpClient.post<Customer>(this.baseUrl, customer),
+      create: (customer: CustomerRequest) => this.httpClient.post<Customer>(this.baseUrl, customer),
       update: (customer: CustomerRequest) =>
         this.httpClient.put<Customer>(`${this.baseUrl}/${customer.id}`, customer),
-      delete: (id: string) =>
-        this.httpClient.delete<void>(`${this.baseUrl}/${id}`)
+      delete: (id: string) => this.httpClient.delete<void>(`${this.baseUrl}/${id}`)
     });
   }
 
@@ -100,7 +101,11 @@ import { getApiUrl, getMutations, getResource } from '@/core/utils/async-resourc
 import { MockHttpClient } from '@/core/services/mock-http-client';
 import { BaseRepository } from '@/core/services/base-repository';
 import { HttpParams } from '@angular/common/http';
-import { Entity, EntityRequestCreate, EntityRequestUpdate } from '@/features/templates/models/entity';
+import {
+  Entity,
+  EntityRequestCreate,
+  EntityRequestUpdate
+} from '@/features/templates/models/entity';
 import entitiesMock from '@/test/mocks/repositories/entities.json';
 
 @Injectable({ providedIn: 'root' })
@@ -117,12 +122,10 @@ export class EntityRepository extends BaseRepository {
 
   public mutations() {
     return getMutations({
-      create: (entity: EntityRequestCreate) =>
-        this.httpClient.post<Entity>(this.baseUrl, entity),
+      create: (entity: EntityRequestCreate) => this.httpClient.post<Entity>(this.baseUrl, entity),
       update: (entity: EntityRequestUpdate) =>
         this.httpClient.put<Entity>(`${this.baseUrl}/${entity.id}`, entity),
-      delete: (id: string) =>
-        this.httpClient.delete<void>(`${this.baseUrl}/${id}`)
+      delete: (id: string) => this.httpClient.delete<void>(`${this.baseUrl}/${id}`)
     });
   }
 
@@ -180,15 +183,17 @@ test/mocks/repositories/
 Cuando el backend real esté disponible, el proceso de migración es simple:
 
 1. **Reemplazar MockHttpClient por HttpClient**:
+
    ```typescript
    // Antes (Mock)
    private readonly httpClient = inject(MockHttpClient);
-   
+
    // Después (Real)
    private readonly httpClient = inject(HttpClient);
    ```
 
 2. **Eliminar la carga de datos mock**:
+
    ```typescript
    // Eliminar estas líneas del constructor
    import entitiesMock from '@/test/mocks/repositories/entities.json';
@@ -257,7 +262,7 @@ DELETE /api/v1/parent-resource/:parentId/child-resource/:childId
 @Injectable({ providedIn: 'root' })
 export class ChildRepository {
   private readonly baseUrl = getApiUrl('children');
-  
+
   // Para filtrar por parentId, usar query params
   public findByParent(parentId: number) {
     return getResource<void, Child[]>(() => {
@@ -270,6 +275,7 @@ export class ChildRepository {
 ```
 
 **En el contrato API:**
+
 ```markdown
 ### Listar Children
 
@@ -287,29 +293,30 @@ Usar `getMutations()` para operaciones POST, PUT, PATCH y DELETE:
 const mutations = customerRepository.mutations();
 
 // Create
-mutations.create({ name: 'John', email: 'john@example.com' })
-  .then(result => {
+mutations
+  .create({ name: 'John', email: 'john@example.com' })
+  .then((result) => {
     console.log('Created:', result);
   })
-  .catch(error => {
+  .catch((error) => {
     // El error se muestra automáticamente al usuario vía MessageService
     // Pero aún puedes manejarlo si es necesario
   });
 
 // Update
-mutations.update({ id: '123', name: 'John Updated' })
-  .then(result => console.log('Updated:', result));
+mutations
+  .update({ id: '123', name: 'John Updated' })
+  .then((result) => console.log('Updated:', result));
 
 // Delete
-mutations.delete('123')
-  .then(() => console.log('Deleted'));
+mutations.delete('123').then(() => console.log('Deleted'));
 
 // Acceder a signals de estado
-mutations.submitting();  // true si alguna mutación está ejecutándose
-mutations.error();       // mensaje de error si alguna mutación falló
-mutations.create.submitting();  // true si create está ejecutándose
-mutations.create.value();       // último valor creado
-mutations.create.error();       // error específico de create
+mutations.submitting(); // true si alguna mutación está ejecutándose
+mutations.error(); // mensaje de error si alguna mutación falló
+mutations.create.submitting(); // true si create está ejecutándose
+mutations.create.value(); // último valor creado
+mutations.create.error(); // error específico de create
 ```
 
 ### Resources (Operaciones de Lectura)
@@ -321,18 +328,18 @@ Usar `getResource()` para operaciones GET:
 const customerResource = customerRepository.find();
 
 // Load data
-customerResource.load('123').then(customer => {
+customerResource.load('123').then((customer) => {
   console.log('Customer:', customer);
 });
 
 // Acceder a signals reactivos
-customerResource.value();   // valor actual del customer
+customerResource.value(); // valor actual del customer
 customerResource.loading(); // true mientras carga
-customerResource.error();   // mensaje de error si falló
+customerResource.error(); // mensaje de error si falló
 
 // Resource list
 const customers = customerRepository.findBy();
-customers.load().then(list => console.log('Customers:', list));
+customers.load().then((list) => console.log('Customers:', list));
 
 // Cleanup (importante para gestión de memoria)
 customerResource.destroy();
@@ -354,18 +361,13 @@ customers.destroy();
         <app-customer-card [customer]="customer" />
       }
     }
-    
-    <button 
-      [disabled]="mutations.submitting()"
-      (click)="handleCreate()"
-    >
-      Create Customer
-    </button>
+
+    <button [disabled]="mutations.submitting()" (click)="handleCreate()">Create Customer</button>
   `
 })
 export class CustomerListComponent implements OnInit, OnDestroy {
   private customerRepo = inject(CustomerRepository);
-  
+
   customers = this.customerRepo.findBy();
   mutations = this.customerRepo.mutations();
 
@@ -397,6 +399,7 @@ export class CustomerListComponent implements OnInit, OnDestroy {
 ### 1. Gestión Automática de Estado
 
 Tanto `getMutations()` como `getResource()` gestionan automáticamente:
+
 - **Estado Loading/Submitting**: Signals que indican cuando las operaciones están en progreso
 - **Estado de Error**: Signals que contienen mensajes de error
 - **Estado de Valor**: Signals que contienen el resultado de las operaciones
@@ -433,12 +436,12 @@ Tanto `getMutations()` como `getResource()` gestionan automáticamente:
 
 ```typescript
 // ✅ Correcto - un repository por entidad
-CustomerRepository
-OrderRepository
-ProductRepository
+CustomerRepository;
+OrderRepository;
+ProductRepository;
 
 // ❌ Incorrecto - múltiples entidades en un repository
-DataRepository  // Demasiado genérico
+DataRepository; // Demasiado genérico
 ```
 
 ### 2. Siempre Usar getApiUrl()
@@ -488,7 +491,7 @@ try {
 }
 
 // ❌ Incorrecto - ignorar errores
-mutations.create(data);  // Sin manejo de errores
+mutations.create(data); // Sin manejo de errores
 ```
 
 ### 6. Usar MockHttpClient cuando no hay Backend Disponible
@@ -501,7 +504,7 @@ import entitiesMock from '@/test/mocks/repositories/entities.json';
 export class EntityRepository extends BaseRepository {
   // TODO: Replace with real http client when API is available
   private readonly httpClient = inject(MockHttpClient);
-  
+
   constructor() {
     super();
     this.httpClient.loadCollection('entities', entitiesMock);
@@ -521,6 +524,7 @@ constructor() {
 ```
 
 **Reglas para archivos JSON mock:**
+
 - ✅ Ubicar en `test/mocks/repositories/`
 - ✅ Contener solo datos estructurados (raw data)
 - ✅ Simular estructuras realistas para UI completa

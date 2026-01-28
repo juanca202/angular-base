@@ -1,4 +1,5 @@
 # ADR-013: Layout y Estructura de Formularios
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
 **Última Actualización:** 06/01/2026  
@@ -15,6 +16,7 @@ El layout y la estructura de los formularios impactan directamente la experienci
 - El mantenimiento se vuelve difícil cuando los patrones de layout varían
 
 Necesitamos un enfoque consistente que:
+
 - Proporcione layouts de formularios predecibles y responsivos
 - Asegure consistencia visual en toda la aplicación
 - Haga los formularios fáciles de mantener y modificar
@@ -124,7 +126,7 @@ Los campos de formulario deben ser simples y limpios:
   <mat-label i18n>Etiqueta del Campo</mat-label>
   <input matInput formControlName="fieldName" />
   @if (form.get('fieldName')?.invalid && form.get('fieldName')?.touched) {
-    <mat-error>{{ form.get('fieldName') | errorMessage }}</mat-error>
+  <mat-error>{{ form.get('fieldName') | errorMessage }}</mat-error>
   }
 </mat-form-field>
 
@@ -148,37 +150,37 @@ Los campos de formulario deben ser simples y limpios:
           <mat-label i18n>Nombre</mat-label>
           <input matInput formControlName="firstName" />
           @if (form.get('firstName')?.invalid && form.get('firstName')?.touched) {
-            <mat-error>{{ form.get('firstName') | errorMessage }}</mat-error>
+          <mat-error>{{ form.get('firstName') | errorMessage }}</mat-error>
           }
         </mat-form-field>
-        
+
         <mat-form-field>
           <mat-label i18n>Apellido</mat-label>
           <input matInput formControlName="lastName" />
           @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
-            <mat-error>{{ form.get('lastName') | errorMessage }}</mat-error>
+          <mat-error>{{ form.get('lastName') | errorMessage }}</mat-error>
           }
         </mat-form-field>
-        
+
         <mat-form-field class="col-span-2">
           <mat-label i18n>Email</mat-label>
           <input matInput type="email" formControlName="email" />
           @if (form.get('email')?.invalid && form.get('email')?.touched) {
-            <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
+          <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
           }
         </mat-form-field>
-        
+
         <mat-form-field class="col-span-2">
           <mat-label i18n>Teléfono</mat-label>
           <input matInput formControlName="phone" />
           @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
-            <mat-error>{{ form.get('phone') | errorMessage }}</mat-error>
+          <mat-error>{{ form.get('phone') | errorMessage }}</mat-error>
           }
         </mat-form-field>
       </div>
     </div>
   </div>
-  
+
   <div mat-dialog-actions>
     <button type="button" mat-button mat-dialog-close i18n>Cancelar</button>
     <button type="submit" mat-flat-button color="primary" [disabled]="form.invalid" i18n>
@@ -284,7 +286,7 @@ Ejemplo combinando ambos ADRs:
     <mat-label i18n>Email</mat-label>
     <input matInput type="email" formControlName="email" />
     @if (form.get('email')?.invalid && form.get('email')?.touched) {
-      <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
+    <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
     }
   </mat-form-field>
 </div>

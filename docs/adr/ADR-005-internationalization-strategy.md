@@ -1,4 +1,5 @@
 # ADR-005: Estrategia de Internacionalización (i18n)
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 06/01/2026  
@@ -17,6 +18,7 @@ La aplicación necesita soportar múltiples idiomas para servir a una audiencia 
 - Integración con las capacidades i18n integradas de Angular
 
 Sin una estrategia i18n bien definida, corremos el riesgo de:
+
 - Cadenas hardcodeadas en la UI
 - Gestión de traducciones inconsistente
 - Mantenimiento difícil de archivos de traducción
@@ -75,6 +77,7 @@ npm run extract-i18n
 ```
 
 Este comando:
+
 - Escanea todos los templates en busca de atributos `i18n`
 - Extrae cadenas y genera IDs únicos
 - Crea `public/i18n/en.json` con todas las cadenas en inglés
@@ -89,6 +92,7 @@ npm run i18n -- fr    # Generar/actualizar francés
 ```
 
 El script `generate-i18n.js`:
+
 - Lee `en.json` (traducciones base)
 - Compara con el archivo de idioma objetivo existente (ej: `es.js`)
 - Genera/actualiza el archivo JS del idioma objetivo
@@ -98,6 +102,7 @@ El script `generate-i18n.js`:
 #### 4. Formato de Archivo de Traducción
 
 **Formato JSON base** (`en.json`):
+
 ```json
 {
   "translations": {
@@ -111,6 +116,7 @@ El script `generate-i18n.js`:
 ```
 
 **Formato JS generado** (`es.js`):
+
 ```javascript
 export default {
   '439130533561834924': ' Aceptar ',
@@ -122,6 +128,7 @@ export default {
 ```
 
 **Traducciones faltantes** (`es_missing.json`):
+
 ```json
 {
   "1234567890123456789": "New string that needs translation"
@@ -142,19 +149,19 @@ private async setLocale(): Promise<string> {
     (l) => l.code === this.storageService.get(this.localeKey, 'local')
   )?.code;
   const locale = userLocale || systemLocale || this.defaultLocale;
-  
+
   // 2. Almacenar preferencia del usuario
   this.storageService.set(this.localeKey, locale, 'local');
-  
+
   // 3. Importar dinámicamente el archivo de traducción
   const localeTranslationsModule = await import(`../../../../public/i18n/${locale}.js`);
-  
+
   // 4. Cargar traducciones en tiempo de ejecución
   loadTranslations(localeTranslationsModule.default);
-  
+
   // 5. Configurar moment.js para localización de fecha/hora
   moment.locale(locale);
-  
+
   return locale;
 }
 ```
@@ -187,6 +194,7 @@ changeLanguage(language: Language): void {
 ### 2. Detección de Traducciones Faltantes
 
 El script `generate-i18n.js` automáticamente:
+
 - Identifica traducciones faltantes
 - Crea archivos `{lang}_missing.json`
 - Elimina archivos faltantes cuando todas las traducciones están completas
@@ -200,6 +208,7 @@ El script `generate-i18n.js` automáticamente:
 ### 4. Seguridad
 
 El script `generate-i18n.js` incluye medidas de seguridad:
+
 - Validación de código de idioma (solo alfanumérico)
 - Prevención de path traversal
 - Resolución segura de archivos
@@ -213,11 +222,7 @@ El script `generate-i18n.js` incluye medidas de seguridad:
 <button i18n>Save</button>
 
 <!-- Generado en en.json -->
-{
-  "translations": {
-    "1234567890123456789": "Save"
-  }
-}
+{ "translations": { "1234567890123456789": "Save" } }
 ```
 
 ### Ejemplo 2: Cadena con Interpolación
@@ -234,17 +239,13 @@ El script `generate-i18n.js` incluye medidas de seguridad:
 ```html
 <!-- Template -->
 <div i18n>
-  If you continue, you agree to our 
-  {$START_LINK}Terms and Conditions{$CLOSE_LINK} 
-  and {$START_LINK_1}Privacy Policy{$CLOSE_LINK}.
+  If you continue, you agree to our {$START_LINK}Terms and Conditions{$CLOSE_LINK} and
+  {$START_LINK_1}Privacy Policy{$CLOSE_LINK}.
 </div>
 
 <!-- Generado con placeholders -->
-{
-  "translations": {
-    "6749157715538041035": 
-      " If you continue with the service, you agree to our {$START_LINK}Terms and Conditions{$CLOSE_LINK} and {$START_LINK_1}Privacy Policies{$CLOSE_LINK}. "
-  }
+{ "translations": { "6749157715538041035": " If you continue with the service, you agree to our
+{$START_LINK}Terms and Conditions{$CLOSE_LINK} and {$START_LINK_1}Privacy Policies{$CLOSE_LINK}. " }
 }
 ```
 
@@ -261,12 +262,12 @@ El script `generate-i18n.js` incluye medidas de seguridad:
       <mat-label i18n>First name</mat-label>
       <input matInput [formControl]="firstName" />
     </mat-form-field>
-    
+
     <mat-form-field>
       <mat-label i18n>Last name</mat-label>
       <input matInput [formControl]="lastName" />
     </mat-form-field>
-    
+
     <button mat-flat-button color="primary" i18n>Save Changes</button>
   </mat-card-content>
 </mat-card>
@@ -292,19 +293,17 @@ import { NotificationService } from '@factor_ec/utils';
 })
 export class UserProfileComponent {
   private notificationService = inject(NotificationService);
-  
+
   // ✅ Correcto - Usando $localize para cadenas traducibles
   title = $localize`User Profile`;
   saveButtonText = $localize`Save Changes`;
-  
+
   saveUser(): void {
     // ✅ Correcto - Usando $localize con interpolación
     const userName = 'John Doe';
-    this.notificationService.success(
-      $localize`User ${userName} has been saved successfully.`
-    );
+    this.notificationService.success($localize`User ${userName} has been saved successfully.`);
   }
-  
+
   showError(): void {
     // ✅ Correcto - Usando $localize para mensajes de error
     this.notificationService.error(
@@ -315,12 +314,14 @@ export class UserProfileComponent {
 ```
 
 **Notas Importantes:**
+
 - `$localize` usa sintaxis de template literal con backticks (`` ` ``)
 - La interpolación se hace usando la sintaxis `${variable}`
 - La cadena será extraída durante el proceso `npm run extract-i18n`
 - La cadena extraída aparecerá en `en.json` con un ID generado
 
 **Generado en en.json:**
+
 ```json
 {
   "translations": {
@@ -337,11 +338,13 @@ export class UserProfileComponent {
 ### Agregar un Nuevo Idioma
 
 1. **Extraer traducciones base:**
+
    ```bash
    npm run extract-i18n
    ```
 
 2. **Generar archivo de idioma:**
+
    ```bash
    npm run i18n -- de  # Para alemán
    ```
@@ -352,9 +355,11 @@ export class UserProfileComponent {
    - Copiar traducciones a `public/i18n/de.js`
 
 4. **Regenerar para verificar:**
+
    ```bash
    npm run i18n -- de
    ```
+
    - Si todas las traducciones están completas, `de_missing.json` será eliminado
 
 ### Actualizar Traducciones

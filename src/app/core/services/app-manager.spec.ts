@@ -249,4 +249,191 @@ describe('AppManager', () => {
       expect(appManager.initialized).toBe(false);
     });
   });
+
+  describe('install', () => {
+    it('should prompt install when installPrompt exists', () => {
+      // Arrange
+      const mockPrompt = vi.fn();
+      const mockUserChoice = Promise.resolve({ outcome: 'accepted' });
+      (appManager as any).installPrompt = {
+        prompt: mockPrompt,
+        userChoice: mockUserChoice
+      };
+
+      // Act
+      appManager.install();
+
+      // Assert
+      expect(mockPrompt).toHaveBeenCalled();
+    });
+
+    it('should not prompt when installPrompt is null', () => {
+      // Arrange
+      (appManager as any).installPrompt = null;
+
+      // Act
+      appManager.install();
+
+      // Assert
+      // Should not throw error
+      // Should not throw error when installPrompt is null
+      expect(() => appManager.install()).not.toThrow();
+    });
+  });
+
+  describe('init', () => {
+    // Note: init() method involves dynamic imports and complex async flows
+    // These are better tested in integration tests. Unit tests focus on
+    // individual method behaviors that can be isolated.
+    it('should be callable', () => {
+      // Arrange & Act & Assert
+      expect(typeof appManager.init).toBe('function');
+    });
+  });
+
+  describe('versionUpdates subscription', () => {
+    it('should handle VERSION_DETECTED event', () => {
+      // Arrange
+      const versionUpdates = new EventEmitter<any>();
+      (mockSwUpdate.versionUpdates as any) = versionUpdates;
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          AppManager,
+          { provide: AuthProvider, useValue: mockAuthProvider },
+          { provide: Session, useValue: mockSession },
+          { provide: StorageService, useValue: mockStorageService },
+          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Location, useValue: mockLocation },
+          { provide: Router, useValue: mockRouter },
+          { provide: MatSnackBar, useValue: mockSnackBar },
+          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: PLATFORM_ID, useValue: 'browser' }
+        ]
+      });
+
+      const manager = TestBed.inject(AppManager);
+
+      // Act
+      versionUpdates.emit({ type: 'VERSION_DETECTED', version: { hash: 'abc123' } });
+
+      // Assert
+      expect(manager.updateStatus()).toBe('checking');
+    });
+
+    it('should handle VERSION_READY event', () => {
+      // Arrange
+      const versionUpdates = new EventEmitter<any>();
+      (mockSwUpdate.versionUpdates as any) = versionUpdates;
+      const snackBarOpenSpy = vi.spyOn(mockSnackBar, 'open').mockReturnValue({
+        onAction: vi.fn().mockReturnValue({
+          subscribe: vi.fn((callback: any) => {
+            callback();
+            return { unsubscribe: vi.fn() };
+          })
+        })
+      } as any);
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          AppManager,
+          { provide: AuthProvider, useValue: mockAuthProvider },
+          { provide: Session, useValue: mockSession },
+          { provide: StorageService, useValue: mockStorageService },
+          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Location, useValue: mockLocation },
+          { provide: Router, useValue: mockRouter },
+          { provide: MatSnackBar, useValue: mockSnackBar },
+          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: PLATFORM_ID, useValue: 'browser' }
+        ]
+      });
+
+      const manager = TestBed.inject(AppManager);
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: {
+          ...window.location,
+          reload: vi.fn()
+        }
+      });
+
+      // Act
+      versionUpdates.emit({
+        type: 'VERSION_READY',
+        currentVersion: { hash: 'abc123' },
+        latestVersion: { hash: 'def456' }
+      });
+
+      // Assert
+      expect(manager.updateStatus()).toBe('done');
+      expect(snackBarOpenSpy).toHaveBeenCalled();
+    });
+
+    it('should handle VERSION_INSTALLATION_FAILED event', () => {
+      // Arrange
+      const versionUpdates = new EventEmitter<any>();
+      (mockSwUpdate.versionUpdates as any) = versionUpdates;
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          AppManager,
+          { provide: AuthProvider, useValue: mockAuthProvider },
+          { provide: Session, useValue: mockSession },
+          { provide: StorageService, useValue: mockStorageService },
+          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Location, useValue: mockLocation },
+          { provide: Router, useValue: mockRouter },
+          { provide: MatSnackBar, useValue: mockSnackBar },
+          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: PLATFORM_ID, useValue: 'browser' }
+        ]
+      });
+
+      const manager = TestBed.inject(AppManager);
+
+      // Act
+      versionUpdates.emit({
+        type: 'VERSION_INSTALLATION_FAILED',
+        version: { hash: 'abc123' },
+        error: new Error('Installation failed')
+      });
+
+      // Assert
+      expect(manager.updateStatus()).toBe('failed');
+    });
+
+    it('should handle NO_NEW_VERSION_DETECTED event', () => {
+      // Arrange
+      const versionUpdates = new EventEmitter<any>();
+      (mockSwUpdate.versionUpdates as any) = versionUpdates;
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          AppManager,
+          { provide: AuthProvider, useValue: mockAuthProvider },
+          { provide: Session, useValue: mockSession },
+          { provide: StorageService, useValue: mockStorageService },
+          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Location, useValue: mockLocation },
+          { provide: Router, useValue: mockRouter },
+          { provide: MatSnackBar, useValue: mockSnackBar },
+          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: PLATFORM_ID, useValue: 'browser' }
+        ]
+      });
+
+      const manager = TestBed.inject(AppManager);
+
+      // Act
+      versionUpdates.emit({ type: 'NO_NEW_VERSION_DETECTED' });
+
+      // Assert
+      expect(manager.updateStatus()).toBe('done');
+    });
+  });
 });

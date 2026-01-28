@@ -65,7 +65,10 @@ export function createMockWindowLocation(): {
  * Automáticamente limpia el mock después del test
  */
 export async function withMockLocation<T>(
-  callback: (mock: { mockLocation: MockLocation; reloadSpy: ReturnType<typeof vi.fn> }) => T | Promise<T>
+  callback: (mock: {
+    mockLocation: MockLocation;
+    reloadSpy: ReturnType<typeof vi.fn>;
+  }) => T | Promise<T>
 ): Promise<T> {
   const { mockLocation, reloadSpy, cleanup } = createMockWindowLocation();
   try {
@@ -74,4 +77,3 @@ export async function withMockLocation<T>(
     cleanup();
   }
 }
-

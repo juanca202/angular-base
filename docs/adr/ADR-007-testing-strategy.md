@@ -11,12 +11,12 @@
 
 A medida que la aplicación crece, mantener la calidad del código y prevenir regresiones se vuelve crítico. Sin una estrategia de testing bien definida:
 
-* Los tests pueden ser inconsistentes en estructura y calidad
-* Bugs críticos pueden pasar desapercibidos
-* La refactorización se vuelve riesgosa sin cobertura de tests
-* El onboarding de nuevos desarrolladores es más lento sin ejemplos de tests
-* Los problemas de integración se descubren tarde en el desarrollo
-* No hay guías claras sobre qué testear y cómo
+- Los tests pueden ser inconsistentes en estructura y calidad
+- Bugs críticos pueden pasar desapercibidos
+- La refactorización se vuelve riesgosa sin cobertura de tests
+- El onboarding de nuevos desarrolladores es más lento sin ejemplos de tests
+- Los problemas de integración se descubren tarde en el desarrollo
+- No hay guías claras sobre qué testear y cómo
 
 Adicionalmente, el proyecto hace uso intensivo de **Angular Signals** y **herramientas asistidas por IA** (Cursor, Copilot, etc.), que pueden interpretar incorrectamente los signals como funciones regulares si no existe un contrato de testing claro.
 
@@ -24,12 +24,12 @@ Este ADR aplica a **Angular 21+**, que incluye **Vitest integrado por defecto** 
 
 Necesitamos una estrategia de testing exhaustiva que:
 
-* Asegure confiabilidad y mantenibilidad del código
-* Proporcione confianza al refactorizar
-* Sirva como documentación del comportamiento del código
-* Detecte bugs temprano en el ciclo de desarrollo
-* Mantenga calidad de tests consistente en todo el equipo
-* Evite ambigüedad al testear estado reactivo (Signals)
+- Asegure confiabilidad y mantenibilidad del código
+- Proporcione confianza al refactorizar
+- Sirva como documentación del comportamiento del código
+- Detecte bugs temprano en el ciclo de desarrollo
+- Mantenga calidad de tests consistente en todo el equipo
+- Evite ambigüedad al testear estado reactivo (Signals)
 
 ---
 
@@ -56,9 +56,9 @@ El proyecto favorece la **inferencia de tipos de TypeScript** sobre el tipado ex
 
 Los tipos explícitos DEBEN introducirse solo cuando:
 
-* La inferencia de tipos es ambigua
-* Las herramientas (tests, IDEs, asistentes de IA) malinterpretan la intención
-* Las APIs públicas o límites arquitectónicos requieren claridad
+- La inferencia de tipos es ambigua
+- Las herramientas (tests, IDEs, asistentes de IA) malinterpretan la intención
+- Las APIs públicas o límites arquitectónicos requieren claridad
 
 La inferencia es el predeterminado. El tipado explícito es una herramienta para eliminar ambigüedad, no un requisito.
 
@@ -68,9 +68,9 @@ La inferencia es el predeterminado. El tipado explícito es una herramienta para
 
 ### Stack de Testing
 
-* **Vitest:** Framework de testing unitario e integración (integrado con Angular 21+)
-* **Utilidades de Testing de Angular:** TestBed, ComponentFixture
-* **Playwright:** Framework de testing end-to-end
+- **Vitest:** Framework de testing unitario e integración (integrado con Angular 21+)
+- **Utilidades de Testing de Angular:** TestBed, ComponentFixture
+- **Playwright:** Framework de testing end-to-end
 
 Los tests se ejecutan usando Angular CLI:
 
@@ -115,17 +115,17 @@ Los Signals representan **estado**, no comportamiento.
 
 #### DEBE
 
-* Los Signals DEBEN leerse usando `signal()`
-* Los Signals DEBEN actualizarse usando `set()` o `update()`
-* Los tests DEBEN verificar valores de signals, no instancias de signals
-* Los Signals DEBEN depender de la inferencia de tipos por defecto
+- Los Signals DEBEN leerse usando `signal()`
+- Los Signals DEBEN actualizarse usando `set()` o `update()`
+- Los tests DEBEN verificar valores de signals, no instancias de signals
+- Los Signals DEBEN depender de la inferencia de tipos por defecto
 
 #### NO DEBE
 
-* NO DEBE hacer spy en signals
-* NO DEBE hacer mock de signals
-* NO DEBE reasignar signals
-* NO DEBE tratar signals como funciones regulares
+- NO DEBE hacer spy en signals
+- NO DEBE hacer mock de signals
+- NO DEBE reasignar signals
+- NO DEBE tratar signals como funciones regulares
 
 ---
 
@@ -139,9 +139,9 @@ customers = signal<Customer[]>([]);
 
 Los tipos genéricos explícitos DEBEN proporcionarse cuando:
 
-* Los Signals se usan en tests unitarios
-* Los Signals cruzan límites arquitectónicos
-* Los Signals son accedidos por herramientas asistidas por IA
+- Los Signals se usan en tests unitarios
+- Los Signals cruzan límites arquitectónicos
+- Los Signals son accedidos por herramientas asistidas por IA
 
 Esto asegura que los signals sean claramente distinguibles de funciones sin introducir tipado explícito `Signal<T>`.
 
@@ -219,19 +219,19 @@ Los Signals siempre deben ser signals reales.
 
 Cuando uses herramientas de IA (Cursor, Copilot, ChatGPT):
 
-* Prefiere la inferencia, pero agrega genéricos explícitos a signals cuando sea necesario
-* Nunca aceptes tests generados que hagan spy o mock de signals
-* Revisa tests generados por mal uso de signals
-* Los Signals siempre deben leerse con `()` y actualizarse con `.set()`
+- Prefiere la inferencia, pero agrega genéricos explícitos a signals cuando sea necesario
+- Nunca aceptes tests generados que hagan spy o mock de signals
+- Revisa tests generados por mal uso de signals
+- Los Signals siempre deben leerse con `()` y actualizarse con `.set()`
 
 ---
 
 ## Objetivos de Cobertura de Tests
 
-* **Cobertura de Ramas:** ≥80% para rutas críticas
-* **Cobertura de Funciones:** ≥80% general
-* **Cobertura de Líneas:** ≥80% general
-* **Áreas de Enfoque:** Lógica de negocio, manejo de errores, casos extremos
+- **Cobertura de Ramas:** ≥80% para rutas críticas
+- **Cobertura de Funciones:** ≥80% general
+- **Cobertura de Líneas:** ≥80% general
+- **Áreas de Enfoque:** Lógica de negocio, manejo de errores, casos extremos
 
 ---
 
@@ -254,22 +254,22 @@ test('user can login and view dashboard', async ({ page }) => {
 
 ### Positivas
 
-* Estructura de tests consistente y confiable
-* Refactorización segura con confianza
-* Semántica de testing clara para Signals
-* Reducción de errores de herramientas asistidas por IA
-* Los tests actúan como documentación ejecutable
+- Estructura de tests consistente y confiable
+- Refactorización segura con confianza
+- Semántica de testing clara para Signals
+- Reducción de errores de herramientas asistidas por IA
+- Los tests actúan como documentación ejecutable
 
 ### Negativas
 
-* Se requiere un poco más de disciplina en los tests
-* Curva de aprendizaje alrededor de la semántica de Signals
+- Se requiere un poco más de disciplina en los tests
+- Curva de aprendizaje alrededor de la semántica de Signals
 
 ### Mitigación
 
-* Proporcionar ejemplos y plantillas
-* Hacer cumplir reglas mediante revisiones de PR
-* Tratar Signals como estado, no como comportamiento
+- Proporcionar ejemplos y plantillas
+- Hacer cumplir reglas mediante revisiones de PR
+- Tratar Signals como estado, no como comportamiento
 
 ---
 
@@ -289,6 +289,6 @@ ng test:e2e
 
 ## Referencias
 
-* [Guía de Testing de Angular](https://angular.dev/guide/testing)
-* [Documentación de Vitest](https://vitest.dev/)
-* [Documentación de Playwright](https://playwright.dev/)
+- [Guía de Testing de Angular](https://angular.dev/guide/testing)
+- [Documentación de Vitest](https://vitest.dev/)
+- [Documentación de Playwright](https://playwright.dev/)

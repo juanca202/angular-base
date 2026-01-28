@@ -83,6 +83,7 @@ Enlaces directos a toda la documentación disponible:
 ### 📐 [Arquitectura](./docs/README.md)
 
 Documentación completa de la arquitectura del proyecto, incluyendo:
+
 - Objetivos y alcance arquitectónicos
 - Diagramas C4 (Componentes y módulos internos)
 - Decisiones arquitectónicas (ADRs)
@@ -104,6 +105,7 @@ Este proyecto documenta todas las decisiones arquitectónicas importantes en ADR
 ### 🎨 [Estilos CSS](./docs/specs/rules/css-styling.md)
 
 Reglas y convenciones para el uso de CSS en el proyecto:
+
 - BEM con prefijo `ft-` para clases personalizadas
 - Priorización de Tailwind CSS para utilidades
 - Variables CSS para temas y consistencia
@@ -116,6 +118,7 @@ Reglas y convenciones para el uso de CSS en el proyecto:
 ## Contribuir
 
 Al agregar nueva documentación:
+
 - Mantener el formato Markdown consistente
 - Incluir ejemplos de código cuando sea relevante
 - Actualizar este índice con enlaces y descripciones

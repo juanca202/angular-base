@@ -1,4 +1,5 @@
 # ADR-016: Modelo de flujo de ramas basado en Features → Staging → Producción
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 23/01/2026  
@@ -26,6 +27,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 **Propósito:** Ramas de desarrollo de funcionalidades
 
 **Características:**
+
 - Se crean desde: `staging`
 - Permanecen activas hasta que la funcionalidad esté completa y estable
 - Convención de nombre: `feature/<nombre-feature>`
@@ -33,6 +35,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 - Se integran a `staging` mediante Pull Request cuando están completas
 
 **Workflow:**
+
 1. Crear rama desde `staging`: `git checkout -b feature/nombre-feature staging`
 2. Desarrollo y validación local de la funcionalidad
 3. Cuando la feature esté estable, abrir Pull Request hacia `staging`
@@ -45,6 +48,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 **Propósito:** Rama de integración y pruebas
 
 **Características:**
+
 - Rama de integración donde se prueban las features completas
 - Recibe features completas mediante Pull Request
 - Se utiliza para QA, validaciones funcionales y pruebas manuales o automáticas
@@ -52,6 +56,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 - Todos los cambios deben pasar por Pull Request
 
 **Reglas:**
+
 - Solo se permite merge mediante Pull Request desde `feature/*`
 - Se requiere revisión de código antes de aprobar
 - CI/CD debe pasar exitosamente antes de permitir el merge
@@ -62,6 +67,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 **Propósito:** Rama estable y desplegable
 
 **Características:**
+
 - Contiene código en producción
 - Solo recibe cambios desde `staging` una vez aprobados
 - Siempre debe estar en estado desplegable
@@ -70,6 +76,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 - Los releases se etiquetan con `git tag` siguiendo versionado semántico
 
 **Reglas:**
+
 - Solo se permite merge mediante Pull Request desde `staging`
 - Se requiere aprobación antes de mergear
 - Todos los tests deben pasar antes del merge
@@ -197,6 +204,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 **Descripción:** Modelo de trabajo basado en ramas con `main`, `develop`, `feature/*`, `release/*` y `hotfix/*`
 
 **Rechazado por:**
+
 - Más pesado y lento para el tamaño del equipo
 - Mayor complejidad con múltiples tipos de ramas
 - Proceso de release más burocrático
@@ -207,6 +215,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 **Descripción:** Desarrollo directo en una rama principal (`main`) con integración frecuente y feature flags
 
 **Rechazado por:**
+
 - Necesidad de un entorno explícito de QA antes de producción
 - El equipo requiere un espacio de pruebas centralizado
 - Las features pueden tardar en madurar y necesitan un entorno de pruebas dedicado

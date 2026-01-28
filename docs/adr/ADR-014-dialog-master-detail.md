@@ -1,4 +1,5 @@
 # ADR-014: Uso de Diálogos para Interacciones Maestro–Detalle
+
 **Estado:** Propuesto  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 06/01/2026  
@@ -8,11 +9,11 @@
 
 La aplicación utiliza **diálogos** como mecanismo principal de interacción para implementar el patrón **maestro–detalle**, permitiendo a los usuarios visualizar o editar el detalle de una entidad **sin perder el contexto** de la pantalla anterior.
 
-Los diálogos **no deben ser invocados directamente desde componentes o controladores de features**. En su lugar, se abren a través de **manejadores de entidades** (*entity managers*), los cuales centralizan la lógica de navegación e interacción asociada a una entidad del dominio.
+Los diálogos **no deben ser invocados directamente desde componentes o controladores de features**. En su lugar, se abren a través de **manejadores de entidades** (_entity managers_), los cuales centralizan la lógica de navegación e interacción asociada a una entidad del dominio.
 
 Un ejemplo típico de estos manejadores es:
 
-* `managers/entity-manager.ts`
+- `managers/entity-manager.ts`
 
 Este enfoque evita el acoplamiento entre componentes de UI y la implementación concreta de los diálogos, y refuerza una arquitectura más mantenible y coherente.
 
@@ -24,31 +25,31 @@ Se estandariza el uso de diálogos en **tres variantes**, implementadas mediante
 
 Todos los diálogos:
 
-* Siguen el patrón maestro–detalle
-* Deben abrirse exclusivamente desde manejadores de entidades
-* Utilizan `MatDialog` de Angular Material
-* Deben configurarse explícitamente (tamaño, posición y clases)
+- Siguen el patrón maestro–detalle
+- Deben abrirse exclusivamente desde manejadores de entidades
+- Utilizan `MatDialog` de Angular Material
+- Deben configurarse explícitamente (tamaño, posición y clases)
 
 ### 1. Diálogo Simple (`ft-dialog`)
 
 **Propósito**
 Usado para interacciones ligeras, como:
 
-* Formularios pequeños
-* Ediciones rápidas
-* Vistas de detalle compactas
+- Formularios pequeños
+- Ediciones rápidas
+- Vistas de detalle compactas
 
 **Características**
 
-* Ancho y alto limitados
-* No requiere scroll complejo
-* Interrupción mínima del flujo del usuario
+- Ancho y alto limitados
+- No requiere scroll complejo
+- Interrupción mínima del flujo del usuario
 
 **Guías de uso**
 
-* Evitar contenido extenso
-* No usar navegación anidada
-* Opción preferida por defecto
+- Evitar contenido extenso
+- No usar navegación anidada
+- Opción preferida por defecto
 
 ---
 
@@ -59,16 +60,16 @@ Usado para mostrar información detallada o formularios que pueden requerir scro
 
 **Características**
 
-* Se despliega lateralmente desde la derecha
-* Más ancho y alto que el diálogo simple
-* Soporta scroll vertical
-* Ideal para vistas de detalle en flujos maestro–detalle
+- Se despliega lateralmente desde la derecha
+- Más ancho y alto que el diálogo simple
+- Soporta scroll vertical
+- Ideal para vistas de detalle en flujos maestro–detalle
 
 **Guías de uso**
 
-* Usar para vistas de detalle de entidades
-* Usar cuando el contenido excede los límites de un diálogo simple
-* Preferible frente al diálogo completo cuando se desea preservar el contexto
+- Usar para vistas de detalle de entidades
+- Usar cuando el contenido excede los límites de un diálogo simple
+- Preferible frente al diálogo completo cuando se desea preservar el contexto
 
 ---
 
@@ -79,15 +80,15 @@ Usado cuando se necesita un espacio amplio de visualización, manteniendo el com
 
 **Características**
 
-* Ocupa todo el viewport
-* Mantiene el contexto de la pantalla subyacente
-* Adecuado para flujos complejos o visualizaciones extensas
+- Ocupa todo el viewport
+- Mantiene el contexto de la pantalla subyacente
+- Adecuado para flujos complejos o visualizaciones extensas
 
 **Guías de uso**
 
-* Usar de forma excepcional
-* Usar solo cuando el diálogo apilado no sea suficiente
-* No utilizar como sustituto sistemático del enrutamiento
+- Usar de forma excepcional
+- Usar solo cuando el diálogo apilado no sea suficiente
+- No utilizar como sustituto sistemático del enrutamiento
 
 ---
 
@@ -155,16 +156,16 @@ export class RequirementListComponent {
 
 ```typescript
 // ✅ Correcto - diálogo simple
-panelClass: ['ft-dialog']
+panelClass: ['ft-dialog'];
 
 // ✅ Correcto - diálogo apilado
-panelClass: ['ft-dialog', 'ft-dialog--stacked']
+panelClass: ['ft-dialog', 'ft-dialog--stacked'];
 
 // ✅ Correcto - diálogo completo
-panelClass: ['ft-dialog', 'ft-dialog--full']
+panelClass: ['ft-dialog', 'ft-dialog--full'];
 
 // ❌ Incorrecto - clases personalizadas sin justificación
-panelClass: ['custom-dialog', 'my-special-class']
+panelClass: ['custom-dialog', 'my-special-class'];
 ```
 
 #### 3. Configurar Tamaño y Posición Explícitamente
@@ -192,40 +193,42 @@ const config = {
 
 ### Positivas
 
-* **Comportamiento consistente:** Todos los diálogos siguen patrones predecibles en toda la aplicación
-* **Separación de responsabilidades:** La lógica de navegación está centralizada en manejadores
-* **Mejor experiencia de usuario:** Patrones predecibles mejoran la usabilidad
-* **Mantenibilidad:** Refactorización y mantenimiento más sencillos
-* **Arquitectura coherente:** Evita acoplamiento entre componentes y diálogos
+- **Comportamiento consistente:** Todos los diálogos siguen patrones predecibles en toda la aplicación
+- **Separación de responsabilidades:** La lógica de navegación está centralizada en manejadores
+- **Mejor experiencia de usuario:** Patrones predecibles mejoran la usabilidad
+- **Mantenibilidad:** Refactorización y mantenimiento más sencillos
+- **Arquitectura coherente:** Evita acoplamiento entre componentes y diálogos
 
 ### Negativas
 
-* **Complejidad inicial:** Ligero aumento de complejidad debido a la abstracción por manejadores
-* **Menor flexibilidad:** Menos flexibilidad para usos ad-hoc de diálogos fuera del patrón estándar
-* **Curva de aprendizaje:** Los desarrolladores necesitan entender el patrón de manejadores
+- **Complejidad inicial:** Ligero aumento de complejidad debido a la abstracción por manejadores
+- **Menor flexibilidad:** Menos flexibilidad para usos ad-hoc de diálogos fuera del patrón estándar
+- **Curva de aprendizaje:** Los desarrolladores necesitan entender el patrón de manejadores
 
 ### Mitigación
 
-* Documentación exhaustiva en este ADR
-* Ejemplos de código y plantillas
-* Proceso de revisión de código para asegurar cumplimiento del patrón
-* Guías claras sobre cuándo usar cada tipo de diálogo
+- Documentación exhaustiva en este ADR
+- Ejemplos de código y plantillas
+- Proceso de revisión de código para asegurar cumplimiento del patrón
+- Guías claras sobre cuándo usar cada tipo de diálogo
 
 ## Alternativas Consideradas
 
 ### 1. Invocar Diálogos Directamente desde Componentes
 
 **Rechazado** por:
-* Alto acoplamiento entre componentes y la implementación de diálogos
-* Dificultad para mantener consistencia
-* Violación del principio de separación de responsabilidades
+
+- Alto acoplamiento entre componentes y la implementación de diálogos
+- Dificultad para mantener consistencia
+- Violación del principio de separación de responsabilidades
 
 ### 2. Usar Siempre Rutas para Vistas de Detalle
 
 **Rechazado** por:
-* Pérdida del contexto de la pantalla anterior
-* Afecta negativamente la experiencia de usuario
-* No permite el patrón maestro–detalle de manera fluida
+
+- Pérdida del contexto de la pantalla anterior
+- Afecta negativamente la experiencia de usuario
+- No permite el patrón maestro–detalle de manera fluida
 
 ## Notas
 
@@ -235,4 +238,3 @@ Este ADR no define detalles de estilo visual más allá de la clasificación de 
 
 - [Angular Material Dialog](https://material.angular.io/components/dialog/overview)
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
-

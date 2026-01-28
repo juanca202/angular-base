@@ -1,4 +1,5 @@
 # ADR-008: Estrategia de Validación de Formularios
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 06/01/2026  
@@ -16,6 +17,7 @@ La validación de formularios es un aspecto crítico de la experiencia del usuar
 - No hay patrón claro para validadores personalizados
 
 Necesitamos una estrategia consistente que:
+
 - Estandarice patrones de validación en toda la aplicación
 - Proporcione mensajes de error claros y amigables para el usuario
 - Haga la lógica de validación reutilizable y mantenible
@@ -49,7 +51,7 @@ Todos los campos de formulario siguen esta estructura estándar:
     [placeholder]="'Placeholder text' | i18n"
   />
   @if (form.get('fieldName')?.invalid && form.get('fieldName')?.touched) {
-    <mat-error>{{ form.get('fieldName') | errorMessage }}</mat-error>
+  <mat-error>{{ form.get('fieldName') | errorMessage }}</mat-error>
   }
 </mat-form-field>
 ```
@@ -66,12 +68,7 @@ import { emailValidator } from '@/shared/validators/email.validator';
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ErrorMessagePipe
-  ],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, ErrorMessagePipe],
   template: `...`
 })
 export class UserFormComponent {
@@ -137,9 +134,7 @@ export function orderNumberValidator(control: AbstractControl): ValidationErrors
 
   // Regla de negocio: Los números de orden deben comenzar con "ORD-" seguido de 6 dígitos
   const orderNumberRegex = /^ORD-\d{6}$/;
-  return orderNumberRegex.test(control.value) 
-    ? null 
-    : { invalidOrderNumber: true };
+  return orderNumberRegex.test(control.value) ? null : { invalidOrderNumber: true };
 }
 ```
 
@@ -163,7 +158,7 @@ export class ErrorMessagePipe implements PipeTransform {
     }
 
     const errors = control.errors;
-    
+
     // Validadores integrados de Angular
     if (errors['required']) {
       return $localize`This field is required`;
@@ -214,7 +209,7 @@ export class ErrorMessagePipe implements PipeTransform {
       [placeholder]="'Enter your email' | i18n"
     />
     @if (form.get('email')?.invalid && form.get('email')?.touched) {
-      <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
+    <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
     }
   </mat-form-field>
 
@@ -227,7 +222,7 @@ export class ErrorMessagePipe implements PipeTransform {
       [placeholder]="'Choose a username' | i18n"
     />
     @if (form.get('username')?.invalid && form.get('username')?.touched) {
-      <mat-error>{{ form.get('username') | errorMessage }}</mat-error>
+    <mat-error>{{ form.get('username') | errorMessage }}</mat-error>
     }
   </mat-form-field>
 
@@ -240,7 +235,7 @@ export class ErrorMessagePipe implements PipeTransform {
       [placeholder]="'Enter your phone number' | i18n"
     />
     @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
-      <mat-error>{{ form.get('phone') | errorMessage }}</mat-error>
+    <mat-error>{{ form.get('phone') | errorMessage }}</mat-error>
     }
   </mat-form-field>
 
@@ -280,11 +275,7 @@ export class UserProfileComponent {
 
   form = this.fb.group({
     email: ['', [Validators.required, emailValidator]],
-    username: ['', [
-      Validators.required,
-      Validators.minLength(3),
-      Validators.maxLength(20)
-    ]],
+    username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
     phone: ['', [phoneValidator]]
   });
 
@@ -322,12 +313,12 @@ form = this.fb.group({
 ```html
 <!-- ✅ Correcto -->
 @if (form.get('email')?.invalid && form.get('email')?.touched) {
-  <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
+<mat-error>{{ form.get('email') | errorMessage }}</mat-error>
 }
 
 <!-- ❌ Incorrecto - mensajes de error inline -->
 @if (form.get('email')?.hasError('required')) {
-  <mat-error>Email is required</mat-error>
+<mat-error>Email is required</mat-error>
 }
 ```
 
@@ -336,12 +327,12 @@ form = this.fb.group({
 ```html
 <!-- ✅ Correcto - solo mostrar errores después de interacción del usuario -->
 @if (form.get('email')?.invalid && form.get('email')?.touched) {
-  <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
+<mat-error>{{ form.get('email') | errorMessage }}</mat-error>
 }
 
 <!-- ❌ Incorrecto - muestra errores inmediatamente -->
 @if (form.get('email')?.invalid) {
-  <mat-error>{{ form.get('email') | errorMessage }}</mat-error>
+<mat-error>{{ form.get('email') | errorMessage }}</mat-error>
 }
 ```
 
@@ -351,9 +342,7 @@ form = this.fb.group({
 // ✅ Correcto - función pura
 export function emailValidator(control: AbstractControl): ValidationErrors | null {
   if (!control.value) return null;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(control.value) 
-    ? null 
-    : { invalidEmail: true };
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(control.value) ? null : { invalidEmail: true };
 }
 
 // ❌ Incorrecto - validador con estado

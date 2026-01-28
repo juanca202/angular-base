@@ -1,4 +1,5 @@
 # ADR-002: Adopción de la Guía de Estilo Oficial de Angular
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 06/01/2026  
@@ -7,6 +8,7 @@
 ## Contexto
 
 A medida que Angular evoluciona y el equipo crece, mantener la consistencia del código se vuelve desafiante. Diferentes desarrolladores pueden tener diferentes estilos de codificación, llevando a:
+
 - Patrones de código inconsistentes en todo el codebase
 - Dificultad en las revisiones de código
 - Onboarding más lento para nuevos desarrolladores
@@ -30,18 +32,19 @@ Todo el código en este proyecto debe conformarse a la Guía de Estilo de Angula
 **Sufijos obligatorios:** Solo los Guards, Pipes, Resolvers, Interceptors y Validators deben incluir su sufijo tanto en la clase como en el nombre del archivo (por ejemplo, `AuthGuard` reside en `auth-guard.ts`). El resto de artefactos (componentes, servicios, modelos, utilidades, etc.) debe evitar sufijos artificiales como `-component` o `-model`.
 
 **Ejemplos:**
+
 ```typescript
 // ✅ Correcto
-user-profile.ts
-sales-list.ts
-http-error-interceptor.ts
-email-validator.ts
+user - profile.ts;
+sales - list.ts;
+http - error - interceptor.ts;
+email - validator.ts;
 
 // ❌ Incorrecto
-userProfile.ts
-salesList.ts
-httpError-interceptor.ts
-emailValidator.ts
+userProfile.ts;
+salesList.ts;
+httpError - interceptor.ts;
+emailValidator.ts;
 ```
 
 ### 2. Convenciones de Nombres de Clases
@@ -51,6 +54,7 @@ emailValidator.ts
 **Estándar de sufijos:** Las clases Guard, Pipe, Resolver, Interceptor y Validator deben terminar con su sufijo correspondiente y el nombre del archivo debe reflejarlo (por ejemplo, `auth-guard.ts`, `format-currency-pipe.ts`).
 
 **Ejemplos:**
+
 ```typescript
 // ✅ Correcto
 export class UserProfile {}
@@ -75,6 +79,7 @@ export class HttpError {}
 **Regla:** Organizar código por feature, no por tipo de archivo.
 
 **Ejemplo de Estructura:**
+
 ```
 // ✅ Correcto - organizado por feature
 sales/
@@ -98,6 +103,7 @@ models/
 **Regla:** Preferir la función `inject()` sobre la inyección por constructor.
 
 **Ejemplos:**
+
 ```typescript
 // ✅ Correcto - usando inject()
 import { inject } from '@angular/core';
@@ -122,6 +128,7 @@ export class SalesService {
 **Regla:** Usar funciones `input()` y `output()` en lugar de los decoradores `@Input()` y `@Output()`.
 
 **Ejemplos:**
+
 ```typescript
 // ✅ Correcto - usando input() y output()
 import { Component, input, output } from '@angular/core';
@@ -133,7 +140,7 @@ import { Component, input, output } from '@angular/core';
 export class UserCard {
   user = input.required<User>();
   onSelect = output<User>();
-  
+
   handleClick() {
     this.onSelect.emit(this.user());
   }
@@ -151,16 +158,17 @@ export class UserCard {
 **Regla:** Usar signals para gestión de estado reactiva.
 
 **Ejemplos:**
+
 ```typescript
 // ✅ Correcto - usando signals
 import { signal, computed } from '@angular/core';
 
 export class SalesList {
   sales = signal<Sale[]>([]);
-  totalSales = computed(() => 
+  totalSales = computed(() =>
     this.sales().reduce((sum, sale) => sum + sale.amount, 0)
   );
-  
+
   loadSales() {
     this.sales.set([...]);
   }
@@ -178,27 +186,20 @@ export class SalesList {
 **Regla:** Usar flujo de control nativo (`@if`, `@for`, `@switch`) en lugar de directivas estructurales.
 
 **Ejemplos:**
+
 ```html
 <!-- ✅ Correcto - flujo de control nativo -->
 @if (user()) {
-  <div>Welcome, {{ user().name }}</div>
-}
-
-@for (sale of sales(); track sale.id) {
-  <app-sale-item [sale]="sale" />
-}
-
-@switch (status()) {
-  @case ('loading') {
-    <app-spinner />
-  }
-  @case ('error') {
-    <app-error [message]="error()" />
-  }
-  @default {
-    <app-content />
-  }
-}
+<div>Welcome, {{ user().name }}</div>
+} @for (sale of sales(); track sale.id) {
+<app-sale-item [sale]="sale" />
+} @switch (status()) { @case ('loading') {
+<app-spinner />
+} @case ('error') {
+<app-error [message]="error()" />
+} @default {
+<app-content />
+} }
 
 <!-- ❌ Incorrecto - directivas estructurales -->
 <div *ngIf="user">Welcome, {{ user.name }}</div>
@@ -212,14 +213,17 @@ export class SalesList {
 **Regla:** Preferir bindings `[class]` y `[style]` sobre `ngClass` y `ngStyle`.
 
 **Ejemplos:**
+
 ```html
 <!-- ✅ Correcto - bindings de clase y estilo -->
 <div [class.active]="isActive()" [class.disabled]="isDisabled()">
-<div [style.color]="textColor()" [style.font-size.px]="fontSize()">
-
-<!-- ❌ Incorrecto - ngClass y ngStyle -->
-<div [ngClass]="{ active: isActive(), disabled: isDisabled() }">
-<div [ngStyle]="{ color: textColor(), fontSize: fontSize() + 'px' }">
+  <div [style.color]="textColor()" [style.font-size.px]="fontSize()">
+    <!-- ❌ Incorrecto - ngClass y ngStyle -->
+    <div [ngClass]="{ active: isActive(), disabled: isDisabled() }">
+      <div [ngStyle]="{ color: textColor(), fontSize: fontSize() + 'px' }"></div>
+    </div>
+  </div>
+</div>
 ```
 
 ### 9. Selectores de Componentes
@@ -227,6 +231,7 @@ export class SalesList {
 **Regla:** Usar un prefijo de aplicación consistente para todos los selectores de componentes y directivas.
 
 **Ejemplo:**
+
 ```typescript
 // ✅ Correcto - usando prefijo 'ft'
 @Component({
@@ -251,6 +256,7 @@ export class SalesList {
 **Regla:** Mantener archivos enfocados en una sola responsabilidad. Una clase, interfaz o tipo por archivo.
 
 **Ejemplos:**
+
 ```typescript
 // ✅ Correcto - una clase por archivo
 // user.model.ts
@@ -266,9 +272,9 @@ export class UserService {
 
 // ❌ Incorrecto - múltiples conceptos en un archivo
 // user.ts
-export interface User { }
-export class UserService { }
-export class UserView { }
+export interface User {}
+export class UserService {}
+export class UserView {}
 ```
 
 ### 11. Componentes Standalone
@@ -276,11 +282,12 @@ export class UserView { }
 **Regla:** Siempre usar componentes standalone (por defecto en Angular moderno).
 
 **Ejemplo:**
+
 ```typescript
 // ✅ Correcto - componente standalone (por defecto)
 @Component({
   selector: 'app-user-card',
-  standalone: true,  // o omitir, ya que es el defecto
+  standalone: true, // o omitir, ya que es el defecto
   imports: [CommonModule, Button],
   template: `...`
 })
@@ -288,7 +295,7 @@ export class UserCard {}
 
 // ❌ Incorrecto - componente basado en NgModule
 @NgModule({
-  declarations: [UserCard],
+  declarations: [UserCard]
   // ...
 })
 export class UserModule {}

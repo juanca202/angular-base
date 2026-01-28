@@ -94,7 +94,9 @@ export function createMockGoogleTagManagerService(
 /**
  * Crea un mock de MessageService
  */
-export function createMockMessageService(overrides?: Partial<MessageService>): Partial<MessageService> {
+export function createMockMessageService(
+  overrides?: Partial<MessageService>
+): Partial<MessageService> {
   return {
     show: vi.fn().mockReturnValue(of(undefined)),
     ...overrides
@@ -163,4 +165,3 @@ export function createMockSwUpdate(overrides?: Partial<SwUpdate>): Partial<SwUpd
     ...overrides
   };
 }
-

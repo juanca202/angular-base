@@ -4,6 +4,7 @@ Description:
 Representación de una receta de arreglo floral en el sistema. Define la composición completa de un arreglo floral incluyendo sus características físicas, clasificaciones comerciales, información logística y componentes (flores y bienes secos).
 
 Fields:
+
 - id: number
 - category: ItemCatalog
 - construction: ItemCatalog
@@ -24,13 +25,13 @@ Fields:
 - updatedAt: date
 
 Constraints:
+
 - El nombre es obligatorio
 - La categoría, construcción y tipo de ramo deben estar definidos
 - La longitud del ramo debe ser un número positivo
 - El desperdicio y el costo de mano de obra deben ser valores positivos
 - Los valores monetarios usan precisión decimal fija
 - Los acuerdos asociados son opcionales
-
 
 ---
 
@@ -48,12 +49,14 @@ Fields:
 ---
 
 DTO: TaxPercentage
+
 - suggestedValue: number
 - currentValue: number
 
 ---
 
 API Endpoints:
+
 - GET /recipes/:id/notes - Obtiene un listado de notas asociadas a un recipe
 - POST /recipes/:id/notes - Crea una nota asociada a un recipe (request body: Note DTO)
 - GET /recipes/:id/flowers - Obtiene un listado de flowers asociados a un recipe

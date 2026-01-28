@@ -1,4 +1,5 @@
 # ADR-003: Uso de Tailwind CSS para Clases de Utilidad y Creación de Componentes
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 07/01/2026  
@@ -7,6 +8,7 @@
 ## Contexto
 
 La gestión de CSS en aplicaciones grandes puede volverse desafiante:
+
 - **CSS Muerto:** Los estilos no utilizados se acumulan con el tiempo, aumentando el tamaño del bundle
 - **Inconsistencia:** Diferentes desarrolladores usan diferentes valores de espaciado, colores y tamaños
 - **Mantenimiento:** Actualizar estilos en múltiples archivos consume tiempo
@@ -24,6 +26,7 @@ Usaremos **Tailwind CSS** como el framework CSS principal para todas las clases 
 ### Uso de Tailwind CSS
 
 Tailwind CSS debe usarse para:
+
 - **Layout:** `flex`, `grid`, `container`, `block`, `inline-block`
 - **Espaciado:** `p-4`, `m-2`, `gap-6`, `space-x-4`
 - **Tipografía:** `text-lg`, `font-bold`, `text-center`, `leading-tight`
@@ -35,6 +38,7 @@ Tailwind CSS debe usarse para:
 ### CSS Personalizado con BEM
 
 Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
+
 - Estilos específicos de componentes que no pueden lograrse con utilidades de Tailwind
 - Animaciones o transiciones complejas
 - Temas específicos de componentes
@@ -66,16 +70,16 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 </div>
 
 <style>
-.sales-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-/* ... más CSS personalizado */
+  .sales-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  /* ... más CSS personalizado */
 </style>
 ```
 
@@ -98,14 +102,14 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 // Estilos específicos del componente usando BEM con @apply
 .ft-user-card__avatar {
   @apply relative w-12 h-12 rounded-full overflow-hidden;
-  
+
   // Animación compleja que Tailwind no puede manejar fácilmente
   &::after {
     content: '';
     @apply absolute inset-0 border-2 border-transparent rounded-full;
     transition: border-color 0.3s ease;
   }
-  
+
   &:hover::after {
     border-color: var(--primary-color);
   }
@@ -120,7 +124,8 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 
 ```html
 <!-- ✅ Correcto - Utilidades responsivas -->
-<div class="
+<div
+  class="
   grid 
   grid-cols-1 
   sm:grid-cols-2 
@@ -130,7 +135,8 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
   p-4
   md:p-6
   lg:p-8
-">
+"
+>
   <app-product-card *ngFor="let product of products()" [product]="product" />
 </div>
 ```
@@ -141,32 +147,30 @@ Las clases CSS personalizadas con el prefijo `ft-` solo deben usarse para:
 @Component({
   selector: 'app-button',
   template: `
-    <button
-      [class]="buttonClasses()"
-      [disabled]="disabled()"
-      (click)="handleClick()"
-    >
+    <button [class]="buttonClasses()" [disabled]="disabled()" (click)="handleClick()">
       <ft-icon *ngIf="icon()" [name]="icon()" class="ft-button__icon" />
       <ng-content />
     </button>
   `,
-  styles: [`
-    .ft-button__icon {
-      // Posicionamiento específico del icono del componente
-      @apply mr-2 align-middle;
-    }
-    
-    .ft-button--loading {
-      // Animación de estado de carga
-      @apply relative text-transparent;
-      
-      &::after {
-        content: '';
-        @apply absolute inset-0 border-2 border-current border-t-transparent rounded-full;
-        animation: spin 0.6s linear infinite;
+  styles: [
+    `
+      .ft-button__icon {
+        // Posicionamiento específico del icono del componente
+        @apply mr-2 align-middle;
       }
-    }
-  `]
+
+      .ft-button--loading {
+        // Animación de estado de carga
+        @apply relative text-transparent;
+
+        &::after {
+          content: '';
+          @apply absolute inset-0 border-2 border-current border-t-transparent rounded-full;
+          animation: spin 0.6s linear infinite;
+        }
+      }
+    `
+  ]
 })
 export class ButtonComponent {
   variant = input<'primary' | 'secondary' | 'danger'>('primary');
@@ -174,22 +178,22 @@ export class ButtonComponent {
   disabled = input<boolean>(false);
   loading = input<boolean>(false);
   icon = input<string | undefined>(undefined);
-  
+
   buttonClasses = computed(() => {
     const base = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors';
     const variants = {
       primary: 'bg-blue-600 text-white hover:bg-blue-700',
       secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-      danger: 'bg-red-600 text-white hover:bg-red-700',
+      danger: 'bg-red-600 text-white hover:bg-red-700'
     };
     const sizes = {
       sm: 'px-3 py-1.5 text-sm',
       md: 'px-4 py-2 text-base',
-      lg: 'px-6 py-3 text-lg',
+      lg: 'px-6 py-3 text-lg'
     };
     const state = this.disabled() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
     const loading = this.loading() ? 'ft-button--loading' : '';
-    
+
     return `${base} ${variants[this.variant()]} ${sizes[this.size()]} ${state} ${loading}`;
   });
 }
@@ -201,28 +205,28 @@ export class ButtonComponent {
 // ✅ Correcto - Usando @apply para aplicar utilidades de Tailwind
 .ft-card {
   @apply bg-white rounded-lg shadow-md p-6;
-  
+
   &__header {
     @apply flex items-center justify-between mb-4 pb-4 border-b border-gray-200;
   }
-  
+
   &__title {
     @apply text-2xl font-bold text-gray-900;
   }
-  
+
   &__body {
     @apply text-gray-700 leading-relaxed;
   }
-  
+
   &__footer {
     @apply mt-4 pt-4 border-t border-gray-200 flex gap-2;
   }
-  
+
   // Modificador con @apply
   &--highlighted {
     @apply border-2 border-blue-500 bg-blue-50;
   }
-  
+
   // Estados con @apply
   &:hover {
     @apply shadow-lg transition-shadow duration-200;
@@ -244,10 +248,10 @@ export class ButtonComponent {
 // ✅ Correcto - Combinando @apply con CSS personalizado cuando es necesario
 .ft-modal {
   @apply fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50;
-  
+
   // Animación personalizada que requiere CSS específico
   animation: fadeIn 0.3s ease-out;
-  
+
   &__content {
     @apply bg-white rounded-lg shadow-xl max-w-md w-full p-6;
     animation: slideUp 0.3s ease-out;
@@ -255,8 +259,12 @@ export class ButtonComponent {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -274,6 +282,7 @@ export class ButtonComponent {
 ## Configuración
 
 Tailwind CSS está configurado en `tailwind.config.js` con:
+
 - Extensiones de tema personalizadas (colores, espaciado, tipografía)
 - Breakpoints específicos del proyecto
 - Clases de utilidad personalizadas si es necesario
@@ -281,21 +290,19 @@ Tailwind CSS está configurado en `tailwind.config.js` con:
 ```javascript
 // ejemplo tailwind.config.js
 module.exports = {
-  content: [
-    "./src/**/*.{html,ts}",
-  ],
+  content: ['./src/**/*.{html,ts}'],
   theme: {
     extend: {
       colors: {
         primary: {
           DEFAULT: '#3b82f6',
-          dark: '#2563eb',
-        },
-      },
-    },
+          dark: '#2563eb'
+        }
+      }
+    }
   },
-  plugins: [],
-}
+  plugins: []
+};
 ```
 
 ## Consecuencias
@@ -328,6 +335,7 @@ module.exports = {
 ## Cuándo Usar CSS Personalizado
 
 Usar CSS personalizado con el prefijo `ft-` cuando:
+
 1. **Animaciones Complejas:** Animaciones multi-paso que son difíciles con Tailwind
 2. **Lógica Específica del Componente:** Estilos que dependen del estado del componente de formas complejas
 3. **Integración de Terceros:** Estilizar componentes de terceros que no pueden usar Tailwind

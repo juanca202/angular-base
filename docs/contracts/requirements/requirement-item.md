@@ -4,6 +4,7 @@ Description:
 Representación de un requerimiento específico de desarrollo de producto (también conocido como "Item Index") asociado a una solicitud de desarrollo de producto (SDP). Representa los productos individuales que se desarrollan dentro de una solicitud, cada uno con sus propias características y especificaciones.
 
 Fields:
+
 - id: number
 - name: string
 - status: ItemCatalog
@@ -22,6 +23,7 @@ Fields:
 - assignedTo: User
 
 Constraints:
+
 - El nombre es obligatorio
 - El estado y la categoría deben estar definidos
 - El precio máximo debe ser mayor o igual al precio mínimo
@@ -30,6 +32,7 @@ Constraints:
 - Las instrucciones especiales son opcionales
 
 API Endpoints:
+
 - GET /requirement-items/:id - Obtiene un requirement-item individual por su identificador
 - GET /requirement-items - Obtiene un listado de requirement-items con parámetros de filtrado y paginación
 - GET /requirement-items/:id/files - Obtiene un listado de archivos asociados a un requirement-item

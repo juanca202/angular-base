@@ -27,4 +27,3 @@ export function setupEnvironmentMock(overrides?: Partial<any>): void {
     environment: createMockEnvironment(overrides)
   }));
 }
-

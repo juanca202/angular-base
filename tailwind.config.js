@@ -3,7 +3,7 @@ export default {
     extend: {
       colors: {
         primary: {
-          50:  '#fff3e0',
+          50: '#fff3e0',
           100: '#ffe0b2',
           200: '#ffcc80',
           300: '#ffb74d',
@@ -12,9 +12,9 @@ export default {
           600: '#fb8c00',
           700: '#f57c00',
           800: '#ef6c00',
-          900: '#e65100',
+          900: '#e65100'
         }
       }
     }
   }
-}
+};

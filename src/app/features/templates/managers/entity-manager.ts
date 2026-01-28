@@ -117,11 +117,11 @@ export class EntityManager {
       };
       if (!view) {
         const dialogRef = this.dialog.open(EntityForm, { ...config, disableClose: true });
-        const sub = dialogRef.componentInstance.afterSubmit.subscribe((operation) => {
+        const subscription = dialogRef.componentInstance.afterSubmit.subscribe((operation) => {
           if (operation) {
+            subscription.unsubscribe();
             resolve(operation);
           }
-          sub.unsubscribe();
         });
       } else {
         this.dialog.open(EntityDetail, config);
@@ -134,11 +134,11 @@ export class EntityManager {
         panelClass: ['ft-dialog'],
         width: '400px'
       });
-      const sub = dialogRef.componentInstance.selected.subscribe((entity) => {
+      const subscription = dialogRef.componentInstance.selected.subscribe((entity) => {
         if (entity) {
+          subscription.unsubscribe();
           resolve(entity);
         }
-        sub.unsubscribe();
       });
     });
   }

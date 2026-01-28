@@ -1,4 +1,5 @@
 # ADR-004: Reglas de Desarrollo Asistido por IA
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 06/01/2026  
@@ -7,6 +8,7 @@
 ## Contexto
 
 A medida que las herramientas de desarrollo asistido por IA se vuelven más prevalentes, existe el riesgo de que:
+
 - El código generado puede no seguir las convenciones del proyecto
 - Las decisiones arquitectónicas pueden ser pasadas por alto o violadas
 - La calidad y consistencia del código pueden degradarse
@@ -57,6 +59,7 @@ docs/
 ```
 
 **Nota:** Hay una distinción entre:
+
 - **Documentación de arquitectura** (`docs/*.md`): Fuente de verdad para reglas arquitectónicas, puede ser cargada por herramientas de desarrollo asistido por IA vía archivos de configuración
 - **Reglas específicas del IDE** (por ejemplo, `.cursor/rules/*.mdc` para Cursor): Configuración adicional específica del IDE y reglas siempre aplicadas
 
@@ -69,6 +72,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 **Ubicación:** Ver [ADR-001](./ADR-001-separation-of-responsibilities.md) para decisiones arquitectónicas detalladas.
 
 **Cubre:**
+
 - Organización de capas Core, Shared y Features
 - Reglas de dependencias entre capas
 - Convenciones de nombres de archivos
@@ -82,12 +86,14 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 **Ubicación:** [`docs/css-styling.md`](../css-styling.md)
 
 **Cubre:**
+
 - Prioridades de uso de Tailwind CSS
 - Convenciones de nombres BEM con prefijo `ft-`
 - Cuándo usar CSS personalizado vs. utilidades
 - Patrones de diseño responsivo
 
 **Reglas Clave:**
+
 - Priorizar utilidades de Tailwind CSS para layout, espaciado y tipografía
 - Usar BEM con prefijo `ft-` solo para estilos específicos de componentes
 - NO usar `ngClass` o `ngStyle`, usar bindings `[class]` y `[style]`
@@ -99,6 +105,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 **Ubicación:** Ver [ADR-008](./ADR-008-form-validation-strategy.md) para decisiones detalladas de validación de formularios.
 
 **Cubre:**
+
 - Patrones de formularios reactivos
 - Manejo de errores de validación
 - Visualización de mensajes de error usando el pipe `errorMessage`
@@ -112,6 +119,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 **Ubicación:** Ver [ADR-010](./ADR-010-icon-usage-strategy.md) para decisiones detalladas de uso de iconos.
 
 **Cubre:**
+
 - Usar el componente `<ft-icon />`
 - Colecciones de iconos disponibles (factoricons-slim, factoricons-regular, factoricons-solid)
 - Creación de iconos personalizados en `public/images/icons.svg`
@@ -124,6 +132,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 **Ubicación:** Ver [ADR-006](./ADR-006-repository-pattern-rest.md) para decisiones detalladas de servicios REST.
 
 **Cubre:**
+
 - Implementación del patrón Repository
 - Estructura de servicios API
 - Gestión de estado con signals
@@ -138,6 +147,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 **Ubicación:** Ver [ADR-007](./ADR-007-testing-strategy.md) para decisiones detalladas de testing.
 
 **Cubre:**
+
 - Configuración de Vitest
 - Patrón AAA (Arrange, Act, Assert)
 - Testing de componentes y servicios
@@ -151,6 +161,7 @@ Todas las reglas arquitectónicas están documentadas en `docs/` y pueden ser ca
 **Ubicación:** [`docs/README.md`](../README.md)
 
 **Cubre:**
+
 - Arquitectura general y diagramas C4
 - Objetivos arquitectónicos
 - Consideraciones de seguridad y rendimiento
@@ -183,9 +194,11 @@ Esta configuración asegura que:
 ### Ejemplo: Generación de Código
 
 **Solicitud del Desarrollador:**
+
 > "Create a new sales list component"
 
 **Respuesta de IA (siguiendo reglas):**
+
 ```typescript
 // ✅ El código generado sigue todas las reglas
 @Component({
@@ -204,12 +217,13 @@ Esta configuración asegura que:
 })
 export class SalesListComponent {
   private salesService = inject(SalesService);
-  
+
   sales = this.salesService.sales;
 }
 ```
 
 **Reglas Aplicadas:**
+
 - ✅ Componente standalone
 - ✅ Detección de cambios OnPush
 - ✅ `inject()` en lugar de constructor

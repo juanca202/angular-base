@@ -4,6 +4,7 @@ Description:
 Representación de un grupo de recetas utilizado para procesos de cotización. Actúa como una cabecera que agrupa diferentes combinaciones de recetas y cajas, permitiendo definir paquetes que se cotizan como un todo.
 
 Fields:
+
 - id: number
 - name: string
 - divisions: Division[]
@@ -22,6 +23,7 @@ Fields:
 - requirementItem: RequirementItem
 
 Constraints:
+
 - El nombre es obligatorio
 - Debe tener al menos una división asociada
 - El estado de borrador y habilitado son independientes
@@ -30,6 +32,7 @@ Constraints:
 - El requirement-item asociado es opcional
 
 API Endpoints:
+
 - GET /recipe-groups?requirementItemId=:id - Obtiene un listado de recipe-groups filtrados por el identificador del requirement-item
 - POST /recipe-groups - Crea un nuevo recipe-group (request body: RecipeGroup DTO)
 - POST /recipe-groups/:id/recipes - Crea un recipe asociado a un recipe-group (request body: Recipe DTO)

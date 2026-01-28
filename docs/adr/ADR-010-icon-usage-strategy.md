@@ -1,4 +1,5 @@
 # ADR-010: Estrategia de Uso de Iconos
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
 **Última Actualización:** 06/01/2026  
@@ -7,6 +8,7 @@
 ## Contexto
 
 Los iconos son una parte fundamental de la interfaz de usuario, y sin un enfoque estandarizado:
+
 - Diferentes desarrolladores pueden usar diferentes bibliotecas de iconos o enfoques
 - Renderizado de iconos inconsistente en toda la aplicación
 - Difícil mantener y actualizar iconos
@@ -15,6 +17,7 @@ Los iconos son una parte fundamental de la interfaz de usuario, y sin un enfoque
 - Preocupaciones de accesibilidad con implementaciones de iconos inconsistentes
 
 Necesitamos una estrategia consistente que:
+
 - Estandarice el uso de iconos en toda la aplicación
 - Proporcione un componente único para todo el renderizado de iconos
 - Soporte tanto iconos predefinidos como personalizados
@@ -82,7 +85,7 @@ Cada icono personalizado debe definirse como un **símbolo SVG** optimizado a **
   <symbol id="settings" viewBox="0 0 24 24">
     <path fill="currentColor" d="M12 8a4 4 0 1 0 0 8a4 4 0 0 0 0-8z" />
   </symbol>
-  
+
   <symbol id="user-settings" viewBox="0 0 24 24">
     <path fill="currentColor" d="M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8z" />
   </symbol>
@@ -90,6 +93,7 @@ Cada icono personalizado debe definirse como un **símbolo SVG** optimizado a **
 ```
 
 **Requisitos:**
+
 - Cada icono debe ser un elemento `<symbol>`
 - El atributo `id` actúa como el nombre del icono (usado en la propiedad `name`)
 - `viewBox` debe ser `0 0 24 24` para alineación con Material Design
@@ -102,14 +106,20 @@ Para ajustar el tamaño del icono, usar la **clase modificadora de tamaño** `ft
 
 ```html
 <!-- ✅ Correcto - usando modificadores de tamaño -->
-<ft-icon name="user" class="ft-icon--1" />  <!-- Extra pequeño -->
-<ft-icon name="user" class="ft-icon--2" />  <!-- Pequeño -->
-<ft-icon name="user" class="ft-icon--3" />  <!-- Mediano (por defecto) -->
-<ft-icon name="user" class="ft-icon--4" />  <!-- Grande -->
-<ft-icon name="user" class="ft-icon--5" />  <!-- Extra grande -->
+<ft-icon name="user" class="ft-icon--1" />
+<!-- Extra pequeño -->
+<ft-icon name="user" class="ft-icon--2" />
+<!-- Pequeño -->
+<ft-icon name="user" class="ft-icon--3" />
+<!-- Mediano (por defecto) -->
+<ft-icon name="user" class="ft-icon--4" />
+<!-- Grande -->
+<ft-icon name="user" class="ft-icon--5" />
+<!-- Extra grande -->
 ```
 
 **Escala de Tamaños:**
+
 - `ft-icon--1`: Extra pequeño
 - `ft-icon--2`: Pequeño
 - `ft-icon--3`: Mediano (por defecto)
@@ -152,8 +162,7 @@ Si se requiere un tamaño específico más allá de la escala predefinida, usar 
 #### Con Modificadores de Tamaño
 
 ```html
-<ft-icon name="user" class="ft-icon--2" />
-<ft-icon name="settings" class="ft-icon--4" />
+<ft-icon name="user" class="ft-icon--2" /> <ft-icon name="settings" class="ft-icon--4" />
 ```
 
 #### En Componentes

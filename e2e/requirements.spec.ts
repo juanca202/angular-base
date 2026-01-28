@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 /**
  * E2E Tests for Requirements Feature
- * 
+ *
  * These tests cover all three User Stories:
  * - US1: Listar y Visualizar Requirements
  * - US2: Visualizar Recipes de un RequirementItem
@@ -15,7 +15,9 @@ test.describe('User Story 1: Listar y Visualizar Requirements', () => {
     await page.goto('/requirements');
   });
 
-  test('T015: Should display list of Requirements with basic identification info', async ({ page }) => {
+  test('T015: Should display list of Requirements with basic identification info', async ({
+    page
+  }) => {
     // Given: Requirements exist in the system
     // When: User accesses the requirements manager
     // Then: A list of all Requirements with basic identification info is displayed
@@ -119,7 +121,7 @@ test.describe('User Story 1: Listar y Visualizar Requirements', () => {
     // For now, we verify that empty state handling exists
     const emptyState = page.locator('[data-testid="empty-state"]');
     // If empty state exists, verify it shows appropriate message
-    if (await emptyState.count() > 0) {
+    if ((await emptyState.count()) > 0) {
       await expect(emptyState).toBeVisible();
       await expect(emptyState.locator('text=/no.*requirement/i')).toBeVisible();
     }
@@ -136,7 +138,9 @@ test.describe('User Story 2: Visualizar Recipes de un RequirementItem', () => {
     await page.waitForSelector('[data-testid="requirement-items-list"]', { timeout: 3000 });
   });
 
-  test('T037: Should open dialog showing RequirementItem details and associated Recipes', async ({ page }) => {
+  test('T037: Should open dialog showing RequirementItem details and associated Recipes', async ({
+    page
+  }) => {
     // Given: A RequirementItem of a Requirement is visible
     // When: User clicks the "detail" button of the RequirementItem
     // Then: A modal dialog opens showing the RequirementItem details and all associated Recipes
@@ -146,7 +150,9 @@ test.describe('User Story 2: Visualizar Recipes de un RequirementItem', () => {
     await firstItemCard.locator('[data-testid="detail-button"]').click();
 
     // Verify dialog is opened
-    await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).toBeVisible({ timeout: 3000 });
+    await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).toBeVisible({
+      timeout: 3000
+    });
 
     // Verify RequirementItem details are displayed
     await expect(page.locator('[data-testid="requirement-item-detail"]')).toBeVisible();
@@ -165,11 +171,13 @@ test.describe('User Story 2: Visualizar Recipes de un RequirementItem', () => {
       hasNot: page.locator('[data-testid="has-recipes-indicator"]')
     });
 
-    if (await itemsWithoutRecipes.count() > 0) {
+    if ((await itemsWithoutRecipes.count()) > 0) {
       await itemsWithoutRecipes.first().locator('[data-testid="detail-button"]').click();
 
       // Verify dialog opens
-      await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).toBeVisible({ timeout: 3000 });
+      await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).toBeVisible({
+        timeout: 3000
+      });
 
       // Verify empty state message for Recipes
       const emptyRecipesMessage = page.locator('[data-testid="recipes-empty-state"]');
@@ -183,14 +191,22 @@ test.describe('User Story 2: Visualizar Recipes de un RequirementItem', () => {
     // Then: The dialog closes and user returns to the Requirement detail view
 
     // Open dialog
-    await page.locator('[data-testid="requirement-item-card"]').first().locator('[data-testid="detail-button"]').click();
-    await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).toBeVisible({ timeout: 3000 });
+    await page
+      .locator('[data-testid="requirement-item-card"]')
+      .first()
+      .locator('[data-testid="detail-button"]')
+      .click();
+    await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).toBeVisible({
+      timeout: 3000
+    });
 
     // Click close button
     await page.locator('[data-testid="dialog-close-button"]').click();
 
     // Verify dialog is closed
-    await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).not.toBeVisible({ timeout: 2000 });
+    await expect(page.locator('[data-testid="requirement-item-detail-dialog"]')).not.toBeVisible({
+      timeout: 2000
+    });
 
     // Verify we're back on requirement detail page
     await expect(page.locator('[data-testid="requirement-detail"]')).toBeVisible();
@@ -205,9 +221,13 @@ test.describe('User Story 3: Gestionar Recipes de un RequirementItem', () => {
     await page.locator('[data-testid="requirement-item"]').first().click();
     await page.waitForURL(/\/requirements\/\d+/, { timeout: 3000 });
     await page.waitForSelector('[data-testid="requirement-items-list"]', { timeout: 3000 });
-    
+
     // Open RequirementItem detail dialog
-    await page.locator('[data-testid="requirement-item-card"]').first().locator('[data-testid="detail-button"]').click();
+    await page
+      .locator('[data-testid="requirement-item-card"]')
+      .first()
+      .locator('[data-testid="detail-button"]')
+      .click();
     await page.waitForSelector('[data-testid="requirement-item-detail-dialog"]', { timeout: 3000 });
   });
 
@@ -256,7 +276,7 @@ test.describe('User Story 3: Gestionar Recipes de un RequirementItem', () => {
 
       // Confirm deletion if confirmation dialog appears
       const confirmButton = page.locator('[data-testid="confirm-delete-button"]');
-      if (await confirmButton.count() > 0) {
+      if ((await confirmButton.count()) > 0) {
         await confirmButton.click();
       }
 
@@ -276,7 +296,9 @@ test.describe('User Story 3: Gestionar Recipes de un RequirementItem', () => {
 
     // Get name of first existing Recipe
     const firstRecipe = page.locator('[data-testid="recipe-item"]').first();
-    const existingRecipeName = await firstRecipe.locator('[data-testid="recipe-name"]').textContent();
+    const existingRecipeName = await firstRecipe
+      .locator('[data-testid="recipe-name"]')
+      .textContent();
 
     if (existingRecipeName) {
       // Try to add Recipe with same name
@@ -290,4 +312,3 @@ test.describe('User Story 3: Gestionar Recipes de un RequirementItem', () => {
     }
   });
 });
-

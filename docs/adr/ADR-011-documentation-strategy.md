@@ -1,4 +1,5 @@
 # ADR-011: Estrategia de Documentación
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
 **Última Actualización:** 06/01/2026  
@@ -7,6 +8,7 @@
 ## Contexto
 
 La documentación clara y completa del código es esencial para:
+
 - Incorporar nuevos desarrolladores
 - Mantener el código a lo largo del tiempo
 - Entender lógica compleja y reglas de negocio
@@ -14,6 +16,7 @@ La documentación clara y completa del código es esencial para:
 - Asegurar consistencia en todo el código base
 
 Sin una estrategia clara de documentación:
+
 - La documentación puede ser inconsistente o faltante
 - Los comentarios pueden estar en diferentes idiomas, causando confusión
 - La documentación de API requiere mantenimiento manual
@@ -21,6 +24,7 @@ Sin una estrategia clara de documentación:
 - Los nuevos miembros del equipo tienen dificultades para entender el código base
 
 Necesitamos un enfoque estandarizado que:
+
 - Asegure que toda la documentación esté en inglés para consistencia
 - Genere automáticamente documentación de API a partir de comentarios en el código
 - Use un formato estándar (JSDoc/TSDoc) que las herramientas puedan analizar
@@ -41,6 +45,7 @@ Implementaremos una **estrategia integral de documentación** con:
 ### 1. Requisito de Idioma
 
 **Toda la documentación debe estar en inglés**, incluyendo:
+
 - Comentarios de código
 - Anotaciones JSDoc/TSDoc
 - Documentación inline
@@ -50,6 +55,7 @@ Implementaremos una **estrategia integral de documentación** con:
 - Código de ejemplo en la documentación
 
 **Razonamiento:**
+
 - Asegura consistencia en todo el código base
 - Hace el código base accesible para desarrolladores internacionales
 - Se alinea con las mejores prácticas de la industria
@@ -62,6 +68,7 @@ Compodoc está configurado para generar automáticamente documentación de API a
 **Configuración:** `compodoc.json` o scripts en `package.json`
 
 **Uso:**
+
 ```bash
 npm run compodoc        # Generar documentación
 npm run compodoc:serve  # Generar y servir documentación localmente
@@ -78,7 +85,8 @@ Usar **TSDoc** (específico de TypeScript) para archivos TypeScript y **JSDoc** 
 TSDoc es el formato recomendado para proyectos TypeScript ya que proporciona mejor conocimiento de tipos e integración con herramientas TypeScript.
 
 **Ejemplo Básico:**
-```typescript
+
+````typescript
 /**
  * Calculates the total price including tax.
  *
@@ -95,10 +103,11 @@ TSDoc es el formato recomendado para proyectos TypeScript ya que proporciona mej
 export function calculateTotalPrice(basePrice: number, taxRate: number): number {
   return basePrice * (1 + taxRate);
 }
-```
+````
 
 **Ejemplo de Clase:**
-```typescript
+
+````typescript
 /**
  * Service for managing user authentication.
  *
@@ -128,10 +137,11 @@ export class AuthService {
     // Implementation
   }
 }
-```
+````
 
 **Ejemplo de Componente:**
-```typescript
+
+````typescript
 /**
  * User profile component that displays and allows editing of user information.
  *
@@ -159,13 +169,14 @@ export class UserProfileComponent {
    */
   @Output() profileUpdated = new EventEmitter<User>();
 }
-```
+````
 
 #### Formato JSDoc (Para archivos JavaScript)
 
 Usar JSDoc para archivos JavaScript o cuando TSDoc no esté disponible.
 
 **Ejemplo:**
+
 ```javascript
 /**
  * Formats a date string according to the specified format.
@@ -187,6 +198,7 @@ export function formatDate(dateString, format) {
 #### Qué Documentar
 
 **Debe Documentarse:**
+
 - Todas las APIs públicas (clases, funciones, interfaces, tipos exportados)
 - Algoritmos complejos o lógica de negocio
 - Comportamiento de código no obvio
@@ -196,12 +208,14 @@ export function formatDate(dateString, format) {
 - Funciones de utilidad con lógica no trivial
 
 **Debería Documentarse:**
+
 - Métodos privados con lógica compleja
 - Soluciones temporales o workarounds
 - Consideraciones de rendimiento
 - Limitaciones conocidas o casos extremos
 
 **Opcional:**
+
 - Getters/setters simples
 - Código autoexplicativo
 - Hooks de ciclo de vida estándar de Angular (a menos que tengan comportamiento personalizado)
@@ -221,7 +235,8 @@ export function formatDate(dateString, format) {
 - `@internal` - Marcar APIs internas (no incluidas en docs públicas)
 
 **Ejemplo con Múltiples Etiquetas:**
-```typescript
+
+````typescript
 /**
  * Validates an email address format.
  *
@@ -248,11 +263,12 @@ export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
-```
+````
 
 ### 5. Integración con Compodoc
 
 Compodoc escanea automáticamente el código base en busca de comentarios JSDoc/TSDoc y genera:
+
 - Documentación de API
 - Documentación de componentes
 - Documentación de servicios
@@ -260,6 +276,7 @@ Compodoc escanea automáticamente el código base en busca de comentarios JSDoc/
 - Documentación de rutas
 
 **Ejemplo de Configuración:**
+
 ```json
 {
   "name": "angular-base-project",
@@ -273,6 +290,7 @@ Compodoc escanea automáticamente el código base en busca de comentarios JSDoc/
 ```
 
 **La Documentación Generada Incluye:**
+
 - Documentación de clases e interfaces
 - Descripciones de métodos y propiedades
 - Información de tipos de parámetros y retorno

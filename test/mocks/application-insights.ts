@@ -43,4 +43,3 @@ export function clearApplicationInsightsMocks(): void {
 export function setupApplicationInsightsMock(): void {
   vi.mock('@microsoft/applicationinsights-web', () => createMockApplicationInsights());
 }
-

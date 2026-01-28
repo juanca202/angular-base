@@ -1,4 +1,5 @@
 # ADR-001: Separación de Responsabilidades - Core, Shared y Features
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
 **Última Actualización:** 06/01/2026  
@@ -7,6 +8,7 @@
 ## Contexto
 
 A medida que la aplicación crece, se vuelve crucial mantener una separación clara de concerns para asegurar:
+
 - Reutilización de código entre diferentes features
 - Desarrollo y testing independiente de features
 - Fácil mantenimiento y refactorización
@@ -28,6 +30,7 @@ Esta arquitectura híbrida aprovecha lo mejor de ambos enfoques:
 - **Feature-Based Architecture (Capa Features):** Organiza el código por funcionalidad de negocio dentro de cada feature, agrupando todos los artefactos relacionados (componentes, servicios, modelos, etc.) en módulos autocontenidos.
 
 **Ventajas del enfoque híbrido:**
+
 - **Separación clara:** Las capas (Core, Shared, Cross) proporcionan infraestructura y utilidades, mientras que las features encapsulan lógica de negocio específica
 - **Reutilización:** Los componentes y servicios compartidos en las capas pueden ser consumidos por múltiples features
 - **Escalabilidad:** Nuevas features pueden agregarse sin afectar la infraestructura existente
@@ -75,6 +78,7 @@ Cuando dos features necesitan comunicarse sin crear dependencias directas, se ut
 - **Desacoplamiento:** Las features no dependen directamente de otras features, sino de los contratos compartidos
 
 **Ejemplo de uso:**
+
 ```typescript
 // shared/contracts/sales/sales-port.contract.ts
 export interface ISalesPort {
@@ -95,12 +99,13 @@ import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
 @Component({...})
 export class PaymentsComponent {
   constructor(@Inject(ISalesPort) private salesPort: ISalesPort) {}
-  
+
   // Usa el port sin depender directamente de la feature sales
 }
 ```
 
 **Reglas para Contracts:**
+
 - Los contracts deben contener solo interfaces, tipos y modelos (sin implementaciones)
 - Las features pueden implementar estos contracts y proporcionarlos mediante providers
 - Los contracts deben estar en `shared/contracts/{dominio}/` organizados por dominio
@@ -136,6 +141,7 @@ Contiene funcionalidad específica del dominio organizada por feature:
 - **Routes:** Rutas de la feature definidas en `{feature-name}-routes.ts`
 
 **Principios clave:**
+
 - Cada feature es independiente y autocontenida
 - Las features pueden depender de Core, Shared y Cross, pero no de otras Features
 - Las features no deben importar directamente de otras features
@@ -220,6 +226,7 @@ src/
 ### Dependencias Permitidas
 
 ✅ **Feature → Core:** Permitido
+
 ```typescript
 // sales/services/sales.service.ts
 import { Logger } from '@/core/services/logger.service';
@@ -227,6 +234,7 @@ import { User } from '@/core/models/user.model';
 ```
 
 ✅ **Feature → Shared:** Permitido
+
 ```typescript
 // sales/components/sales-list.component.ts
 import { ButtonComponent } from '@/shared/components/button/button.component';
@@ -234,12 +242,14 @@ import { CurrencyPipe } from '@/shared/pipes/currency.pipe';
 ```
 
 ✅ **Feature → Cross:** Permitido
+
 ```typescript
 // sales/services/sales-auth.facade.ts
 import { AuthService } from '@/cross/auth/services/auth.service';
 ```
 
 ✅ **Feature → Shared Contracts (para comunicación entre features):** Permitido
+
 ```typescript
 // payments/components/payment-form.component.ts
 import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
@@ -248,12 +258,13 @@ import { Sale } from '@/shared/contracts/sales/sale.model';
 @Component({...})
 export class PaymentFormComponent {
   constructor(@Inject(ISalesPort) private salesPort: ISalesPort) {}
-  
+
   // Usa el port para comunicarse con la feature sales sin dependencia directa
 }
 ```
 
 **Nota:** La feature `sales` debe proporcionar la implementación del contract mediante providers:
+
 ```typescript
 // sales/sales-routes.ts o sales.module.ts
 import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
@@ -262,27 +273,28 @@ import { SalesService } from './services/sales.service';
 export const salesRoutes: Routes = [
   {
     path: '',
-    providers: [
-      { provide: ISalesPort, useClass: SalesService }
-    ],
+    providers: [{ provide: ISalesPort, useClass: SalesService }]
     // ... rutas
   }
 ];
 ```
 
 ✅ **Shared → Core:** Permitido
+
 ```typescript
 // shared/components/modal/modal.component.ts
 import { NotificationService } from '@/core/services/notification.service';
 ```
 
 ✅ **Shared → Cross:** Permitido
+
 ```typescript
 // shared/components/modal/modal.component.ts
 import { SessionService } from '@/cross/auth/services/session.service';
 ```
 
 ✅ **Cross → Core:** Permitido
+
 ```typescript
 // cross/auth/services/auth.service.ts
 import { NotificationService } from '@/core/services/notification.service';
@@ -291,30 +303,35 @@ import { NotificationService } from '@/core/services/notification.service';
 ### Dependencias Prohibidas
 
 ❌ **Core → Shared:** No permitido
+
 ```typescript
 // ❌ NO HACER: core/services/logger.service.ts
 import { ButtonComponent } from '@/shared/components/button/button.component';
 ```
 
 ❌ **Core → Feature:** No permitido
+
 ```typescript
 // ❌ NO HACER: core/guards/auth.guard.ts
 import { SalesService } from '@/features/sales/services/sales.service';
 ```
 
 ❌ **Core → Cross:** No permitido
+
 ```typescript
 // ❌ NO HACER: core/interceptors/http-error.interceptor.ts
 import { AuthService } from '@/cross/auth/services/auth.service';
 ```
 
 ❌ **Shared → Feature:** No permitido
+
 ```typescript
 // ❌ NO HACER: shared/components/button/button.component.ts
 import { SalesService } from '@/features/sales/services/sales.service';
 ```
 
 ❌ **Cross → Shared o Feature:** No permitido
+
 ```typescript
 // ❌ NO HACER: cross/auth/services/auth.service.ts
 import { ButtonComponent } from '@/shared/components/button/button.component';
@@ -323,6 +340,7 @@ import { SalesService } from '@/features/sales/services/sales.service';
 ```
 
 ❌ **Feature → Feature (importación directa):** No permitido
+
 ```typescript
 // ❌ NO HACER: sales/services/sales.service.ts
 import { PaymentService } from '@/features/payments/services/payment.service';
@@ -343,12 +361,12 @@ import { SaleDetailComponent } from './components/sale-detail/sale-detail.compon
 export const salesRoutes: Routes = [
   {
     path: '',
-    component: SalesListComponent,
+    component: SalesListComponent
   },
   {
     path: ':id',
-    component: SaleDetailComponent,
-  },
+    component: SaleDetailComponent
+  }
 ];
 ```
 
@@ -361,8 +379,8 @@ import { salesRoutes } from './features/sales/sales-routes';
 export const routes: Routes = [
   {
     path: 'sales',
-    loadChildren: () => import('./features/sales/sales-routes').then(m => m.salesRoutes),
-  },
+    loadChildren: () => import('./features/sales/sales-routes').then((m) => m.salesRoutes)
+  }
   // ... otras rutas
 ];
 ```

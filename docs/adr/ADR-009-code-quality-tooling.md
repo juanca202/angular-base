@@ -1,4 +1,5 @@
 # ADR-009: Calidad de Código y Herramientas
+
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
 **Última Actualización:** 06/01/2026  
@@ -16,6 +17,7 @@ Mantener la calidad del código y la consistencia en un equipo requiere herramie
 - No hay aplicación automatizada de estándares de codificación
 
 Necesitamos un conjunto exhaustivo de herramientas que:
+
 - Aplique estilo de código consistente automáticamente
 - Detecte errores y bugs potenciales temprano
 - Valide mensajes de commit para mejor historial del proyecto
@@ -47,12 +49,14 @@ Todas las herramientas están configuradas para trabajar juntas y hacer cumplir 
 **Configuración:** `eslint.config.js`
 
 **Características Clave:**
+
 - Reglas específicas de TypeScript
 - Reglas específicas de Angular vía `@angular-eslint`
 - Linting de templates para templates de Angular
 - Integración con Prettier
 
 **Uso:**
+
 ```bash
 # Verificar errores de linting
 npm run lint
@@ -62,6 +66,7 @@ npm run lint:fix
 ```
 
 **Reglas Clave:**
+
 - Aplicación de modo estricto de TypeScript
 - Mejores prácticas de Angular
 - Detección de variables no usadas
@@ -75,6 +80,7 @@ npm run lint:fix
 **Configuración:** `.prettierrc`
 
 **Configuración:**
+
 ```json
 {
   "printWidth": 100,
@@ -92,12 +98,14 @@ npm run lint:fix
 ```
 
 **Uso:**
+
 ```bash
 # Formatear todos los archivos
 npm run prettier
 ```
 
 **Formatea:**
+
 - Archivos TypeScript/JavaScript
 - Templates HTML
 - Archivos SCSS/CSS
@@ -111,17 +119,21 @@ npm run prettier
 **Hooks Configurados:**
 
 **pre-commit** (`.husky/pre-commit`):
+
 ```bash
 npx lint-staged --no-stash
 ```
+
 - Ejecuta linting y formateo en archivos staged
 - Previene commits con errores de linting
 - Auto-corrige problemas cuando es posible
 
 **commit-msg** (`.husky/commit-msg`):
+
 ```bash
 npx --no -- commitlint --edit "$1"
 ```
+
 - Valida formato de mensaje de commit
 - Hace cumplir el estándar Conventional Commits
 
@@ -130,18 +142,17 @@ npx --no -- commitlint --edit "$1"
 **Propósito:** Ejecutar linters solo en archivos staged
 
 **Configuración:** `package.json`
+
 ```json
 {
   "lint-staged": {
-    "src/**/*.{ts,js,html,scss,json,md}": [
-      "prettier --write",
-      "eslint --fix"
-    ]
+    "src/**/*.{ts,js,html,scss,json,md}": ["prettier --write", "eslint --fix"]
   }
 }
 ```
 
 **Beneficios:**
+
 - Verificaciones pre-commit más rápidas
 - Solo procesa archivos cambiados
 - Auto-corrige problemas antes del commit
@@ -151,6 +162,7 @@ npx --no -- commitlint --edit "$1"
 **Propósito:** Hacer cumplir convenciones de mensajes de commit
 
 **Configuración:** `commitlint.config.js`
+
 ```javascript
 module.exports = {
   extends: ['@commitlint/config-conventional']
@@ -158,6 +170,7 @@ module.exports = {
 ```
 
 **Formato Conventional Commits:**
+
 ```
 <type>(<scope>): <description>
 
@@ -167,6 +180,7 @@ module.exports = {
 ```
 
 **Tipos Permitidos:**
+
 - `feat`: Nueva funcionalidad
 - `fix`: Corrección de bug
 - `docs`: Cambios en documentación
@@ -176,6 +190,7 @@ module.exports = {
 - `chore`: Tareas de mantenimiento
 
 **Ejemplos:**
+
 ```bash
 # ✅ Commits válidos
 feat(auth): add Google login
@@ -199,6 +214,7 @@ update code
 **Configuración:** `tsconfig.json` con modo estricto
 
 **Configuraciones Clave:**
+
 - `strict: true` - Habilita todas las opciones de verificación estricta de tipos
 - `noImplicitAny: true` - Previene tipos any implícitos
 - `strictNullChecks: true` - Verificación de null y undefined
@@ -210,6 +226,7 @@ update code
 **Propósito:** Generación automática de documentación API
 
 **Uso:**
+
 ```bash
 # Generar documentación
 npm run compodoc:build
@@ -222,6 +239,7 @@ npm run compodoc:serve
 ```
 
 **Características:**
+
 - Extrae comentarios JSDoc/TSDoc
 - Genera documentación interactiva
 - Incluye documentación de componentes, servicios y módulos
@@ -279,6 +297,7 @@ npm run test
 ### Configuración de ESLint
 
 Ubicado en `eslint.config.js`:
+
 - Reglas recomendadas base de ESLint
 - Reglas de TypeScript ESLint
 - Reglas de Angular ESLint
@@ -288,6 +307,7 @@ Ubicado en `eslint.config.js`:
 ### Configuración de Prettier
 
 Ubicado en `.prettierrc`:
+
 - Ancho de impresión: 100 caracteres
 - Comillas simples para strings
 - Sin comas finales
@@ -296,12 +316,14 @@ Ubicado en `.prettierrc`:
 ### Configuración de Commitlint
 
 Ubicado en `commitlint.config.js`:
+
 - Extiende configuración de Conventional Commits
 - Hace cumplir formato de mensaje de commit
 
 ### Hooks de Husky
 
 Ubicados en `.husky/`:
+
 - `pre-commit`: Ejecuta lint-staged
 - `commit-msg`: Valida mensajes de commit
 

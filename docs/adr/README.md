@@ -65,4 +65,3 @@ Al tomar una decisión arquitectónica significativa:
 - [Repositorio ADR en GitHub](https://github.com/joelparkerhenderson/architecture-decision-record)
 - [Documentando Decisiones Arquitectónicas](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [Documentación Principal](../README.md)
-
