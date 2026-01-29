@@ -3,11 +3,13 @@ schema: spec-driven
 # Project context (optional)
 # This is shown to AI when creating artifacts.
 # Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Este proyecto es el cliente web, una aplicación que consume servicios REST desde el platform.
+  Todas las especificaciones deben estar ajustadas únicamente a lo que concierne a este componente.
+  No incluir especificaciones de backend u otros componentes externos.
+  
+  Tech stack: Angular, TypeScript, Angular Material (MDC), Tailwind CSS
+  Arquitectura: Componentes standalone, signals para gestión de estado, estructura modular (Core, Shared, Features)
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
