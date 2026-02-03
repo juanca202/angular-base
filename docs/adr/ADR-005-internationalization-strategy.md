@@ -53,15 +53,25 @@ public/
     └── ...
 ```
 
-**Nota sobre archivos `-base.js`:**
+**Archivos con sufijo por ámbito (`{lang}-{sufijo}.js`):**
 
-Los archivos con el sufijo `-base.js` (por ejemplo, `en-base.js`, `es-base.js`) contienen traducciones compartidas o comunes que se cargan **antes** que los archivos principales. Esto permite:
+Además del archivo principal por idioma (por ejemplo, `es.js`), se pueden usar **archivos con sufijo** para separar traducciones por ámbito. El patrón de nombre es `{código de idioma}-{sufijo}.js`. Ejemplos:
 
-- Separar traducciones comunes (como mensajes de error, botones de navegación, etc.) de traducciones específicas de features
-- Cargar traducciones base primero para garantizar que siempre estén disponibles
-- Facilitar la gestión de traducciones compartidas entre múltiples módulos o features
+- **`es-base.js`**, **`en-base.js`**: Traducciones compartidas o comunes (mensajes de error, navegación, etc.) que la aplicación carga en primer lugar.
+- **`es-module.js`**, **`en-module.js`**: Traducciones de un módulo o ámbito concreto (por ejemplo, un feature o librería compartida).
+- Cualquier otro sufijo (por ejemplo, `es-recipes.js`, `en-admin.js`) para organizar por dominio o equipo.
 
-El script `generate-i18n.js` automáticamente excluye los IDs que ya existen en archivos prefijados (`{lang}-*.js`) del archivo principal (`{lang}.js`) para evitar duplicados.
+Comportamiento:
+
+- El script `generate-i18n.js` considera **todos** los archivos que coinciden con `{lang}-*.js` (cualquier sufijo después del guion) como archivos “prefijados”.
+- Recopila los IDs de traducción de todos esos archivos y **excluye** esos IDs del archivo principal `{lang}.js` al generarlo, para evitar duplicados y mantener cada clave en un solo ámbito.
+- En tiempo de ejecución, la aplicación carga primero las traducciones base (`{locale}-base.js`) y después el archivo principal (`{locale}.js`). Otros archivos con sufijo (por ejemplo, `-module.js`) pueden cargarse de forma explícita si la aplicación lo requiere.
+
+Así se consigue:
+
+- Separar traducciones por ámbito (común, módulo, feature, etc.).
+- Mantener el archivo principal generado sin duplicar IDs que ya viven en archivos con sufijo.
+- Organizar y mantener las traducciones por equipos o dominios usando sufijos descriptivos.
 
 ### Flujo de Trabajo de Traducción
 
@@ -107,9 +117,10 @@ El script `generate-i18n.js`:
 
 - Lee `en.json` (traducciones base)
 - Compara con el archivo de idioma objetivo existente (ej: `es.js`)
+- **Excluye del archivo principal los IDs que ya existen en archivos con sufijo** (`{lang}-*.js`, p. ej. `es-base.js`, `es-module.js`); así se evitan duplicados y se separan por ámbito
 - Genera/actualiza el archivo JS del idioma objetivo
 - Crea `{lang}-missing.json` para traducciones faltantes
-- Genera `en.js` desde `en.json` para carga en tiempo de ejecución
+- Genera `en.js` desde `en.json` para carga en tiempo de ejecución (también excluyendo IDs de archivos con sufijo)
 
 #### 4. Formato de Archivo de Traducción
 

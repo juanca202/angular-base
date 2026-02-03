@@ -7,32 +7,6 @@ const basesJsonPath = path.join(i18nDir, 'en.json');
 const baseJsPath = path.join(i18nDir, 'en.js');
 
 /**
- * Build a safe filename from the validated language code
- */
-function makeSafeFilename(langCode, suffix) {
-  const sanitized = validateLanguageCode(langCode);
-  return `${sanitized}${suffix}`;
-}
-
-/**
- * Resolve a file under a base directory and ensure it cannot escape it
- */
-function safeResolveUnderDir(dir, filename) {
-  // Reject if the filename contains path separators
-  if (filename.includes(path.sep) || filename.includes('/')) {
-    throw new Error('Invalid filename: contains path separators');
-  }
-  const resolvedDir = path.resolve(dir);
-  const resolved = path.resolve(resolvedDir, filename);
-  // Accept when it is exactly the directory (unexpected) or when it starts with dir + sep
-  const prefix = resolvedDir.endsWith(path.sep) ? resolvedDir : resolvedDir + path.sep;
-  if (resolved !== resolvedDir && !resolved.startsWith(prefix)) {
-    throw new Error('Resolved path outside the allowed directory');
-  }
-  return resolved;
-}
-
-/**
  * Read a JS file as a module
  */
 async function readJsFile(jsFilePath) {
@@ -62,7 +36,11 @@ async function readJsFile(jsFilePath) {
 }
 
 /**
- * Get all IDs from files with the language prefix (e.g., es-base.js, es-module.js)
+ * Get all IDs from files with the language prefix (suffix by scope).
+ * Any file matching `{langCode}-{suffix}.js` is considered a "prefixed" file:
+ * e.g. es-base.js (common translations), es-module.js (module/feature scope).
+ * These IDs are excluded from the main {langCode}.js to avoid duplicates.
+ * See ADR-005: Estructura de Archivos → Archivos con sufijo por ámbito.
  */
 async function getPrefixedFileIds(langCode) {
   const prefixedIds = new Set();
