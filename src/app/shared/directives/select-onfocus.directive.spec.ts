@@ -5,7 +5,6 @@ import { SelectOnfocusDirective } from './select-onfocus.directive';
 
 // Componente de prueba que usa la directiva
 @Component({
-  standalone: true,
   imports: [SelectOnfocusDirective],
   template: '<input appSelectOnfocus type="text" value="test value" />'
 })

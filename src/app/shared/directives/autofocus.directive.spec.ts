@@ -5,7 +5,6 @@ import { AutofocusDirective } from './autofocus.directive';
 
 // Componente de prueba que usa la directiva
 @Component({
-  standalone: true,
   imports: [AutofocusDirective],
   template: '<input appAutofocus type="text" />'
 })

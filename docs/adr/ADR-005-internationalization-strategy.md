@@ -45,11 +45,23 @@ public/
 └── i18n/
     ├── en.json          # Traducciones base en inglés (extraídas por Angular)
     ├── en.js            # Módulo JavaScript generado para inglés
+    ├── en-base.js       # Traducciones compartidas/base en inglés (carga prioritaria)
     ├── es.js            # Traducciones en español
+    ├── es-base.js       # Traducciones compartidas/base en español (carga prioritaria)
     ├── fr.js            # Traducciones en francés
-    ├── es_missing.json  # Traducciones faltantes en español (generado)
+    ├── es-missing.json  # Traducciones faltantes en español (generado)
     └── ...
 ```
+
+**Nota sobre archivos `-base.js`:**
+
+Los archivos con el sufijo `-base.js` (por ejemplo, `en-base.js`, `es-base.js`) contienen traducciones compartidas o comunes que se cargan **antes** que los archivos principales. Esto permite:
+
+- Separar traducciones comunes (como mensajes de error, botones de navegación, etc.) de traducciones específicas de features
+- Cargar traducciones base primero para garantizar que siempre estén disponibles
+- Facilitar la gestión de traducciones compartidas entre múltiples módulos o features
+
+El script `generate-i18n.js` automáticamente excluye los IDs que ya existen en archivos prefijados (`{lang}-*.js`) del archivo principal (`{lang}.js`) para evitar duplicados.
 
 ### Flujo de Trabajo de Traducción
 
@@ -96,7 +108,7 @@ El script `generate-i18n.js`:
 - Lee `en.json` (traducciones base)
 - Compara con el archivo de idioma objetivo existente (ej: `es.js`)
 - Genera/actualiza el archivo JS del idioma objetivo
-- Crea `{lang}_missing.json` para traducciones faltantes
+- Crea `{lang}-missing.json` para traducciones faltantes
 - Genera `en.js` desde `en.json` para carga en tiempo de ejecución
 
 #### 4. Formato de Archivo de Traducción
@@ -127,7 +139,7 @@ export default {
 };
 ```
 
-**Traducciones faltantes** (`es_missing.json`):
+**Traducciones faltantes** (`es-missing.json`):
 
 ```json
 {
@@ -153,18 +165,36 @@ private async setLocale(): Promise<string> {
   // 2. Almacenar preferencia del usuario
   this.storageService.set(this.localeKey, locale, 'local');
 
-  // 3. Importar dinámicamente el archivo de traducción
+  // 3. Cargar primero las traducciones base (si existen)
+  try {
+    const localeBaseTranslations = await import(`../../../../public/i18n/${locale}-base.js`);
+    loadTranslations(localeBaseTranslations.default);
+  } catch (error) {
+    console.error(`Error loading base translations for ${locale}:`, error);
+  }
+
+  // 4. Importar dinámicamente el archivo de traducción principal
   const localeTranslationsModule = await import(`../../../../public/i18n/${locale}.js`);
 
-  // 4. Cargar traducciones en tiempo de ejecución
+  // 5. Cargar traducciones en tiempo de ejecución (sobrescribe duplicados si existen)
   loadTranslations(localeTranslationsModule.default);
 
-  // 5. Configurar moment.js para localización de fecha/hora
+  // 6. Configurar moment.js para localización de fecha/hora
   moment.locale(locale);
 
   return locale;
 }
 ```
+
+**Orden de Carga:**
+
+1. **Archivos `-base.js`**: Se cargan primero (por ejemplo, `en-base.js`, `es-base.js`)
+   - Contienen traducciones compartidas/comunes
+   - Si el archivo no existe, se ignora el error silenciosamente
+
+2. **Archivos principales**: Se cargan después (por ejemplo, `en.js`, `es.js`)
+   - Contienen traducciones específicas de features
+   - Si hay IDs duplicados, los del archivo principal sobrescriben los de `-base.js`
 
 ### Prioridad de Detección de Locale
 
@@ -196,7 +226,7 @@ changeLanguage(language: Language): void {
 El script `generate-i18n.js` automáticamente:
 
 - Identifica traducciones faltantes
-- Crea archivos `{lang}_missing.json`
+- Crea archivos `{lang}-missing.json`
 - Elimina archivos faltantes cuando todas las traducciones están completas
 
 ### 3. Sincronización de Traducciones
@@ -350,7 +380,7 @@ export class UserProfileComponent {
    ```
 
 3. **Traducir cadenas faltantes:**
-   - Abrir `public/i18n/de_missing.json`
+   - Abrir `public/i18n/de-missing.json`
    - Traducir todas las cadenas
    - Copiar traducciones a `public/i18n/de.js`
 
@@ -360,14 +390,14 @@ export class UserProfileComponent {
    npm run i18n -- de
    ```
 
-   - Si todas las traducciones están completas, `de_missing.json` será eliminado
+   - Si todas las traducciones están completas, `de-missing.json` será eliminado
 
 ### Actualizar Traducciones
 
 1. **Agregar nuevas cadenas** a los templates con atributo `i18n`
 2. **Extraer** nuevas cadenas: `npm run extract-i18n`
 3. **Actualizar archivos de idioma:** `npm run i18n -- es`
-4. **Traducir** nuevas cadenas en `{lang}_missing.json`
+4. **Traducir** nuevas cadenas en `{lang}-missing.json`
 5. **Regenerar** para aplicar traducciones
 
 ## Reglas y Guías

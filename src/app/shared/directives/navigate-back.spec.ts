@@ -7,7 +7,6 @@ import { NavigateBack } from './navigate-back';
 
 // Componente de prueba que usa la directiva
 @Component({
-  standalone: true,
   imports: [NavigateBack],
   template: '<button appNavigateBack [fallback]="fallbackRoute">Back</button>'
 })

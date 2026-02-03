@@ -26,7 +26,6 @@ import { Router } from '@angular/router';
  * - If no history is available and a fallback is defined → navigates to the fallback route.
  */
 @Directive({
-  standalone: true,
   selector: '[appNavigateBack]',
   host: {
     '(click)': 'handleClick()'
