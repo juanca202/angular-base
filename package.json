@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:coverage": "ng test --coverage",
+    "test:staged": "node scripts/test-staged.js",
     "e2e": "ng e2e",
     "extract-i18n": "ng extract-i18n --out-file public/i18n/en.json --format=json && node generate-i18n.js",
     "i18n": "node generate-i18n.js",
@@ -27,6 +28,9 @@
     "src/**/*.{ts,js,html,scss,json,md}": [
       "prettier --write",
       "eslint --fix"
+    ],
+    "src/**/*.ts": [
+      "node scripts/test-staged.js"
     ]
   },
   "dependencies": {

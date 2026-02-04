@@ -11,7 +11,7 @@ El Angular Base Project es un **boilerplate** diseñado para servir como base pa
 - Mejores prácticas y convenciones
 - Documentación y ADRs
 - Componentes y servicios listos para usar
-- Listo para trabajar con agentes de IA
+- Listo para trabajar con agentes de IA 
 
 ## Instalación
 
