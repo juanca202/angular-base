@@ -2,6 +2,8 @@
  * Environment variables model
  */
 export interface Environment {
+  appId: string;
+  appName: string;
   // Authentication
   auth: {
     signupUrl: string;
@@ -11,6 +13,8 @@ export interface Environment {
     resetPasswordUrl: string;
     settingsUrl: string;
     allowRefreshToken: boolean;
+    allowSignup: boolean;
+    allowAuthFederation: boolean;
     clients: {
       google: string;
     };

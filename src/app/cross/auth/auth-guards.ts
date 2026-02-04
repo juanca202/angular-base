@@ -1,22 +1,20 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 
-import { AppManager } from '@/core/services/app-manager';
 import { environment } from '@/environments/environment';
 import { Session } from '@/core/services/session';
+import { StorageService } from '@factor_ec/utils';
 
 export const authGuard: CanActivateFn = async (route, state) => {
   //Dependency injection
-  const appManager = inject(AppManager);
   const router = inject(Router);
   const session = inject(Session);
+  const storageService = inject(StorageService);
 
   // Check authentication
   if (!session.isLoggedIn() || !session.settings()) {
-    sessionStorage.setItem(`${environment.sessionPrefix}_rdi`, state.url);
-    return router.createUrlTree([window.innerWidth < 1000 ? '/auth' : '/signin']);
-  }
-  if (!appManager.initialized) {
+    storageService.set(`${environment.sessionPrefix}_rdi`, state.url);
+    router.navigateByUrl(window.innerWidth < 1000 ? '/auth' : '/signin');
     return false;
   }
   return true;

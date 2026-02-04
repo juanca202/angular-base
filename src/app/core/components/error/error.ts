@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { IconComponent } from '@factor_ec/ui';
 import { Error as ErrorModel, StorageService } from '@factor_ec/utils';
 
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { environment } from '@/environments/environment';
 
 /**

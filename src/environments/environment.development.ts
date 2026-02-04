@@ -1,6 +1,8 @@
 import { Environment } from '../app/core/models/environment';
 
 export const environment: Environment = {
+  appId: 'abp',
+  appName: 'ABP',
   auth: {
     signupUrl: 'http://localhost:8000/authentication_signup',
     signinUrl: 'http://localhost:8000/authentication_token',
@@ -9,6 +11,8 @@ export const environment: Environment = {
     resetPasswordUrl: 'http://localhost:8000/authentication_reset-password',
     settingsUrl: 'http://localhost:8000/api/settings',
     allowRefreshToken: true,
+    allowSignup: true,
+    allowAuthFederation: false,
     clients: {
       google: 'http://localhost:8000/connect/google'
     }

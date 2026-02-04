@@ -7,7 +7,7 @@ import { Settings as SettingsModel } from '@/core/models/settings';
 import { Settings } from './settings';
 import { AppManager } from '@/core/services/app-manager';
 import { LayoutManager } from '@/core/services/layout-manager';
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 import { UI_OPTIONS } from '@factor_ec/ui';

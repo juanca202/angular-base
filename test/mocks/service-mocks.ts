@@ -7,7 +7,7 @@ import { signal, computed, EventEmitter } from '@angular/core';
 import { of } from 'rxjs';
 import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
@@ -73,7 +73,6 @@ export function createMockAuthProvider(overrides?: Partial<AuthProvider>): Parti
 export function createMockSession(overrides?: Partial<Session>): Partial<Session> {
   return {
     isLoggedIn: computed(() => false),
-    loggedIn: new EventEmitter<User>(),
     ...overrides
   };
 }

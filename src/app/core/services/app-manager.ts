@@ -15,7 +15,7 @@ import { skip } from 'rxjs';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 
 registerLocaleData(localeEn, 'en');
@@ -33,6 +33,7 @@ registerLocaleData(localeEs, 'es');
   providedIn: 'root'
 })
 export class AppManager {
+  // Dependency injections
   private readonly authService = inject(AuthProvider);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly location = inject(Location);
@@ -43,11 +44,9 @@ export class AppManager {
   private readonly swUpdate = inject(SwUpdate);
   private readonly storageService = inject(StorageService);
 
-  public readonly allowSignup: boolean = true;
-  public readonly allowAuthFederation: boolean = false;
-  public readonly id: string = '';
-  public readonly name: string = '';
-  public initialized: boolean = false;
+  // Properties
+  public readonly id = environment.appId;
+  public readonly name = environment.appName;
   private installPrompt: any = null; // BeforeInstallPromptEvent;
   public readonly version: string = versionInfo.git.raw;
   public readonly updateStatus = signal<string | null>('done');
@@ -139,27 +138,28 @@ export class AppManager {
       await this.initSession(false);
       console.log('init local data in:', (performance.now() - timerStart).toFixed(2), 'ms');
     }
-    // Upon authentication, a server synchronization is required
-    this.session.loggedIn.pipe(skip(this.session.isLoggedIn() ? 1 : 0)).subscribe(async (value) => {
-      if (value) {
-        timerStart = performance.now();
-        await this.initSession(true);
-        // If a redirect is found use it; otherwise load the home page
-        const redirect = this.storageService.get(`${environment.sessionPrefix}_rdi`);
-        if (redirect) {
-          this.router.navigateByUrl(redirect);
-          this.storageService.delete(`${environment.sessionPrefix}_rdi`);
-        } else {
-          this.router.navigateByUrl('/');
+    // Upon authentication, a server synchronization is required (AuthProvider emits login state)
+    this.authService.loggedIn
+      .pipe(skip(this.session.isLoggedIn() ? 1 : 0))
+      .subscribe(async (value: boolean) => {
+        if (value) {
+          timerStart = performance.now();
+          await this.initSession(true);
+          // If a redirect is found use it; otherwise load the home page
+          const redirect = this.storageService.get(`${environment.sessionPrefix}_rdi`);
+          if (redirect) {
+            this.router.navigateByUrl(redirect);
+            this.storageService.delete(`${environment.sessionPrefix}_rdi`);
+          } else {
+            this.router.navigateByUrl('/');
+          }
+          console.log('init network data in:', (performance.now() - timerStart).toFixed(2), 'ms');
         }
-        console.log('init network data in:', (performance.now() - timerStart).toFixed(2), 'ms');
-      }
-    });
+      });
   }
   private async initSession(networkOnly: boolean): Promise<void> {
     // Load initial configuration
     await this.authService.getSettings(networkOnly, this.pushToken);
-    this.initialized = true;
   }
   public install(): void {
     if (!this.installPrompt) {

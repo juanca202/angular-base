@@ -5,7 +5,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 import { MenuItem } from '@/core/models/menu-item';
 

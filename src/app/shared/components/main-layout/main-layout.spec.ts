@@ -5,7 +5,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { signal, computed, EventEmitter } from '@angular/core';
 import { MainLayout } from './main-layout';
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 import { MenuItem } from '@/core/models/menu-item';
 import { User } from '@/core/models/user';
@@ -42,8 +42,7 @@ describe('MainLayout', () => {
 
     mockSession = {
       user: computed(() => mockUser),
-      isLoggedIn: computed(() => true),
-      loggedIn: new EventEmitter<User>()
+      isLoggedIn: computed(() => true)
     };
 
     mockBottomSheet = {

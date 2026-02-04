@@ -23,7 +23,7 @@ import { Language } from '@factor_ec/utils';
 import { AppManager } from '@/core/services/app-manager';
 
 import { LayoutManager } from '@/core/services/layout-manager';
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 import { LANGUAGES } from '@/core/constants/languages';
 

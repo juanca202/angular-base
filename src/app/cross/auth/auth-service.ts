@@ -15,7 +15,7 @@ import { Login } from '@/cross/auth/models/login';
 import { AuthToken } from '@/cross/auth/models/auth-token';
 import { AuthTokenPayload } from '@/cross/auth/models/auth-token-payload';
 import { Settings } from '@/core/models/settings';
-import { AuthProvider } from '@/core/services/auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import {
   BehaviorSubject,
   Observable,
@@ -103,7 +103,10 @@ export class AuthService extends AuthProvider {
    * Manages the access token refresh flow
    */
   private readonly refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-
+  /** Whether the app allows new user signup. From environment. */
+  public readonly allowSignup = environment.auth.allowSignup;
+  /** Whether federated auth (e.g. Google) is enabled. From environment. */
+  public readonly allowAuthFederation = environment.auth.allowAuthFederation;
   /**
    * Sends the authentication token to the server
    * @param request HTTP request

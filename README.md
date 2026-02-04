@@ -67,30 +67,12 @@ Este proyecto usa la convención **Conventional Commits**. Para más detalles so
 
 ---
 
-## Acceso Rápido a la Documentación
+## Documentación
 
 Enlaces directos a toda la documentación disponible:
 
-- 🚀 [Comenzando](./docs/specs/rules/getting-started.md) - Cómo usar este proyecto base
-- 📐 [Arquitectura](./docs/README.md) - Estructura general y decisiones de diseño
-- 🎨 [Estilos CSS](./docs/specs/rules/css-styling.md) - Reglas y convenciones CSS
+- 🚀 [Comenzando](./docs/getting-started.md) - Cómo usar este proyecto base
 - 📋 [Registros de Decisiones Arquitectónicas (ADRs)](./docs/adr/README.md) - Decisiones arquitectónicas documentadas
-
----
-
-## Índice de Documentación
-
-### 📐 [Arquitectura](./docs/README.md)
-
-Documentación completa de la arquitectura del proyecto, incluyendo:
-
-- Objetivos y alcance arquitectónicos
-- Diagramas C4 (Componentes y módulos internos)
-- Decisiones arquitectónicas (ADRs)
-- Estructura de capas (Core, Shared, Features)
-- Seguridad, rendimiento y optimizaciones
-
-**Útil para:** Entender la estructura general del proyecto, decisiones de diseño y cómo se organizan los componentes.
 
 ---
 
@@ -99,21 +81,6 @@ Documentación completa de la arquitectura del proyecto, incluyendo:
 Este proyecto documenta todas las decisiones arquitectónicas importantes en ADRs. Consulta el [índice completo de ADRs](./docs/adr/README.md) para ver todas las decisiones documentadas.
 
 **Útil para:** Entender las decisiones arquitectónicas del proyecto y las razones detrás de ellas.
-
----
-
-### 🎨 [Estilos CSS](./docs/specs/rules/css-styling.md)
-
-Reglas y convenciones para el uso de CSS en el proyecto:
-
-- BEM con prefijo `ft-` para clases personalizadas
-- Priorización de Tailwind CSS para utilidades
-- Variables CSS para temas y consistencia
-- Diseño responsivo con breakpoints de Tailwind
-
-**Útil para:** Aplicar estilos consistentes, decidir cuándo usar Tailwind vs. clases personalizadas.
-
----
 
 ## Contribuir
 

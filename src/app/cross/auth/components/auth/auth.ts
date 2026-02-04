@@ -132,7 +132,7 @@ export class Auth implements OnInit {
         this.googleTagManagerService.addVariable({
           event: 'login',
           user_id: this.signinForm.value.username,
-          app_id: this.appManager.name
+          app_id: this.appManager.id
         });
         this.signinForm.enable();
         this.submitting.set(false);
@@ -158,7 +158,7 @@ export class Auth implements OnInit {
         this.googleTagManagerService.addVariable({
           event: 'sign_up',
           user_id: this.signupForm.value.username,
-          app_id: this.appManager.name
+          app_id: this.appManager.id
         });
         await this.authService.signin({
           username: this.signupForm.value.email,

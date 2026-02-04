@@ -6,9 +6,8 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SwUpdate } from '@angular/service-worker';
 import { AppManager } from './app-manager';
-import { AuthProvider } from './auth.provider';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from './session';
-import { User } from '../models/user';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
 import { LANGUAGES } from '../constants/languages';
 import { signal, computed, EventEmitter } from '@angular/core';
@@ -42,8 +41,7 @@ describe('AppManager', () => {
     };
 
     mockSession = {
-      isLoggedIn: computed(() => false),
-      loggedIn: new EventEmitter<User>()
+      isLoggedIn: computed(() => false)
     };
 
     mockStorageService = {
@@ -99,16 +97,6 @@ describe('AppManager', () => {
   });
 
   describe('properties', () => {
-    it('should have allowSignup as true', () => {
-      // Arrange & Act & Assert
-      expect(appManager.allowSignup).toBe(true);
-    });
-
-    it('should have allowAuthFederation as false', () => {
-      // Arrange & Act & Assert
-      expect(appManager.allowAuthFederation).toBe(false);
-    });
-
     it('should have languages signal', () => {
       // Arrange & Act
       const languages = appManager.languages();
@@ -240,13 +228,6 @@ describe('AppManager', () => {
 
       // Assert
       expect(appManager.updateStatus()).toBe('failed');
-    });
-  });
-
-  describe('initialized', () => {
-    it('should start as false', () => {
-      // Arrange & Act & Assert
-      expect(appManager.initialized).toBe(false);
     });
   });
 

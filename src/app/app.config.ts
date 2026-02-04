@@ -16,14 +16,16 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 // import * as Sentry from '@sentry/angular';
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 import { UI_OPTIONS } from '@factor_ec/ui';
+import { GoogleTagManagerService } from '@factor_ec/utils';
 
 import { routes } from '@/app.routes';
 import { AppManager } from '@/core/services/app-manager';
 import { authInterceptor } from '@/cross/auth/auth-interceptor';
 import { clientInterceptor } from '@/core/interceptors/client-interceptor';
-import { AilErrorHandler } from './core/services/ail-error-handler';
-import { AuthService } from './cross/auth/auth-service';
-import { AuthProvider } from './core/services/auth.provider';
+import { AilErrorHandler } from '@/cross/monitoring/ail-error-handler';
+import { AuthService } from '@/cross/auth/auth-service';
+import { AuthProvider } from '@/core/models/auth.provider';
+import { environment } from '@/environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,7 +33,14 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding()),
     provideAppInitializer(async () => {
+      // Dependency injection
       const appManager = inject(AppManager);
+      const googleTagManagerService = inject(GoogleTagManagerService);
+
+      // Insert Google Tag Manager tracking code
+      if (environment.googleTagManager) {
+        googleTagManagerService.appendTrackingCode(environment.googleTagManager.trackingCode);
+      }
       await appManager.init();
     }),
     provideServiceWorker('sw-custom.js', {

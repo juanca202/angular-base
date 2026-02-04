@@ -1,18 +1,22 @@
-import { Injectable, signal, computed, effect, inject, EventEmitter } from '@angular/core';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { environment } from '@/environments/environment';
-import { SessionState } from '@/core/models/session-state';
+import { CustomParams, SessionState, SessionToken } from '@/core/models/session-state';
 import { User } from '@/core/models/user';
 import { Settings } from '@/core/models/settings';
 import { StorageService } from '@factor_ec/utils';
 
 /** Storage key prefix for session data persisted in local storage */
 const STORAGE_KEY = `${environment.sessionPrefix}_sess`;
+/** Cookie name for session token (client-side storage with Secure + SameSite) */
+const TOKEN_KEY = `${environment.sessionPrefix}_sess`;
 
 /**
  * Service for managing user session state including user information, settings, and custom parameters.
  *
  * This service provides reactive access to session data using Angular signals and computed properties.
- * It automatically persists session changes to local storage and restores them on application initialization.
+ * It persists user, settings and params to local storage. The session token is stored in a Secure
+ * cookie from the client (Secure; SameSite=Strict). Note: cookies set from JavaScript cannot be
+ * HttpOnly; for maximum security the backend could set an HttpOnly cookie instead.
  *
  * @example
  * ```typescript
@@ -37,46 +41,44 @@ export class Session {
 
   /**
    * @internal
-   * Reactive signal holding the complete session state including user, settings, and custom parameters
+   * Señales separadas por campo para que cambios en uno no re-ejecuten computeds de otros
+   * (p. ej. setUser solo afecta a user(), no a settings(), token(), isLoggedIn()).
    */
-  private readonly _state = signal<SessionState>({
-    user: null,
-    settings: null,
-    params: {}
-  });
+  private readonly _token = signal<SessionToken | null>(null);
+  private readonly _user = signal<User | null>(null);
+  private readonly _params = signal<CustomParams | null>(null);
+  private readonly _settings = signal<Settings | null>(null);
 
-  /**
-   * Computed signal providing reactive access to the current logged-in user
-   *
-   * @returns The current user object or null if not authenticated
-   */
-  public readonly user = computed(() => this._state().user);
-
-  /**
-   * Computed signal providing reactive access to user settings
-   *
-   * @returns The user settings object or null if not set
-   */
-  public readonly settings = computed(() => this._state().settings);
-
-  /**
-   * Computed signal providing reactive access to custom session parameters
-   *
-   * @returns Object containing custom key-value parameters
-   */
-  public readonly params = computed(() => this._state().params);
+  /** Token */
+  public readonly token = computed(() => this._token());
 
   /**
    * Computed signal indicating whether a user is currently logged in
+   * Based on the presence and validity of the authentication token
    *
-   * @returns true if a user is logged in, false otherwise
+   * For JWT tokens, validates expiration. For other token types, only checks existence.
+   *
+   * @returns true if a valid token exists, false otherwise
    */
-  public readonly isLoggedIn = computed(() => !!this._state().user);
+  public readonly isLoggedIn = computed(() => {
+    const token = this._token();
+    if (!token || !token.value) return false;
 
-  private previousUser: User | null = null;
+    if (token.expiresAt) {
+      const currentTimestamp = Math.round(Date.now() / 1000);
+      return token.expiresAt > currentTimestamp;
+    }
+    return true;
+  });
 
-  public readonly loggedIn = new EventEmitter<User>();
-  public readonly loggedOut = new EventEmitter<void>();
+  /** User */
+  public readonly user = computed(() => this._user());
+
+  /** Params */
+  public readonly params = computed(() => this._params());
+
+  /** Settings */
+  public readonly settings = computed(() => this._settings());
 
   /**
    * Initializes the session service and sets up automatic persistence
@@ -84,38 +86,89 @@ export class Session {
   constructor() {
     this.restoreFromStorage();
 
-    // Effect to automatically persist each state change
+    // Effect: persist only user, settings, params (token is stored in cookie from setToken/clearToken)
     effect(() => {
-      const state = this._state();
-      this.storageService.set(STORAGE_KEY, state);
-    });
-
-    effect(() => {
-      const currentUser = this._state().user;
-      if (!this.previousUser && currentUser) {
-        this.loggedIn.emit(currentUser);
-      }
-      if (this.previousUser && !currentUser) {
-        this.loggedOut.emit();
-      }
-      this.previousUser = currentUser;
+      const state: SessionState = {
+        user: this._user(),
+        settings: this._settings(),
+        params: this._params(),
+        token: null
+      };
+      this.storageService.set(STORAGE_KEY, state, 'local');
     });
   }
 
   /**
-   * Restores session state from local storage
-   *
-   * If stored data is invalid or corrupted, clears all session data
+   * Restores session state from local storage and from the token cookie.
    *
    * @internal
    */
   private restoreFromStorage(): void {
     try {
       const session = this.storageService.get(STORAGE_KEY, 'local');
-      if (!session) return;
-      this._state.set(session as SessionState);
+      if (session) {
+        const s = session as SessionState;
+        this._user.set(s.user ?? null);
+        this._settings.set(s.settings ?? null);
+        this._params.set(s.params ?? null);
+      }
+      const token = this.getToken();
+      if (token) this._token.set(token);
     } catch {
       this.clearAll();
+    }
+  }
+
+  /**
+   * Reads the session token from the Secure cookie (client-side storage).
+   * @internal
+   */
+  private getToken(): SessionToken | null {
+    if (typeof document === 'undefined' || !document.cookie) return null;
+    const match = document.cookie.match(
+      new RegExp('(?:^|; )' + TOKEN_KEY.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)')
+    );
+    const raw = match ? decodeURIComponent(match[1]) : null;
+    if (!raw) return null;
+    try {
+      const data = JSON.parse(raw) as SessionToken;
+      return data?.value ? data : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Sets the authentication token in session state and in a Secure cookie (client-side).
+   * Cookie: Path=/; SameSite=Strict; Secure on HTTPS; Max-Age from expiresAt or 1 day.
+   *
+   * @param token - The authentication token object to store
+   */
+  public setToken(token: SessionToken | null): void {
+    if (!token?.value?.trim()) {
+      this.clearToken();
+      return;
+    }
+    const copy = { ...token };
+    this._token.set(copy);
+    if (typeof document !== 'undefined') {
+      const value = encodeURIComponent(JSON.stringify(copy));
+      const maxAge = copy.expiresAt
+        ? Math.max(0, copy.expiresAt - Math.round(Date.now() / 1000))
+        : 24 * 60 * 60;
+      let cookie = `${TOKEN_KEY}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Strict`;
+      if (typeof location !== 'undefined' && location.protocol === 'https:') cookie += '; Secure';
+      document.cookie = cookie;
+    }
+  }
+
+  /**
+   * Clears the authentication token from session state and removes the cookie.
+   */
+  public clearToken(): void {
+    this._token.set(null);
+    if (typeof document !== 'undefined') {
+      document.cookie = `${TOKEN_KEY}=; Path=/; Max-Age=0`;
     }
   }
 
@@ -125,33 +178,14 @@ export class Session {
    * @param user - The user object to store in session
    */
   public setUser(user: User): void {
-    this._state.update((prev) => ({ ...prev, user }));
+    this._user.set(user);
   }
 
   /**
    * Clears the current user from session state
    */
   public clearUser(): void {
-    this._state.update((prev) => ({ ...prev, user: null }));
-  }
-
-  /**
-   * Merges provided settings with existing settings in session state
-   *
-   * @param settings - Partial settings object to merge with existing settings
-   */
-  public setSettings(settings: Partial<Settings>): void {
-    this._state.update((prev) => {
-      const merged = { ...(prev.settings ?? {}), ...settings } as Settings;
-      return { ...prev, settings: merged };
-    });
-  }
-
-  /**
-   * Clears all settings from session state
-   */
-  public clearSettings(): void {
-    this._state.update((prev) => ({ ...prev, settings: null }));
+    this._user.set(null);
   }
 
   /**
@@ -161,10 +195,7 @@ export class Session {
    * @param value - The parameter value
    */
   public setParam(key: string, value: any): void {
-    this._state.update((prev) => ({
-      ...prev,
-      params: { ...prev.params, [key]: value }
-    }));
+    this._params.update((prev) => ({ ...prev, [key]: value }));
   }
 
   /**
@@ -173,28 +204,40 @@ export class Session {
    * @param values - Object containing key-value pairs to merge
    */
   public setParams(values: Record<string, any>): void {
-    this._state.update((prev) => ({
-      ...prev,
-      params: { ...prev.params, ...values }
-    }));
+    this._params.update((prev) => ({ ...prev, ...values }));
   }
 
   /**
    * Clears all custom parameters from session state
    */
   public clearParams(): void {
-    this._state.update((prev) => ({ ...prev, params: {} }));
+    this._params.set(null);
   }
 
   /**
-   * Clears all session data (user, settings, and parameters) and removes data from storage
+   * Merges provided settings with existing settings in session state
+   *
+   * @param settings - Partial settings object to merge with existing settings
+   */
+  public setSettings(settings: Partial<Settings>): void {
+    this._settings.update((prev) => ({ ...(prev ?? {}), ...settings }) as Settings);
+  }
+
+  /**
+   * Clears all settings from session state
+   */
+  public clearSettings(): void {
+    this._settings.set(null);
+  }
+
+  /**
+   * Clears all session data (user, settings, parameters, and token) and removes data from storage
    */
   public clearAll(): void {
-    this._state.set({
-      user: null,
-      settings: null,
-      params: {}
-    });
-    this.storageService.delete(STORAGE_KEY);
+    this._user.set(null);
+    this._settings.set(null);
+    this._params.set(null);
+    this.clearToken();
+    this.storageService.delete(STORAGE_KEY, 'local');
   }
 }

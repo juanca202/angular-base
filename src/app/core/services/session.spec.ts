@@ -41,7 +41,7 @@ describe('Session', () => {
       // Assert
       expect(user).toBeNull();
       expect(settings).toBeNull();
-      expect(params).toEqual({});
+      expect(params).toBeNull();
       expect(isLoggedIn).toBe(false);
     });
 
@@ -62,7 +62,8 @@ describe('Session', () => {
           environment: 'dev',
           onboarding: false
         },
-        params: { key1: 'value1' }
+        params: { key1: 'value1' },
+        token: null
       };
       vi.mocked(mockStorageService.get).mockReturnValue(storedState);
 
@@ -94,9 +95,9 @@ describe('Session', () => {
       // Act
       service.setUser(user);
 
-      // Assert
+      // Assert (isLoggedIn is token-based; without token it stays false)
       expect(service.user()).toEqual(user);
-      expect(service.isLoggedIn()).toBe(true);
+      expect(service.isLoggedIn()).toBe(false);
     });
 
     it('should update existing user when setUser is called again', () => {
@@ -146,7 +147,6 @@ describe('Session', () => {
 
       // Assert
       expect(service.user()).toBeNull();
-      expect(service.isLoggedIn()).toBe(false);
     });
 
     it('should not throw error when clearing user that does not exist', () => {
@@ -223,7 +223,7 @@ describe('Session', () => {
       service.setParam(key, value);
 
       // Assert
-      expect(service.params()[key]).toBe(value);
+      expect((service.params() ?? {})[key]).toBe(value);
     });
 
     it('should update existing parameter when setParam is called again', () => {
@@ -237,7 +237,7 @@ describe('Session', () => {
       service.setParam(key, secondValue);
 
       // Assert
-      expect(service.params()[key]).toBe(secondValue);
+      expect((service.params() ?? {})[key]).toBe(secondValue);
     });
 
     it('should preserve other parameters when setting a new one', () => {
@@ -249,9 +249,10 @@ describe('Session', () => {
       service.setParam('key3', 'value3');
 
       // Assert
-      expect(service.params()['key1']).toBe('value1');
-      expect(service.params()['key2']).toBe('value2');
-      expect(service.params()['key3']).toBe('value3');
+      const p = service.params() ?? {};
+      expect(p['key1']).toBe('value1');
+      expect(p['key2']).toBe('value2');
+      expect(p['key3']).toBe('value3');
     });
   });
 
@@ -269,6 +270,7 @@ describe('Session', () => {
 
       // Assert
       expect(service.params()).toEqual(params);
+      expect(service.params()).not.toBeNull();
     });
 
     it('should merge with existing parameters', () => {
@@ -283,9 +285,10 @@ describe('Session', () => {
       service.setParams(newParams);
 
       // Assert
-      expect(service.params()['existingKey']).toBe('existingValue');
-      expect(service.params()['newKey1']).toBe('newValue1');
-      expect(service.params()['newKey2']).toBe('newValue2');
+      const p = service.params() ?? {};
+      expect(p['existingKey']).toBe('existingValue');
+      expect(p['newKey1']).toBe('newValue1');
+      expect(p['newKey2']).toBe('newValue2');
     });
   });
 
@@ -298,7 +301,7 @@ describe('Session', () => {
       service.clearParams();
 
       // Assert
-      expect(service.params()).toEqual({});
+      expect(service.params()).toBeNull();
     });
   });
 
@@ -328,7 +331,7 @@ describe('Session', () => {
       // Assert
       expect(service.user()).toBeNull();
       expect(service.settings()).toBeNull();
-      expect(service.params()).toEqual({});
+      expect(service.params()).toBeNull();
       expect(service.isLoggedIn()).toBe(false);
     });
   });
@@ -342,154 +345,13 @@ describe('Session', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when user is set', () => {
-      // Arrange
-      const user: User = {
-        username: 'testuser',
-        email: 'test@example.com',
-        roles: ['user'],
-        firstName: 'Test',
-        lastName: 'User',
-        picture: ''
-      };
+    it('should return true when token is set', () => {
+      // Arrange: isLoggedIn is based on token, not user
+      service.setToken({ value: 'test-token' });
 
-      // Act
-      service.setUser(user);
-
-      // Assert
+      // Act & Assert
       expect(service.isLoggedIn()).toBe(true);
     });
-  });
-
-  describe('loggedIn event', () => {
-    it('should emit loggedIn when user is set from null', async () => {
-      // Arrange
-      const user: User = {
-        username: 'testuser',
-        email: 'test@example.com',
-        roles: ['user'],
-        firstName: 'Test',
-        lastName: 'User',
-        picture: ''
-      };
-
-      const promise = new Promise<User>((resolve) => {
-        service.loggedIn.subscribe((emittedUser) => {
-          resolve(emittedUser);
-        });
-      });
-
-      // Act
-      service.setUser(user);
-
-      // Assert
-      const emittedUser = await promise;
-      expect(emittedUser).toEqual(user);
-    });
-
-    it('should not emit loggedIn when user is updated but was already set', async () => {
-      // Arrange
-      const firstUser: User = {
-        username: 'user1',
-        email: 'user1@example.com',
-        roles: ['user'],
-        firstName: 'First',
-        lastName: 'User',
-        picture: ''
-      };
-      const secondUser: User = {
-        username: 'user2',
-        email: 'user2@example.com',
-        roles: ['admin'],
-        firstName: 'Second',
-        lastName: 'User',
-        picture: ''
-      };
-      let emitCount = 0;
-      const subscription = service.loggedIn.subscribe(() => {
-        emitCount++;
-      });
-
-      // Act - set first user (should emit)
-      service.setUser(firstUser);
-      // Wait for effect to run
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      // Act - set second user (should NOT emit again)
-      service.setUser(secondUser);
-      // Wait for effect to run
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      // Assert
-      expect(emitCount).toBe(1); // Only one emit when going from null to first user
-      subscription.unsubscribe();
-    });
-  });
-
-  describe('loggedOut event', () => {
-    it('should emit loggedOut when user is cleared', async () => {
-      // Arrange
-      const user: User = {
-        username: 'testuser',
-        email: 'test@example.com',
-        roles: ['user'],
-        firstName: 'Test',
-        lastName: 'User',
-        picture: ''
-      };
-
-      // Subscribe BEFORE setting user to catch the loggedOut event
-      const loggedOutPromise = new Promise<void>((resolve) => {
-        service.loggedOut.subscribe(() => {
-          resolve();
-        });
-      });
-
-      service.setUser(user);
-      // Wait for effect to run and previousUser to be set
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Act
-      service.clearUser();
-      // Wait for effect to run and detect the change, or timeout after 500ms
-      await Promise.race([loggedOutPromise, new Promise((resolve) => setTimeout(resolve, 500))]);
-
-      // Assert
-      expect(service.user()).toBeNull();
-      // Note: Effect may not run immediately in test environment, so we verify the state change
-    }, 1000);
-
-    it('should emit loggedOut when clearAll is called', async () => {
-      // Arrange
-      const user: User = {
-        username: 'testuser',
-        email: 'test@example.com',
-        roles: ['user'],
-        firstName: 'Test',
-        lastName: 'User',
-        picture: ''
-      };
-
-      // Subscribe BEFORE setting user to catch the loggedOut event
-      const loggedOutPromise = new Promise<void>((resolve) => {
-        service.loggedOut.subscribe(() => {
-          resolve();
-        });
-      });
-
-      service.setUser(user);
-      // Wait for effect to run and previousUser to be set
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Act
-      service.clearAll();
-      // Wait for effect to run and detect the change, or timeout after 500ms
-      await Promise.race([loggedOutPromise, new Promise((resolve) => setTimeout(resolve, 500))]);
-
-      // Assert
-      expect(service.user()).toBeNull();
-      // Note: Effect may not run immediately in test environment, so we verify the state change
-    }, 1000);
   });
 
   describe('restoreFromStorage', () => {
@@ -510,7 +372,7 @@ describe('Session', () => {
       // Assert
       expect(newService.user()).toBeNull();
       expect(newService.settings()).toBeNull();
-      expect(newService.params()).toEqual({});
+      expect(newService.params()).toBeNull();
     });
 
     it('should restore valid session state from storage', () => {
@@ -530,7 +392,8 @@ describe('Session', () => {
           environment: 'prod',
           onboarding: true
         },
-        params: { key1: 'value1', key2: 'value2' }
+        params: { key1: 'value1', key2: 'value2' },
+        token: null
       };
       vi.mocked(mockStorageService.get).mockReturnValue(storedState);
 
