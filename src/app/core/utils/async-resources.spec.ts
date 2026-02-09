@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import {
@@ -10,10 +10,12 @@ import {
 } from './async-resources';
 import { MessageService } from '@factor_ec/ui';
 import { environment } from '@/environments/environment';
+import { notificationEvents, type NotificationEvent } from './notification';
 
 describe('async-resources', () => {
   // Arrange
   let mockMessageService: Partial<MessageService>;
+  let notificationHandler: (event: Event) => void;
 
   beforeEach(() => {
     // Arrange: Create mock message service
@@ -21,9 +23,25 @@ describe('async-resources', () => {
       show: vi.fn()
     };
 
+    // Setup notification event listener to call mockMessageService.show
+    notificationHandler = (event: Event) => {
+      const { message, options } = (event as Event & { detail: NotificationEvent }).detail;
+      mockMessageService.show!(message, {
+        type: options?.type || ('notification' as const)
+      });
+    };
+    notificationEvents.addEventListener('notify', notificationHandler);
+
     TestBed.configureTestingModule({
       providers: [{ provide: MessageService, useValue: mockMessageService }]
     });
+  });
+
+  afterEach(() => {
+    // Clean up event listener
+    if (notificationHandler) {
+      notificationEvents.removeEventListener('notify', notificationHandler);
+    }
   });
 
   describe('getApiUrl', () => {

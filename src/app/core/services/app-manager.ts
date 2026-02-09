@@ -17,6 +17,8 @@ import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
+import { NotificationEvent, notificationEvents } from '../utils/notification';
+import { MessageService } from '@factor_ec/ui';
 
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
@@ -43,6 +45,7 @@ export class AppManager {
   private readonly snackbar = inject(MatSnackBar);
   private readonly swUpdate = inject(SwUpdate);
   private readonly storageService = inject(StorageService);
+  private readonly messageService = inject(MessageService);
 
   // Properties
   public readonly id = environment.appId;
@@ -128,6 +131,13 @@ export class AppManager {
     }
     // Check for updates
     this.checkForUpdates();
+    // Listen for notifications
+    notificationEvents.addEventListener('notify', (event: Event) => {
+      const { message, options } = (event as CustomEvent<NotificationEvent>).detail;
+      this.messageService.show(message, {
+        type: options?.type || 'notification'
+      });
+    });
     // Load the configured application language
     const locale = await this.setLocale();
     console.log('Current locale: ', locale);

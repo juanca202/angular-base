@@ -1,5 +1,4 @@
-import { inject, signal, Signal } from '@angular/core';
-import { MessageService } from '@factor_ec/ui';
+import { signal, Signal } from '@angular/core';
 import { environment } from '@/environments/environment';
 import {
   catchError,
@@ -12,6 +11,7 @@ import {
   takeUntil,
   tap
 } from 'rxjs';
+import { notify } from './notification';
 
 /**
  * Factory function that returns an Observable or a Promise.
@@ -38,6 +38,22 @@ interface Options {
  */
 interface CollectionOptions extends Options {
   append?: boolean;
+}
+
+/**
+ * Response shape when the API returns data + total count.
+ */
+export type CollectionResult<T extends unknown[]> = { data: T; total: number };
+
+function isCollectionResult(value: unknown): value is CollectionResult<unknown[]> {
+  return (
+    value != null &&
+    typeof value === 'object' &&
+    'data' in value &&
+    'total' in value &&
+    Array.isArray((value as CollectionResult<unknown[]>).data) &&
+    typeof (value as CollectionResult<unknown[]>).total === 'number'
+  );
 }
 
 /**
@@ -68,6 +84,8 @@ export interface Resource<TParams, TResult> {
 export interface ResourceCollection<TParams, TResult extends unknown[]>
   extends Resource<TParams, TResult> {
   readonly accumulated: Signal<TResult | null>;
+  /** Total de registros cuando el API devuelve { data, total }. */
+  readonly total: Signal<number | null>;
   readonly load: (
     params?: TParams extends void ? undefined : TParams,
     options?: CollectionOptions
@@ -115,7 +133,6 @@ export function getMutations<T extends Record<string, AsyncFactory<any, any>>>(
   submitting: Signal<boolean>;
   error: Signal<unknown | null>;
 } {
-  const messageService = inject(MessageService);
   const mutations: any = {};
   const globalSubmitting = signal(false);
   const globalError = signal<unknown | null>(null);
@@ -146,10 +163,7 @@ export function getMutations<T extends Record<string, AsyncFactory<any, any>>>(
           globalError.set(msg);
 
           if (notifyError) {
-            messageService.show(msg, {
-              class: 'ft-message--danger',
-              icon: 'warning'
-            });
+            notify(msg, { level: 'error' });
           }
 
           throw new ResourceException(msg, err);
@@ -182,7 +196,6 @@ export function getMutations<T extends Record<string, AsyncFactory<any, any>>>(
 export function getResource<TParams, TResult>(
   factory: AsyncFactory<TParams, TResult>
 ): Resource<TParams, TResult> {
-  const messageService = inject(MessageService);
   const loading = signal(false);
   const value = signal<TResult | null>(null);
   const error = signal<unknown | null>(null);
@@ -210,10 +223,7 @@ export function getResource<TParams, TResult>(
         error.set(msg);
 
         if (notifyError) {
-          messageService.show(msg, {
-            class: 'ft-message--danger',
-            icon: 'warning'
-          });
+          notify(msg, { level: 'error' });
         }
 
         throw new ResourceException(msg, err);
@@ -244,12 +254,12 @@ export function getResource<TParams, TResult>(
  * Creates a reactive resource (GET) with support for accumulable collections.
  */
 export function getResourceCollection<TParams, TResult extends unknown[]>(
-  factory: AsyncFactory<TParams, TResult>
+  factory: AsyncFactory<TParams, TResult | CollectionResult<TResult>>
 ): ResourceCollection<TParams, TResult> {
-  const messageService = inject(MessageService);
   const loading = signal(false);
   const value = signal<TResult | null>(null);
   const accumulated = signal<TResult | null>(null);
+  const total = signal<number | null>(null);
   const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
 
@@ -270,16 +280,27 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
 
     if (!append) {
       accumulated.set(null);
+      total.set(null);
     }
 
     const request$ = toObservable(factory(params as any)).pipe(
       tap((result) => {
-        value.set(result ?? null);
+        const data: TResult | null = isCollectionResult(result)
+          ? (result.data as TResult)
+          : ((result as TResult) ?? null);
 
-        if (append && accumulated() && result) {
-          accumulated.set([...(accumulated() as unknown[]), ...(result as unknown[])] as TResult);
+        value.set(data);
+
+        if (isCollectionResult(result)) {
+          total.set(result.total);
         } else {
-          accumulated.set(result ?? null);
+          total.set(null);
+        }
+
+        if (append && accumulated() && data) {
+          accumulated.set([...(accumulated() as unknown[]), ...(data as unknown[])] as TResult);
+        } else {
+          accumulated.set(data);
         }
       }),
       catchError((err) => {
@@ -288,10 +309,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
         error.set(msg);
 
         if (notifyError) {
-          messageService.show(msg, {
-            class: 'ft-message--danger',
-            icon: 'warning'
-          });
+          notify(msg, { level: 'error' });
         }
 
         throw new ResourceException(msg, err);
@@ -300,7 +318,8 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
       takeUntil(destroy$)
     );
 
-    return await firstValueFrom(request$);
+    const raw = await firstValueFrom(request$);
+    return (isCollectionResult(raw) ? raw.data : raw) as TResult;
   };
 
   const reload = () => load(lastParams, { ...lastOptions, append: false });
@@ -308,6 +327,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
   return {
     value: value.asReadonly(),
     accumulated: accumulated.asReadonly(),
+    total: total.asReadonly(),
     loading: loading.asReadonly(),
     error: error.asReadonly(),
     load,
