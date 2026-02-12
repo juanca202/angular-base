@@ -56,8 +56,6 @@
     "@angular/compiler-cli": "^21.0.8",
     "@angular/localize": "^21.0.8",
     "@angular/platform-browser-dynamic": "^21.0.8",
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@compodoc/compodoc": "^1.1.32",
