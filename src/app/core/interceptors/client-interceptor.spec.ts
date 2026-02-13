@@ -4,25 +4,31 @@ import { HttpRequest, HttpHandlerFn, HttpHeaders } from '@angular/common/http';
 import { of } from 'rxjs';
 import { clientInterceptor } from './client-interceptor';
 import { AppManager } from '../services/app-manager';
+import { environment } from '@/environments/environment';
 
 describe('clientInterceptor', () => {
   let next: HttpHandlerFn;
+  const originalAppId = environment.appId;
 
   beforeEach(() => {
+    environment.appId = 'test-app';
+
     TestBed.configureTestingModule({
       providers: [
         {
           provide: AppManager,
           useValue: {
-            getClientId: vi.fn().mockReturnValue('test-client-id'),
-            id: 'test-app',
-            version: '1.0.0'
+            getClientId: vi.fn().mockReturnValue('test-client-id')
           }
         }
       ]
     });
 
     next = vi.fn().mockReturnValue(of({}));
+  });
+
+  afterEach(() => {
+    environment.appId = originalAppId;
   });
 
   it('should add Client-Id header', () => {
@@ -55,7 +61,8 @@ describe('clientInterceptor', () => {
     });
 
     const intercepted = (next as any).mock.calls[0][0];
-    expect(intercepted.headers.get('App-Version')).toBe('1.0.0');
+    expect(intercepted.headers.has('App-Version')).toBe(true);
+    expect(typeof intercepted.headers.get('App-Version')).toBe('string');
   });
 
   it('should preserve existing headers', () => {

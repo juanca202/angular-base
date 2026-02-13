@@ -3,7 +3,7 @@
  * Reutilizables en pruebas de componentes y servicios
  */
 import { vi } from 'vitest';
-import { signal, computed, EventEmitter } from '@angular/core';
+import { signal, computed } from '@angular/core';
 import { of } from 'rxjs';
 import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
@@ -16,14 +16,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
 import { Settings } from '@/core/models/settings';
-import { User } from '@/core/models/user';
 
 /**
  * Crea un mock de AppManager
  */
 export function createMockAppManager(overrides?: Partial<AppManager>): Partial<AppManager> {
   return {
-    name: 'Test App',
     getLocale: vi.fn().mockReturnValue('en'),
     languages: signal([]),
     ...overrides
@@ -36,8 +34,14 @@ export function createMockAppManager(overrides?: Partial<AppManager>): Partial<A
 export function createMockAuthService(overrides?: Partial<AuthService>): Partial<AuthService> {
   return {
     connect: vi.fn().mockResolvedValue(true),
-    signin: vi.fn().mockResolvedValue({}),
+    signin: vi.fn().mockResolvedValue(true),
     signup: vi.fn().mockResolvedValue({}),
+    getSettings: vi.fn().mockResolvedValue({
+      language: 'en',
+      subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
+      environment: 'dev',
+      onboarding: false
+    } as Settings),
     ...overrides
   };
 }
@@ -47,9 +51,6 @@ export function createMockAuthService(overrides?: Partial<AuthService>): Partial
  */
 export function createMockAuthProvider(overrides?: Partial<AuthProvider>): Partial<AuthProvider> {
   return {
-    settings: signal<Settings | undefined>(undefined),
-    loggedIn: new EventEmitter<boolean>(false),
-    getToken: vi.fn().mockReturnValue({ token: 'mock-token' }),
     logout: vi.fn().mockReturnValue(true),
     changePassword: vi.fn(),
     confirmDeleteUser: vi.fn(),

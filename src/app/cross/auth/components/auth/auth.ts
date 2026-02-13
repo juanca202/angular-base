@@ -64,6 +64,8 @@ export class Auth implements OnInit {
   private readonly title = inject(Title);
 
   // Properties
+  public readonly allowAuthFederation = environment.auth.allowAuthFederation;
+  public readonly allowSignup = environment.auth.allowSignup;
   public readonly errorMessage = signal<string>('');
   public readonly mode = signal<string>('');
   public readonly passwordVisible = signal<boolean>(false);
@@ -129,13 +131,23 @@ export class Auth implements OnInit {
         this.signinForm.disable();
         this.submitting.set(true);
         await this.authService.signin(this.signinForm.value);
+        const settings = await this.authService.getSettings(true);
         this.googleTagManagerService.addVariable({
           event: 'login',
           user_id: this.signinForm.value.username,
-          app_id: this.appManager.id
+          app_id: environment.appId
         });
         this.signinForm.enable();
         this.submitting.set(false);
+        if (settings) {
+          const redirectUrl = this.storageService.get(`${environment.sessionPrefix}_rdi`);
+          if (redirectUrl) {
+            this.router.navigateByUrl(redirectUrl);
+            this.storageService.delete(`${environment.sessionPrefix}_rdi`);
+          } else {
+            this.router.navigateByUrl('/');
+          }
+        }
       } catch (err: unknown) {
         this.signinForm.enable();
         this.submitting.set(false);
@@ -158,7 +170,7 @@ export class Auth implements OnInit {
         this.googleTagManagerService.addVariable({
           event: 'sign_up',
           user_id: this.signupForm.value.username,
-          app_id: this.appManager.id
+          app_id: environment.appId
         });
         await this.authService.signin({
           username: this.signupForm.value.email,

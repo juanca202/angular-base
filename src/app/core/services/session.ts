@@ -7,7 +7,7 @@ import { StorageService } from '@factor_ec/utils';
 
 /** Storage key prefix for session data persisted in local storage */
 const STORAGE_KEY = `${environment.sessionPrefix}_sess`;
-/** Cookie name for session token (client-side storage with Secure + SameSite) */
+/** Session token key */
 const TOKEN_KEY = `${environment.sessionPrefix}_sess`;
 
 /**
@@ -234,9 +234,9 @@ export class Session {
    * Clears all session data (user, settings, parameters, and token) and removes data from storage
    */
   public clearAll(): void {
-    this._user.set(null);
-    this._settings.set(null);
-    this._params.set(null);
+    this.clearUser();
+    this.clearSettings();
+    this.clearParams();
     this.clearToken();
     this.storageService.delete(STORAGE_KEY, 'local');
   }

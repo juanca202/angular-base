@@ -26,6 +26,8 @@ import { LayoutManager } from '@/core/services/layout-manager';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 import { LANGUAGES } from '@/core/constants/languages';
+import { environment } from '@/environments/environment';
+import { versionInfo } from '@/version-info';
 
 /**
  * Renders the settings hub, exposing contextual actions such as sharing,
@@ -67,6 +69,8 @@ export class Settings implements OnInit {
   public readonly session = inject(Session);
 
   // Properties
+  public readonly appName = environment.appName;
+  public readonly appVersion = versionInfo.git.raw;
   public readonly language = signal<Language>(LANGUAGES[0]);
   public readonly subscribing = signal<boolean>(false);
   public readonly supportButton =

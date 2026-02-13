@@ -36,9 +36,7 @@ describe('Settings', () => {
       checkForUpdates: vi.fn(),
       languages: signal(LANGUAGES),
       getLocale: vi.fn().mockReturnValue('en'),
-      updateStatus: signal<string | null>('done'),
-      name: 'Test App',
-      version: '1.0.0'
+      updateStatus: signal<string | null>('done')
     };
     mockAuthService = {
       changePassword: vi.fn(),

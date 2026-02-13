@@ -104,8 +104,8 @@
             <ft-icon name="check--circle" class="text-2xl text-green-500" />
           </div>
           <div class="flex-1">
-            <div class="ft-item__label" i18n>{{ appManager.name }} is up to date</div>
-            <div class="text-sm text-gray-500" i18n>Version {{ appManager.version }}</div>
+            <div class="ft-item__label" i18n>{{ appName }} is up to date</div>
+            <div class="text-sm text-gray-500" i18n>Version {{ appVersion }}</div>
           </div>
         } @else if (appManager.updateStatus() === 'checking') {
           <div class="ft-thumbnail">
@@ -113,7 +113,7 @@
           </div>
           <div class="flex-1">
             <div class="ft-item__label" i18n>Looking for updates</div>
-            <div class="text-sm text-gray-500" i18n>Version {{ appManager.version }}</div>
+            <div class="text-sm text-gray-500" i18n>Version {{ appVersion }}</div>
           </div>
         } @else if (appManager.updateStatus() === 'failed') {
           <div class="ft-thumbnail">
@@ -121,7 +121,7 @@
           </div>
           <div class="flex-1">
             <div class="ft-item__label" i18n>Error checking for updates</div>
-            <div class="text-sm text-gray-500" i18n>Version {{ appManager.version }}</div>
+            <div class="text-sm text-gray-500" i18n>Version {{ appVersion }}</div>
           </div>
         }
       </div>

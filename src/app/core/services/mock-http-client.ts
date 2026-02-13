@@ -4,6 +4,9 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
+/** Handler para rutas custom que no son colecciones (auth, settings, etc.) */
+type CustomRouteHandler = (url: string, body?: any) => Observable<any>;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +17,43 @@ export class MockHttpClient {
   /** Artificial latency (ms) added to all responses to simulate real network delay. */
   private readonly latency = 500;
 
+  /** Rutas custom para auth, settings, etc. */
+  private readonly customRoutes: Array<{
+    method: 'GET' | 'POST';
+    urlPattern: string | RegExp;
+    handler: CustomRouteHandler;
+  }> = [];
+
   constructor() {}
+
+  /**
+   * Registra un handler para una URL específica (usado para auth, settings, etc.).
+   * La URL puede ser un string (coincide con includes) o un RegExp.
+   *
+   * @example
+   * mockHttpClient.registerCustomRoute('POST', 'authentication_token', (url, body) =>
+   *   of({ token: 'mock-jwt', refresh_token: 'mock-refresh' })
+   * );
+   */
+  public registerCustomRoute(
+    method: 'GET' | 'POST',
+    urlPattern: string | RegExp,
+    handler: CustomRouteHandler
+  ): void {
+    this.customRoutes.push({ method, urlPattern, handler });
+  }
+
+  /**
+   * Busca un handler custom para la URL y método dados.
+   */
+  private findCustomHandler(method: 'GET' | 'POST', url: string): CustomRouteHandler | undefined {
+    const route = this.customRoutes.find((r) => {
+      if (r.method !== method) return false;
+      if (typeof r.urlPattern === 'string') return url.includes(r.urlPattern);
+      return r.urlPattern.test(url);
+    });
+    return route?.handler;
+  }
 
   // ---------------------------------------------------------------------------
   // Initialization helpers
@@ -74,8 +113,13 @@ export class MockHttpClient {
    */
   public get<T>(
     url: string,
-    options?: { params?: HttpParams | Record<string, any> }
+    options?: { params?: HttpParams | Record<string, any>; headers?: any }
   ): Observable<T> {
+    const customHandler = this.findCustomHandler('GET', url);
+    if (customHandler) {
+      return customHandler(url).pipe(delay(this.latency)) as Observable<T>;
+    }
+
     const { collection, id, subresource } = this.parseUrl(url);
 
     if (!this.db[collection]) {
@@ -125,7 +169,12 @@ export class MockHttpClient {
    * - Otherwise creates a new item in the collection.
    * - Automatically assigns a UUID as its ID.
    */
-  public post<T>(url: string, body: any): Observable<T> {
+  public post<T>(url: string, body: any, _options?: any): Observable<T> {
+    const customHandler = this.findCustomHandler('POST', url);
+    if (customHandler) {
+      return customHandler(url, body).pipe(delay(this.latency)) as Observable<T>;
+    }
+
     const { collection, id, subresource } = this.parseUrl(url);
 
     // Handle subresources (e.g., POST /requirement-items/1/recipes)

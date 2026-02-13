@@ -1,19 +1,8 @@
-import {
-  HttpRequest,
-  HttpErrorResponse,
-  HttpHeaders,
-  HttpHandlerFn,
-  HttpClient
-} from '@angular/common/http';
-import { EventEmitter, Injectable, signal, inject } from '@angular/core';
+import { HttpRequest, HttpErrorResponse, HttpHeaders, HttpHandlerFn } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { StorageService } from '@factor_ec/utils';
-// import * as Sentry from '@sentry/angular';
-
 import { Login } from '@/cross/auth/models/login';
-import { AuthToken } from '@/cross/auth/models/auth-token';
-import { AuthTokenPayload } from '@/cross/auth/models/auth-token-payload';
 import { Settings } from '@/core/models/settings';
 import { AuthProvider } from '@/core/models/auth.provider';
 import {
@@ -34,6 +23,11 @@ import { environment } from '@/environments/environment';
 import { DeleteUser } from '@/cross/auth/components/delete-user/delete-user';
 import { ChangePassword } from '@/cross/auth/components/change-password/change-password';
 import { getApiUrl } from '@/core/utils/async-resources';
+import { MockHttpClient } from '@/core/services/mock-http-client';
+import { registerMockAuthRoutes } from '@/test/mocks/mock-auth-routes';
+import { Session } from '@/core/services/session';
+import { SessionToken } from '@/core/models/session-state';
+import { AuthToken } from './models/auth-token';
 
 interface FedcmCredentialRequestOptions extends CredentialRequestOptions {
   identity: {
@@ -79,22 +73,17 @@ declare let navigator: any;
   providedIn: 'root'
 })
 export class AuthService extends AuthProvider {
+  // Dependency injection
   private readonly dialog = inject(MatDialog);
-  private readonly httpClient = inject(HttpClient);
-  private readonly storageService = inject(StorageService);
+  // TODO: Replace with HttpClient when using real backend
+  private readonly httpClient = inject(MockHttpClient);
+  private readonly session = inject(Session);
+
   constructor() {
     super();
+    registerMockAuthRoutes(this.httpClient);
   }
 
-  public readonly signedIn = new EventEmitter<boolean>(false);
-  public readonly signedUp = new EventEmitter<boolean>(false);
-  public readonly loggedIn = new EventEmitter<boolean>(false);
-  public readonly settings = signal<Settings | undefined>(undefined);
-  /**
-   * Auth keys
-   */
-  private readonly tokenKey = `${environment.sessionPrefix}_jwt`;
-  private readonly settingsKey = `${environment.sessionPrefix}_set`;
   /**
    * Flag indicating whether the access token is being refreshed
    */
@@ -103,17 +92,14 @@ export class AuthService extends AuthProvider {
    * Manages the access token refresh flow
    */
   private readonly refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  /** Whether the app allows new user signup. From environment. */
-  public readonly allowSignup = environment.auth.allowSignup;
-  /** Whether federated auth (e.g. Google) is enabled. From environment. */
-  public readonly allowAuthFederation = environment.auth.allowAuthFederation;
+
   /**
    * Sends the authentication token to the server
    * @param request HTTP request
    * @returns
    */
   public addAuthenticationToken(request: HttpRequest<any>): HttpRequest<any> {
-    const token: AuthToken | undefined = this.getToken();
+    const token: SessionToken | null = this.session.token();
 
     // If the access token is null, the user is not logged in; return the original request
     if (
@@ -127,7 +113,7 @@ export class AuthService extends AuthProvider {
     // Clone the request, because the original request is immutable
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token.token}`
+        Authorization: `Bearer ${token.value}`
       }
     });
   }
@@ -184,12 +170,10 @@ export class AuthService extends AuthProvider {
           })
         });
         const data = await response.json();
-        this.storageService.set(
-          this.tokenKey,
-          { token: data.token, refresh_token: data.refreshToken },
-          'local'
-        );
-        this.storageService.set(this.settingsKey, JSON.parse(data.settings), 'local');
+        const expiresAt = this.extractExpirationFromToken(data.token);
+        this.session.setToken({ value: data.token, type: 'jwt', expiresAt });
+        this.session.setParams({ refreshToken: data.refresh_token });
+        this.session.setUser(data.user);
         location.href = environment.appPath;
       } catch (e) {
         console.error('FedCM error: ', e);
@@ -209,6 +193,32 @@ export class AuthService extends AuthProvider {
       width: '400px'
     });
   }
+
+  /**
+   * Extracts the expiration timestamp from a JWT token
+   * @param tokenString The JWT token string
+   * @returns The expiration timestamp in seconds (JWT exp format) or undefined if not found/invalid
+   */
+  private extractExpirationFromToken(tokenString: string): number | undefined {
+    if (!tokenString || environment.auth.tokenType !== 'jwt') {
+      return undefined;
+    }
+
+    try {
+      const jwtParts = tokenString.split('.');
+      if (jwtParts.length === 3) {
+        const payload = JSON.parse(window.atob(jwtParts[1]));
+        if (payload.exp) {
+          // Store timestamp in seconds (JWT exp format)
+          return payload.exp;
+        }
+      }
+    } catch {
+      // If JWT parsing fails, return undefined
+    }
+
+    return undefined;
+  }
   public async getSettings(networkOnly?: boolean, pushToken?: string): Promise<Settings | false> {
     // Get remote configuration
     let headers = {};
@@ -217,61 +227,30 @@ export class AuthService extends AuthProvider {
         'Push-Token': pushToken
       };
     }
+    const settings = this.session.settings();
+    const user = this.session.user();
     const networkSettings = lastValueFrom<Settings>(
       this.httpClient
         .get<Settings>(getApiUrl('settings'), {
           headers
         })
         .pipe(
-          tap((response: Settings) => {
-            this.storageService.set(this.settingsKey, response, 'local');
-            this.settings.set(response);
-            /*
-            Sentry.setUser({
-              email: response.user.email,
-              username: response.user.username
-            });
-            */
+          tap((response: any) => {
+            this.session.setUser(response.user);
+            this.session.setSettings(response);
           })
         )
     );
-    if (networkOnly) {
+    if (networkOnly || !user || !settings) {
       return networkSettings;
     }
     // Get local configuration
-    const localSettings = this.storageService.get(this.settingsKey, 'local');
-    if (localSettings) {
-      this.settings.set(localSettings);
-      /*
-      Sentry.setUser({
-        email: localSettings.user.email,
-        username: localSettings.user.username
-      });
-      */
-      return localSettings;
+    if (user && settings) {
+      return settings;
     }
     // If configuration cannot be obtained, the user must re-authenticate
     this.logout();
     return false;
-  }
-  /**
-   * Gets the authentication token from storage
-   */
-  public getToken(): AuthToken | undefined {
-    const token: AuthToken = this.storageService.get(this.tokenKey, 'local') || '';
-    const jwtParts: string[] = token?.token?.split('.') || [];
-    if (jwtParts.length === 3) {
-      const payload: any = JSON.parse(window.atob(jwtParts[1]));
-      return payload.exp > Math.round(Date.now() / 1000)
-        ? token
-        : { ...token, ...{ access_token: '' } };
-    } else {
-      return undefined;
-    }
-  }
-  public getTokenPayload(): AuthTokenPayload | undefined {
-    const decodedString: string = window.atob((this.getToken()?.token || '.').split('.')[1]);
-    return decodedString ? JSON.parse(decodedString) : undefined;
   }
   /**
    * Handles the flow of refreshing the access token or redirecting to sign-in
@@ -284,13 +263,14 @@ export class AuthService extends AuthProvider {
     request: HttpRequest<any>,
     next: HttpHandlerFn
   ): Observable<any> {
-    const token: AuthToken | undefined = this.getToken();
-    if (token && token.refresh_token && environment.auth.refreshTokenUrl) {
+    const token: SessionToken | null = this.session.token();
+    const params = this.session.params();
+    if (token && params && params['refreshToken'] && environment.auth.refreshTokenUrl) {
       if (!this.refreshTokenInProgress) {
         this.refreshTokenInProgress = true;
         this.refreshTokenSubject.next(null);
         return this.refreshToken().pipe(
-          switchMap((newToken: AuthToken) => {
+          switchMap((newToken: SessionToken) => {
             if (newToken) {
               this.refreshTokenSubject.next(newToken);
               return next(this.addAuthenticationToken(request));
@@ -337,35 +317,34 @@ export class AuthService extends AuthProvider {
       }
     } else {
       // No refresh token flow
-      if (this.storageService.get(this.tokenKey, 'local')) {
+      if (this.session.isLoggedIn()) {
         this.logout();
       }
       return throwError(() => err);
     }
   }
+
   /**
    * Sends sign-in to the server and obtains the authentication token
    * @param data Authentication data
    * @returns
    */
-  public async signin(data: Login): Promise<any> {
+  public async signin(data: Login): Promise<boolean> {
     const token = await lastValueFrom<AuthToken>(
       this.httpClient.post<AuthToken>(environment.auth.signinUrl, data)
     );
-    this.storageService.set(this.tokenKey, token, 'local');
-    this.loggedIn.emit(true);
+
+    const expiresAt = this.extractExpirationFromToken(token.token);
+    this.session.setToken({ value: token.token, type: 'jwt', expiresAt });
+    this.session.setParams({ refreshToken: token.refresh_token });
+    return true;
   }
   /**
    * Logs out the user
    */
   public logout(): boolean {
-    this.storageService.delete(this.tokenKey, 'local');
-    this.storageService.delete(this.settingsKey, 'local');
-    this.storageService.delete(`${environment.sessionPrefix}_rdi`, 'local');
-    this.storageService.delete(`${environment.sessionPrefix}_cur`, 'local');
-    this.storageService.delete(`${environment.sessionPrefix}_dce`, 'local');
     this.dialog.closeAll();
-    this.loggedIn.emit(false);
+    this.session.clearAll();
     location.href =
       window.innerWidth < 1000 ? `${environment.appPath}/auth` : `${environment.appPath}/signin`;
     return true;
@@ -377,14 +356,20 @@ export class AuthService extends AuthProvider {
    * If a refresh token is implemented, send it to obtain a new access token
    * @returns Access token
    */
-  public refreshToken(): Observable<AuthToken> {
-    const token: AuthToken | undefined = this.getToken();
+  public refreshToken(): Observable<SessionToken> {
+    const params = this.session.params();
     return this.httpClient
-      .post(environment.auth.refreshTokenUrl, { refresh_token: token?.refresh_token })
+      .post(environment.auth.refreshTokenUrl, { refresh_token: params?.['refreshToken'] })
       .pipe(
-        tap((token: any) => {
-          this.storageService.set(this.tokenKey, token, 'local');
-          this.loggedIn.emit(true);
+        tap((tokenResponse: any) => {
+          const expiresAt = this.extractExpirationFromToken(
+            tokenResponse.value || tokenResponse.token
+          );
+          this.session.setToken({
+            value: tokenResponse.value || tokenResponse.token,
+            type: tokenResponse.type || 'jwt',
+            expiresAt
+          });
         }),
         catchError((error) => {
           this.logout();

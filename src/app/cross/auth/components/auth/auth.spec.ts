@@ -42,7 +42,7 @@ describe('Auth', () => {
 
   beforeEach(async () => {
     // Arrange: Create mocks using factory functions
-    mockAppManager = createMockAppManager({ name: 'Test App' });
+    mockAppManager = createMockAppManager();
     mockAuthService = createMockAuthService();
     mockGoogleTagManagerService = createMockGoogleTagManagerService();
     mockMessageService = createMockMessageService();

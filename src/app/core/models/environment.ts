@@ -4,6 +4,7 @@
 export interface Environment {
   appId: string;
   appName: string;
+  defaultLocale: string;
   // Authentication
   auth: {
     signupUrl: string;
@@ -15,6 +16,7 @@ export interface Environment {
     allowRefreshToken: boolean;
     allowSignup: boolean;
     allowAuthFederation: boolean;
+    tokenType: string;
     clients: {
       google: string;
     };

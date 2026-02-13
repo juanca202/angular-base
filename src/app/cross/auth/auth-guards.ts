@@ -14,15 +14,15 @@ export const authGuard: CanActivateFn = async (route, state) => {
   // Check authentication
   if (!session.isLoggedIn() || !session.settings()) {
     storageService.set(`${environment.sessionPrefix}_rdi`, state.url);
-    router.navigateByUrl(window.innerWidth < 1000 ? '/auth' : '/signin');
-    return false;
+    return router.createUrlTree([window.innerWidth < 1000 ? '/auth' : '/signin']);
   }
   return true;
 };
 
 export const loginGuard: CanActivateFn = () => {
   const session = inject(Session);
-  return !session.isLoggedIn();
+  const router = inject(Router);
+  return session.isLoggedIn() ? router.createUrlTree(['/']) : true;
 };
 
 export const resetGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {

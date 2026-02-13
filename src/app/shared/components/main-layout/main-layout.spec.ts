@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { signal, computed, EventEmitter } from '@angular/core';
+import { computed } from '@angular/core';
 import { MainLayout } from './main-layout';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
@@ -27,8 +27,10 @@ describe('MainLayout', () => {
   beforeEach(async () => {
     // Arrange: Create mocks
     mockAuthProvider = {
-      settings: signal(undefined),
-      loggedIn: new EventEmitter<boolean>(false)
+      logout: vi.fn(),
+      changePassword: vi.fn(),
+      confirmDeleteUser: vi.fn(),
+      getSettings: vi.fn().mockResolvedValue(null)
     };
 
     const mockUser: User = {

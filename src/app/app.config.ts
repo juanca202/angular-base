@@ -8,10 +8,10 @@ import {
   isDevMode,
   provideAppInitializer
 } from '@angular/core';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideClientHydration } from '@angular/platform-browser';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 // import * as Sentry from '@sentry/angular';
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';

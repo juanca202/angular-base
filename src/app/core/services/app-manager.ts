@@ -9,14 +9,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { GoogleTagManagerService, StorageService, Language } from '@factor_ec/utils';
+import { StorageService, Language } from '@factor_ec/utils';
 import { LANGUAGES } from '@/core/constants/languages';
-import { skip } from 'rxjs';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
-import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
+import { AuthProvider } from '@/core/models/auth.provider';
 import { NotificationEvent, notificationEvents } from '../utils/notification';
 import { MessageService } from '@factor_ec/ui';
 
@@ -36,8 +35,7 @@ registerLocaleData(localeEs, 'es');
 })
 export class AppManager {
   // Dependency injections
-  private readonly authService = inject(AuthProvider);
-  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  private readonly authProvider = inject(AuthProvider);
   private readonly location = inject(Location);
   private readonly platformId = inject<object>(PLATFORM_ID);
   private readonly router = inject(Router);
@@ -48,10 +46,7 @@ export class AppManager {
   private readonly messageService = inject(MessageService);
 
   // Properties
-  public readonly id = environment.appId;
-  public readonly name = environment.appName;
   private installPrompt: any = null; // BeforeInstallPromptEvent;
-  public readonly version: string = versionInfo.git.raw;
   public readonly updateStatus = signal<string | null>('done');
   private readonly defaultLocale = 'en';
   public readonly languages = signal<Language[]>(LANGUAGES);
@@ -61,40 +56,6 @@ export class AppManager {
   private readonly clientKey = `${environment.sessionPrefix}_cid`;
   private readonly localeKey = `${environment.sessionPrefix}_loc`;
 
-  constructor() {
-    this.swUpdate.versionUpdates.subscribe((evt) => {
-      switch (evt.type) {
-        case 'VERSION_DETECTED':
-          this.updateStatus.set('checking');
-          console.log(`Downloading new app version: ${evt.version.hash}`);
-          break;
-        case 'NO_NEW_VERSION_DETECTED':
-          this.updateStatus.set('done');
-          break;
-        case 'VERSION_READY': {
-          this.updateStatus.set('done');
-          console.log(`Current app version: ${evt.currentVersion.hash}`);
-          console.log(`New app version ready for use: ${evt.latestVersion.hash}`);
-          const snack = this.snackbar.open($localize`Update Available`, $localize`Reload`);
-          snack.onAction().subscribe(() => {
-            window.location.reload();
-          });
-          break;
-        }
-        case 'VERSION_INSTALLATION_FAILED':
-          this.updateStatus.set('failed');
-          console.log(`Failed to install app version '${evt.version.hash}': ${evt.error}`);
-          break;
-      }
-    });
-    if (isPlatformBrowser(this.platformId)) {
-      window.addEventListener('beforeinstallprompt', (event: Event) => {
-        event.preventDefault();
-        this.installPrompt = event as any;
-      });
-    }
-  }
-
   public checkForUpdates(): void {
     if (!this.swUpdate.isEnabled) {
       this.updateStatus.set('failed');
@@ -102,6 +63,7 @@ export class AppManager {
     }
     this.updateStatus.set('checking');
     this.swUpdate.checkForUpdate();
+    console.log('Check for app updates');
   }
   public getClientId(): string {
     let cid = this.storageService.get(this.clientKey, 'local');
@@ -125,10 +87,8 @@ export class AppManager {
     let timerStart = performance.now();
     // Show version in console
     console.log(`${versionInfo.npmPackage.name} ${versionInfo.git.raw}`);
-    // Insert Google Tag Manager tracking code
-    if (environment.googleTagManager) {
-      this.googleTagManagerService.appendTrackingCode(environment.googleTagManager.trackingCode);
-    }
+    // React to updates
+    this.setUpdateListeners();
     // Check for updates
     this.checkForUpdates();
     // Listen for notifications
@@ -144,32 +104,11 @@ export class AppManager {
     console.log('init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
     // If authenticated, initialize with local data
     if (this.session.isLoggedIn()) {
-      timerStart = performance.now();
-      await this.initSession(false);
-      console.log('init local data in:', (performance.now() - timerStart).toFixed(2), 'ms');
+      this.authProvider.getSettings();
     }
-    // Upon authentication, a server synchronization is required (AuthProvider emits login state)
-    this.authService.loggedIn
-      .pipe(skip(this.session.isLoggedIn() ? 1 : 0))
-      .subscribe(async (value: boolean) => {
-        if (value) {
-          timerStart = performance.now();
-          await this.initSession(true);
-          // If a redirect is found use it; otherwise load the home page
-          const redirect = this.storageService.get(`${environment.sessionPrefix}_rdi`);
-          if (redirect) {
-            this.router.navigateByUrl(redirect);
-            this.storageService.delete(`${environment.sessionPrefix}_rdi`);
-          } else {
-            this.router.navigateByUrl('/');
-          }
-          console.log('init network data in:', (performance.now() - timerStart).toFixed(2), 'ms');
-        }
-      });
-  }
-  private async initSession(networkOnly: boolean): Promise<void> {
-    // Load initial configuration
-    await this.authService.getSettings(networkOnly, this.pushToken);
+
+    // Log the time taken to initialize the app
+    console.log('init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
   }
   public install(): void {
     if (!this.installPrompt) {
@@ -205,5 +144,39 @@ export class AppManager {
     loadTranslations(localeTranslations.default);
 
     return locale;
+  }
+  private setUpdateListeners(): void {
+    this.swUpdate.versionUpdates.subscribe((evt) => {
+      switch (evt.type) {
+        case 'VERSION_DETECTED':
+          this.updateStatus.set('checking');
+          console.log(`Downloading new app version: ${evt.version.hash}`);
+          break;
+        case 'NO_NEW_VERSION_DETECTED':
+          this.updateStatus.set('done');
+          console.log('No new app version detected');
+          break;
+        case 'VERSION_READY': {
+          this.updateStatus.set('done');
+          console.log(`Current app version: ${evt.currentVersion.hash}`);
+          console.log(`New app version ready for use: ${evt.latestVersion.hash}`);
+          const snack = this.snackbar.open($localize`Update Available`, $localize`Reload`);
+          snack.onAction().subscribe(() => {
+            window.location.reload();
+          });
+          break;
+        }
+        case 'VERSION_INSTALLATION_FAILED':
+          this.updateStatus.set('failed');
+          console.log(`Failed to install app version '${evt.version.hash}': ${evt.error}`);
+          break;
+      }
+    });
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('beforeinstallprompt', (event: Event) => {
+        event.preventDefault();
+        this.installPrompt = event as any;
+      });
+    }
   }
 }
