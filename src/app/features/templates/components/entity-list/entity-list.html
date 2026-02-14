@@ -73,7 +73,7 @@
   } @else if (entities.error()) {
     <div class="ft-center">
       <ft-icon name="warning" collection="factoricons-slim" class="text-4xl" />
-      <p class="text-gray-500 mb-4">{{ entities.error() }}</p>
+      <p class="text-gray-400 mb-4">{{ entities.error() }}</p>
       <button i18n type="button" matButton="filled" (click)="entities.reload()">Retry</button>
     </div>
   } @else if (!entities.value()?.length) {

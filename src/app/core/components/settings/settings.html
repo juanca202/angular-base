@@ -22,7 +22,7 @@
                 {{ session.user()?.firstName }}
                 {{ session.user()?.lastName }}
               </div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-gray-400">
                 {{ session.user()?.email }}
               </div>
             </div>
@@ -36,7 +36,7 @@
           </div>
           <div>
             <div class="ft-item__label" i18n>Language</div>
-            <div class="text-sm text-gray-500">{{ language().name }}</div>
+            <div class="text-sm text-gray-400">{{ language().name }}</div>
           </div>
         </div>
       </a>
@@ -48,7 +48,7 @@
           <div class="ft-item__label" i18n>Change password</div>
         </div>
       </button>
-      <hr class="my-4" />
+      <hr class="my-2" />
       <button type="button" matButton #supportButton class="ft-list__item">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
@@ -73,7 +73,7 @@
           <div class="ft-item__label" i18n>Privacy Policies</div>
         </div>
       </button>
-      <hr class="my-4" />
+      <hr class="my-2" />
       <button type="button" matButton class="ft-list__item" (click)="authService.logout()">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
@@ -96,7 +96,7 @@
         </div>
       </button>
     </div>
-    <hr class="my-4" />
+    <hr class="my-2" />
     <div class="m-2">
       <div class="flex items-center gap-4">
         @if (appManager.updateStatus() === 'done') {
@@ -105,7 +105,7 @@
           </div>
           <div class="flex-1">
             <div class="ft-item__label" i18n>{{ appName }} is up to date</div>
-            <div class="text-sm text-gray-500" i18n>Version {{ appVersion }}</div>
+            <div class="text-sm text-gray-400" i18n>Version {{ appVersion }}</div>
           </div>
         } @else if (appManager.updateStatus() === 'checking') {
           <div class="ft-thumbnail">
@@ -113,7 +113,7 @@
           </div>
           <div class="flex-1">
             <div class="ft-item__label" i18n>Looking for updates</div>
-            <div class="text-sm text-gray-500" i18n>Version {{ appVersion }}</div>
+            <div class="text-sm text-gray-400" i18n>Version {{ appVersion }}</div>
           </div>
         } @else if (appManager.updateStatus() === 'failed') {
           <div class="ft-thumbnail">
@@ -121,7 +121,7 @@
           </div>
           <div class="flex-1">
             <div class="ft-item__label" i18n>Error checking for updates</div>
-            <div class="text-sm text-gray-500" i18n>Version {{ appVersion }}</div>
+            <div class="text-sm text-gray-400" i18n>Version {{ appVersion }}</div>
           </div>
         }
       </div>
