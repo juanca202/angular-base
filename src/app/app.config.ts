@@ -2,7 +2,6 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
-  ErrorHandler,
   LOCALE_ID,
   inject,
   isDevMode,
@@ -13,16 +12,14 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideClientHydration } from '@angular/platform-browser';
 
-// import * as Sentry from '@sentry/angular';
-import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 
+import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 import { routes } from '@/app.routes';
 import { AppManager } from '@/core/services/app-manager';
 import { authInterceptor } from '@/cross/auth/auth-interceptor';
 import { clientInterceptor } from '@/core/interceptors/client-interceptor';
-import { AilErrorHandler } from '@/cross/monitoring/ail-error-handler';
 import { AuthService } from '@/cross/auth/auth-service';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { environment } from '@/environments/environment';
@@ -52,23 +49,6 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([authInterceptor, clientInterceptor, languageInterceptor])
     ),
     provideClientHydration(),
-    /*
-    {
-      provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler({
-        logErrors: true,
-        showDialog: false
-      })
-    },
-    {
-      provide: Sentry.TraceService,
-      deps: [Router]
-    },
-    */
-    {
-      provide: ErrorHandler,
-      useClass: AilErrorHandler
-    },
     {
       provide: UI_OPTIONS,
       useValue: {

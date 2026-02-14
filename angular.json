@@ -3,7 +3,9 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "schematicCollections": ["@angular-eslint/schematics"],
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
     "analytics": false
   },
   "newProjectRoot": "projects",
@@ -26,8 +28,13 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/theme/material.scss", "src/styles.css"],
-            "polyfills": ["@angular/localize/init"]
+            "styles": [
+              "src/theme/material.scss",
+              "src/styles.css"
+            ],
+            "polyfills": [
+              "@angular/localize/init"
+            ]
           },
           "configurations": {
             "production": {
@@ -85,7 +92,10 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
         },
         "e2e": {
@@ -97,6 +107,42 @@
             "production": {
               "devServerTarget": "angular-base-project:serve:production"
             }
+          }
+        }
+      }
+    },
+    "monitoring": {
+      "projectType": "library",
+      "root": "projects/monitoring",
+      "sourceRoot": "projects/monitoring/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/monitoring/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/monitoring/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/monitoring/tsconfig.spec.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/monitoring/**/*.ts",
+              "projects/monitoring/**/*.html"
+            ],
+            "eslintConfig": "projects/monitoring/eslint.config.js"
           }
         }
       }
