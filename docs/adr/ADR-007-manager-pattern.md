@@ -1,4 +1,4 @@
-# ADR-014: Patrón Manager para Coordinación de Flujos de Negocio
+# ADR-007: Patrón Manager para Coordinación de Flujos de Negocio
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
@@ -563,9 +563,9 @@ export class OrderManager {
 }
 ```
 
-### Managers y Diálogos (ADR-014)
+### Managers y Diálogos (ADR-007)
 
-Según ADR-014, los diálogos **deben abrirse exclusivamente desde Managers**, no desde componentes:
+Según ADR-007, los diálogos **deben abrirse exclusivamente desde Managers**, no desde componentes:
 
 ```typescript
 // ✅ Correcto - Manager abre diálogo
@@ -643,5 +643,5 @@ export class RequirementListComponent {
 ## Referencias
 
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
-- [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)
-- [ADR-005: Patrón de Repositorio para Servicios REST](./ADR-005-repository-pattern.md)
+- [ADR-012: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-012-dialog-master-detail.md)
+- [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006-repository-pattern.md)

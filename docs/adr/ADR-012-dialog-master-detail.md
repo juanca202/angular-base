@@ -1,4 +1,4 @@
-# ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle
+# ADR-012: Uso de Diálogos para Interacciones Maestro–Detalle
 
 **Estado:** Propuesto  
 **Fecha de Creación:** 06/01/2026  

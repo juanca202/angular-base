@@ -1,4 +1,4 @@
-# ADR-016: Biblioteca de Componentes
+# ADR-004: Biblioteca de Componentes
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 15/02/2026  
@@ -105,12 +105,12 @@ Solo cuando **Angular Material no ofrezca** un componente que cubra la funcional
 
 ### Neutras
 
-- Los ADRs existentes (ADR-007, ADR-012, ADR-013) ya asumen el uso de Angular Material; este ADR formaliza y amplía esa decisión
+- Los ADRs existentes (ADR-007, ADR-008, ADR-012) ya asumen el uso de Angular Material; este ADR formaliza y amplía esa decisión
 
 ## Referencias
 
 - [Angular Material - Component Library](https://material.angular.dev/)
 - [Angular Material Components](https://material.angular.dev/components)
-- [ADR-007: Estrategia de Validación de Formularios](./ADR-007-form-validation-strategy.md)
-- [ADR-012: Layout y Estructura de Formularios](./ADR-012-form-layout-structure.md)
-- [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)
+- [ADR-008: Estrategia de Formularios](./ADR-008-form-strategy.md)
+- [ADR-009: Layout y Estructura de Formularios](./ADR-009-form-layout-structure.md)
+- [ADR-012: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-012-dialog-master-detail.md)

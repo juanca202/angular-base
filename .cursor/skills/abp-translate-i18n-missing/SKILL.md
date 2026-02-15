@@ -1,5 +1,5 @@
 ---
-name: translate-i18n-missing
+name: abp-translate-i18n-missing
 description: Flujo completo para traducir cadenas i18n faltantes. Obtiene el locale, genera el archivo missing si hace falta (npm run i18n, extract-i18n), traduce las cadenas al idioma indicado y las incorpora a public/i18n/{locale}.js. Usar cuando el usuario quiera traducir i18n faltantes.
 ---
 

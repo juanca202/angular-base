@@ -1,5 +1,5 @@
 ---
-name: forms
+name: abp-forms
 description: Construye formularios basados en signals en Angular v21+ usando la nueva Signal Forms API. Úsalo para creación de formularios con enlace bidireccional automático, validación basada en esquema, gestión del estado de campos y formularios dinámicos. Se activa en implementación de formularios, añadir validación, crear formularios multi-paso o construir formularios con campos condicionales. Signal Forms es experimental pero recomendado para nuevos proyectos Angular.
 ---
 
@@ -409,7 +409,7 @@ export class Order {
 
 ### Con Formularios Reactivos: pipe errorMessage
 
-Cuando uses **Formularios Reactivos** (patrón estable en producción) con `mat-form-field`, utiliza el pipe `errorMessage` para centralizar los mensajes de validación. Ver [ADR-007](docs/adr/ADR-007-form-validation-strategy.md).
+Cuando uses **Formularios Reactivos** (patrón alternativo para producción estable) con `mat-form-field`, utiliza el pipe `errorMessage` para centralizar los mensajes de validación. La estrategia principal del proyecto es [Signal Forms (ADR-008)](docs/adr/ADR-008-form-strategy.md).
 
 **Uso del pipe:**
 

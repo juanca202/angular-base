@@ -40,7 +40,7 @@ async function readJsFile(jsFilePath) {
  * Any file matching `{langCode}-{suffix}.js` is considered a "prefixed" file:
  * e.g. es-base.js (common translations), es-module.js (module/feature scope).
  * These IDs are excluded from the main {langCode}.js to avoid duplicates.
- * See ADR-004: Estructura de Archivos → Archivos con sufijo por ámbito.
+ * See ADR-013: Estructura de Archivos → Archivos con sufijo por ámbito.
  */
 async function getPrefixedFileIds(langCode) {
   const prefixedIds = new Set();

@@ -1,4 +1,4 @@
-# ADR-010: Estrategia de Documentación
+# ADR-015: Estrategia de Documentación
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
@@ -342,4 +342,4 @@ Compodoc escanea automáticamente el código base en busca de comentarios JSDoc/
 - [Documentación de TSDoc](https://tsdoc.org/)
 - [Documentación de JSDoc](https://jsdoc.app/)
 - [Mejores Prácticas de Documentación de Angular](https://angular.dev/style-guide)
-- [ADR-008: Calidad de Código y Herramientas](./ADR-008-code-quality-tooling.md) - Decisiones relacionadas con herramientas
+- [ADR-010: Calidad de Código y Herramientas](./ADR-010-code-quality-tooling.md) - Decisiones relacionadas con herramientas

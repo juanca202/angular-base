@@ -1,4 +1,4 @@
-# ADR-012: Layout y Estructura de Formularios
+# ADR-009: Layout y Estructura de Formularios
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
@@ -139,7 +139,7 @@ Los campos de formulario deben ser simples y limpios:
 
 ## Ejemplo Completo de Formulario
 
-**Nota:** `ft-container` es una clase personalizada válida que usa `@apply` con clases de Tailwind (`max-w-[960px] mx-auto`) según ADR-003.
+**Nota:** `ft-container` es una clase personalizada válida que usa `@apply` con clases de Tailwind (`max-w-[960px] mx-auto`) según ADR-005.
 
 ```html
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -270,12 +270,12 @@ Para formularios responsivos, considera usar los breakpoints responsive de Tailw
 </div>
 ```
 
-## Integración con ADR-007
+## Integración con ADR-008
 
-Este ADR complementa [ADR-007: Estrategia de Validación de Formularios](./ADR-007-form-validation-strategy.md):
+Este ADR complementa [ADR-008: Estrategia de Formularios](./ADR-008-form-strategy.md):
 
-- **ADR-007** define patrones de validación y manejo de errores
-- **ADR-012** define patrones de layout y estructura
+- **ADR-008** define el uso de Angular Signal Forms para formularios
+- **ADR-009** define patrones de layout y estructura
 - Ambos deben usarse juntos para una implementación completa de formularios
 
 Ejemplo combinando ambos ADRs:
@@ -321,4 +321,4 @@ Ejemplo combinando ambos ADRs:
 - [Tailwind CSS Grid](https://tailwindcss.com/docs/grid-template-columns)
 - [CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout)
 - [Angular Material Form Fields](https://material.angular.dev/components/form-field)
-- [ADR-007: Estrategia de Validación de Formularios](./ADR-007-form-validation-strategy.md)
+- [ADR-008: Estrategia de Formularios](./ADR-008-form-strategy.md)

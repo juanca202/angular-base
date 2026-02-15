@@ -1,5 +1,5 @@
 ---
-name: angular-testing-signals
+name: abp-testing-signals
 description: Guía operativa para escribir tests unitarios/integración con Angular Signals y Vitest en este repositorio. Usar cuando la tarea involucre tests de servicios, componentes o estado reactivo.
 ---
 
@@ -27,4 +27,4 @@ description: Guía operativa para escribir tests unitarios/integración con Angu
 
 ## Referencias
 
-- `docs/adr/ADR-006-testing-strategy.md`
+- `docs/adr/ADR-014-testing-strategy.md`

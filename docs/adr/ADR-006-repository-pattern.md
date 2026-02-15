@@ -1,4 +1,4 @@
-# ADR-005: Patrón Repository para Servicios REST
+# ADR-006: Patrón Repository para Servicios REST
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
