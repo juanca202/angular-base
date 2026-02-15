@@ -41,6 +41,7 @@ Cada ADR sigue un formato estándar:
 - [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)
 - [ADR-014: Patrón Manager para Coordinación de Flujos de Negocio](./ADR-014-manager-pattern.md)
 - [ADR-015: Modelo de flujo de ramas basado en Features → Staging → Producción](./ADR-015-branching-strategy.md)
+- [ADR-016: Biblioteca de Componentes](./ADR-016-component-library.md)
 
 ## Crear un Nuevo ADR
 
