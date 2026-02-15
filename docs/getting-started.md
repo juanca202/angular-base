@@ -151,7 +151,7 @@ Actualiza los siguientes archivos con información específica de tu proyecto:
 ### Mejores Prácticas
 
 - **Mantén las personalizaciones separadas**: Evita modificar archivos de arquitectura core a menos que sea necesario
-- **Documenta tus cambios**: Actualiza los ADRs si haces cambios arquitectónicos significativos
+- **Documenta tus cambios**: Actualiza los ADRs si haces cambios arquitectónicos significativos y los skills si cambian flujos operativos para IA
 - **Prueba después de actualizaciones**: Siempre prueba tu aplicación después de fusionar cambios del upstream
 - **Revisa los cambios**: Revisa los cambios del upstream antes de fusionar para entender qué hay de nuevo
 
@@ -159,5 +159,6 @@ Actualiza los siguientes archivos con información específica de tu proyecto:
 
 - [Documentación de Arquitectura](./README.md)
 - [Registros de Decisiones Arquitectónicas (ADRs)](./adr/README.md)
+- [Skills del Proyecto](./skills/README.md)
 - [Documentación de Angular](https://angular.dev)
 - [README del Proyecto](../README.md)
