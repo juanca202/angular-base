@@ -18,7 +18,7 @@ A medida que la aplicación crece, mantener la calidad del código y prevenir re
 - Los problemas de integración se descubren tarde en el desarrollo
 - No hay guías claras sobre qué testear y cómo
 
-Adicionalmente, el proyecto hace uso intensivo de **Angular Signals** y **herramientas asistidas por IA** (Cursor, Copilot, etc.), que pueden interpretar incorrectamente los signals como funciones regulares si no existe un contrato de testing claro.
+Adicionalmente, el proyecto hace uso intensivo de **Angular Signals**, que pueden ser interpretados incorrectamente como funciones regulares si no existe un contrato de testing claro.
 
 Este ADR aplica a **Angular 21+**, que incluye **Vitest integrado por defecto** a través de Angular CLI, como se describe en la guía oficial de testing de Angular.
 
@@ -215,14 +215,11 @@ Los Signals siempre deben ser signals reales.
 
 ---
 
-## Guías de Testing Asistido por IA
+## Guías Operativas para Asistentes de IA
 
-Cuando uses herramientas de IA (Cursor, Copilot, ChatGPT):
+Las instrucciones operativas para asistentes de IA se mantienen fuera de los ADRs, en skills dedicados (ver `docs/skills/README.md`).
 
-- Prefiere la inferencia, pero agrega genéricos explícitos a signals cuando sea necesario
-- Nunca aceptes tests generados que hagan spy o mock de signals
-- Revisa tests generados por mal uso de signals
-- Los Signals siempre deben leerse con `()` y actualizarse con `.set()`
+Este ADR mantiene únicamente la decisión arquitectónica y sus reglas técnicas de testing.
 
 ---
 
@@ -257,7 +254,6 @@ test('user can login and view dashboard', async ({ page }) => {
 - Estructura de tests consistente y confiable
 - Refactorización segura con confianza
 - Semántica de testing clara para Signals
-- Reducción de errores de herramientas asistidas por IA
 - Los tests actúan como documentación ejecutable
 
 ### Negativas

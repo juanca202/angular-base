@@ -42,6 +42,16 @@ Cada ADR sigue un formato estándar:
 - [ADR-014: Patrón Manager para Coordinación de Flujos de Negocio](./ADR-014-manager-pattern.md)
 - [ADR-015: Modelo de flujo de ramas basado en Features → Staging → Producción](./ADR-015-branching-strategy.md)
 
+
+## ADRs vs Skills (separación de responsabilidades)
+
+Para mantener la documentación limpia y reutilizable:
+
+- **ADRs (`docs/adr/`)** documentan decisiones arquitectónicas y su justificación.
+- **Skills (`.cursor/skills/`)** contienen instrucciones operativas para asistentes de IA.
+
+Consulta el índice de skills en [docs/skills/README.md](../skills/README.md).
+
 ## Crear un Nuevo ADR
 
 Al tomar una decisión arquitectónica significativa:

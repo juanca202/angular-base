@@ -21,7 +21,7 @@ El equipo de Angular proporciona una [Guía de Estilo Oficial de Angular](https:
 
 Adoptaremos y seguiremos estrictamente la Guía de Estilo Oficial de Angular para asegurar consistencia, mantenibilidad y alineación con las mejores prácticas de Angular.
 
-Todo el código en este proyecto debe conformarse a la Guía de Estilo de Angular, y estas reglas están documentadas en `.cursor/rules/` para ser aplicadas automáticamente por herramientas de desarrollo asistido por IA.
+Todo el código en este proyecto debe conformarse a la Guía de Estilo de Angular.
 
 ## Aspectos Clave Aplicados
 
@@ -303,7 +303,13 @@ export class UserModule {}
 
 ## Implementación
 
-Todas las reglas de la Guía de Estilo de Angular están documentadas en `.cursor/rules/` y se aplican automáticamente cuando se usa Cursor para desarrollo asistido por IA. Esto asegura:
+Las reglas de este ADR se implementan mediante:
+
+- Convenciones de código del proyecto
+- ESLint y revisiones de PR
+- Skills operativos para asistentes de IA (ver `docs/skills/README.md`)
+
+Esto asegura:
 
 - Generación de código consistente
 - Aplicación automática durante el desarrollo
@@ -329,14 +335,14 @@ Todas las reglas de la Guía de Estilo de Angular están documentadas en `.curso
 
 ### Mitigación
 
-- Documentación exhaustiva en `.cursor/rules/`
+- Documentación exhaustiva de arquitectura y estilo en ADRs
 - Proceso de revisión de código para detectar desviaciones
 - Linting y formateo automatizado (ESLint, Prettier)
 - Sesiones de entrenamiento regulares del equipo
-- Herramientas de desarrollo asistido por IA para hacer cumplir las reglas automáticamente
+- Skills de apoyo para asistentes de IA, separados de las decisiones arquitectónicas
 
 ## Referencias
 
 - [Guía de Estilo Oficial de Angular](https://angular.dev/style-guide)
 - [Documentación de Angular](https://angular.dev)
-- [Documentación de Reglas del Proyecto](../../../.cursor/rules/)
+- [Skills del proyecto para asistentes de IA](../skills/README.md)
