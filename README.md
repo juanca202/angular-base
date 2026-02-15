@@ -38,8 +38,8 @@ Este proyecto es una aplicación base desarrollada con **Angular**, diseñada si
 
 #### Internacionalización (i18n)
 
-- **`npm run extract-i18n`**: Extrae todas las cadenas de internacionalización del código fuente y genera el archivo base `en.json` (ver [ADR-005](./docs/adr/ADR-005-internationalization-strategy.md))
-- **`npm run i18n -- [LOCALE]`**: Genera o actualiza archivos de traducción para el idioma indicado (ej: `npm run i18n -- es`) (ver [ADR-005](./docs/adr/ADR-005-internationalization-strategy.md))
+- **`npm run extract-i18n`**: Extrae todas las cadenas de internacionalización del código fuente y genera el archivo base `en.json` (ver [ADR-004](./docs/adr/ADR-004-internationalization-strategy.md))
+- **`npm run i18n -- [LOCALE]`**: Genera o actualiza archivos de traducción para el idioma indicado (ej: `npm run i18n -- es`) (ver [ADR-004](./docs/adr/ADR-004-internationalization-strategy.md))
 
 #### Calidad de Código
 
@@ -59,11 +59,11 @@ Este proyecto es una aplicación base desarrollada con **Angular**, diseñada si
 
 ### Internacionalización (i18n)
 
-Este proyecto incluye soporte para múltiples idiomas. Para más detalles sobre la estrategia de internacionalización, flujo de trabajo y uso de scripts, consulta [ADR-005: Estrategia de Internacionalización](./docs/adr/ADR-005-internationalization-strategy.md).
+Este proyecto incluye soporte para múltiples idiomas. Para más detalles sobre la estrategia de internacionalización, flujo de trabajo y uso de scripts, consulta [ADR-004: Estrategia de Internacionalización](./docs/adr/ADR-004-internationalization-strategy.md).
 
 ### Convención de Mensajes de Commit
 
-Este proyecto usa la convención **Conventional Commits**. Para más detalles sobre los tipos permitidos, formato y reglas, consulta [ADR-009: Calidad de Código y Herramientas](./docs/adr/ADR-009-code-quality-tooling.md).
+Este proyecto usa la convención **Conventional Commits**. Para más detalles sobre los tipos permitidos, formato y reglas, consulta [ADR-008: Calidad de Código y Herramientas](./docs/adr/ADR-008-code-quality-tooling.md).
 
 ---
 

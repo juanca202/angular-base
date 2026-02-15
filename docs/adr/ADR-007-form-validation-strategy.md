@@ -1,4 +1,4 @@
-# ADR-008: Estrategia de Validación de Formularios
+# ADR-007: Estrategia de Validación de Formularios
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  

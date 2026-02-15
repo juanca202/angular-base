@@ -1,4 +1,4 @@
-# ADR-015: Patrón Manager para Coordinación de Flujos de Negocio
+# ADR-014: Patrón Manager para Coordinación de Flujos de Negocio
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
@@ -643,5 +643,5 @@ export class RequirementListComponent {
 ## Referencias
 
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
-- [ADR-014: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-014-dialog-master-detail.md)
-- [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006-repository-pattern-rest.md)
+- [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)
+- [ADR-005: Patrón de Repositorio para Servicios REST](./ADR-005-repository-pattern.md)

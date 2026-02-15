@@ -19,8 +19,8 @@
 
 **Language/Version**: TypeScript 5.9+ / Angular 21.0+  
 **Primary Dependencies**: Angular Core, Angular Material (MDC), Tailwind CSS, @factor_ec/ui  
-**Storage**: REST APIs (Repository Pattern) - see [ADR-006](./docs/adr/ADR-006-repository-pattern-rest.md)  
-**Testing**: Vitest (unit/integration), Playwright (E2E) - see [ADR-007](./docs/adr/ADR-007-testing-strategy.md)  
+**Storage**: REST APIs (Repository Pattern) - see [ADR-005](./docs/adr/ADR-005-repository-pattern.md)  
+**Testing**: Vitest (unit/integration), Playwright (E2E) - see [ADR-006](./docs/adr/ADR-006-testing-strategy.md)  
 **Target Platform**: Web (PWA), browsers modernos  
 **Project Type**: Frontend web application (Angular SPA)  
 **Performance Goals**: [domain-specific, e.g., <200ms initial load, 60fps interactions, or NEEDS CLARIFICATION]  
@@ -36,9 +36,9 @@ Verify compliance with Angular Base Project Constitution:
 - ✅ **Layer Architecture**: Feature follows Core → Shared/Cross → Features dependency rules (ADR-001)
 - ✅ **Angular Style Guide**: Components are standalone, use OnPush, inject(), signals (ADR-002)
 - ✅ **CSS Strategy**: Tailwind CSS prioritized, BEM with `ft-` prefix for custom styles (ADR-003)
-- ✅ **Testing**: Tests follow AAA pattern, ≥80% coverage for critical paths, signals treated as state (ADR-007)
-- ✅ **Code Quality**: ESLint, Prettier, Conventional Commits enforced (ADR-009)
-- ✅ **Repository Pattern**: API communication uses Repository pattern (ADR-006)
+- ✅ **Testing**: Tests follow AAA pattern, ≥80% coverage for critical paths, signals treated as state (ADR-006)
+- ✅ **Code Quality**: ESLint, Prettier, Conventional Commits enforced (ADR-008)
+- ✅ **Repository Pattern**: API communication uses Repository pattern (ADR-005)
 - ✅ **Documentation**: ADR created if architectural decision needed, spec in `docs/specs/`
 
 **Reference**: See `.specify/memory/constitution.md` for full principles.

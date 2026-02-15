@@ -1,0 +1,43 @@
+.ft-card {
+  @apply rounded-lg border overflow-hidden flex flex-col border-[var(--ft-color-border)];
+
+  .ft-card__header {
+    @apply flex items-center min-h-12 font-bold py-2 pr-1 pl-4;
+  }
+
+  .ft-card__tabs {
+    display: flex;
+    background-color: color-mix(in srgb, var(--ft-color-border) 40%, transparent);
+
+    button {
+      flex: 1;
+      border: none;
+      background: none;
+      padding: 0;
+      transition: background-color 0.2s ease-in-out;
+      font-size: 14px;
+      border-radius: 0;
+      font-weight: 700;
+      line-height: 2.5rem;
+
+      &.ft-active {
+        border-radius: 0;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        background-color: var(--ft-color-bg);
+      }
+    }
+  }
+
+  .ft-card__body {
+    @apply p-4;
+  }
+}
+
+button.ft-card {
+  @apply bg-[var(--ft-button-outline-color)];
+
+  &:disabled {
+    @apply opacity-60;
+  }
+}

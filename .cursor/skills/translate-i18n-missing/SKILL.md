@@ -1,39 +1,60 @@
 ---
 name: translate-i18n-missing
-description: Traduce las cadenas del archivo {locale}-missing.json al idioma del locale y las agrega al final del archivo de idioma (p. ej. es.js). Usar cuando exista public/i18n/{locale}-missing.json tras el flujo del comando translate-i18n-missing (locale en formato ISO: es, fr, en, etc.).
+description: Flujo completo para traducir cadenas i18n faltantes. Obtiene el locale, genera el archivo missing si hace falta (npm run i18n, extract-i18n), traduce las cadenas al idioma indicado y las incorpora a public/i18n/{locale}.js. Usar cuando el usuario quiera traducir i18n faltantes.
 ---
 
 # Traducir i18n faltantes
 
-## Objetivo
+Flujo completo para detectar, generar (si hace falta) y traducir las cadenas del archivo `{locale}-missing.json` al idioma del locale, incorporándolas a `public/i18n/{locale}.js`.
 
-Tomar las cadenas en inglés del archivo `public/i18n/{locale}-missing.json`, traducirlas al idioma indicado por el locale (formato ISO), añadirlas **al final del objeto** en `public/i18n/{locale}.js` (sin borrar entradas existentes) y **eliminar** el archivo `{locale}-missing.json` al finalizar.
+## Fase 0. Idioma (locale) en formato ISO
 
-## Cuándo usar
+- **Primero** asegurarte de que el usuario haya indicado el idioma al que traducir en **formato ISO** (p. ej. `es`, `fr`, `en`).
+- Si no lo ha indicado, preguntar: *"Indica el idioma en formato ISO (ej: es, fr) para saber a qué idioma traducir."*
+- Usar ese valor como `{locale}` en los pasos siguientes.
 
-- Existe un archivo `public/i18n/{locale}-missing.json` (p. ej. `es-missing.json`).
-- El comando translate-i18n-missing ya ejecutó la búsqueda y, si hacía falta, `npm run i18n -- {locale}` y/o `npm run extract-i18n`, y ha detectado que hay missing para ese locale.
+## Fase 1. Buscar archivo missing
 
-## Proceso
+- Buscar en `public/i18n/` si existe el archivo **`{locale}-missing.json`** (p. ej. `es-missing.json`).
+- Si **existe** → ir a la **Fase 5** (traducir).
+- Si **no existe** → ir a la **Fase 2**.
 
-### 1. Detección
+## Fase 2. Generar y volver a comprobar
 
-- El **locale** es el idioma en formato ISO indicado por el usuario (p. ej. `es`, `fr`, `en`).
-- El archivo a usar es `public/i18n/{locale}-missing.json` (con guión, no underscore).
+- Ejecutar en la consola: **`npm run i18n -- {locale}`**
+- Volver a comprobar si existe **`public/i18n/{locale}-missing.json`**.
+- Si **existe** → ir a la **Fase 5** (traducir).
+- Si **no existe** → ir a la **Fase 3**.
 
-### 2. Leer el archivo missing
+## Fase 3. Extraer, generar y comprobar de nuevo
+
+- Ejecutar en la consola: **`npm run extract-i18n`**
+- Cuando termine, ejecutar: **`npm run i18n -- {locale}`**
+- Comprobar de nuevo si existe **`public/i18n/{locale}-missing.json`**.
+- Si **existe** → ir a la **Fase 5** (traducir).
+- Si **no existe** → indicar al usuario: **"No hay nada por traducir."** y terminar.
+
+## Fase 4. No hay nada por traducir
+
+- Si tras las fases 1–3 no se encontró `{locale}-missing.json`, informar al usuario y terminar.
+
+## Fase 5. Traducir e incorporar
+
+Cuando en alguna fase anterior se encontró **`{locale}-missing.json`**:
+
+### 5.1 Leer el archivo missing
 
 - El archivo es JSON: claves = IDs de mensaje (numéricos como string), valores = texto **en inglés** a traducir.
 - Ejemplo: `"7656051180617915023": "Create Quote"` → para `es` debe quedar `"7656051180617915023": "Crear cotización"` (o equivalente).
 
-### 3. Traducir
+### 5.2 Traducir
 
 - Traducir cada **valor** al idioma del locale (español para `es`, francés para `fr`, etc.).
 - **No traducir ni modificar** placeholders; dejarlos exactamente igual:
   - `{$START_LINK}`, `{$CLOSE_LINK}`, `{$START_TAG_STRONG}`, `{$CLOSE_TAG_STRONG}`, `{$INTERPOLATION}`, `{$INTERPOLATION_1}`, `{$PH}`, `{$START_BLOCK_IF}`, `{$CLOSE_BLOCK_IF}`, `{$START_BLOCK_ELSE}`, `{$CLOSE_BLOCK_ELSE}`, `{$START_TAG_SPAN}`, `{$CLOSE_TAG_SPAN}`, `{$START_TAG_MAT_ICON}`, `{$CLOSE_TAG_MAT_ICON}`, y variantes con sufijos `_1`, `_2`, etc.
 - Mantener el mismo estilo y tono que el resto del archivo de idioma (tuteo/voseo, puntuación, espacios).
 
-### 4. Escribir en el archivo de idioma
+### 5.3 Escribir en el archivo de idioma
 
 - Archivo destino: `public/i18n/{locale}.js`.
 - Estructura del archivo: `export default { ... };`
@@ -53,14 +74,14 @@ Ejemplo de bloque a insertar (español):
 
 (El `};` cierra el objeto; la línea anterior no lleva coma.)
 
-### 5. Eliminar el archivo missing
+### 5.4 Eliminar el archivo missing
 
 - Al final del proceso, **eliminar** el archivo `public/i18n/{locale}-missing.json` (p. ej. `es-missing.json`) tras haber incorporado todas las claves al `{locale}.js`.
 
 ## Resumen de reglas
 
 | Regla | Detalle |
-|-------|--------|
+|-------|---------|
 | Origen | Texto en inglés en `public/i18n/{locale}-missing.json` |
 | Destino | `public/i18n/{locale}.js`, al final del objeto |
 | Placeholders | No traducir; copiar tal cual (`{$...}`) |

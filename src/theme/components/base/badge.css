@@ -1,0 +1,28 @@
+.ft-badge {
+  @apply inline-block rounded-full border-0 text-center whitespace-nowrap overflow-hidden text-ellipsis font-bold leading-normal text-[75%] py-[0.25em] px-[0.8em] text-[var(--ft-color-bg)] bg-[#f8f9fa];
+}
+
+.ft-badge--tag {
+  @apply bg-(--ft-color-border) text-(--ft-color-text) py-[2px];
+}
+
+.ft-badge--info {
+  @apply bg-(--ft-color-info) text-(--ft-color-light);
+}
+
+.ft-badge--danger {
+  @apply bg-(--ft-color-danger) text-(--ft-color-light);
+}
+
+.ft-badge--warning {
+  @apply bg-(--ft-color-warning) text-(--ft-color-dark);
+}
+
+.ft-badge--success,
+.ft-badge--plus {
+  @apply bg-(--ft-color-success) text-(--ft-color-light);
+}
+
+.ft-badge__wrapper {
+  @apply flex flex-wrap;
+}

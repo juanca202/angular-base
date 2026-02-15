@@ -1,4 +1,4 @@
-# ADR-012: Convención de modificadores de acceso y uso de `readonly` en TypeScript
+# ADR-011: Convención de modificadores de acceso y uso de `readonly` en TypeScript
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  

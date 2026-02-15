@@ -1,4 +1,4 @@
-# ADR-005: Estrategia de Internacionalización (i18n)
+# ADR-004: Estrategia de Internacionalización (i18n)
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
