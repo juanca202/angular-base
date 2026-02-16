@@ -19,15 +19,10 @@
   --ft-color-text-muted: var(--ft-color-dark);
   --ft-color-bg: var(--ft-color-light);
 
-  /* ===== Typography ===== */
   --ft-font-family-base: sans-serif;
-  --ft-font-size-sm: 0.875rem;
-  --ft-font-size-md: 1rem;
-  --ft-font-size-lg: 1.125rem;
-  --ft-font-size-xl: 1.5rem;
-  --ft-font-weight-regular: 400;
-  --ft-font-weight-bold: 600;
-  --ft-line-height-base: 1.5;
+
+  /* ===== Shadows ===== */
+  --ft-shadow-overlapped: 0 0 1px rgba(0, 0, 0, 0.14), 0 0 6px rgba(0, 0, 0, 0.12);
 }
 
 /* Dark mode */

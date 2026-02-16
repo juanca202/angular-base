@@ -18,6 +18,30 @@ html {
   );
 }
 
-.mdc-icon-button .ft-icon {
-  @apply block;
+.mdc-icon-button {
+  .ft-icon {
+    @apply block;
+  }
+
+  .ft-badge {
+    @apply absolute text-[10px] rounded-full min-w-[18px] h-[18px] top-0 left-0 p-0 flex items-center justify-center;
+    background-color: var(--ft-color-danger);
+    color: var(--ft-color-light);
+    box-shadow: 0 0 0 2px var(--ft-color-light);
+    animation: ft-bounce 0.3s ease;
+    padding-inline: 0.25rem;
+    font-weight: var(--ft-font-weight-bold);
+  }
+}
+
+.mdc-button {
+  line-height: 1 !important;
+}
+
+.mat-bottom-sheet-container {
+  padding: 0 !important;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
 }
