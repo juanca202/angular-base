@@ -6,7 +6,9 @@ body {
 body {
   overscroll-behavior-y: contain;
   margin: 0;
-  font: var(--ft-text-font);
+  font: var(--ft-font-weight-regular)
+        var(--ft-font-size-md) / var(--ft-line-height-base)
+        var(--ft-font-family-base);
   color: var(--ft-color-text);
   background-color: var(--ft-color-bg);
   -webkit-text-size-adjust: 100%;

@@ -16,7 +16,7 @@ import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
 import { Session } from '@/core/services/session';
 import { AuthProvider } from '@/core/models/auth.provider';
-import { NotificationEvent, notificationEvents } from '../utils/notification';
+import { NotificationEvent, notificationEvents } from '@/core/utils/notification';
 import { MessageService } from '@factor_ec/ui';
 
 registerLocaleData(localeEn, 'en');
@@ -34,7 +34,7 @@ registerLocaleData(localeEs, 'es');
   providedIn: 'root'
 })
 export class AppManager {
-  // Dependency injections
+  // Dependency injection
   private readonly authProvider = inject(AuthProvider);
   private readonly location = inject(Location);
   private readonly platformId = inject<object>(PLATFORM_ID);
@@ -50,7 +50,6 @@ export class AppManager {
   public readonly updateStatus = signal<string | null>('done');
   private readonly defaultLocale = 'en';
   public readonly languages = signal<Language[]>(LANGUAGES);
-  private readonly pushToken: string | undefined;
 
   // Storage keys
   private readonly clientKey = `${environment.sessionPrefix}_cid`;
@@ -101,14 +100,13 @@ export class AppManager {
     // Load the configured application language
     const locale = await this.setLocale();
     console.log('Current locale: ', locale);
-    console.log('init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
     // If authenticated, initialize with local data
     if (this.session.isLoggedIn()) {
       this.authProvider.getSettings();
     }
 
     // Log the time taken to initialize the app
-    console.log('init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
+    console.log('Init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
   }
   public install(): void {
     if (!this.installPrompt) {

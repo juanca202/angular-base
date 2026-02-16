@@ -1,95 +1,76 @@
-@use '../../../../../theme/utils/mixins' as mixins;
+@reference "tailwindcss";
 
 :host {
-  display: flex;
-  flex-direction: row-reverse;
-  min-height: 100vh;
-  min-height: 100svh;
+  @apply flex flex-row-reverse min-h-screen min-h-[100svh];
   background-color: var(--ft-color-bg);
+}
 
-  form {
-    margin: auto;
-    padding: 1.5rem;
-    max-width: max(40vw, 450px);
+form {
+  @apply m-auto p-6;
+  max-width: max(40vw, 450px);
 
-    @include mixins.media-breakpoint-up(md) {
-      padding: 2rem 3rem;
-      min-width: max(40vw, 450px);
-    }
-
-    > div {
-      width: 100%;
-      margin: auto;
-    }
-
-    a {
-      color: var(--ft-primary-color);
-    }
+  >div {
+    @apply w-full m-auto;
   }
 
-  /*
-  .ft-logo {
-    text-align: center;
-    background-image: url(../../../public/images/logo.svg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-    height: 3rem;
+  a {
+    @apply text-[var(--ft-color-primary)] hover:underline focus:underline;
+  }
+}
 
-    @media (prefers-color-scheme: dark) {
-      background-image: url(../../../public/images/logo-dark.svg);
-    }
+.ft-logo {
+  @apply text-center w-full h-12 bg-contain bg-no-repeat bg-center;
 
-    &__wrapper {
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      width: 100%;
-      margin-top: 3rem;
-    }
-  }*/
+  .ft-logo__wrapper {
+    @apply flex-grow flex items-center w-full mt-12;
+  }
+}
 
-  .ft-terms {
-    font-size: 0.75rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    max-width: 360px;
-    text-align: center;
-    margin: auto;
+.ft-hr-label {
+  @apply text-center flex items-center my-4;
 
-    &,
-    a {
-      color: var(--ft-text-muted-color);
-    }
+  .ft-hr-label__text {
+    @apply my-0 mx-4;
   }
 
-  .ft-auth__signin {
-    margin: auto;
-    padding: 1.5rem;
-    max-width: max(40vw, 450px);
-
-    > div {
-      max-width: 330px;
-    }
+  &:after,
+  &:before {
+    @apply relative w-1/2 bg-[var(--ft-color-border)] inline-block h-px align-middle;
+    content: "";
   }
+}
 
-  .ft-auth__signup {
-    margin: auto;
-    padding: 1.5rem;
-    max-width: max(40vw, 450px);
+.ft-terms {
+  @apply text-xs px-6 max-w-[360px] text-center mx-auto;
+  color: var(--ft-color-text-muted);
 
-    > div {
-      max-width: 400px;
-    }
+  a {
+    color: var(--ft-color-text-muted);
+  }
+}
+
+.ft-auth__signin {
+  @apply lg:px-20;
+  max-width: max(40vw, 450px);
+
+  >div {
+    @apply max-w-[330px];
+  }
+}
+
+.ft-auth__signup {
+  @apply lg:px-12;
+  max-width: max(40vw, 450px);
+
+  >div {
+    @apply max-w-[400px];
   }
 }
 
 .ft-auth-menu.mat-mdc-menu-panel {
-  max-width: calc(400px - 4rem);
+  @apply max-w-[calc(400px-4rem)];
 
   .mat-mdc-menu-content {
-    width: calc(100vw - 4rem);
-    max-width: calc(400px - 4rem);
+    @apply w-[calc(100vw-4rem)] max-w-[calc(400px-4rem)];
   }
 }

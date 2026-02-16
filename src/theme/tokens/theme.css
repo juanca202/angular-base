@@ -19,13 +19,6 @@
   --ft-color-text-muted: var(--ft-color-dark);
   --ft-color-bg: var(--ft-color-light);
 
-  /* ===== Spacing ===== */
-  --ft-space-1: 0.25rem;
-  --ft-space-2: 0.5rem;
-  --ft-space-3: 1rem;
-  --ft-space-4: 1.5rem;
-  --ft-space-5: 3rem;
-
   /* ===== Typography ===== */
   --ft-font-family-base: sans-serif;
   --ft-font-size-sm: 0.875rem;

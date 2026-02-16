@@ -19,6 +19,8 @@ import { environment } from '@/environments/environment';
 import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { HttpErrorResponse } from '@angular/common/http';
 
+type AuthMode = 'signin' | 'signup';
+
 /**
  * Hosts the authentication experience, exposing sign-in and sign-up forms,
  * and orchestrating supporting flows such as password recovery and social login.
@@ -67,7 +69,7 @@ export class Auth implements OnInit {
   public readonly allowAuthFederation = environment.auth.allowAuthFederation;
   public readonly allowSignup = environment.auth.allowSignup;
   public readonly errorMessage = signal<string>('');
-  public readonly mode = signal<string>('');
+  public readonly mode = signal<AuthMode | undefined>(undefined);
   public readonly passwordVisible = signal<boolean>(false);
   public readonly signinForm: FormGroup;
   public readonly signupForm: FormGroup;
@@ -106,7 +108,7 @@ export class Auth implements OnInit {
       width: '400px'
     });
   }
-  public setMode(mode: string): void {
+  public setMode(mode: AuthMode): void {
     this.mode.set(mode);
     switch (mode) {
       case 'signin':
