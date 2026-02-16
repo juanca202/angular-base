@@ -7,7 +7,6 @@ import { Language as LanguageModel, StorageService } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
 import {
-  createMockTitle,
   createMockRouter,
   createMockActivatedRoute,
   createMockStorageService,
@@ -22,7 +21,6 @@ describe('Language', () => {
   let fixture: ComponentFixture<Language>;
   let mockAppManager: ReturnType<typeof createMockAppManager>;
   let mockStorageService: ReturnType<typeof createMockStorageService>;
-  let mockTitle: ReturnType<typeof createMockTitle>;
   let mockRouter: ReturnType<typeof createMockRouter>;
   let mockActivatedRoute: ReturnType<typeof createMockActivatedRoute>;
 
@@ -38,7 +36,6 @@ describe('Language', () => {
     mockStorageService = createMockStorageService({
       set: vi.fn()
     });
-    mockTitle = createMockTitle();
     mockRouter = createMockRouter();
     mockActivatedRoute = createMockActivatedRoute();
 
@@ -50,7 +47,6 @@ describe('Language', () => {
         ...COMMON_TEST_PROVIDERS.getCommonProviders({
           router: mockRouter,
           activatedRoute: mockActivatedRoute,
-          title: mockTitle,
           storageService: mockStorageService
         })
       ]
@@ -64,14 +60,6 @@ describe('Language', () => {
     it('should create component', () => {
       // Arrange & Act & Assert
       expect(component).toBeTruthy();
-    });
-
-    it('should set title on construction', () => {
-      // Arrange & Act
-      // Component is already created in beforeEach
-
-      // Assert
-      expect(mockTitle.setTitle).toHaveBeenCalled();
     });
 
     it('should initialize locale from AppManager', () => {

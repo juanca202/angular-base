@@ -9,17 +9,20 @@ export const authRoutes: Routes = [
     path: 'signin',
     component: Auth,
     data: { mode: 'signin' },
+    title: $localize`Sign in`,
     canActivate: [loginGuard]
   },
   {
     path: 'signup',
     component: Auth,
     data: { mode: 'signup' },
+    title: $localize`Sign up`,
     canActivate: [loginGuard]
   },
   {
     path: 'reset-password',
     component: ResetPassword,
+    title: $localize`Reset password`,
     canActivate: [resetGuard]
   }
 ];

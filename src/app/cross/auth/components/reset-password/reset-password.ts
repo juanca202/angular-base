@@ -12,7 +12,6 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
-import { Title } from '@angular/platform-browser';
 
 import { lastValueFrom } from 'rxjs';
 import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui';
@@ -58,7 +57,6 @@ export class ResetPassword {
   private readonly messageService = inject(MessageService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly title = inject(Title);
 
   // Properties
   public readonly form: FormGroup;
@@ -72,7 +70,6 @@ export class ResetPassword {
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]]
     });
-    this.title.setTitle($localize`Reset password`);
   }
 
   private confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {

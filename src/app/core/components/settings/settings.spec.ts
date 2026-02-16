@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, ParamMap, Router, RouterModule, UrlTree } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 import { Subject, EMPTY } from 'rxjs';
 import { Settings as SettingsModel } from '@/core/models/settings';
 import { Settings } from './settings';
@@ -24,7 +23,6 @@ describe('Settings', () => {
   let mockLayoutManager: Partial<LayoutManager>;
   let mockSession: Partial<Session>;
   let mockGoogleTagManagerService: Partial<GoogleTagManagerService>;
-  let mockTitle: Title;
   let mockRouter: Partial<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let paramMapSubject: Subject<ParamMap>;
@@ -51,9 +49,6 @@ describe('Settings', () => {
     mockGoogleTagManagerService = {
       addVariable: vi.fn()
     };
-    mockTitle = {
-      setTitle: vi.fn()
-    } as any;
     mockRouter = {
       navigateByUrl: vi.fn(),
       createUrlTree: vi.fn().mockReturnValue({} as UrlTree),
@@ -73,7 +68,6 @@ describe('Settings', () => {
         { provide: LayoutManager, useValue: mockLayoutManager },
         { provide: Session, useValue: mockSession },
         { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
-        { provide: Title, useValue: mockTitle },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         {
@@ -96,14 +90,6 @@ describe('Settings', () => {
     it('should create component', () => {
       // Arrange & Act & Assert
       expect(component).toBeTruthy();
-    });
-
-    it('should set title on construction', () => {
-      // Arrange & Act
-      // Component is already created in beforeEach
-
-      // Assert
-      expect(mockTitle.setTitle).toHaveBeenCalled();
     });
 
     it('should check for updates on construction', () => {

@@ -6,7 +6,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 import { ResetPassword } from './reset-password';
 import { AppManager } from '@/core/services/app-manager';
 import { MessageService } from '@factor_ec/ui';
@@ -20,7 +19,6 @@ describe('ResetPassword', () => {
   let mockAppManager: Partial<AppManager>;
   let mockRouter: Partial<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
-  let mockTitle: Title;
   let mockMessageService: Partial<MessageService>;
   let httpMock: HttpTestingController;
 
@@ -40,10 +38,6 @@ describe('ResetPassword', () => {
       } as any
     };
 
-    mockTitle = {
-      setTitle: vi.fn()
-    } as any;
-
     mockMessageService = {
       show: vi.fn().mockReturnValue(of(undefined))
     };
@@ -62,7 +56,6 @@ describe('ResetPassword', () => {
         { provide: AppManager, useValue: mockAppManager },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: Title, useValue: mockTitle },
         { provide: MessageService, useValue: mockMessageService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -106,11 +99,6 @@ describe('ResetPassword', () => {
       // Assert
       expect(form.get('password')?.hasError('required')).toBe(true);
       expect(form.get('confirmPassword')?.hasError('required')).toBe(true);
-    });
-
-    it('should set page title on construction', () => {
-      // Arrange & Act & Assert
-      expect(mockTitle.setTitle).toHaveBeenCalled();
     });
 
     it('should initialize signals with default values', () => {

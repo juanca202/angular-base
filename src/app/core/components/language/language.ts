@@ -3,7 +3,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 
 import { IconComponent } from '@factor_ec/ui';
 import { Language as LanguageModel, StorageService } from '@factor_ec/utils';
@@ -28,14 +27,9 @@ export class Language {
   // Dependency injection
   public readonly appManager = inject(AppManager);
   private readonly storageService = inject(StorageService);
-  private readonly title = inject(Title);
 
   // Properties
   public readonly locale = signal<string | undefined>(this.appManager.getLocale());
-
-  constructor() {
-    this.title.setTitle($localize`Language`);
-  }
 
   public async select(language: LanguageModel): Promise<void> {
     this.storageService.set(`${environment.sessionPrefix}_loc`, language.code, 'local');

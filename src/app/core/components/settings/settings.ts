@@ -13,7 +13,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { Title } from '@angular/platform-browser';
 
 import { GoogleTagManagerService } from '@factor_ec/utils';
 import { IconComponent, AvatarComponent, ProgressComponent } from '@factor_ec/ui';
@@ -63,7 +62,6 @@ export class Settings implements OnInit {
   public readonly authService = inject(AuthProvider);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);
-  private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   public readonly session = inject(Session);
@@ -77,7 +75,6 @@ export class Settings implements OnInit {
     viewChild.required<ElementRef<HTMLButtonElement>>('supportButton');
 
   constructor() {
-    this.title.setTitle($localize`Settings`);
     this.appManager.checkForUpdates();
     const currentLanguage = this.appManager
       .languages()

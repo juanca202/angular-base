@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { Auth } from './auth';
 import { AppManager } from '@/core/services/app-manager';
@@ -16,7 +15,6 @@ import {
   createMockRouter,
   createMockActivatedRoute,
   createMockStorageService,
-  createMockTitle,
   COMMON_TEST_PROVIDERS
 } from '@/test/mocks/angular-mocks';
 import {
@@ -37,7 +35,6 @@ describe('Auth', () => {
   let mockStorageService: Partial<StorageService>;
   let mockRouter: Partial<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
-  let mockTitle: Title;
   let mockDialog: Partial<MatDialog>;
 
   beforeEach(async () => {
@@ -53,8 +50,6 @@ describe('Auth', () => {
         data: { mode: 'signin' }
       } as any
     });
-    mockTitle = createMockTitle();
-    (mockTitle as any).getTitle = vi.fn().mockReturnValue('Sign in');
     mockDialog = createMockMatDialog();
 
     // Override component before configuring the module
@@ -74,7 +69,6 @@ describe('Auth', () => {
         ...COMMON_TEST_PROVIDERS.getCommonProviders({
           router: mockRouter,
           activatedRoute: mockActivatedRoute,
-          title: mockTitle,
           storageService: mockStorageService
         })
       ],
@@ -140,32 +134,40 @@ describe('Auth', () => {
   });
 
   describe('setMode', () => {
-    it('should set mode and title for signin', () => {
+    it('should set mode and track page view for signin', () => {
       // Arrange & Act
       component.setMode('signin');
 
       // Assert
       expect(component.mode()).toBe('signin');
-      expect(mockTitle.setTitle).toHaveBeenCalled();
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalled();
+      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+        event: 'page_view',
+        page_title: 'Sign in'
+      });
     });
 
-    it('should set mode and title for signup', () => {
+    it('should set mode and track page view for signup', () => {
       // Arrange & Act
       component.setMode('signup');
 
       // Assert
       expect(component.mode()).toBe('signup');
-      expect(mockTitle.setTitle).toHaveBeenCalled();
+      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+        event: 'page_view',
+        page_title: 'Sign up'
+      });
     });
 
-    it('should set default title for unknown mode', () => {
+    it('should set default page title for unknown mode', () => {
       // Arrange & Act
       component.setMode('unknown');
 
       // Assert
       expect(component.mode()).toBe('unknown');
-      expect(mockTitle.setTitle).toHaveBeenCalled();
+      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+        event: 'page_view',
+        page_title: 'Start'
+      });
     });
   });
 

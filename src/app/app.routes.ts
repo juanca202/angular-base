@@ -18,8 +18,8 @@ export const routes: Routes = [
     path: '',
     loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
   },
-  { path: 'settings', component: Settings },
-  { path: 'settings/language', component: Language },
+  { path: 'settings', component: Settings, title: $localize`Settings` },
+  { path: 'settings/language', component: Language, title: $localize`Language` },
   { path: 'error/:code', component: Error, title: $localize`Error` },
   { path: '**', component: Error, data: { code: 404 } }
 ];
