@@ -1,40 +1,24 @@
 /* theme/components.css */
 
-/* Heading */
-:root {
-  --ft-h1-font-size: var(--ft-font-size-xl);
-  --ft-h2-font-size: var(--ft-font-size-lg);
-  --ft-h3-font-size: var(--ft-font-size-md);
-}
-
-/* Borders */
-:root {
-  --ft-border-color: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
-  --ft-border-color-light: color-mix(in srgb, var(--ft-color-text) 10%, transparent);
-
-  /* Shadows */
-  --ft-shadow-overlapped: 0 0 1px rgba(0, 0, 0, 0.14), 0 0 6px rgba(0, 0, 0, 0.12);
-}
-
 /* Avatar */
 :root {
   --ft-avatar-size: 2.5rem;
-  --ft-avatar-bg: var(--ft-border-color);
+  --ft-avatar-bg: var(--ft-color-border);
   --ft-avatar-color: var(--ft-color-light);
 }
 
 /* Thumbnail */
 :root {
   --ft-thumbnail-size: 2.5rem;
-  --ft-thumbnail-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
+  --ft-thumbnail-bg: color-mix(in srgb, var(--ft-color-border) 40%, transparent);
 }
 
 /* Inputs */
 :root {
-  --ft-input-bg: color-mix(in srgb, var(--ft-border-color) 40%, transparent);
-  --ft-input-bg-focused: color-mix(in srgb, var(--ft-border-color) 50%, transparent);
-  --ft-input-bg-disabled: color-mix(in srgb, var(--ft-border-color) 60%, transparent);
-  --ft-input-radius: var(--ft-radius-md);
+  --ft-input-bg: color-mix(in srgb, var(--ft-color-border) 40%, transparent);
+  --ft-input-bg-focused: color-mix(in srgb, var(--ft-color-border) 50%, transparent);
+  --ft-input-bg-disabled: color-mix(in srgb, var(--ft-color-border) 60%, transparent);
+  --ft-input-radius: 0.5rem;
 }
 
 /* Progress bar */

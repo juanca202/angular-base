@@ -18,8 +18,16 @@
   --ft-color-text: var(--ft-color-dark);
   --ft-color-text-muted: var(--ft-color-dark);
   --ft-color-bg: var(--ft-color-light);
+  --ft-color-border: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
 
   --ft-font-family-base: sans-serif;
+  --ft-font-weight-base: 400;
+  --ft-font-size-base: 1rem;
+  --ft-line-height-base: 1.5;
+
+  --ft-h1-font-size: 2rem;
+  --ft-h2-font-size: 1.5rem;
+  --ft-h3-font-size: 1.25rem;
 
   /* ===== Shadows ===== */
   --ft-shadow-overlapped: 0 0 1px rgba(0, 0, 0, 0.14), 0 0 6px rgba(0, 0, 0, 0.12);

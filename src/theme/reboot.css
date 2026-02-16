@@ -6,8 +6,8 @@ body {
 body {
   overscroll-behavior-y: contain;
   margin: 0;
-  font: var(--ft-font-weight-regular)
-        var(--ft-font-size-md) / var(--ft-line-height-base)
+  font: var(--ft-font-weight-base)
+        var(--ft-font-size-base) / var(--ft-line-height-base)
         var(--ft-font-family-base);
   color: var(--ft-color-text);
   background-color: var(--ft-color-bg);
@@ -63,7 +63,7 @@ meta[name='supported-color-schemes'][content='dark light'] {
 
 hr {
   border: 0;
-  border-top: 1px solid var(--ft-border-color);
+  border-top: 1px solid var(--ft-color-border);
 }
 
 *,
