@@ -25,9 +25,9 @@
   --ft-font-size-base: 1rem;
   --ft-line-height-base: 1.5;
 
-  --ft-h1-font-size: 2rem;
-  --ft-h2-font-size: 1.5rem;
-  --ft-h3-font-size: 1.25rem;
+  --ft-h1-font-size: 1.5rem;
+  --ft-h2-font-size: 1rem;
+  --ft-h3-font-size: 0.875rem;
 
   /* ===== Shadows ===== */
   --ft-shadow-overlapped: 0 0 1px rgba(0, 0, 0, 0.14), 0 0 6px rgba(0, 0, 0, 0.12);

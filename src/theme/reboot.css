@@ -80,3 +80,35 @@ app-root {
 .mat-mdc-form-field {
   width: 100%;
 }
+
+.mdc-icon-button {
+  .ft-icon {
+    @apply block;
+  }
+
+  .ft-badge {
+    @apply absolute text-[10px] bg-(--ft-color-danger) text-(--ft-color-light) font-bold rounded-full min-w-[18px] h-[18px] top-0 left-0 p-0 px-1 flex items-center justify-center;
+    box-shadow: 0 0 0 2px var(--ft-color-light);
+    animation: ft-bounce 0.3s ease;
+  }
+}
+
+.mdc-button {
+  line-height: 1 !important;
+}
+
+.mat-bottom-sheet-container {
+  @apply p-0!;
+}
+
+.mat-mdc-form-field {
+  @apply w-full!;
+}
+
+.mat-mdc-menu-panel.ft-auth-menu {
+  max-width: calc(400px - 4rem - 3rem);
+
+  .mat-mdc-menu-content {
+      width: calc(100vw - 4rem);
+  }
+}

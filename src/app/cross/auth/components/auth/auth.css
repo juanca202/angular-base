@@ -66,3 +66,7 @@ form {
     @apply max-w-[400px];
   }
 }
+
+.mdc-button--outlined {
+  @apply w-full h-[3rem];
+}

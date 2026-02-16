@@ -18,8 +18,8 @@ html {
 
   /* Tipografías */
   --md-sys-typescale-body-medium-font: var(--ft-font-family-base);
-  --md-sys-typescale-body-medium-size: var(--ft-font-size-md);
-  --md-sys-typescale-body-medium-weight: var(--ft-font-weight-regular);
+  --md-sys-typescale-body-medium-size: var(--ft-font-size-base);
+  --md-sys-typescale-body-medium-weight: var(--ft-font-weight-base);
 
   /* Espaciados */
   --md-ref-spacing-small: calc(var(--spacing) * 1);
@@ -27,4 +27,5 @@ html {
   --md-ref-spacing-large: calc(var(--spacing) * 12);
 
   --mat-sys-corner-extra-large: 1rem;
+  --mat-sys-body-large-tracking: 0;
 }
