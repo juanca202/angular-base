@@ -1,6 +1,6 @@
 .ft-dialog {
   .mdc-dialog__title {
-    @apply flex items-center justify-between p-2 text-xl text-center gap-2;
+    @apply flex items-center justify-between p-2 text-xl! text-center! font-semibold! gap-2;
     &::before {
       @apply hidden;
     }
