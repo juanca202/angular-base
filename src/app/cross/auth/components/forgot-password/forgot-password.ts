@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { email, form, FormField, required, submit } from '@angular/forms/signals';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { ProgressComponent, MessageService } from '@factor_ec/ui';
@@ -11,7 +12,6 @@ import { GoogleTagManagerService } from '@factor_ec/utils';
 
 import { environment } from '@/environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 
 /**
  * Presents the dialog that lets the user request password reset instructions.
@@ -24,12 +24,11 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
   selector: 'app-forgot-password',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormField,
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    ProgressComponent,
-    ErrorMessagePipe
+    ProgressComponent
   ],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
@@ -38,47 +37,44 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 export class ForgotPassword {
   // Dependency injection
   private readonly dialogRef = inject<MatDialogRef<ForgotPassword>>(MatDialogRef);
-  private readonly formBuilder = inject(FormBuilder);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly httpClient = inject(HttpClient);
   private readonly messageService = inject(MessageService);
 
   // Properties
-  public readonly form: FormGroup;
+  public readonly forgotModel = signal<{ email: string }>({ email: '' });
+  public readonly forgotForm = form(this.forgotModel, (schemaPath) => {
+    required(schemaPath.email, { message: $localize`Field required` });
+    email(schemaPath.email, { message: $localize`Type a valid email` });
+  });
   public readonly submitting = signal<boolean>(false);
 
-  constructor() {
-    this.form = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]]
-    });
-  }
-
-  public submit(): void {
-    if (this.form.valid) {
+  public onSubmit(event: Event): void {
+    event.preventDefault();
+    submit(this.forgotForm, async () => {
       this.submitting.set(true);
-      this.form.disable();
-      this.httpClient.post(environment.auth.forgotPasswordUrl, this.form.value).subscribe(
-        () => {
-          this.submitting.set(false);
-          this.googleTagManagerService.addVariable({
-            event: 'forgot_password'
-          });
-          this.messageService.show(
-            $localize`If your email is registered, then check your email for instructions to recover your password. If it doesn't arrive, be sure to check your spam folder.`,
-            {
-              type: 'modal'
-            }
-          );
-          this.dialogRef.close();
-        },
-        (err) => {
-          this.submitting.set(false);
-          this.form.enable();
-          this.messageService.show(err.error?.detail || err.message, {
+      try {
+        await lastValueFrom(
+          this.httpClient.post(environment.auth.forgotPasswordUrl, this.forgotModel())
+        );
+        this.submitting.set(false);
+        this.googleTagManagerService.addVariable({
+          event: 'forgot_password'
+        });
+        this.messageService.show(
+          $localize`If your email is registered, then check your email for instructions to recover your password. If it doesn't arrive, be sure to check your spam folder.`,
+          {
             type: 'modal'
-          });
-        }
-      );
-    }
+          }
+        );
+        this.dialogRef.close();
+      } catch (err: unknown) {
+        this.submitting.set(false);
+        const e = err as { error?: { detail?: string }; message?: string };
+        this.messageService.show(e?.error?.detail || e?.message || '', {
+          type: 'modal'
+        });
+      }
+    });
   }
 }

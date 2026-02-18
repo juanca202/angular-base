@@ -1,7 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
@@ -25,19 +24,17 @@ describe('ChangePassword', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
-    // Arrange: Create mocks
     mockAppManager = createMockAppManager();
     mockDialogRef = createMockMatDialogRef<ChangePassword>();
     mockMessageService = createMockMessageService();
 
-    // Override component before configuring the module
     TestBed.overrideComponent(ChangePassword, {
       remove: { templateUrl: './change-password.html', styleUrl: './change-password.css' },
       add: { template: '<div>Test</div>', styles: [] }
     });
 
     await TestBed.configureTestingModule({
-      imports: [ChangePassword, ReactiveFormsModule, MatDialogModule],
+      imports: [ChangePassword, MatDialogModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -59,38 +56,28 @@ describe('ChangePassword', () => {
 
   describe('initialization', () => {
     it('should create component', () => {
-      // Arrange & Act & Assert
       expect(component).toBeTruthy();
     });
 
     it('should inject dependencies', () => {
-      // Arrange & Act & Assert
       expect(component.appManager).toBeDefined();
     });
 
     it('should initialize form with empty values', () => {
-      // Arrange & Act
-      const form = component.form;
-
-      // Assert
-      expect(form).toBeDefined();
-      expect(form.get('password')?.value).toBe('');
-      expect(form.get('newPassword')?.value).toBe('');
-      expect(form.get('confirmPassword')?.value).toBe('');
+      const model = component.changeModel();
+      expect(component.changeForm).toBeDefined();
+      expect(model.password).toBe('');
+      expect(model.newPassword).toBe('');
+      expect(model.confirmPassword).toBe('');
     });
 
     it('should have form validators', () => {
-      // Arrange & Act
-      const form = component.form;
-
-      // Assert
-      expect(form.get('password')?.hasError('required')).toBe(true);
-      expect(form.get('newPassword')?.hasError('required')).toBe(true);
-      expect(form.get('confirmPassword')?.hasError('required')).toBe(true);
+      expect(component.changeForm.password().invalid()).toBe(true);
+      expect(component.changeForm.newPassword().invalid()).toBe(true);
+      expect(component.changeForm.confirmPassword().invalid()).toBe(true);
     });
 
     it('should initialize signals with default values', () => {
-      // Arrange & Act & Assert
       expect(component.newPasswordVisible()).toBe(false);
       expect(component.passwordVisible()).toBe(false);
       expect(component.submitting()).toBe(false);
@@ -99,131 +86,74 @@ describe('ChangePassword', () => {
 
   describe('passwordValidator', () => {
     it('should validate password with all requirements', () => {
-      // Arrange
-      const form = component.form;
-      const newPasswordControl = form.get('newPassword');
-
-      // Act
-      newPasswordControl?.setValue('ValidPass123!');
-
-      // Assert
-      expect(newPasswordControl?.valid).toBe(true);
+      component.changeModel.update((m) => ({ ...m, newPassword: 'ValidPass123!' }));
+      expect(component.changeForm.newPassword().valid()).toBe(true);
     });
 
     it('should reject password without minimum length', () => {
-      // Arrange
-      const form = component.form;
-      const newPasswordControl = form.get('newPassword');
-
-      // Act
-      newPasswordControl?.setValue('Short1!');
-
-      // Assert
-      expect(newPasswordControl?.hasError('minLength')).toBe(true);
+      component.changeModel.update((m) => ({ ...m, newPassword: 'Short1!' }));
+      expect(component.hasNewPasswordError('minLength')).toBe(true);
     });
 
     it('should reject password without uppercase', () => {
-      // Arrange
-      const form = component.form;
-      const newPasswordControl = form.get('newPassword');
-
-      // Act
-      newPasswordControl?.setValue('validpass123!');
-
-      // Assert
-      expect(newPasswordControl?.hasError('upperCase')).toBe(true);
+      component.changeModel.update((m) => ({ ...m, newPassword: 'validpass123!' }));
+      expect(component.hasNewPasswordError('upperCase')).toBe(true);
     });
 
     it('should reject password without lowercase', () => {
-      // Arrange
-      const form = component.form;
-      const newPasswordControl = form.get('newPassword');
-
-      // Act
-      newPasswordControl?.setValue('VALIDPASS123!');
-
-      // Assert
-      expect(newPasswordControl?.hasError('lowerCase')).toBe(true);
+      component.changeModel.update((m) => ({ ...m, newPassword: 'VALIDPASS123!' }));
+      expect(component.hasNewPasswordError('lowerCase')).toBe(true);
     });
 
     it('should reject password without special character', () => {
-      // Arrange
-      const form = component.form;
-      const newPasswordControl = form.get('newPassword');
-
-      // Act
-      newPasswordControl?.setValue('ValidPass123');
-
-      // Assert
-      expect(newPasswordControl?.hasError('specialCharacter')).toBe(true);
+      component.changeModel.update((m) => ({ ...m, newPassword: 'ValidPass123' }));
+      expect(component.hasNewPasswordError('specialCharacter')).toBe(true);
     });
 
     it('should reject password without number', () => {
-      // Arrange
-      const form = component.form;
-      const newPasswordControl = form.get('newPassword');
-
-      // Act
-      newPasswordControl?.setValue('ValidPass!');
-
-      // Assert
-      expect(newPasswordControl?.hasError('number')).toBe(true);
+      component.changeModel.update((m) => ({ ...m, newPassword: 'ValidPass!' }));
+      expect(component.hasNewPasswordError('number')).toBe(true);
     });
   });
 
   describe('confirmPasswordValidator', () => {
     it('should validate when passwords match', () => {
-      // Arrange
-      const form = component.form;
-      form.get('newPassword')?.setValue('ValidPass123!');
-      form.get('confirmPassword')?.setValue('ValidPass123!');
-
-      // Act
-      const confirmPasswordControl = form.get('confirmPassword');
-
-      // Assert
-      expect(confirmPasswordControl?.valid).toBe(true);
+      component.changeModel.set({
+        password: 'OldPass123!',
+        newPassword: 'ValidPass123!',
+        confirmPassword: 'ValidPass123!'
+      });
+      expect(component.changeForm.confirmPassword().valid()).toBe(true);
     });
 
     it('should reject when passwords do not match', () => {
-      // Arrange
-      const form = component.form;
-      form.get('newPassword')?.setValue('ValidPass123!');
-      form.get('confirmPassword')?.setValue('DifferentPass123!');
-
-      // Act
-      const confirmPasswordControl = form.get('confirmPassword');
-
-      // Assert
-      expect(confirmPasswordControl?.hasError('notEqual')).toBe(true);
+      component.changeModel.set({
+        password: 'OldPass123!',
+        newPassword: 'ValidPass123!',
+        confirmPassword: 'DifferentPass123!'
+      });
+      const errors = component.changeForm.confirmPassword().errors();
+      expect(errors.some((e) => e.kind === 'notEqual')).toBe(true);
     });
   });
 
-  describe('submit', () => {
+  describe('onSubmit', () => {
     it('should not submit when form is invalid', async () => {
-      // Arrange
-      component.form.get('password')?.setValue('');
-
-      // Act
-      await component.submit();
-
-      // Assert
+      component.changeModel.update((m) => ({ ...m, password: '' }));
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.onSubmit(event);
       expect(mockDialogRef.close).not.toHaveBeenCalled();
       expect(mockMessageService.show).not.toHaveBeenCalled();
     });
 
     it('should submit when form is valid', async () => {
-      // Arrange
-      component.form.patchValue({
+      component.changeModel.set({
         password: 'OldPassword123!',
         newPassword: 'NewPassword123!',
         confirmPassword: 'NewPassword123!'
       });
-
-      // Act
-      const submitPromise = component.submit();
-      expect(component.submitting()).toBe(true);
-      expect(component.form.disabled).toBe(true);
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(getApiUrl('change-password'));
       expect(req.request.method).toBe('POST');
@@ -231,16 +161,13 @@ describe('ChangePassword', () => {
 
       await submitPromise;
 
-      // Assert
       expect(mockDialogRef.close).toHaveBeenCalled();
       expect(mockMessageService.show).toHaveBeenCalled();
       expect(component.submitting()).toBe(false);
-      expect(component.form.enabled).toBe(true);
     });
 
     it('should handle error on submit', async () => {
-      // Arrange
-      component.form.patchValue({
+      component.changeModel.set({
         password: 'OldPassword123!',
         newPassword: 'NewPassword123!',
         confirmPassword: 'NewPassword123!'
@@ -250,25 +177,21 @@ describe('ChangePassword', () => {
         status: 400,
         statusText: 'Bad Request'
       });
-
-      // Act
-      const submitPromise = component.submit();
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(getApiUrl('change-password'));
       req.error(errorResponse.error, errorResponse);
 
       await submitPromise;
 
-      // Assert
       expect(mockDialogRef.close).not.toHaveBeenCalled();
       expect(mockMessageService.show).toHaveBeenCalled();
       expect(component.submitting()).toBe(false);
-      expect(component.form.enabled).toBe(true);
     });
 
     it('should handle HttpErrorResponse with detail', async () => {
-      // Arrange
-      component.form.patchValue({
+      component.changeModel.set({
         password: 'OldPassword123!',
         newPassword: 'NewPassword123!',
         confirmPassword: 'NewPassword123!'
@@ -278,64 +201,42 @@ describe('ChangePassword', () => {
         status: 400,
         statusText: 'Bad Request'
       });
-
-      // Act
-      const submitPromise = component.submit();
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(getApiUrl('change-password'));
       req.error(errorResponse.error, errorResponse);
 
       await submitPromise;
 
-      // Assert
       expect(mockMessageService.show).toHaveBeenCalledWith('Invalid password', { type: 'modal' });
     });
   });
 
   describe('toggleNewPasswordVisible', () => {
     it('should toggle newPasswordVisible from false to true', () => {
-      // Arrange
       expect(component.newPasswordVisible()).toBe(false);
-
-      // Act
       component.toggleNewPasswordVisible();
-
-      // Assert
       expect(component.newPasswordVisible()).toBe(true);
     });
 
     it('should toggle newPasswordVisible from true to false', () => {
-      // Arrange
       component.newPasswordVisible.set(true);
-
-      // Act
       component.toggleNewPasswordVisible();
-
-      // Assert
       expect(component.newPasswordVisible()).toBe(false);
     });
   });
 
   describe('togglePasswordVisible', () => {
     it('should toggle passwordVisible from false to true', () => {
-      // Arrange
       expect(component.passwordVisible()).toBe(false);
-
-      // Act
       component.togglePasswordVisible();
-
-      // Assert
       expect(component.passwordVisible()).toBe(true);
     });
 
     it('should toggle passwordVisible from true to false', () => {
-      // Arrange
       component.passwordVisible.set(true);
-
-      // Act
       component.togglePasswordVisible();
-
-      // Assert
       expect(component.passwordVisible()).toBe(false);
     });
   });

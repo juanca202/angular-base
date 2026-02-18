@@ -9,7 +9,7 @@ import { AppManager } from './app-manager';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from './session';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
-import { LANGUAGES } from '../constants/languages';
+import { LANGUAGES } from '@/features/settings/constants/languages';
 import { signal, computed, EventEmitter } from '@angular/core';
 
 describe('AppManager', () => {

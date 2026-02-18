@@ -643,5 +643,5 @@ export class RequirementListComponent {
 ## Referencias
 
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
-- [ADR-012: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-012-dialog-master-detail.md)
+- [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)
 - [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006-repository-pattern.md)

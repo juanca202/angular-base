@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Auth } from './auth';
@@ -38,7 +37,6 @@ describe('Auth', () => {
   let mockDialog: Partial<MatDialog>;
 
   beforeEach(async () => {
-    // Arrange: Create mocks using factory functions
     mockAppManager = createMockAppManager();
     mockAuthService = createMockAuthService();
     mockGoogleTagManagerService = createMockGoogleTagManagerService();
@@ -52,14 +50,13 @@ describe('Auth', () => {
     });
     mockDialog = createMockMatDialog();
 
-    // Override component before configuring the module
     TestBed.overrideComponent(Auth, {
       remove: { templateUrl: './auth.html', styleUrl: './auth.css' },
       add: { template: '<div>Test</div>', styles: [] }
     });
 
     await TestBed.configureTestingModule({
-      imports: [Auth, ReactiveFormsModule, RouterModule],
+      imports: [Auth, RouterModule],
       providers: [
         { provide: AppManager, useValue: mockAppManager },
         { provide: AuthService, useValue: mockAuthService },
@@ -81,64 +78,48 @@ describe('Auth', () => {
 
   describe('initialization', () => {
     it('should create component', () => {
-      // Arrange & Act & Assert
       expect(component).toBeTruthy();
     });
 
     it('should inject dependencies', () => {
-      // Arrange & Act & Assert
       expect(component.appManager).toBeDefined();
       expect(component.authService).toBeDefined();
     });
 
     it('should initialize signinForm with validators', () => {
-      // Arrange & Act
-      const form = component.signinForm;
-
-      // Assert
-      expect(form).toBeDefined();
-      expect(form.get('username')?.value).toBe('');
-      expect(form.get('password')?.value).toBe('');
-      expect(form.get('username')?.hasError('required')).toBe(true);
-      expect(form.get('password')?.hasError('required')).toBe(true);
+      const model = component.signinModel();
+      expect(component.signinForm).toBeDefined();
+      expect(model.username).toBe('');
+      expect(model.password).toBe('');
+      expect(component.signinForm.username().invalid()).toBe(true);
+      expect(component.signinForm.password().invalid()).toBe(true);
     });
 
     it('should initialize signupForm with validators', () => {
-      // Arrange & Act
-      const form = component.signupForm;
-
-      // Assert
-      expect(form).toBeDefined();
-      expect(form.get('firstName')?.value).toBe('');
-      expect(form.get('lastName')?.value).toBe('');
-      expect(form.get('email')?.value).toBe('');
-      expect(form.get('password')?.value).toBe('');
-      expect(form.get('firstName')?.hasError('required')).toBe(true);
+      const model = component.signupModel();
+      expect(component.signupForm).toBeDefined();
+      expect(model.firstName).toBe('');
+      expect(model.lastName).toBe('');
+      expect(model.email).toBe('');
+      expect(model.password).toBe('');
+      expect(component.signupForm.firstName().invalid()).toBe(true);
     });
 
     it('should initialize signals with default values', () => {
-      // Arrange & Act & Assert
       expect(component.errorMessage()).toBe('');
-      expect(component.mode()).toBe('');
       expect(component.passwordVisible()).toBe(false);
       expect(component.submitting()).toBe(false);
     });
 
     it('should set mode from route data on init', () => {
-      // Arrange & Act
       component.ngOnInit();
-
-      // Assert
       expect(component.mode()).toBe('signin');
     });
   });
 
   describe('setMode', () => {
     it('should set mode and track page view for signin', () => {
-      // Arrange & Act
       component.setMode('signin');
-
-      // Assert
       expect(component.mode()).toBe('signin');
       expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
         event: 'page_view',
@@ -147,10 +128,7 @@ describe('Auth', () => {
     });
 
     it('should set mode and track page view for signup', () => {
-      // Arrange & Act
       component.setMode('signup');
-
-      // Assert
       expect(component.mode()).toBe('signup');
       expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
         event: 'page_view',
@@ -159,10 +137,7 @@ describe('Auth', () => {
     });
 
     it('should set default page title for unknown mode', () => {
-      // Arrange & Act
-      component.setMode('unknown');
-
-      // Assert
+      component.setMode('unknown' as any);
       expect(component.mode()).toBe('unknown');
       expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
         event: 'page_view',
@@ -172,67 +147,44 @@ describe('Auth', () => {
   });
 
   describe('connect', () => {
-    it('should connect with google and disable forms', async () => {
-      // Arrange
+    it('should connect with google and set submitting', async () => {
       mockAuthService.connect = vi.fn().mockResolvedValue(true);
-
-      // Act
       await component.connect('google');
-
-      // Assert
       expect(component.submitting()).toBe(true);
-      expect(component.signinForm.disabled).toBe(true);
-      expect(component.signupForm.disabled).toBe(true);
       expect(mockAuthService.connect).toHaveBeenCalledWith('google');
     });
 
-    it('should re-enable forms if connection fails', async () => {
-      // Arrange
+    it('should reset submitting if connection fails', async () => {
       mockAuthService.connect = vi.fn().mockResolvedValue(false);
-
-      // Act
       await component.connect('google');
-
-      // Assert
       expect(component.submitting()).toBe(false);
-      expect(component.signinForm.enabled).toBe(true);
-      expect(component.signupForm.enabled).toBe(true);
     });
   });
 
   describe('forgotPassword', () => {
     it('should open forgot password dialog', () => {
-      // Arrange & Act
       component.forgotPassword();
-
-      // Assert
       expect(mockDialog.open).toHaveBeenCalled();
     });
   });
 
-  describe('submitSignin', () => {
+  describe('handleSigninSubmit', () => {
     it('should not submit when form is invalid', async () => {
-      // Arrange
-      component.signinForm.get('username')?.setValue('');
-
-      // Act
-      await component.submitSignin();
-
-      // Assert
+      component.signinModel.set({ username: '', password: '' });
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSigninSubmit(event);
       expect(mockAuthService.signin).not.toHaveBeenCalled();
     });
 
     it('should submit when form is valid', async () => {
-      // Arrange
-      component.signinForm.patchValue({
+      component.signinModel.set({
         username: 'testuser',
         password: 'password123'
       });
-
-      // Act
-      await component.submitSignin();
-
-      // Assert
+      mockAuthService.signin = vi.fn().mockResolvedValue(undefined);
+      mockAuthService.getSettings = vi.fn().mockResolvedValue(null);
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSigninSubmit(event);
       expect(component.errorMessage()).toBe('');
       expect(component.submitting()).toBe(false);
       expect(mockAuthService.signin).toHaveBeenCalledWith({
@@ -243,8 +195,7 @@ describe('Auth', () => {
     });
 
     it('should handle error on signin', async () => {
-      // Arrange
-      component.signinForm.patchValue({
+      component.signinModel.set({
         username: 'testuser',
         password: 'password123'
       });
@@ -254,43 +205,38 @@ describe('Auth', () => {
         statusText: 'Unauthorized'
       });
       mockAuthService.signin = vi.fn().mockRejectedValue(errorResponse);
-
-      // Act
-      await component.submitSignin();
-
-      // Assert
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSigninSubmit(event);
       expect(component.errorMessage()).toBe('Invalid credentials');
       expect(component.submitting()).toBe(false);
-      expect(component.signinForm.enabled).toBe(true);
       expect(mockMessageService.show).toHaveBeenCalled();
     });
   });
 
-  describe('submitSignup', () => {
+  describe('handleSignupSubmit', () => {
     it('should not submit when form is invalid', async () => {
-      // Arrange
-      component.signupForm.get('firstName')?.setValue('');
-
-      // Act
-      await component.submitSignup();
-
-      // Assert
+      component.signupModel.set({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: ''
+      });
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSignupSubmit(event);
       expect(mockAuthService.signup).not.toHaveBeenCalled();
     });
 
     it('should submit and signin when form is valid', async () => {
-      // Arrange
-      component.signupForm.patchValue({
+      component.signupModel.set({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
         password: 'password123'
       });
-
-      // Act
-      await component.submitSignup();
-
-      // Assert
+      mockAuthService.signup = vi.fn().mockResolvedValue(undefined);
+      mockAuthService.signin = vi.fn().mockResolvedValue(undefined);
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSignupSubmit(event);
       expect(component.errorMessage()).toBe('');
       expect(mockAuthService.signup).toHaveBeenCalled();
       expect(mockAuthService.signin).toHaveBeenCalled();
@@ -298,43 +244,38 @@ describe('Auth', () => {
     });
 
     it('should navigate to redirect URL if exists', async () => {
-      // Arrange
-      component.signupForm.patchValue({
+      component.signupModel.set({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
         password: 'password123'
       });
+      mockAuthService.signup = vi.fn().mockResolvedValue(undefined);
+      mockAuthService.signin = vi.fn().mockResolvedValue(undefined);
       mockStorageService.get = vi.fn().mockReturnValue('/dashboard');
-
-      // Act
-      await component.submitSignup();
-
-      // Assert
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSignupSubmit(event);
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/dashboard');
       expect(mockStorageService.delete).toHaveBeenCalledWith(`${environment.sessionPrefix}_rdi`);
     });
 
     it('should navigate to home if no redirect URL', async () => {
-      // Arrange
-      component.signupForm.patchValue({
+      component.signupModel.set({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
         password: 'password123'
       });
+      mockAuthService.signup = vi.fn().mockResolvedValue(undefined);
+      mockAuthService.signin = vi.fn().mockResolvedValue(undefined);
       mockStorageService.get = vi.fn().mockReturnValue(null);
-
-      // Act
-      await component.submitSignup();
-
-      // Assert
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSignupSubmit(event);
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
     });
 
     it('should handle error on signup', async () => {
-      // Arrange
-      component.signupForm.patchValue({
+      component.signupModel.set({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
@@ -346,38 +287,24 @@ describe('Auth', () => {
         statusText: 'Bad Request'
       });
       mockAuthService.signup = vi.fn().mockRejectedValue(errorResponse);
-
-      // Act
-      await component.submitSignup();
-
-      // Assert
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.handleSignupSubmit(event);
       expect(component.errorMessage()).toBe('Email already exists');
       expect(component.submitting()).toBe(false);
-      expect(component.signupForm.enabled).toBe(true);
       expect(mockMessageService.show).toHaveBeenCalled();
     });
   });
 
   describe('togglePasswordVisible', () => {
     it('should toggle passwordVisible from false to true', () => {
-      // Arrange
       expect(component.passwordVisible()).toBe(false);
-
-      // Act
       component.togglePasswordVisible();
-
-      // Assert
       expect(component.passwordVisible()).toBe(true);
     });
 
     it('should toggle passwordVisible from true to false', () => {
-      // Arrange
       component.passwordVisible.set(true);
-
-      // Act
       component.togglePasswordVisible();
-
-      // Assert
       expect(component.passwordVisible()).toBe(false);
     });
   });

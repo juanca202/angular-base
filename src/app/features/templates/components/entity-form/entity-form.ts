@@ -4,9 +4,10 @@ import {
   inject,
   OnDestroy,
   OnInit,
-  output
+  output,
+  signal
 } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { disabled, email, form, FormField, required, submit } from '@angular/forms/signals';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,8 +18,8 @@ import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui'
 
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
-import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
-import { Entity } from '../../models/entity';
+import { Entity, EntityInput } from '../../models/entity';
+import { EntityMapper } from '../../utils/entity-mapper';
 import { OPERATION_TYPE } from '@/core/constants/operation-type';
 import { Operation, OperationType } from '@/core/models/operation';
 import { EntityManager } from '../../managers/entity-manager';
@@ -29,15 +30,14 @@ import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
   selector: 'app-entity-form',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormField,
     IconComponent,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatMenuModule,
-    ProgressComponent,
-    ErrorMessagePipe
+    ProgressComponent
   ],
   templateUrl: './entity-form.html',
   styleUrl: './entity-form.css',
@@ -48,25 +48,32 @@ export class EntityForm implements OnInit, OnDestroy {
   public readonly entityManager = inject(EntityManager);
   private readonly entityRepository = inject(EntityRepository);
   public readonly data = inject<{ id: string }>(MAT_DIALOG_DATA);
-  private readonly formBuilder = inject(FormBuilder);
   public readonly layoutManager = inject(LayoutManager);
   private readonly dialogRef = inject(MatDialogRef<EntityForm>);
   private readonly messageService = inject(MessageService);
 
-  // Constansts
+  // Constants
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
 
   // Properties
   public readonly entity = this.entityRepository.find();
   public readonly entityMutations = this.entityRepository.mutations();
-  public readonly form: FormGroup = this.formBuilder.group({
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    phone: ['', [Validators.required]],
-    company: [''],
-    position: [''],
-    notes: ['']
+  public readonly entityModel = signal<EntityInput>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    company: '',
+    position: '',
+    notes: ''
+  });
+  public readonly entityForm = form(this.entityModel, (schemaPath) => {
+    required(schemaPath.firstName, { message: $localize`Field required` });
+    required(schemaPath.lastName, { message: $localize`Field required` });
+    required(schemaPath.email, { message: $localize`Field required` });
+    email(schemaPath.email, { message: $localize`Type a valid email` });
+    required(schemaPath.phone, { message: $localize`Field required` });
+    disabled(schemaPath, () => this.entityMutations.submitting());
   });
 
   // Events
@@ -76,7 +83,15 @@ export class EntityForm implements OnInit, OnDestroy {
     if (this.data?.id) {
       this.entity.load(this.data.id).then((entity) => {
         if (entity) {
-          this.form.patchValue(entity);
+          this.entityModel.set({
+            firstName: entity.firstName,
+            lastName: entity.lastName,
+            email: entity.email,
+            phone: entity.phone,
+            company: entity.company ?? '',
+            position: entity.position ?? '',
+            notes: entity.notes ?? ''
+          });
         }
       });
     }
@@ -86,33 +101,33 @@ export class EntityForm implements OnInit, OnDestroy {
     this.entity.destroy();
   }
 
-  public async submit(): Promise<void> {
-    if (this.form.valid) {
-      const formData = this.form.value;
+  public async onSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    submit(this.entityForm, async () => {
+      const formData = this.entityModel();
       try {
         let entity: Entity | null;
         let type: OperationType;
-        this.form.disable();
         if (this.data?.id) {
-          // Update existing entity
-          entity = await this.entityMutations.update({ ...formData, id: this.data.id });
+          entity = await this.entityMutations.update(
+            EntityMapper.mapInputToRequestUpdate(formData, this.data.id)
+          );
           type = OPERATION_TYPE.UPDATE;
         } else {
-          // Create new entity
-          entity = await this.entityMutations.create(formData);
+          entity = await this.entityMutations.create(
+            EntityMapper.mapInputToRequestCreate(formData)
+          );
           type = OPERATION_TYPE.CREATE;
         }
-        // Close dialog on success
         this.dialogRef.close();
-        // Show confirmation message
         this.messageService.show($localize`Saved successfully.`, {
           class: 'ft-message--success',
           icon: 'check--circle'
         });
         this.afterSubmit.emit({ type, entity });
       } finally {
-        this.form.enable();
+        // Form re-enables when submitting signal becomes false
       }
-    }
+    });
   }
 }

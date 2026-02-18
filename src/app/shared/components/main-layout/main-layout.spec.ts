@@ -7,7 +7,7 @@ import { computed } from '@angular/core';
 import { MainLayout } from './main-layout';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
-import { MenuItem } from '@/core/models/menu-item';
+import { MenuItem } from '@/shared/models/menu-item';
 import { User } from '@/core/models/user';
 import {
   createMockRouter,

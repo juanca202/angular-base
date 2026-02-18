@@ -3,7 +3,15 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  disabled,
+  email,
+  form,
+  FormField,
+  minLength,
+  required,
+  submit
+} from '@angular/forms/signals';
 import { Title } from '@angular/platform-browser';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,10 +24,21 @@ import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
 import { ForgotPassword } from '@/cross/auth/components/forgot-password/forgot-password';
 import { environment } from '@/environments/environment';
-import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { HttpErrorResponse } from '@angular/common/http';
 
 type AuthMode = 'signin' | 'signup';
+
+interface SigninModel {
+  username: string;
+  password: string;
+}
+
+interface SignupModel {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
 
 /**
  * Hosts the authentication experience, exposing sign-in and sign-up forms,
@@ -34,15 +53,14 @@ type AuthMode = 'signin' | 'signup';
   imports: [
     CommonModule,
     NgOptimizedImage,
-    ReactiveFormsModule,
+    FormField,
     MatButtonModule,
     MatFormField,
     MatInputModule,
     MatMenuModule,
     RouterModule,
     IconComponent,
-    ProgressComponent,
-    ErrorMessagePipe
+    ProgressComponent
   ],
   templateUrl: './auth.html',
   styleUrl: './auth.css',
@@ -57,7 +75,6 @@ export class Auth implements OnInit {
   public readonly appManager = inject(AppManager);
   public readonly authService = inject(AuthService);
   private readonly dialog = inject(MatDialog);
-  private readonly formBuilder = inject(FormBuilder);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly messageService = inject(MessageService);
   private readonly route = inject(ActivatedRoute);
@@ -71,35 +88,43 @@ export class Auth implements OnInit {
   public readonly errorMessage = signal<string>('');
   public readonly mode = signal<AuthMode | undefined>(undefined);
   public readonly passwordVisible = signal<boolean>(false);
-  public readonly signinForm: FormGroup;
-  public readonly signupForm: FormGroup;
+  public readonly signinModel = signal<SigninModel>({ username: '', password: '' });
+  public readonly signupModel = signal<SignupModel>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: ''
+  });
+  public readonly signinForm = form(this.signinModel, (schemaPath) => {
+    required(schemaPath.username, { message: $localize`Field required` });
+    minLength(schemaPath.username, 4, { message: $localize`Type at least 4 characters` });
+    required(schemaPath.password, { message: $localize`Field required` });
+    minLength(schemaPath.password, 8, { message: $localize`Type at least 8 characters` });
+    disabled(schemaPath.username, () => this.submitting());
+    disabled(schemaPath.password, () => this.submitting());
+  });
+  public readonly signupForm = form(this.signupModel, (schemaPath) => {
+    required(schemaPath.firstName, { message: $localize`Field required` });
+    required(schemaPath.lastName, { message: $localize`Field required` });
+    required(schemaPath.email, { message: $localize`Field required` });
+    email(schemaPath.email, { message: $localize`Type a valid email` });
+    required(schemaPath.password, { message: $localize`Field required` });
+    minLength(schemaPath.password, 8, { message: $localize`Type at least 8 characters` });
+    disabled(schemaPath.firstName, () => this.submitting());
+    disabled(schemaPath.lastName, () => this.submitting());
+    disabled(schemaPath.email, () => this.submitting());
+    disabled(schemaPath.password, () => this.submitting());
+  });
   public readonly submitting = signal<boolean>(false);
-
-  constructor() {
-    this.signinForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
-    });
-    this.signupForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
-    });
-  }
 
   ngOnInit(): void {
     this.setMode(this.route.snapshot.data['mode']);
   }
   public async connect(client: 'google'): Promise<void> {
     this.submitting.set(true);
-    this.signinForm.disable();
-    this.signupForm.disable();
     const connected = await this.authService.connect(client);
     if (!connected) {
       this.submitting.set(false);
-      this.signinForm.enable();
-      this.signupForm.enable();
     }
   }
   public forgotPassword(): void {
@@ -126,20 +151,20 @@ export class Auth implements OnInit {
       page_title: this.title.getTitle()
     });
   }
-  public async submitSignin(): Promise<void> {
-    if (this.signinForm.valid) {
+  public handleSigninSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    return submit(this.signinForm, async () => {
       this.errorMessage.set('');
       try {
-        this.signinForm.disable();
         this.submitting.set(true);
-        await this.authService.signin(this.signinForm.value);
+        const credentials = this.signinModel();
+        await this.authService.signin(credentials);
         const settings = await this.authService.getSettings(true);
         this.googleTagManagerService.addVariable({
           event: 'login',
-          user_id: this.signinForm.value.username,
+          user_id: credentials.username,
           app_id: environment.appId
         });
-        this.signinForm.enable();
         this.submitting.set(false);
         if (settings) {
           const redirectUrl = this.storageService.get(`${environment.sessionPrefix}_rdi`);
@@ -151,7 +176,6 @@ export class Auth implements OnInit {
           }
         }
       } catch (err: unknown) {
-        this.signinForm.enable();
         this.submitting.set(false);
         if (err instanceof HttpErrorResponse) {
           this.errorMessage.set(
@@ -160,25 +184,26 @@ export class Auth implements OnInit {
           this.messageService.show(this.errorMessage());
         }
       }
-    }
+    });
   }
-  public async submitSignup(): Promise<void> {
-    if (this.signupForm.valid) {
+  public handleSignupSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    return submit(this.signupForm, async () => {
       try {
         this.errorMessage.set('');
         this.submitting.set(true);
-        this.signupForm.disable();
-        await this.authService.signup(this.signupForm.value);
+        const data = this.signupModel();
+        await this.authService.signup(data);
         this.googleTagManagerService.addVariable({
           event: 'sign_up',
-          user_id: this.signupForm.value.username,
+          user_id: data.email,
           app_id: environment.appId
         });
         await this.authService.signin({
-          username: this.signupForm.value.email,
-          password: this.signupForm.value.password
+          username: data.email,
+          password: data.password
         });
-        // If a redirect exists, use it; otherwise load the home page
+        this.submitting.set(false);
         if (this.storageService.get(`${environment.sessionPrefix}_rdi`)) {
           this.router.navigateByUrl(this.storageService.get(`${environment.sessionPrefix}_rdi`));
           this.storageService.delete(`${environment.sessionPrefix}_rdi`);
@@ -186,7 +211,6 @@ export class Auth implements OnInit {
           this.router.navigateByUrl('/');
         }
       } catch (err: unknown) {
-        this.signupForm.enable();
         this.submitting.set(false);
         if (err instanceof HttpErrorResponse) {
           this.errorMessage.set(
@@ -195,7 +219,7 @@ export class Auth implements OnInit {
           this.messageService.show(this.errorMessage());
         }
       }
-    }
+    });
   }
   public togglePasswordVisible(): void {
     this.passwordVisible.set(!this.passwordVisible());

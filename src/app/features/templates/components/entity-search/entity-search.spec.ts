@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EntitySearch } from './entity-search';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
@@ -70,7 +69,7 @@ describe('EntitySearch', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [EntitySearch, ReactiveFormsModule, MatDialogModule],
+      imports: [EntitySearch, MatDialogModule],
       providers: [
         { provide: EntityManager, useValue: mockEntityManager },
         { provide: EntityRepository, useValue: mockEntityRepository },
@@ -107,11 +106,11 @@ describe('EntitySearch', () => {
 
     it('should initialize form with empty query', () => {
       // Arrange & Act
-      const form = component.form;
+      const model = component.searchModel();
 
       // Assert
-      expect(form).toBeDefined();
-      expect(form.get('query')?.value).toBe('');
+      expect(component.searchForm).toBeDefined();
+      expect(model.query).toBe('');
     });
   });
 
@@ -138,7 +137,7 @@ describe('EntitySearch', () => {
         add: { template: '<div>Test</div>', styles: [] }
       });
       await TestBed.configureTestingModule({
-        imports: [EntitySearch, ReactiveFormsModule, MatDialogModule],
+        imports: [EntitySearch, MatDialogModule],
         providers: [
           { provide: EntityManager, useValue: mockEntityManager },
           { provide: EntityRepository, useValue: testMockEntityRepository },

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, OnInit, output, signal } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
 import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-entity-search',
-  imports: [AvatarComponent, IconComponent, MatButtonModule, MatDialogContent, ReactiveFormsModule],
+  imports: [AvatarComponent, FormField, IconComponent, MatButtonModule, MatDialogContent],
   templateUrl: './entity-search.html',
   styleUrl: './entity-search.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,14 +22,12 @@ export class EntitySearch implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<EntitySearch>);
   private readonly entityRepository = inject(EntityRepository);
   public readonly entityManager = inject(EntityManager);
-  private readonly formBuilder = inject(FormBuilder);
   public readonly layoutManager = inject(LayoutManager);
 
   // Properties
   public readonly entities = this.entityRepository.findBy();
-  public form = this.formBuilder.group({
-    query: ['']
-  });
+  public readonly searchModel = signal<{ query: string }>({ query: '' });
+  public readonly searchForm = form(this.searchModel);
 
   // Events
   public readonly selected = output<Entity>();

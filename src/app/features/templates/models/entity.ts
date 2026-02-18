@@ -14,6 +14,16 @@ export interface Entity {
   updatedAt: string;
 }
 
+export interface EntityInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  company: string;
+  position: string;
+  notes: string;
+}
+
 export type EntityRequestCreate = Omit<Entity, 'id'>;
 export type EntityRequestUpdate = Partial<EntityRequestCreate> & {
   id: Entity['id'];

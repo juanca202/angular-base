@@ -27,4 +27,4 @@ description: Guía operativa para escribir tests unitarios/integración con Angu
 
 ## Referencias
 
-- `docs/adr/ADR-014-testing-strategy.md`
+- `docs/adr/ADR-015-testing-strategy.md`

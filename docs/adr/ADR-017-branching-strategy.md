@@ -1,4 +1,4 @@
-# ADR-016: Modelo de flujo de ramas basado en Features → Staging → Producción
+# ADR-017: Modelo de flujo de ramas basado en Features → Staging → Producción
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
@@ -162,7 +162,7 @@ Se adopta un modelo de ramas inspirado en **Trunk-Based Development extendido co
 
 ### Mensajes de commit
 
-- Los mensajes de commit deben seguir la convención definida en el proyecto (ver ADR-010)
+- Los mensajes de commit deben seguir la convención definida en el proyecto (ver ADR-011)
 - Usar prefijos claros: `feat:`, `fix:`, `docs:`, `refactor:`, etc.
 - Los mensajes deben ser descriptivos y en español o inglés según la convención del proyecto
 
@@ -227,5 +227,5 @@ Este modelo es adecuado para equipos pequeños o medianos y proyectos con despli
 
 ## Referencias
 
-- [ADR-010: Calidad de Código y Herramientas](./ADR-010-code-quality-tooling.md) - Convenciones de commits
+- [ADR-011: Calidad de Código y Herramientas](./ADR-011-code-quality-tooling.md) - Convenciones de commits
 - [Semantic Versioning](https://semver.org/)

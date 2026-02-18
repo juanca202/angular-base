@@ -1,6 +1,6 @@
 <div mat-dialog-content class="pb-0">
   <div class="text-center text-red-500">
-    <ft-icon name="warning" class="ft-icon--5" collection="factoricons-slim"></ft-icon>
+    <ft-icon name="warning" class="ft-icon--5" collection="factoricons-slim" />
   </div>
   <p class="text-center text-lg text-red-500" i18n>This action can not be undone</p>
   <p class="text-center text-sm text-gray-400 mb-4" i18n>
@@ -10,15 +10,13 @@
     <p class="text-sm text-gray-400" i18n>
       To continue, enter the email associated with your account.
     </p>
-    <form id="step1Form" [formGroup]="step1Form" class="mt-4" (ngSubmit)="submit()">
+    <form id="step1Form" class="mt-4" (submit)="submit()">
       <div class="grid grid-cols-1 gap-y-2 gap-x-4">
         <mat-form-field>
           <mat-label i18n>Email</mat-label>
-          <input type="email" matInput formControlName="email" maxlength="50" />
-          @if (step1Form.get('email')?.invalid && step1Form.get('email')?.touched) {
-            <mat-error>
-              {{ step1Form.get('email') | errorMessage: { pattern: invalidUserEmail } }}
-            </mat-error>
+          <input type="email" matInput [formField]="step1Form.email" />
+          @if (step1Form.email().touched() && step1Form.email().invalid()) {
+            <mat-error>{{ step1Form.email().errors()[0]?.message }}</mat-error>
           }
         </mat-form-field>
       </div>
@@ -29,15 +27,13 @@
       You have <strong>{{ codeExpiresIn() }} minutes</strong> to enter verification code sent to
       <strong>{{ session.user()?.email }}</strong> to confirm deletion.
     </p>
-    <form id="step2Form" [formGroup]="step2Form" (ngSubmit)="submit()" class="mt-4">
+    <form id="step2Form" (submit)="submit()" class="mt-4">
       <div class="grid grid-cols-1 gap-y-2 gap-x-4">
         <mat-form-field>
           <mat-label i18n>Verification code</mat-label>
-          <input type="text" matInput formControlName="code" maxlength="13" />
-          @if (step2Form.get('code')?.invalid && step2Form.get('code')?.touched) {
-            <mat-error>
-              {{ step2Form.get('code') | errorMessage }}
-            </mat-error>
+          <input type="text" matInput [formField]="step2Form.code" />
+          @if (step2Form.code().touched() && step2Form.code().invalid()) {
+            <mat-error>{{ step2Form.code().errors()[0]?.message }}</mat-error>
           }
         </mat-form-field>
       </div>

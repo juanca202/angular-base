@@ -6,7 +6,7 @@ import {
   inject,
   OnDestroy
 } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { email, form, FormField, required, validate } from '@angular/forms/signals';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -21,10 +21,17 @@ import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui'
 import { AppManager } from '@/core/services/app-manager';
 import { AuthService } from '@/cross/auth/auth-service';
 import { environment } from '@/environments/environment';
-import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { getApiUrl } from '@/core/utils/async-resources';
 import { Session } from '@/core/services/session';
+
+interface Step1Model {
+  email: string;
+}
+
+interface Step2Model {
+  code: string;
+}
 
 /**
  * Handles the two-step account deletion flow, including code generation,
@@ -38,14 +45,13 @@ import { Session } from '@/core/services/session';
   selector: 'app-delete-user',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormField,
     MatButtonModule,
     MatDialogModule,
     MatFormField,
     MatInputModule,
     IconComponent,
-    ProgressComponent,
-    ErrorMessagePipe
+    ProgressComponent
   ],
   templateUrl: './delete-user.html',
   styleUrl: './delete-user.css',
@@ -55,15 +61,29 @@ export class DeleteUser implements OnInit, OnDestroy {
   // Dependency injection
   public readonly appManager = inject(AppManager);
   public readonly authService = inject(AuthService);
-  private readonly formBuilder = inject(FormBuilder);
   private readonly httpClient = inject(HttpClient);
   private readonly messageService = inject(MessageService);
   public readonly session = inject(Session);
   private readonly storageService = inject(StorageService);
 
   // Properties
-  public readonly step1Form: FormGroup;
-  public readonly step2Form: FormGroup;
+  public readonly step1Model = signal<Step1Model>({ email: '' });
+  public readonly step2Model = signal<Step2Model>({ code: '' });
+  public readonly step1Form = form(this.step1Model, (schemaPath) => {
+    required(schemaPath.email, { message: $localize`Field required` });
+    email(schemaPath.email, { message: $localize`Type a valid email` });
+    validate(schemaPath.email, ({ value }) => {
+      const expected = this.session.user()?.email;
+      if (!expected) return null;
+      if (value() !== expected) {
+        return { kind: 'pattern', message: this.invalidUserEmail };
+      }
+      return null;
+    });
+  });
+  public readonly step2Form = form(this.step2Model, (schemaPath) => {
+    required(schemaPath.code, { message: $localize`Field required` });
+  });
   public readonly passwordVisible = signal<boolean>(false);
   public readonly submitting = signal<boolean>(false);
   public readonly submitted = signal<boolean>(false);
@@ -71,22 +91,6 @@ export class DeleteUser implements OnInit, OnDestroy {
   public readonly codeExpiresIn = signal<string>('');
   private codeTimeInterval: Subscription | null = null;
   public readonly invalidUserEmail = $localize`Type the email registered in your account`;
-
-  constructor() {
-    this.step1Form = this.formBuilder.group({
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.email,
-          Validators.pattern(`^${this.session.user()?.email}$`)
-        ]
-      ]
-    });
-    this.step2Form = this.formBuilder.group({
-      code: ['', Validators.required]
-    });
-  }
 
   ngOnInit(): void {
     this.initCode();
@@ -106,10 +110,9 @@ export class DeleteUser implements OnInit, OnDestroy {
     }
   }
   public async generateCode(): Promise<void> {
-    if (this.step1Form.valid) {
+    if (this.step1Form().valid()) {
       try {
         this.submitting.set(true);
-        this.step1Form.disable();
         const response = await lastValueFrom(
           this.httpClient.post<string | number | { expiresAt?: string | number }>(
             getApiUrl('generate-delete-code'),
@@ -119,7 +122,6 @@ export class DeleteUser implements OnInit, OnDestroy {
         const expiresAt = this.parseDateFromResponse(response);
         this.setCountDown(expiresAt);
         this.submitting.set(false);
-        this.step1Form.enable();
       } catch (err: unknown) {
         this.submitting.set(false);
         if (err instanceof HttpErrorResponse) {
@@ -127,16 +129,14 @@ export class DeleteUser implements OnInit, OnDestroy {
             type: 'modal'
           });
         }
-        this.step1Form.enable();
       }
     }
   }
   public async requestDelete(): Promise<void> {
-    if (this.step2Form.valid) {
+    if (this.step2Form().valid()) {
       try {
-        this.step2Form.disable();
         this.submitting.set(true);
-        await lastValueFrom(this.httpClient.post(getApiUrl('delete-user'), this.step2Form.value));
+        await lastValueFrom(this.httpClient.post(getApiUrl('delete-user'), this.step2Model()));
         this.submitting.set(false);
         this.authService.logout();
         this.storageService.delete('lastUser', 'local');
@@ -147,7 +147,6 @@ export class DeleteUser implements OnInit, OnDestroy {
           });
         }
         this.submitting.set(false);
-        this.step2Form.enable();
       }
     }
   }

@@ -105,12 +105,12 @@ Solo cuando **Angular Material no ofrezca** un componente que cubra la funcional
 
 ### Neutras
 
-- Los ADRs existentes (ADR-007, ADR-008, ADR-012) ya asumen el uso de Angular Material; este ADR formaliza y amplía esa decisión
+- Los ADRs existentes (ADR-007, ADR-009, ADR-013) ya asumen el uso de Angular Material; este ADR formaliza y amplía esa decisión
 
 ## Referencias
 
 - [Angular Material - Component Library](https://material.angular.dev/)
 - [Angular Material Components](https://material.angular.dev/components)
-- [ADR-008: Estrategia de Formularios](./ADR-008-form-strategy.md)
-- [ADR-009: Layout y Estructura de Formularios](./ADR-009-form-layout-structure.md)
-- [ADR-012: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-012-dialog-master-detail.md)
+- [ADR-009: Estrategia de Formularios](./ADR-009-form-strategy.md)
+- [ADR-010: Layout y Estructura de Formularios](./ADR-010-form-layout-structure.md)
+- [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)

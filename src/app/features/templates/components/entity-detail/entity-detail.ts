@@ -6,7 +6,6 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IconComponent, ProgressComponent } from '@factor_ec/ui';
@@ -29,7 +28,6 @@ import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 @Component({
   selector: 'app-entity-detail',
   imports: [
-    ReactiveFormsModule,
     IconComponent,
     MatButtonModule,
     MatDialogModule,
@@ -68,8 +66,8 @@ export class EntityDetail implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     if (this.data.id) {
       try {
-        this.entity.load(this.data.id);
-        this.related.load();
+        await this.entity.load(this.data.id);
+        await this.related.load();
       } catch {
         this.dialogRef.close();
       }

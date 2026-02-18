@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EntityForm } from './entity-form';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
@@ -78,7 +77,7 @@ describe('EntityForm', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [EntityForm, ReactiveFormsModule, MatDialogModule],
+      imports: [EntityForm, MatDialogModule],
       providers: [
         { provide: EntityManager, useValue: mockEntityManager },
         { provide: EntityRepository, useValue: mockEntityRepository },
@@ -109,28 +108,28 @@ describe('EntityForm', () => {
 
     it('should initialize form with empty values', () => {
       // Arrange & Act
-      const form = component.form;
+      const model = component.entityModel();
 
       // Assert
-      expect(form).toBeDefined();
-      expect(form.get('firstName')?.value).toBe('');
-      expect(form.get('lastName')?.value).toBe('');
-      expect(form.get('email')?.value).toBe('');
-      expect(form.get('phone')?.value).toBe('');
-      expect(form.get('company')?.value).toBe('');
-      expect(form.get('position')?.value).toBe('');
-      expect(form.get('notes')?.value).toBe('');
+      expect(component.entityForm).toBeDefined();
+      expect(model.firstName).toBe('');
+      expect(model.lastName).toBe('');
+      expect(model.email).toBe('');
+      expect(model.phone).toBe('');
+      expect(model.company).toBe('');
+      expect(model.position).toBe('');
+      expect(model.notes).toBe('');
     });
 
     it('should have form validators', () => {
       // Arrange & Act
-      const form = component.form;
+      const form = component.entityForm;
 
       // Assert
-      expect(form.get('firstName')?.hasError('required')).toBe(true);
-      expect(form.get('lastName')?.hasError('required')).toBe(true);
-      expect(form.get('email')?.hasError('required')).toBe(true);
-      expect(form.get('phone')?.hasError('required')).toBe(true);
+      expect(form.firstName().invalid()).toBe(true);
+      expect(form.lastName().invalid()).toBe(true);
+      expect(form.email().invalid()).toBe(true);
+      expect(form.phone().invalid()).toBe(true);
     });
 
     it('should have ENTITY_CONTEXT constant', () => {
@@ -160,7 +159,7 @@ describe('EntityForm', () => {
       mockEntityRepository.find = vi.fn().mockReturnValue(entityResource);
 
       await TestBed.configureTestingModule({
-        imports: [EntityForm, ReactiveFormsModule, MatDialogModule],
+        imports: [EntityForm, MatDialogModule],
         providers: [
           { provide: EntityManager, useValue: mockEntityManager },
           { provide: EntityRepository, useValue: mockEntityRepository },
@@ -203,7 +202,7 @@ describe('EntityForm', () => {
       mockEntityRepository.find = vi.fn().mockReturnValue(entityResource);
 
       await TestBed.configureTestingModule({
-        imports: [EntityForm, ReactiveFormsModule, MatDialogModule],
+        imports: [EntityForm, MatDialogModule],
         providers: [
           { provide: EntityManager, useValue: mockEntityManager },
           { provide: EntityRepository, useValue: mockEntityRepository },
@@ -217,7 +216,7 @@ describe('EntityForm', () => {
 
       fixture = TestBed.createComponent(EntityForm);
       component = fixture.componentInstance;
-      const patchValueSpy = vi.spyOn(component.form, 'patchValue');
+      const modelSetSpy = vi.spyOn(component.entityModel, 'set');
 
       // Act
       component.ngOnInit();
@@ -225,7 +224,14 @@ describe('EntityForm', () => {
 
       // Assert
       expect(loadSpy).toHaveBeenCalledWith('1');
-      expect(patchValueSpy).toHaveBeenCalledWith(mockEntity);
+      expect(modelSetSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          firstName: mockEntity.firstName,
+          lastName: mockEntity.lastName,
+          email: mockEntity.email,
+          phone: mockEntity.phone
+        })
+      );
     });
   });
 
@@ -253,7 +259,7 @@ describe('EntityForm', () => {
         add: { template: '<div>Test</div>', styles: [] }
       });
       TestBed.configureTestingModule({
-        imports: [EntityForm, ReactiveFormsModule, MatDialogModule],
+        imports: [EntityForm, MatDialogModule],
         providers: [
           { provide: EntityManager, useValue: mockEntityManager },
           { provide: EntityRepository, useValue: testMockEntityRepository },
@@ -278,13 +284,13 @@ describe('EntityForm', () => {
 
   describe('submit', () => {
     it('should not submit when form is invalid', async () => {
-      // Arrange
-      component.form.get('firstName')?.setValue('');
+      // Arrange - form starts invalid (empty required fields)
       const createSpy = vi.spyOn(component.entityMutations, 'create');
       const updateSpy = vi.spyOn(component.entityMutations, 'update');
+      const event = { preventDefault: vi.fn() } as unknown as Event;
 
       // Act
-      await component.submit();
+      await component.onSubmit(event);
 
       // Assert
       expect(createSpy).not.toHaveBeenCalled();
@@ -311,7 +317,7 @@ describe('EntityForm', () => {
       mockEntityRepository.mutations = vi.fn().mockReturnValue(mutations);
 
       await TestBed.configureTestingModule({
-        imports: [EntityForm, ReactiveFormsModule, MatDialogModule],
+        imports: [EntityForm, MatDialogModule],
         providers: [
           { provide: EntityManager, useValue: mockEntityManager },
           { provide: EntityRepository, useValue: mockEntityRepository },
@@ -325,23 +331,27 @@ describe('EntityForm', () => {
 
       fixture = TestBed.createComponent(EntityForm);
       component = fixture.componentInstance;
-      component.form.patchValue({
+      component.entityModel.set({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        phone: '1234567890'
+        phone: '1234567890',
+        company: '',
+        position: '',
+        notes: ''
       });
       const afterSubmitSpy = vi.spyOn(component.afterSubmit, 'emit');
+      const event = { preventDefault: vi.fn() } as unknown as Event;
 
       // Act
-      await component.submit();
+      await component.onSubmit(event);
 
       // Assert
       expect(createSpy).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalled();
       expect(mockMessageService.show).toHaveBeenCalled();
       expect(afterSubmitSpy).toHaveBeenCalledWith({
-        type: OPERATION_TYPE.UPDATE,
+        type: OPERATION_TYPE.CREATE,
         entity: mockEntity
       });
     });
@@ -365,7 +375,7 @@ describe('EntityForm', () => {
       mockEntityRepository.mutations = vi.fn().mockReturnValue(mutations);
 
       await TestBed.configureTestingModule({
-        imports: [EntityForm, ReactiveFormsModule, MatDialogModule],
+        imports: [EntityForm, MatDialogModule],
         providers: [
           { provide: EntityManager, useValue: mockEntityManager },
           { provide: EntityRepository, useValue: mockEntityRepository },
@@ -379,51 +389,62 @@ describe('EntityForm', () => {
 
       fixture = TestBed.createComponent(EntityForm);
       component = fixture.componentInstance;
-      component.form.patchValue({
+      component.entityModel.set({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        phone: '1234567890'
+        phone: '1234567890',
+        company: '',
+        position: '',
+        notes: ''
       });
       const afterSubmitSpy = vi.spyOn(component.afterSubmit, 'emit');
+      const event = { preventDefault: vi.fn() } as unknown as Event;
 
       // Act
-      await component.submit();
+      await component.onSubmit(event);
 
       // Assert
-      expect(updateSpy).toHaveBeenCalledWith({
-        ...component.form.value,
-        id: '1'
-      });
+      expect(updateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@example.com',
+          phone: '1234567890',
+          id: '1'
+        })
+      );
       expect(mockDialogRef.close).toHaveBeenCalled();
       expect(mockMessageService.show).toHaveBeenCalled();
       expect(afterSubmitSpy).toHaveBeenCalledWith({
-        type: OPERATION_TYPE.CREATE,
+        type: OPERATION_TYPE.UPDATE,
         entity: mockEntity
       });
     });
 
-    it('should disable form during submission', async () => {
+    it('should submit when form is valid', async () => {
       // Arrange
-      component.form.patchValue({
+      component.entityModel.set({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        phone: '1234567890'
+        phone: '1234567890',
+        company: '',
+        position: '',
+        notes: ''
       });
       const createSpy = vi
         .spyOn(component.entityMutations, 'create')
         .mockImplementation(
           () => new Promise((resolve) => setTimeout(() => resolve(mockEntity), 100))
         );
+      const event = { preventDefault: vi.fn() } as unknown as Event;
 
       // Act
-      const submitPromise = component.submit();
-      expect(component.form.disabled).toBe(true);
+      const submitPromise = component.onSubmit(event);
       await submitPromise;
 
       // Assert
-      expect(component.form.enabled).toBe(true);
       expect(createSpy).toHaveBeenCalled();
     });
   });

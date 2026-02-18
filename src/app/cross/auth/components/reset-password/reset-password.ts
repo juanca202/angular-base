@@ -1,11 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, signal, inject, OnInit } from '@angular/core';
+import { form, FormField, minLength, required, submit, validate } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +13,12 @@ import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui'
 import { AppManager } from '@/core/services/app-manager';
 import { environment } from '@/environments/environment';
 import { CommonModule } from '@angular/common';
-import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
+
+interface ResetPasswordModel {
+  token: string | null;
+  password: string;
+  confirmPassword: string;
+}
 
 /**
  * Allows users to define a new password after following a reset link that
@@ -33,14 +32,13 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
   selector: 'app-reset-password',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormField,
     MatButtonModule,
     MatDialogModule,
     MatFormField,
     MatInputModule,
     IconComponent,
-    ProgressComponent,
-    ErrorMessagePipe
+    ProgressComponent
   ],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
@@ -49,64 +47,65 @@ import { ErrorMessagePipe } from '@/core/pipes/error-message-pipe';
     class: 'ft-auth ft-auth--form'
   }
 })
-export class ResetPassword {
+export class ResetPassword implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  private readonly formBuilder = inject(FormBuilder);
   private readonly httpClient = inject(HttpClient);
   private readonly messageService = inject(MessageService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   // Properties
-  public readonly form: FormGroup;
+  public readonly resetModel = signal<ResetPasswordModel>({
+    token: null,
+    password: '',
+    confirmPassword: ''
+  });
+  public readonly resetForm = form(this.resetModel, (schemaPath) => {
+    required(schemaPath.password, { message: $localize`Field required` });
+    minLength(schemaPath.password, 8, { message: $localize`Type at least 8 characters` });
+    required(schemaPath.confirmPassword, { message: $localize`Field required` });
+    validate(schemaPath.confirmPassword, ({ value, valueOf }) => {
+      if (value() !== valueOf(schemaPath.password)) {
+        return { kind: 'notEqual', message: this.notEqualMessage };
+      }
+      return null;
+    });
+  });
   public readonly submitting = signal<boolean>(false);
   public readonly notEqualMessage = $localize`New password is not the same`;
   public readonly passwordVisible = signal<boolean>(false);
 
-  constructor() {
-    this.form = this.formBuilder.group({
-      token: this.route.snapshot.queryParamMap.get('token'),
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]]
-    });
+  ngOnInit(): void {
+    const token = this.route.snapshot.queryParamMap.get('token');
+    this.resetModel.update((m) => ({ ...m, token }));
   }
 
-  private confirmPasswordValidator(control: AbstractControl): Record<string, any> | null {
-    let value: Record<string, any> | null = null;
-    if (control && control.parent && control.parent.get('password')?.value !== control.value) {
-      value = { notEqual: true, fieldName: $localize`New password` };
-    }
-    return value;
-  }
-  public async submit(): Promise<void> {
-    if (this.form.valid) {
+  public async onSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    submit(this.resetForm, async () => {
       try {
         this.submitting.set(true);
-        this.form.disable();
+        const { token, password } = this.resetModel();
         await lastValueFrom(
-          this.httpClient.post(environment.auth.resetPasswordUrl, {
-            token: this.form.value.token,
-            password: this.form.value.password
-          })
+          this.httpClient.post(environment.auth.resetPasswordUrl, { token, password })
         );
         this.submitting.set(false);
-        this.form.enable();
         this.router.navigateByUrl('/');
         setTimeout(() => {
           this.messageService.show($localize`Your password was changed successfully.`);
         }, 100);
       } catch (err: unknown) {
         this.submitting.set(false);
-        this.form.enable();
         if (err instanceof HttpErrorResponse) {
           this.messageService.show(err.error?.detail || err.error.message || err.message, {
             type: 'modal'
           });
         }
       }
-    }
+    });
   }
+
   public togglePasswordVisible(): void {
     this.passwordVisible.set(!this.passwordVisible());
   }

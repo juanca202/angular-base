@@ -1,4 +1,4 @@
-# ADR-010: Calidad de Código y Herramientas
+# ADR-011: Calidad de Código y Herramientas
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  

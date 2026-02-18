@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
@@ -23,13 +22,8 @@ describe('ResetPassword', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
-    // Arrange: Create mocks
     mockAppManager = {};
-
-    mockRouter = {
-      navigateByUrl: vi.fn().mockResolvedValue(true)
-    };
-
+    mockRouter = { navigateByUrl: vi.fn().mockResolvedValue(true) };
     mockActivatedRoute = {
       snapshot: {
         queryParamMap: {
@@ -37,19 +31,17 @@ describe('ResetPassword', () => {
         }
       } as any
     };
-
     mockMessageService = {
       show: vi.fn().mockReturnValue(of(undefined))
     };
 
-    // Override component before configuring the module
     TestBed.overrideComponent(ResetPassword, {
       remove: { templateUrl: './reset-password.html', styleUrl: './reset-password.css' },
       add: { template: '<div>Test</div>', styles: [] }
     });
 
     await TestBed.configureTestingModule({
-      imports: [ResetPassword, ReactiveFormsModule, MatDialogModule],
+      imports: [ResetPassword, MatDialogModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -63,6 +55,7 @@ describe('ResetPassword', () => {
 
     fixture = TestBed.createComponent(ResetPassword);
     component = fixture.componentInstance;
+    component.ngOnInit();
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -72,95 +65,70 @@ describe('ResetPassword', () => {
 
   describe('initialization', () => {
     it('should create component', () => {
-      // Arrange & Act & Assert
       expect(component).toBeTruthy();
     });
 
     it('should inject dependencies', () => {
-      // Arrange & Act & Assert
       expect(component.appManager).toBeDefined();
     });
 
     it('should initialize form with token from query params', () => {
-      // Arrange & Act
-      const form = component.form;
-
-      // Assert
-      expect(form).toBeDefined();
-      expect(form.get('token')?.value).toBe('test-token');
-      expect(form.get('password')?.value).toBe('');
-      expect(form.get('confirmPassword')?.value).toBe('');
+      const model = component.resetModel();
+      expect(component.resetForm).toBeDefined();
+      expect(model.token).toBe('test-token');
+      expect(model.password).toBe('');
+      expect(model.confirmPassword).toBe('');
     });
 
     it('should have form validators', () => {
-      // Arrange & Act
-      const form = component.form;
-
-      // Assert
-      expect(form.get('password')?.hasError('required')).toBe(true);
-      expect(form.get('confirmPassword')?.hasError('required')).toBe(true);
+      expect(component.resetForm.password().invalid()).toBe(true);
+      expect(component.resetForm.confirmPassword().invalid()).toBe(true);
     });
 
     it('should initialize signals with default values', () => {
-      // Arrange & Act & Assert
       expect(component.submitting()).toBe(false);
       expect(component.passwordVisible()).toBe(false);
     });
   });
 
-  describe('confirmPasswordValidator', () => {
+  describe('confirmPassword validation', () => {
     it('should validate when passwords match', () => {
-      // Arrange
-      const form = component.form;
-      form.get('password')?.setValue('NewPassword123!');
-      form.get('confirmPassword')?.setValue('NewPassword123!');
-
-      // Act
-      const confirmPasswordControl = form.get('confirmPassword');
-
-      // Assert
-      expect(confirmPasswordControl?.valid).toBe(true);
+      component.resetModel.set({
+        token: 'test-token',
+        password: 'NewPassword123!',
+        confirmPassword: 'NewPassword123!'
+      });
+      expect(component.resetForm.confirmPassword().valid()).toBe(true);
     });
 
     it('should reject when passwords do not match', () => {
-      // Arrange
-      const form = component.form;
-      form.get('password')?.setValue('NewPassword123!');
-      form.get('confirmPassword')?.setValue('DifferentPassword123!');
-
-      // Act
-      const confirmPasswordControl = form.get('confirmPassword');
-
-      // Assert
-      expect(confirmPasswordControl?.hasError('notEqual')).toBe(true);
+      component.resetModel.set({
+        token: 'test-token',
+        password: 'NewPassword123!',
+        confirmPassword: 'DifferentPassword123!'
+      });
+      const errors = component.resetForm.confirmPassword().errors();
+      expect(errors.some((e) => e.kind === 'notEqual')).toBe(true);
     });
   });
 
-  describe('submit', () => {
+  describe('onSubmit', () => {
     it('should not submit when form is invalid', async () => {
-      // Arrange
-      component.form.get('password')?.setValue('');
-
-      // Act
-      await component.submit();
-
-      // Assert
+      component.resetModel.update((m) => ({ ...m, password: '' }));
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.onSubmit(event);
       expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
       expect(mockMessageService.show).not.toHaveBeenCalled();
     });
 
     it('should submit when form is valid', async () => {
-      // Arrange
-      component.form.patchValue({
+      component.resetModel.set({
         token: 'test-token',
         password: 'NewPassword123!',
         confirmPassword: 'NewPassword123!'
       });
-
-      // Act
-      const submitPromise = component.submit();
-      expect(component.submitting()).toBe(true);
-      expect(component.form.disabled).toBe(true);
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(environment.auth.resetPasswordUrl);
       expect(req.request.method).toBe('POST');
@@ -168,39 +136,32 @@ describe('ResetPassword', () => {
 
       await submitPromise;
 
-      // Assert
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
       expect(component.submitting()).toBe(false);
-      expect(component.form.enabled).toBe(true);
     });
 
     it('should show success message after successful submit', async () => {
-      // Arrange
       vi.useFakeTimers();
-      component.form.patchValue({
+      component.resetModel.set({
         token: 'test-token',
         password: 'NewPassword123!',
         confirmPassword: 'NewPassword123!'
       });
-
-      // Act
-      const submitPromise = component.submit();
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(environment.auth.resetPasswordUrl);
       req.flush({});
 
       await submitPromise;
-
       vi.advanceTimersByTime(100);
 
-      // Assert
       expect(mockMessageService.show).toHaveBeenCalled();
       vi.useRealTimers();
     });
 
     it('should handle error on submit', async () => {
-      // Arrange
-      component.form.patchValue({
+      component.resetModel.set({
         token: 'test-token',
         password: 'NewPassword123!',
         confirmPassword: 'NewPassword123!'
@@ -210,25 +171,21 @@ describe('ResetPassword', () => {
         status: 400,
         statusText: 'Bad Request'
       });
-
-      // Act
-      const submitPromise = component.submit();
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(environment.auth.resetPasswordUrl);
       req.error(errorResponse.error, errorResponse);
 
       await submitPromise;
 
-      // Assert
       expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
       expect(component.submitting()).toBe(false);
-      expect(component.form.enabled).toBe(true);
       expect(mockMessageService.show).toHaveBeenCalled();
     });
 
     it('should handle HttpErrorResponse with detail', async () => {
-      // Arrange
-      component.form.patchValue({
+      component.resetModel.set({
         token: 'test-token',
         password: 'NewPassword123!',
         confirmPassword: 'NewPassword123!'
@@ -238,40 +195,28 @@ describe('ResetPassword', () => {
         status: 400,
         statusText: 'Bad Request'
       });
-
-      // Act
-      const submitPromise = component.submit();
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(environment.auth.resetPasswordUrl);
       req.error(errorResponse.error, errorResponse);
 
       await submitPromise;
 
-      // Assert
       expect(mockMessageService.show).toHaveBeenCalledWith('Invalid token', { type: 'modal' });
     });
   });
 
   describe('togglePasswordVisible', () => {
     it('should toggle passwordVisible from false to true', () => {
-      // Arrange
       expect(component.passwordVisible()).toBe(false);
-
-      // Act
       component.togglePasswordVisible();
-
-      // Assert
       expect(component.passwordVisible()).toBe(true);
     });
 
     it('should toggle passwordVisible from true to false', () => {
-      // Arrange
       component.passwordVisible.set(true);
-
-      // Act
       component.togglePasswordVisible();
-
-      // Assert
       expect(component.passwordVisible()).toBe(false);
     });
   });

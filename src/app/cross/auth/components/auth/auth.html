@@ -1,5 +1,5 @@
 @if (mode() === 'signin' || !allowSignup) {
-  <form [formGroup]="signinForm" (ngSubmit)="submitSignin()" class="ft-auth__signin m-auto p-4">
+  <form (submit)="handleSigninSubmit($event)" class="ft-auth__signin m-auto p-4">
     <div class="mb-4" [class.ft-anim-shake]="errorMessage()">
       <div class="ft-logo"></div>
       <div class="mb-4">
@@ -35,15 +35,9 @@
       <div class="grid grid-cols-1 gap-y-2 gap-x-4 mb-2">
         <mat-form-field>
           <mat-label i18n>Username or email</mat-label>
-          <input
-            type="text"
-            matInput
-            formControlName="username"
-            maxlength="50"
-            autocomplete="username"
-          />
-          @if (signinForm.get('username')?.invalid && signinForm.get('username')?.touched) {
-            <mat-error>{{ signinForm.get('username') | errorMessage }}</mat-error>
+          <input type="text" matInput [formField]="signinForm.username" autocomplete="username" />
+          @if (signinForm.username().touched() && signinForm.username().invalid()) {
+            <mat-error>{{ signinForm.username().errors()[0]?.message }}</mat-error>
           }
         </mat-form-field>
         @if (!passwordVisible()) {
@@ -52,37 +46,30 @@
             <input
               type="password"
               matInput
-              formControlName="password"
-              maxlength="16"
+              [formField]="signinForm.password"
               autocomplete="current-password"
             />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye" class="text-2xl"></ft-icon>
+                <ft-icon name="eye" class="text-2xl" />
               </button>
             }
-            @if (signinForm.get('password')?.invalid && signinForm.get('password')?.touched) {
-              <mat-error>{{ signinForm.get('password') | errorMessage }}</mat-error>
+            @if (signinForm.password().touched() && signinForm.password().invalid()) {
+              <mat-error>{{ signinForm.password().errors()[0]?.message }}</mat-error>
             }
           </mat-form-field>
         }
         @if (passwordVisible()) {
           <mat-form-field>
             <mat-label i18n>Password</mat-label>
-            <input
-              type="text"
-              matInput
-              formControlName="password"
-              maxlength="16"
-              autocomplete="off"
-            />
+            <input type="text" matInput [formField]="signinForm.password" autocomplete="off" />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye--strike-through" class="text-2xl"></ft-icon>
+                <ft-icon name="eye--strike-through" class="text-2xl" />
               </button>
             }
-            @if (signinForm.get('password')?.invalid && signinForm.get('password')?.touched) {
-              <mat-error>{{ signinForm.get('password') | errorMessage }}</mat-error>
+            @if (signinForm.password().touched() && signinForm.password().invalid()) {
+              <mat-error>{{ signinForm.password().errors()[0]?.message }}</mat-error>
             }
           </mat-form-field>
         }
@@ -92,7 +79,7 @@
           type="submit"
           matButton="filled"
           color="primary"
-          [disabled]="!signinForm.valid || submitting()"
+          [disabled]="signinForm().invalid() || submitting()"
         >
           @if (!submitting()) {
             <span i18n>Sign in</span>
@@ -116,7 +103,7 @@
   </form>
 }
 @if (mode() === 'signup') {
-  <form [formGroup]="signupForm" (ngSubmit)="submitSignup()" class="ft-auth__signup">
+  <form (submit)="handleSignupSubmit($event)" class="ft-auth__signup">
     <div [class.ft-anim-shake]="errorMessage()" class="mb-4 lg:mb-0">
       <div class="ft-logo"></div>
       <div class="mb-4">
@@ -150,41 +137,23 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 mb-2">
         <mat-form-field>
           <mat-label i18n>First name</mat-label>
-          <input
-            type="text"
-            matInput
-            formControlName="firstName"
-            maxlength="80"
-            autocomplete="firstName"
-          />
-          @if (signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched) {
-            <mat-error>{{ signupForm.get('firstName') | errorMessage }}</mat-error>
+          <input type="text" matInput [formField]="signupForm.firstName" autocomplete="firstName" />
+          @if (signupForm.firstName().touched() && signupForm.firstName().invalid()) {
+            <mat-error>{{ signupForm.firstName().errors()[0]?.message }}</mat-error>
           }
         </mat-form-field>
         <mat-form-field>
           <mat-label i18n>Last name</mat-label>
-          <input
-            type="text"
-            matInput
-            formControlName="lastName"
-            maxlength="80"
-            autocomplete="lastName"
-          />
-          @if (signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched) {
-            <mat-error>{{ signupForm.get('lastName') | errorMessage }}</mat-error>
+          <input type="text" matInput formControlName="lastName" autocomplete="lastName" />
+          @if (signupForm.lastName().touched() && signupForm.lastName().invalid()) {
+            <mat-error>{{ signupForm.lastName().errors()[0]?.message }}</mat-error>
           }
         </mat-form-field>
         <mat-form-field class="col-span-1 sm:col-span-2">
           <mat-label i18n>Email</mat-label>
-          <input
-            type="email"
-            matInput
-            formControlName="email"
-            maxlength="50"
-            autocomplete="email"
-          />
-          @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
-            <mat-error>{{ signupForm.get('email') | errorMessage }}</mat-error>
+          <input type="email" matInput [formField]="signupForm.email" autocomplete="email" />
+          @if (signupForm.email().touched() && signupForm.email().invalid()) {
+            <mat-error>{{ signupForm.email().errors()[0]?.message }}</mat-error>
           }
         </mat-form-field>
         @if (!passwordVisible()) {
@@ -193,37 +162,30 @@
             <input
               type="password"
               matInput
-              formControlName="password"
-              maxlength="16"
+              [formField]="signupForm.password"
               autocomplete="current-password"
             />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye" class="text-2xl"></ft-icon>
+                <ft-icon name="eye" class="text-2xl" />
               </button>
             }
-            @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
-              <mat-error>{{ signupForm.get('password') | errorMessage }}</mat-error>
+            @if (signupForm.password().touched() && signupForm.password().invalid()) {
+              <mat-error>{{ signupForm.password().errors()[0]?.message }}</mat-error>
             }
           </mat-form-field>
         }
         @if (passwordVisible()) {
           <mat-form-field class="col-span-1 sm:col-span-2">
             <mat-label i18n>Password</mat-label>
-            <input
-              type="text"
-              matInput
-              formControlName="password"
-              maxlength="16"
-              autocomplete="off"
-            />
+            <input type="text" matInput [formField]="signupForm.password" autocomplete="off" />
             @if (!submitting()) {
               <button type="button" matSuffix matIconButton (click)="togglePasswordVisible()">
-                <ft-icon name="eye--strike-through" class="text-2xl"></ft-icon>
+                <ft-icon name="eye--strike-through" class="text-2xl" />
               </button>
             }
-            @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
-              <mat-error>{{ signupForm.get('password') | errorMessage }}</mat-error>
+            @if (signupForm.password().touched() && signupForm.password().invalid()) {
+              <mat-error>{{ signupForm.password().errors()[0]?.message }}</mat-error>
             }
           </mat-form-field>
         }
@@ -233,7 +195,7 @@
           type="submit"
           matButton="filled"
           color="primary"
-          [disabled]="!signupForm.valid || submitting()"
+          [disabled]="signupForm().invalid() || submitting()"
           class="min-w-[250px]"
         >
           @if (!submitting()) {

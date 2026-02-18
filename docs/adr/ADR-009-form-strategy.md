@@ -1,4 +1,4 @@
-# ADR-008: Estrategia de Formularios
+# ADR-009: Estrategia de Formularios
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
@@ -134,4 +134,4 @@ Para formularios que usen Angular Material, combinar `FormField` con `mat-form-f
 
 - [Angular Signal Forms (experimental)](https://angular.dev/guide/forms/signal-forms)
 - [Skill: abp-forms](.cursor/skills/abp-forms/SKILL.md)
-- [ADR-009: Layout y Estructura de Formularios](./ADR-009-form-layout-structure.md)
+- [ADR-010: Layout y Estructura de Formularios](./ADR-010-form-layout-structure.md)

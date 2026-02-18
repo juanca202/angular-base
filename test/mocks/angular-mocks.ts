@@ -15,8 +15,12 @@ import { ParamMap } from '@angular/router';
  * Factory function to create a mock Title service
  */
 export function createMockTitle(): Title {
+  let currentTitle = '';
   return {
-    setTitle: vi.fn()
+    setTitle: vi.fn().mockImplementation((t: string) => {
+      currentTitle = t;
+    }),
+    getTitle: vi.fn().mockImplementation(() => currentTitle)
   } as any;
 }
 

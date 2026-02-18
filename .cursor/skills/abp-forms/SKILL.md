@@ -409,7 +409,7 @@ export class Order {
 
 ### Con Formularios Reactivos: pipe errorMessage
 
-Cuando uses **Formularios Reactivos** (patrón alternativo para producción estable) con `mat-form-field`, utiliza el pipe `errorMessage` para centralizar los mensajes de validación. La estrategia principal del proyecto es [Signal Forms (ADR-008)](docs/adr/ADR-008-form-strategy.md).
+Cuando uses **Formularios Reactivos** (patrón alternativo para producción estable) con `mat-form-field`, utiliza el pipe `errorMessage` para centralizar los mensajes de validación. La estrategia principal del proyecto es [Signal Forms (ADR-009)](docs/adr/ADR-009-form-strategy.md).
 
 **Uso del pipe:**
 

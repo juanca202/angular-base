@@ -1,4 +1,4 @@
-# ADR-009: Layout y Estructura de Formularios
+# ADR-010: Layout y Estructura de Formularios
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
@@ -270,12 +270,12 @@ Para formularios responsivos, considera usar los breakpoints responsive de Tailw
 </div>
 ```
 
-## Integración con ADR-008
+## Integración con ADR-009
 
-Este ADR complementa [ADR-008: Estrategia de Formularios](./ADR-008-form-strategy.md):
+Este ADR complementa [ADR-009: Estrategia de Formularios](./ADR-009-form-strategy.md):
 
-- **ADR-008** define el uso de Angular Signal Forms para formularios
-- **ADR-009** define patrones de layout y estructura
+- **ADR-009** define el uso de Angular Signal Forms para formularios
+- **ADR-010** define patrones de layout y estructura
 - Ambos deben usarse juntos para una implementación completa de formularios
 
 Ejemplo combinando ambos ADRs:
@@ -321,4 +321,4 @@ Ejemplo combinando ambos ADRs:
 - [Tailwind CSS Grid](https://tailwindcss.com/docs/grid-template-columns)
 - [CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout)
 - [Angular Material Form Fields](https://material.angular.dev/components/form-field)
-- [ADR-008: Estrategia de Formularios](./ADR-008-form-strategy.md)
+- [ADR-009: Estrategia de Formularios](./ADR-009-form-strategy.md)

@@ -12,13 +12,13 @@ Separar claramente:
 ## Skills disponibles
 
 - [`abp-code-context`](../../.cursor/skills/abp-code-context/SKILL.md): contexto mínimo para generar código alineado con arquitectura, estilo y patrones del proyecto.
-- [`abp-testing-signals`](../../.cursor/skills/abp-testing-signals/SKILL.md): guía operativa para escribir tests de Signals con Vitest sin romper el contrato definido por ADR-014.
+- [`abp-testing-signals`](../../.cursor/skills/abp-testing-signals/SKILL.md): guía operativa para escribir tests de Signals con Vitest sin romper el contrato definido por ADR-015.
 
 ## Mapeo ADR → Skill
 
-- **ADR-001, ADR-002, ADR-003, ADR-004, ADR-005, ADR-006, ADR-007, ADR-008, ADR-009, ADR-010, ADR-011, ADR-012**
+- **ADR-001, ADR-002, ADR-003, ADR-004, ADR-005, ADR-006, ADR-007, ADR-008, ADR-009, ADR-010, ADR-011, ADR-012, ADR-013**
   - Se aplican operacionalmente desde `abp-code-context`.
-- **ADR-014**
+- **ADR-015**
   - Se aplica operacionalmente desde `abp-testing-signals`.
 
 ## Regla de mantenimiento

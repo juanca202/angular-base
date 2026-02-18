@@ -10,9 +10,9 @@ import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 import { UI_OPTIONS } from '@factor_ec/ui';
-import { LANGUAGES } from '@/core/constants/languages';
 import { computed, signal } from '@angular/core';
 import { User } from '@/core/models/user';
+import { LANGUAGES } from '@/features/settings/constants/languages';
 
 describe('Settings', () => {
   // Arrange

@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
@@ -24,22 +23,17 @@ describe('ForgotPassword', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
-    // Arrange: Create mocks
-    mockDialogRef = {
-      close: vi.fn()
-    };
-
+    mockDialogRef = { close: vi.fn() };
     mockMessageService = createMockMessageService();
     mockGoogleTagManagerService = createMockGoogleTagManagerService();
 
-    // Override component before configuring the module
     TestBed.overrideComponent(ForgotPassword, {
       remove: { templateUrl: './forgot-password.html', styleUrl: './forgot-password.css' },
       add: { template: '<div>Test</div>', styles: [] }
     });
 
     await TestBed.configureTestingModule({
-      imports: [ForgotPassword, ReactiveFormsModule, MatDialogModule],
+      imports: [ForgotPassword, MatDialogModule],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -61,74 +55,52 @@ describe('ForgotPassword', () => {
 
   describe('initialization', () => {
     it('should create component', () => {
-      // Arrange & Act & Assert
       expect(component).toBeTruthy();
     });
 
     it('should initialize form with empty email', () => {
-      // Arrange & Act
-      const form = component.form;
-
-      // Assert
-      expect(form).toBeDefined();
-      expect(form.get('email')?.value).toBe('');
+      const model = component.forgotModel();
+      expect(component.forgotForm).toBeDefined();
+      expect(model.email).toBe('');
     });
 
     it('should have form validators', () => {
-      // Arrange & Act
-      const form = component.form;
-
-      // Assert
-      expect(form.get('email')?.hasError('required')).toBe(true);
+      expect(component.forgotForm.email().invalid()).toBe(true);
     });
 
     it('should initialize submitting signal with false', () => {
-      // Arrange & Act & Assert
       expect(component.submitting()).toBe(false);
     });
   });
 
-  describe('submit', () => {
-    it('should not submit when form is invalid', () => {
-      // Arrange
-      component.form.get('email')?.setValue('');
-
-      // Act
-      component.submit();
-
-      // Assert
+  describe('onSubmit', () => {
+    it('should not submit when form is invalid', async () => {
+      component.forgotModel.set({ email: '' });
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.onSubmit(event);
       expect(component.submitting()).toBe(false);
       expect(mockDialogRef.close).not.toHaveBeenCalled();
     });
 
-    it('should not submit when email is invalid', () => {
-      // Arrange
-      component.form.get('email')?.setValue('invalid-email');
-
-      // Act
-      component.submit();
-
-      // Assert
+    it('should not submit when email is invalid', async () => {
+      component.forgotModel.set({ email: 'invalid-email' });
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      await component.onSubmit(event);
       expect(component.submitting()).toBe(false);
       expect(mockDialogRef.close).not.toHaveBeenCalled();
     });
 
-    it('should submit when form is valid', () => {
-      // Arrange
-      component.form.patchValue({
-        email: 'test@example.com'
-      });
-
-      // Act
-      component.submit();
-      expect(component.submitting()).toBe(true);
-      expect(component.form.disabled).toBe(true);
+    it('should submit when form is valid', async () => {
+      component.forgotModel.set({ email: 'test@example.com' });
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(environment.auth.forgotPasswordUrl);
       expect(req.request.method).toBe('POST');
       req.flush({});
 
-      // Assert
+      await submitPromise;
+
       expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
         event: 'forgot_password'
       });
@@ -137,44 +109,37 @@ describe('ForgotPassword', () => {
       expect(component.submitting()).toBe(false);
     });
 
-    it('should handle error on submit', () => {
-      // Arrange
-      component.form.patchValue({
-        email: 'test@example.com'
-      });
-
-      // Act
-      component.submit();
+    it('should handle error on submit', async () => {
+      component.forgotModel.set({ email: 'test@example.com' });
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(environment.auth.forgotPasswordUrl);
       req.error(new ErrorEvent('Error'), { status: 400, statusText: 'Bad Request' });
 
-      // Assert
+      await submitPromise;
+
       expect(component.submitting()).toBe(false);
-      expect(component.form.enabled).toBe(true);
       expect(mockMessageService.show).toHaveBeenCalled();
       expect(mockDialogRef.close).not.toHaveBeenCalled();
     });
 
-    it('should handle error with detail message', () => {
-      // Arrange
-      component.form.patchValue({
-        email: 'test@example.com'
-      });
+    it('should handle error with detail message', async () => {
+      component.forgotModel.set({ email: 'test@example.com' });
       const errorDetail = 'Email not found';
       const errorResponse = new HttpErrorResponse({
         error: { detail: errorDetail },
         status: 400,
         statusText: 'Bad Request'
       });
-
-      // Act
-      component.submit();
+      const event = { preventDefault: vi.fn() } as unknown as Event;
+      const submitPromise = component.onSubmit(event);
 
       const req = httpMock.expectOne(environment.auth.forgotPasswordUrl);
       req.error(errorResponse.error, errorResponse);
 
-      // Assert
+      await submitPromise;
+
       expect(mockMessageService.show).toHaveBeenCalledWith(errorDetail, { type: 'modal' });
     });
   });

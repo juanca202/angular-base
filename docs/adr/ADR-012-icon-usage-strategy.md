@@ -1,4 +1,4 @@
-# ADR-011: Estrategia de Uso de Iconos
+# ADR-012: Estrategia de Uso de Iconos
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  

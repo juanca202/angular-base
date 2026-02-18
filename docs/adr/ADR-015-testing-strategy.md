@@ -1,4 +1,4 @@
-# ADR-014: Estrategia de Testing
+# ADR-015: Estrategia de Testing
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
