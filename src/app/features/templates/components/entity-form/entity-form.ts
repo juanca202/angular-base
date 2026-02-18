@@ -47,7 +47,7 @@ export class EntityForm implements OnInit, OnDestroy {
   // Dependency injection
   public readonly entityManager = inject(EntityManager);
   private readonly entityRepository = inject(EntityRepository);
-  public readonly data = inject(MAT_DIALOG_DATA);
+  public readonly data = inject<{ id: string }>(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);
   public readonly layoutManager = inject(LayoutManager);
   private readonly dialogRef = inject(MatDialogRef<EntityForm>);
@@ -96,11 +96,11 @@ export class EntityForm implements OnInit, OnDestroy {
         if (this.data?.id) {
           // Update existing entity
           entity = await this.entityMutations.update({ ...formData, id: this.data.id });
-          type = OPERATION_TYPE.CREATE;
+          type = OPERATION_TYPE.UPDATE;
         } else {
           // Create new entity
           entity = await this.entityMutations.create(formData);
-          type = OPERATION_TYPE.UPDATE;
+          type = OPERATION_TYPE.CREATE;
         }
         // Close dialog on success
         this.dialogRef.close();

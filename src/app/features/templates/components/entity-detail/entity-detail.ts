@@ -45,7 +45,7 @@ export class EntityDetail implements OnInit, OnDestroy {
   // Dependency injection
   public readonly entityManager = inject(EntityManager);
   private readonly entityRepository = inject(EntityRepository);
-  public readonly data = inject(MAT_DIALOG_DATA);
+  public readonly data = inject<{ id: string }>(MAT_DIALOG_DATA);
   private readonly dialogRef = inject(MatDialogRef);
   public readonly layoutManager = inject(LayoutManager);
 
@@ -68,7 +68,8 @@ export class EntityDetail implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     if (this.data.id) {
       try {
-        await Promise.all([this.entity.load(this.data.id), this.related.load()]);
+        this.entity.load(this.data.id);
+        this.related.load();
       } catch {
         this.dialogRef.close();
       }

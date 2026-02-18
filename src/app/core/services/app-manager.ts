@@ -10,7 +10,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { StorageService, Language } from '@factor_ec/utils';
-import { LANGUAGES } from '@/core/constants/languages';
+import { LANGUAGES } from '@/features/settings/constants/languages';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';

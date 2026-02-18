@@ -24,7 +24,7 @@ import { AppManager } from '@/core/services/app-manager';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
-import { LANGUAGES } from '@/core/constants/languages';
+import { LANGUAGES } from '@/features/settings/constants/languages';
 import { environment } from '@/environments/environment';
 import { versionInfo } from '@/version-info';
 

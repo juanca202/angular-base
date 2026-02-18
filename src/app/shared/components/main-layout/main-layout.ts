@@ -7,7 +7,7 @@ import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
-import { MenuItem } from '@/core/models/menu-item';
+import { MenuItem } from '@/shared/models/menu-item';
 
 /**
  * Provides the primary shell layout, handling navigation links and user profile
