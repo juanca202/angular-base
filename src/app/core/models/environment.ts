@@ -1,3 +1,5 @@
+import { Language } from '@factor_ec/utils';
+
 /**
  * Environment variables model
  */
@@ -5,6 +7,7 @@ export interface Environment {
   appId: string;
   appName: string;
   defaultLocale: string;
+  languages: Language[];
   // Authentication
   auth: {
     signupUrl: string;

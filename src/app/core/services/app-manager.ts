@@ -10,7 +10,6 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { StorageService, Language } from '@factor_ec/utils';
-import { LANGUAGES } from '@/features/settings/constants/languages';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
@@ -49,7 +48,7 @@ export class AppManager {
   private installPrompt: any = null; // BeforeInstallPromptEvent;
   public readonly updateStatus = signal<string | null>('done');
   private readonly defaultLocale = 'en';
-  public readonly languages = signal<Language[]>(LANGUAGES);
+  public readonly languages = signal<Language[]>(environment.languages);
 
   // Storage keys
   private readonly clientKey = `${environment.sessionPrefix}_cid`;

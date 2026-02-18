@@ -4,6 +4,10 @@ export const environment: Environment = {
   appId: 'abp',
   appName: 'ABP',
   defaultLocale: 'en',
+  languages: [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español' }
+  ],
   auth: {
     signupUrl: 'http://localhost:8000/authentication_signup',
     signinUrl: 'http://localhost:8000/authentication_token',

@@ -12,7 +12,7 @@ import { GoogleTagManagerService } from '@factor_ec/utils';
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { computed, signal } from '@angular/core';
 import { User } from '@/core/models/user';
-import { LANGUAGES } from '@/features/settings/constants/languages';
+import { environment } from '@/environments/environment';
 
 describe('Settings', () => {
   // Arrange
@@ -32,7 +32,7 @@ describe('Settings', () => {
     paramMapSubject = new Subject<ParamMap>();
     mockAppManager = {
       checkForUpdates: vi.fn(),
-      languages: signal(LANGUAGES),
+      languages: signal(environment.languages),
       getLocale: vi.fn().mockReturnValue('en'),
       updateStatus: signal<string | null>('done')
     };
@@ -105,14 +105,14 @@ describe('Settings', () => {
       const language = component.language();
 
       // Assert
-      expect(language).toEqual(LANGUAGES[0]);
+      expect(language).toEqual(environment.languages[0]);
     });
 
     it('should set current language from AppManager if available', () => {
       // Arrange & Act
       // Component is already created with getLocale returning 'en' in beforeEach
       const language = component.language();
-      const currentLanguage = LANGUAGES.find((l) => l.code === 'en');
+      const currentLanguage = environment.languages.find((l) => l.code === 'en');
 
       // Assert
       expect(mockAppManager.getLocale).toHaveBeenCalled();

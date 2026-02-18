@@ -24,7 +24,6 @@ import { AppManager } from '@/core/services/app-manager';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from '@/core/services/session';
-import { LANGUAGES } from '@/features/settings/constants/languages';
 import { environment } from '@/environments/environment';
 import { versionInfo } from '@/version-info';
 
@@ -69,7 +68,7 @@ export class Settings implements OnInit {
   // Properties
   public readonly appName = environment.appName;
   public readonly appVersion = versionInfo.git.raw;
-  public readonly language = signal<Language>(LANGUAGES[0]);
+  public readonly language = signal<Language>(environment.languages[0]);
   public readonly subscribing = signal<boolean>(false);
   public readonly supportButton =
     viewChild.required<ElementRef<HTMLButtonElement>>('supportButton');

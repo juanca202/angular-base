@@ -9,8 +9,8 @@ import { AppManager } from './app-manager';
 import { AuthProvider } from '@/core/models/auth.provider';
 import { Session } from './session';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
-import { LANGUAGES } from '@/features/settings/constants/languages';
-import { signal, computed, EventEmitter } from '@angular/core';
+import { computed, EventEmitter } from '@angular/core';
+import { environment } from '@/environments/environment';
 
 describe('AppManager', () => {
   let appManager: AppManager;
@@ -100,7 +100,7 @@ describe('AppManager', () => {
       const languages = appManager.languages();
 
       // Assert
-      expect(languages).toEqual(LANGUAGES);
+      expect(languages).toEqual(environment.languages);
     });
 
     it('should have updateStatus signal', () => {
