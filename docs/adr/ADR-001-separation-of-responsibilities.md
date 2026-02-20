@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 19/02/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -110,11 +110,16 @@ export class PaymentsComponent {
 - Las features pueden implementar estos contracts y proporcionarlos mediante providers
 - Los contracts deben estar en `shared/contracts/{dominio}/` organizados por dominio
 
-### Capa Cross (`src/app/cross/{dominio}/`)
+### Capa Cross / Auth (`projects/auth-core`, `projects/auth-msal`)
 
-Contiene capacidades de dominio transversales que aplican a múltiples features y encapsulan reglas de negocio, orquestaciones o integraciones que no pertenecen a Shared porque no son utilidades de UI:
+Contiene capacidades de dominio transversales que aplican a múltiples features. La autenticación reside en librerías de proyecto:
 
-- **Services:** Servicios de negocio transversales (ej: `AuthService`, `SessionService`)
+- **auth-core:** `AuthProvider`, `User`, guards, interceptors
+- **auth-msal:** `AuthService` (implementación MSAL de `AuthProvider`)
+
+Otras capacidades transversales pueden vivir en `src/app/cross/{dominio}/`:
+
+- **Services:** Servicios de negocio transversales (ej: `Session` en Core)
 - **Repositories:** Acceso a API o almacenamiento reutilizado por diferentes features
 - **Managers:** Coordinadores de flujos compartidos (inicio de sesión, inicialización de analytics)
 - **Models:** Modelos de dominio reutilizados más allá de la infraestructura básica
@@ -160,8 +165,8 @@ src/
     │   ├── services/
     │   │   ├── logger.service.ts
     │   │   └── notification.service.ts
-    │   ├── models/
-    │   │   └── user.model.ts
+    │       ├── models/
+    │   └── (User y AuthProvider en projects/auth-core)
     │   └── utils/
     │       └── date.util.ts
     │
@@ -195,14 +200,9 @@ src/
     │       │   └── sale.model.ts
     │       └── sales-routes.ts
     │
-    └── cross/
-        └── auth/
-            ├── services/
-            │   └── auth.service.ts
-            ├── repositories/
-            │   └── session.repository.ts
-            └── policies/
-                └── auth-policy.ts
+    └── projects/
+        ├── auth-core/     # AuthProvider, User, guards, interceptors
+        └── auth-msal/     # AuthService (implementación MSAL)
 ```
 
 ## Reglas de Dependencias
@@ -214,7 +214,7 @@ src/
   │  │  │ puede usar
   ▼  ▼  ▼
 ┌─────────┐    ┌─────────┐
-│  Shared │    │  Cross  │
+│  Shared │    │  Auth   │
 └────┬────┘    └────┬────┘
      │  puede usar        │ puede usar
      ▼                    ▼
@@ -230,7 +230,7 @@ src/
 ```typescript
 // sales/services/sales.service.ts
 import { Logger } from '@/core/services/logger.service';
-import { User } from '@/core/models/user.model';
+import { User } from 'auth-core';
 ```
 
 ✅ **Feature → Shared:** Permitido
@@ -241,11 +241,11 @@ import { ButtonComponent } from '@/shared/components/button/button.component';
 import { CurrencyPipe } from '@/shared/pipes/currency.pipe';
 ```
 
-✅ **Feature → Cross:** Permitido
+✅ **Feature → Auth (auth-core):** Permitido
 
 ```typescript
 // sales/services/sales-auth.facade.ts
-import { AuthService } from '@/cross/auth/services/auth.service';
+import { AuthProvider } from 'auth-core';
 ```
 
 ✅ **Feature → Shared Contracts (para comunicación entre features):** Permitido
@@ -286,17 +286,17 @@ export const salesRoutes: Routes = [
 import { NotificationService } from '@/core/services/notification.service';
 ```
 
-✅ **Shared → Cross:** Permitido
+✅ **Shared → Core (Session):** Permitido
 
 ```typescript
 // shared/components/modal/modal.component.ts
-import { SessionService } from '@/cross/auth/services/session.service';
+import { Session } from '@/core/services/session';
 ```
 
-✅ **Cross → Core:** Permitido
+✅ **Auth (auth-core/auth-msal) → Core:** Permitido
 
 ```typescript
-// cross/auth/services/auth.service.ts
+// projects/auth-core o auth-msal
 import { NotificationService } from '@/core/services/notification.service';
 ```
 
@@ -316,11 +316,11 @@ import { ButtonComponent } from '@/shared/components/button/button.component';
 import { SalesService } from '@/features/sales/services/sales.service';
 ```
 
-❌ **Core → Cross:** No permitido
+❌ **Core → Auth:** No permitido
 
 ```typescript
 // ❌ NO HACER: core/interceptors/http-error.interceptor.ts
-import { AuthService } from '@/cross/auth/services/auth.service';
+import { AuthProvider } from 'auth-core';
 ```
 
 ❌ **Shared → Feature:** No permitido
@@ -330,12 +330,12 @@ import { AuthService } from '@/cross/auth/services/auth.service';
 import { SalesService } from '@/features/sales/services/sales.service';
 ```
 
-❌ **Cross → Shared o Feature:** No permitido
+❌ **Auth → Shared o Feature:** No permitido
 
 ```typescript
-// ❌ NO HACER: cross/auth/services/auth.service.ts
+// ❌ NO HACER: projects/auth-core o auth-msal
 import { ButtonComponent } from '@/shared/components/button/button.component';
-// ❌ NO HACER: cross/auth/policies/auth-policy.ts
+// ❌ NO HACER: projects/auth-core
 import { SalesService } from '@/features/sales/services/sales.service';
 ```
 
@@ -412,3 +412,9 @@ export const routes: Routes = [
 ## Referencias
 
 - [Angular Style Guide - Estructura de Archivos](https://angular.dev/style-guide#file-structure)
+- [Índice de ADRs](./README.md)
+- [ADR-002: Adopción de la Guía de Estilo Oficial de Angular](./ADR-002-angular-style-guide.md)
+- [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006-repository-pattern.md)
+- [ADR-007: Patrón Manager para Coordinación de Flujos de Negocio](./ADR-007-manager-pattern.md)
+- [ADR-008: Patrón de Mappers para Transformación de Datos](./ADR-008-mapper-pattern.md)
+- [ADR-011: Calidad de Código y Herramientas](./ADR-011-code-quality-tooling.md)

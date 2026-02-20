@@ -14,16 +14,16 @@
         <div class="ft-list__item">
           <div class="flex gap-4 items-center">
             <ft-avatar
-              [label]="session.user()?.firstName + ' ' + session.user()?.lastName"
-              [src]="session.user()?.picture"
+              [label]="authProvider.getUser()?.firstName + ' ' + authProvider.getUser()?.lastName"
+              [src]="authProvider.getUser()?.picture"
             />
             <div>
               <div class="ft-item__label">
-                {{ session.user()?.firstName }}
-                {{ session.user()?.lastName }}
+                {{ authProvider.getUser()?.firstName }}
+                {{ authProvider.getUser()?.lastName }}
               </div>
               <div class="text-sm text-gray-400">
-                {{ session.user()?.email }}
+                {{ authProvider.getUser()?.email }}
               </div>
             </div>
           </div>
@@ -40,7 +40,7 @@
           </div>
         </div>
       </a>
-      <button type="button" matButton class="ft-list__item" (click)="authService.changePassword()">
+      <button type="button" matButton class="ft-list__item" (click)="authManager.changePassword()">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="password-edit" class="text-2xl" />
@@ -74,7 +74,7 @@
         </div>
       </button>
       <hr class="my-2" />
-      <button type="button" matButton class="ft-list__item" (click)="authService.logout()">
+      <button type="button" matButton class="ft-list__item" (click)="authProvider.logout()">
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">
             <ft-icon name="sign-out" class="text-2xl" />
@@ -86,7 +86,7 @@
         type="button"
         matButton
         class="ft-list__item text-red-500"
-        (click)="authService.confirmDeleteUser()"
+        (click)="authManager.confirmDeleteUser()"
       >
         <div class="flex gap-4 items-center">
           <div class="ft-thumbnail">

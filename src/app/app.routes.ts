@@ -16,10 +16,6 @@ export const routes: Routes = [
     path: '',
     loadChildren: () => import('./features/settings/settings-routes').then((m) => m.settingsRoutes)
   },
-  {
-    path: '',
-    loadChildren: () => import('./cross/auth/auth-routes').then((m) => m.authRoutes)
-  },
   { path: 'error/:code', component: Error, title: $localize`Error` },
   { path: '**', component: Error, data: { code: 404 } }
 ];

@@ -14,7 +14,7 @@ import { StorageService, Language } from '@factor_ec/utils';
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
 import { Session } from '@/core/services/session';
-import { AuthProvider } from '@/core/models/auth.provider';
+import { AuthProvider } from 'auth-core';
 import { NotificationEvent, notificationEvents } from '@/core/utils/notification';
 import { MessageService } from '@factor_ec/ui';
 
@@ -100,8 +100,8 @@ export class AppManager {
     const locale = await this.setLocale();
     console.log('Current locale: ', locale);
     // If authenticated, initialize with local data
-    if (this.session.isLoggedIn()) {
-      this.authProvider.getSettings();
+    if (this.authProvider.isLoggedIn()) {
+      this.session.getSettings();
     }
 
     // Log the time taken to initialize the app

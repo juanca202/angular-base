@@ -588,3 +588,6 @@ describe('CustomerRepository', () => {
 
 - [Angular HttpClient](https://angular.dev/api/common/http/HttpClient)
 - [Documentación de Signals](https://angular.dev/guide/signals)
+- [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
+- [ADR-007: Patrón Manager para Coordinación de Flujos de Negocio](./ADR-007-manager-pattern.md)
+- [ADR-008: Patrón de Mappers para Transformación de Datos](./ADR-008-mapper-pattern.md)

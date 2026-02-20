@@ -17,15 +17,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 import { IconComponent, AvatarComponent, ProgressComponent } from '@factor_ec/ui';
 import { Language } from '@factor_ec/utils';
-// import * as Sentry from '@sentry/angular';
 
 import { AppManager } from '@/core/services/app-manager';
 
 import { LayoutManager } from '@/core/services/layout-manager';
-import { AuthProvider } from '@/core/models/auth.provider';
+import { AuthProvider } from 'auth-core';
 import { Session } from '@/core/services/session';
 import { environment } from '@/environments/environment';
 import { versionInfo } from '@/version-info';
+import { AuthManager } from '../../managers/auth-manager';
 
 /**
  * Renders the settings hub, exposing contextual actions such as sharing,
@@ -58,7 +58,8 @@ import { versionInfo } from '@/version-info';
 export class Settings implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  public readonly authService = inject(AuthProvider);
+  public readonly authManager = inject(AuthManager);
+  public readonly authProvider = inject(AuthProvider);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   public readonly layoutManager = inject(LayoutManager);
   private readonly route = inject(ActivatedRoute);
@@ -89,7 +90,7 @@ export class Settings implements OnInit {
       if (action) {
         switch (paramMap.get('action')) {
           case 'delete-data':
-            this.authService.confirmDeleteUser();
+            this.authManager.confirmDeleteUser();
             break;
           default:
             this.router.navigateByUrl('error/404', {

@@ -52,7 +52,7 @@ interface LoginData {
       @if (loginForm.email().touched() && loginForm.email().invalid()) {
         <p class="error">{{ loginForm.email().errors()[0].message }}</p>
       }
-      
+
       <label>
         Contraseña
         <input type="password" [formField]="loginForm.password" />
@@ -60,20 +60,20 @@ interface LoginData {
       @if (loginForm.password().touched() && loginForm.password().invalid()) {
         <p class="error">{{ loginForm.password().errors()[0].message }}</p>
       }
-      
+
       <button type="submit" [disabled]="loginForm().invalid()">Iniciar sesión</button>
     </form>
-  `,
+  `
 })
 export class Login {
   loginModel = signal<LoginData>({ email: '', password: '' });
-  
+
   loginForm = form(this.loginModel, (schemaPath) => {
     required(schemaPath.email, { message: 'El email es obligatorio' });
     email(schemaPath.email, { message: 'Introduce una dirección de email válida' });
     required(schemaPath.password, { message: 'La contraseña es obligatoria' });
   });
-  
+
   onSubmit(event: Event) {
     event.preventDefault();
     if (this.loginForm().valid()) {
@@ -89,11 +89,11 @@ export class Login {
 <input [formField]="form.email" />
 
 @if (form.email().touched() && form.email().invalid()) {
-  <ul class="errors">
-    @for (error of form.email().errors(); track error) {
-      <li>{{ error.message }}</li>
-    }
-  </ul>
+<ul class="errors">
+  @for (error of form.email().errors(); track error) {
+  <li>{{ error.message }}</li>
+  }
+</ul>
 }
 ```
 
@@ -106,7 +106,7 @@ Para formularios que usen Angular Material, combinar `FormField` con `mat-form-f
   <mat-label i18n>Email</mat-label>
   <input matInput type="email" [formField]="form.email" />
   @if (form.email().touched() && form.email().invalid()) {
-    <mat-error>{{ form.email().errors()[0].message }}</mat-error>
+  <mat-error>{{ form.email().errors()[0].message }}</mat-error>
   }
 </mat-form-field>
 ```
@@ -133,5 +133,5 @@ Para formularios que usen Angular Material, combinar `FormField` con `mat-form-f
 ## Referencias
 
 - [Angular Signal Forms (experimental)](https://angular.dev/guide/forms/signal-forms)
-- [Skill: abp-forms](.cursor/skills/abp-forms/SKILL.md)
+- [Skill: abp-forms](../../.cursor/skills/abp-forms/SKILL.md)
 - [ADR-010: Layout y Estructura de Formularios](./ADR-010-form-layout-structure.md)

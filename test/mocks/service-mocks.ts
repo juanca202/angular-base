@@ -6,16 +6,14 @@ import { vi } from 'vitest';
 import { signal, computed } from '@angular/core';
 import { of } from 'rxjs';
 import { AppManager } from '@/core/services/app-manager';
-import { AuthService } from '@/cross/auth/auth-service';
-import { AuthProvider } from '@/core/models/auth.provider';
+import { AuthProvider } from 'auth-core';
 import { Session } from '@/core/services/session';
-import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
+import { GoogleTagManagerService } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { SwUpdate } from '@angular/service-worker';
-import { Settings } from '@/core/models/settings';
 
 /**
  * Crea un mock de AppManager
@@ -31,17 +29,13 @@ export function createMockAppManager(overrides?: Partial<AppManager>): Partial<A
 /**
  * Crea un mock de AuthService
  */
-export function createMockAuthService(overrides?: Partial<AuthService>): Partial<AuthService> {
+export function createMockAuthService(overrides?: Partial<AuthProvider>): Partial<AuthProvider> {
   return {
-    connect: vi.fn().mockResolvedValue(true),
-    signin: vi.fn().mockResolvedValue(true),
-    signup: vi.fn().mockResolvedValue({}),
-    getSettings: vi.fn().mockResolvedValue({
-      language: 'en',
-      subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
-      environment: 'dev',
-      onboarding: false
-    } as Settings),
+    getUser: vi.fn().mockReturnValue(null),
+    login: vi.fn().mockResolvedValue(true),
+    logout: vi.fn().mockResolvedValue(true),
+    isLoggedIn: vi.fn().mockReturnValue(false),
+    signup: vi.fn().mockResolvedValue(undefined),
     ...overrides
   };
 }
@@ -51,19 +45,11 @@ export function createMockAuthService(overrides?: Partial<AuthService>): Partial
  */
 export function createMockAuthProvider(overrides?: Partial<AuthProvider>): Partial<AuthProvider> {
   return {
-    logout: vi.fn().mockReturnValue(true),
-    changePassword: vi.fn(),
-    confirmDeleteUser: vi.fn(),
-    getSettings: vi.fn().mockResolvedValue({
-      language: 'en',
-      subscription: {
-        code: 'premium',
-        name: 'Premium',
-        plan: { code: 'premium', name: 'Premium Plan' }
-      },
-      environment: 'production',
-      onboarding: false
-    } as Settings),
+    getUser: vi.fn().mockReturnValue(null),
+    login: vi.fn().mockResolvedValue(true),
+    logout: vi.fn().mockResolvedValue(true),
+    isLoggedIn: vi.fn().mockReturnValue(false),
+    signup: vi.fn().mockResolvedValue(undefined),
     ...overrides
   };
 }
@@ -73,7 +59,14 @@ export function createMockAuthProvider(overrides?: Partial<AuthProvider>): Parti
  */
 export function createMockSession(overrides?: Partial<Session>): Partial<Session> {
   return {
-    isLoggedIn: computed(() => false),
+    params: computed(() => null),
+    settings: computed(() => null),
+    getSettings: vi.fn().mockResolvedValue(null),
+    clearSettings: vi.fn(),
+    setParam: vi.fn(),
+    setParams: vi.fn(),
+    clearParams: vi.fn(),
+    clearAll: vi.fn(),
     ...overrides
   };
 }

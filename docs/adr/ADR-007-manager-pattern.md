@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 19/02/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -75,24 +75,27 @@ export class RequirementItemManager {
 }
 ```
 
-#### Managers en Cross (`src/app/cross/{dominio}/managers/`)
+#### Managers en Cross / Auth (`src/app/features/settings/managers/` o `projects/auth-*`)
 
 **Propósito:** Coordinadores de flujos compartidos que aplican a múltiples features.
 
 **Características:**
 
-- Coordinan flujos transversales (inicio de sesión, inicialización de analytics, etc.)
+- Coordinan flujos transversales (inicio de sesión, cambio de contraseña, eliminación de usuario, etc.)
 - Son reutilizados por múltiples features
-- Solo pueden depender de Core (no de Features ni Shared)
+- Inyectan `AuthProvider` desde `auth-core` para operaciones de autenticación
 - Encapsulan reglas de negocio transversales
 
 **Ejemplo:**
 
 ```typescript
-// src/app/cross/auth/managers/auth-manager.ts
+// src/app/features/settings/managers/auth-manager.ts
+import { AuthProvider } from 'auth-core';
+
 @Injectable({ providedIn: 'root' })
 export class AuthManager {
-  // Coordina el flujo completo de autenticación
+  private readonly authProvider = inject(AuthProvider);
+  // Coordina flujos de autenticación (confirmDeleteUser, etc.)
 }
 ```
 
@@ -104,7 +107,7 @@ export class AuthManager {
 
 - Coordinan inicialización y configuración global
 - Gestionan aspectos técnicos transversales (PWA, analytics, localización)
-- No dependen de Features, Shared ni Cross
+- No dependen de Features, Shared ni Auth
 - Singleton global de la aplicación
 
 **Ejemplo:**
@@ -176,21 +179,21 @@ export class EntityManager {
 
 **Managers en Features pueden:**
 
-- ✅ Depender de Core, Shared y Cross
+- ✅ Depender de Core, Shared y Auth (auth-core)
 - ✅ Depender de Repositories, Services y componentes de la misma feature
 - ✅ Depender de Models de la misma feature
 - ❌ Depender directamente de otras Features (usar contracts en `shared/contracts/`)
 
-**Managers en Cross pueden:**
+**Managers en Cross/Auth pueden:**
 
-- ✅ Depender de Core
-- ✅ Depender de otros Managers, Services y Repositories de Cross
+- ✅ Depender de Core y auth-core
+- ✅ Depender de otros Managers, Services y Repositories del mismo dominio
 - ❌ Depender de Features o Shared
 
 **Managers en Core pueden:**
 
 - ✅ Depender solo de otros servicios de Core
-- ❌ Depender de Features, Shared o Cross
+- ❌ Depender de Features, Shared o Auth
 
 ## Implementación
 
@@ -353,6 +356,8 @@ export class EntityManager {
 
 ```typescript
 // src/app/core/services/app-manager.ts
+import { AuthProvider } from 'auth-core';
+
 /**
  * Coordinates application-wide concerns such as localization, PWA updates,
  * push messaging, and analytics initialization.
@@ -563,9 +568,9 @@ export class OrderManager {
 }
 ```
 
-### Managers y Diálogos (ADR-007)
+### Managers y Diálogos (ADR-013)
 
-Según ADR-007, los diálogos **deben abrirse exclusivamente desde Managers**, no desde componentes:
+Los diálogos se definen en [ADR-013](./ADR-013-dialog-master-detail.md). Según este ADR, los diálogos **deben abrirse exclusivamente desde Managers**, no desde componentes:
 
 ```typescript
 // ✅ Correcto - Manager abre diálogo
@@ -643,5 +648,6 @@ export class RequirementListComponent {
 ## Referencias
 
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
-- [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)
 - [ADR-006: Patrón de Repositorio para Servicios REST](./ADR-006-repository-pattern.md)
+- [ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle](./ADR-013-dialog-master-detail.md)
+- [ADR-015: Estrategia de Testing](./ADR-015-testing-strategy.md)

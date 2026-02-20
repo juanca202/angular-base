@@ -1,0 +1,15 @@
+{
+  "name": "auth-msal",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@azure/msal-angular": "^5.0.0",
+    "@azure/msal-browser": "^5.2.0",
+    "auth-core": "^0.0.1"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

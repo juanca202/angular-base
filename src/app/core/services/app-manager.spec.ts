@@ -5,12 +5,21 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SwUpdate } from '@angular/service-worker';
+import { EventEmitter } from '@angular/core';
 import { AppManager } from './app-manager';
-import { AuthProvider } from '@/core/models/auth.provider';
+import { AuthProvider } from 'auth-core';
 import { Session } from './session';
 import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
-import { computed, EventEmitter } from '@angular/core';
 import { environment } from '@/environments/environment';
+import {
+  createMockAuthProvider,
+  createMockSession,
+  createMockGoogleTagManagerService,
+  createMockLocation,
+  createMockMatSnackBar,
+  createMockSwUpdate
+} from '@/test/mocks/service-mocks';
+import { createMockStorageService, createMockRouter } from '@/test/mocks/angular-mocks';
 
 describe('AppManager', () => {
   let appManager: AppManager;
@@ -25,56 +34,14 @@ describe('AppManager', () => {
 
   beforeEach(() => {
     // Arrange: Create mocks
-    mockAuthProvider = {
-      getSettings: vi.fn().mockResolvedValue({
-        language: 'en',
-        subscription: {
-          code: 'premium',
-          name: 'Premium',
-          plan: { code: 'premium', name: 'Premium Plan' }
-        },
-        environment: 'production',
-        onboarding: false
-      })
-    };
-
-    mockSession = {
-      isLoggedIn: computed(() => false)
-    };
-
-    mockStorageService = {
-      get: vi.fn().mockReturnValue(null),
-      set: vi.fn(),
-      delete: vi.fn()
-    };
-
-    mockGoogleTagManagerService = {
-      appendTrackingCode: vi.fn()
-    };
-
-    mockLocation = {
-      back: vi.fn()
-    };
-
-    mockRouter = {
-      navigateByUrl: vi.fn()
-    };
-
-    mockSnackBar = {
-      open: vi.fn().mockReturnValue({
-        onAction: vi.fn().mockReturnValue({
-          subscribe: vi.fn()
-        })
-      })
-    };
-
-    mockSwUpdate = {
-      isEnabled: true,
-      checkForUpdate: vi.fn(),
-      versionUpdates: {
-        subscribe: vi.fn()
-      } as any
-    };
+    mockAuthProvider = createMockAuthProvider();
+    mockSession = createMockSession();
+    mockStorageService = createMockStorageService();
+    mockGoogleTagManagerService = createMockGoogleTagManagerService();
+    mockLocation = createMockLocation();
+    mockRouter = createMockRouter();
+    mockSnackBar = createMockMatSnackBar();
+    mockSwUpdate = createMockSwUpdate();
 
     TestBed.configureTestingModule({
       providers: [

@@ -8,6 +8,9 @@ export const environment: Environment = {
     { code: 'en', name: 'English' },
     { code: 'es', name: 'Español' }
   ],
+  sessionPrefix: '',
+  filesPath: '',
+  appPath: '',
   auth: {
     signupUrl: '',
     signinUrl: '',
@@ -23,13 +26,6 @@ export const environment: Environment = {
       google: ''
     }
   },
-  sessionPrefix: '',
-  iconSettings: {
-    path: '/images',
-    collection: 'factoricons-regular'
-  },
-  filesPath: '',
-  appPath: '',
   restEndpoint: ''
   /*
   apiIdPrefix: '',

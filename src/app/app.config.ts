@@ -15,13 +15,12 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 
+import { AUTH_CONFIG, AuthProvider, AuthService, authInterceptor } from 'auth-core';
+
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 import { routes } from '@/app.routes';
 import { AppManager } from '@/core/services/app-manager';
-import { authInterceptor } from '@/cross/auth/auth-interceptor';
 import { clientInterceptor } from '@/core/interceptors/client-interceptor';
-import { AuthService } from '@/cross/auth/auth-service';
-import { AuthProvider } from '@/core/models/auth.provider';
 import { environment } from '@/environments/environment';
 
 export const appConfig: ApplicationConfig = {
@@ -63,6 +62,7 @@ export const appConfig: ApplicationConfig = {
       useFactory: (appManager: AppManager) => appManager.getLocale(),
       deps: [AppManager]
     },
+    { provide: AUTH_CONFIG, useValue: environment },
     {
       provide: AuthProvider,
       useClass: AuthService

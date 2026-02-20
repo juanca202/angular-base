@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Navigation, Router, RouterModule, UrlTree } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Error } from './error';
-import { AuthProvider } from '@/core/models/auth.provider';
+import { AuthProvider } from 'auth-core';
 import { StorageService } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';

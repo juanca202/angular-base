@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      { "command": "node .cursor/hooks/telemetry/hook-handler.js" }
+    ],
+    "afterFileEdit": [
+      { "command": "node .cursor/hooks/telemetry/hook-handler.js" },
+      { "command": "node .cursor/hooks/prettier/hook-handler.js" }
+    ],
+    "beforeShellExecution": [
+      { "command": "node .cursor/hooks/telemetry/hook-handler.js" }
+    ],
+    "stop": [
+      { "command": "node .cursor/hooks/telemetry/hook-handler.js" }
+    ]
+  }
+}

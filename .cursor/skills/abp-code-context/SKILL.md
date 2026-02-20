@@ -41,3 +41,7 @@ description: Contexto operativo para generar código Angular en este repositorio
 - `docs/adr/ADR-011-code-quality-tooling.md`
 - `docs/adr/ADR-012-icon-usage-strategy.md`
 - `docs/adr/ADR-013-dialog-master-detail.md`
+- `docs/adr/ADR-014-internationalization-strategy.md`
+- `docs/adr/ADR-015-testing-strategy.md`
+- `docs/adr/ADR-016-documentation-strategy.md`
+- `docs/adr/ADR-017-branching-strategy.md`

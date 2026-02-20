@@ -39,6 +39,8 @@
     "@angular/platform-browser": "^21.1.4",
     "@angular/router": "^21.1.4",
     "@angular/service-worker": "^21.1.4",
+    "@azure/msal-angular": "^5.0.4",
+    "@azure/msal-browser": "^5.2.0",
     "@factor_ec/ui": "^5.0.8",
     "@factor_ec/utils": "^5.0.8",
     "git-describe": "^4.1.1",

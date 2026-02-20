@@ -1,7 +1,6 @@
 ---
-context: true
-priority: high
-scope: project
+description: Core Angular and TypeScript coding standards for this project. Use when writing or modifying Angular components, services, templates, state management, or feature code.
+alwaysApply: true
 ---
 
 You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.

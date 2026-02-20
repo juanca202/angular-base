@@ -1,14 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { Session } from './session';
 import { StorageService } from '@factor_ec/utils';
-import { User } from '../models/user';
 import { Settings } from '../models/settings';
 import { SessionState } from '../models/session-state';
+import { getApiUrl } from '../utils/async-resources';
+import { AuthProvider } from 'auth-core';
+import { createMockAuthProvider } from '@/test/mocks/service-mocks';
 
 describe('Session', () => {
   // Arrange
   let service: Session;
+  let httpMock: HttpTestingController;
   let mockStorageService: {
     get: ReturnType<typeof vi.fn>;
     set: ReturnType<typeof vi.fn>;
@@ -24,53 +29,57 @@ describe('Session', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [Session, { provide: StorageService, useValue: mockStorageService }]
+      providers: [
+        Session,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: StorageService, useValue: mockStorageService },
+        { provide: AuthProvider, useValue: createMockAuthProvider() }
+      ]
     });
 
     service = TestBed.inject(Session);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   describe('initialization', () => {
     it('should initialize with empty state', () => {
       // Arrange & Act
-      const user = service.user();
       const settings = service.settings();
       const params = service.params();
-      const isLoggedIn = service.isLoggedIn();
 
       // Assert
-      expect(user).toBeNull();
       expect(settings).toBeNull();
       expect(params).toBeNull();
-      expect(isLoggedIn).toBe(false);
     });
 
     it('should restore state from storage on initialization', () => {
       // Arrange
       const storedState: SessionState = {
-        user: {
-          username: 'test',
-          email: 'test@test.com',
-          roles: [],
-          firstName: 'Test',
-          lastName: 'User',
-          picture: ''
-        },
         settings: {
           language: 'en',
           subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
           environment: 'dev',
           onboarding: false
         },
-        params: { key1: 'value1' },
-        token: null
+        params: { key1: 'value1' }
       };
       vi.mocked(mockStorageService.get).mockReturnValue(storedState);
 
       // Act
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [Session, { provide: StorageService, useValue: mockStorageService }]
+        providers: [
+          Session,
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          { provide: StorageService, useValue: mockStorageService },
+          { provide: AuthProvider, useValue: createMockAuthProvider() }
+        ]
       });
 
       // Assert
@@ -80,84 +89,8 @@ describe('Session', () => {
     });
   });
 
-  describe('setUser', () => {
-    it('should set user in session state', () => {
-      // Arrange
-      const user: User = {
-        username: 'testuser',
-        email: 'test@example.com',
-        roles: ['user'],
-        firstName: 'Test',
-        lastName: 'User',
-        picture: 'avatar.jpg'
-      };
-
-      // Act
-      service.setUser(user);
-
-      // Assert (isLoggedIn is token-based; without token it stays false)
-      expect(service.user()).toEqual(user);
-      expect(service.isLoggedIn()).toBe(false);
-    });
-
-    it('should update existing user when setUser is called again', () => {
-      // Arrange
-      const firstUser: User = {
-        username: 'user1',
-        email: 'user1@example.com',
-        roles: ['user'],
-        firstName: 'First',
-        lastName: 'User',
-        picture: ''
-      };
-      const secondUser: User = {
-        username: 'user2',
-        email: 'user2@example.com',
-        roles: ['admin'],
-        firstName: 'Second',
-        lastName: 'User',
-        picture: ''
-      };
-
-      // Act
-      service.setUser(firstUser);
-      service.setUser(secondUser);
-
-      // Assert
-      expect(service.user()).toEqual(secondUser);
-      expect(service.user()?.username).toBe('user2');
-    });
-  });
-
-  describe('clearUser', () => {
-    it('should clear user from session state', () => {
-      // Arrange
-      const user: User = {
-        username: 'testuser',
-        email: 'test@example.com',
-        roles: ['user'],
-        firstName: 'Test',
-        lastName: 'User',
-        picture: ''
-      };
-      service.setUser(user);
-
-      // Act
-      service.clearUser();
-
-      // Assert
-      expect(service.user()).toBeNull();
-    });
-
-    it('should not throw error when clearing user that does not exist', () => {
-      // Arrange & Act & Assert
-      expect(() => service.clearUser()).not.toThrow();
-      expect(service.user()).toBeNull();
-    });
-  });
-
-  describe('setSettings', () => {
-    it('should set settings in session state', () => {
+  describe('getSettings (setSettings)', () => {
+    it('should set settings in session state when fetched from API', async () => {
       // Arrange
       const settings: Partial<Settings> = {
         language: 'es',
@@ -165,7 +98,10 @@ describe('Session', () => {
       };
 
       // Act
-      service.setSettings(settings);
+      const getSettingsPromise = service.getSettings(true);
+      const req = httpMock.expectOne(getApiUrl('settings'));
+      req.flush(settings);
+      await getSettingsPromise;
 
       // Assert
       const currentSettings = service.settings();
@@ -174,7 +110,7 @@ describe('Session', () => {
       expect(currentSettings?.environment).toBe('production');
     });
 
-    it('should merge settings with existing settings', () => {
+    it('should replace settings when getSettings is called again', async () => {
       // Arrange
       const firstSettings: Partial<Settings> = {
         language: 'en',
@@ -185,25 +121,32 @@ describe('Session', () => {
       };
 
       // Act
-      service.setSettings(firstSettings);
-      service.setSettings(secondSettings);
+      let getSettingsPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush(firstSettings);
+      await getSettingsPromise;
 
-      // Assert
+      getSettingsPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush(secondSettings);
+      await getSettingsPromise;
+
+      // Assert: second response replaces the first (no merge)
       const currentSettings = service.settings();
       expect(currentSettings?.language).toBe('es');
-      expect(currentSettings?.environment).toBe('dev');
+      expect(currentSettings?.environment).toBeUndefined();
     });
   });
 
   describe('clearSettings', () => {
-    it('should clear settings from session state', () => {
+    it('should clear settings from session state', async () => {
       // Arrange
-      service.setSettings({
+      const getSettingsPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush({
         language: 'en',
         environment: 'dev',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
         onboarding: false
       });
+      await getSettingsPromise;
 
       // Act
       service.clearSettings();
@@ -306,51 +249,24 @@ describe('Session', () => {
   });
 
   describe('clearAll', () => {
-    it('should clear all session data', () => {
+    it('should clear all session data', async () => {
       // Arrange
-      const user: User = {
-        username: 'testuser',
-        email: 'test@example.com',
-        roles: ['user'],
-        firstName: 'Test',
-        lastName: 'User',
-        picture: ''
-      };
-      service.setUser(user);
-      service.setSettings({
+      const getSettingsPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush({
         language: 'en',
         environment: 'dev',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
         onboarding: false
       });
+      await getSettingsPromise;
       service.setParams({ key1: 'value1' });
 
       // Act
       service.clearAll();
 
       // Assert
-      expect(service.user()).toBeNull();
       expect(service.settings()).toBeNull();
       expect(service.params()).toBeNull();
-      expect(service.isLoggedIn()).toBe(false);
-    });
-  });
-
-  describe('isLoggedIn computed signal', () => {
-    it('should return false when user is null', () => {
-      // Arrange & Act
-      const result = service.isLoggedIn();
-
-      // Assert
-      expect(result).toBe(false);
-    });
-
-    it('should return true when token is set', () => {
-      // Arrange: isLoggedIn is based on token, not user
-      service.setToken({ value: 'test-token' });
-
-      // Act & Assert
-      expect(service.isLoggedIn()).toBe(true);
     });
   });
 
@@ -364,13 +280,18 @@ describe('Session', () => {
       // Act
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [Session, { provide: StorageService, useValue: mockStorageService }]
+        providers: [
+          Session,
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          { provide: StorageService, useValue: mockStorageService },
+          { provide: AuthProvider, useValue: createMockAuthProvider() }
+        ]
       });
 
       const newService = TestBed.inject(Session);
 
       // Assert
-      expect(newService.user()).toBeNull();
       expect(newService.settings()).toBeNull();
       expect(newService.params()).toBeNull();
     });
@@ -378,42 +299,38 @@ describe('Session', () => {
     it('should restore valid session state from storage', () => {
       // Arrange
       const storedState: SessionState = {
-        user: {
-          username: 'storeduser',
-          email: 'stored@example.com',
-          roles: ['user'],
-          firstName: 'Stored',
-          lastName: 'User',
-          picture: ''
-        },
         settings: {
           language: 'es',
           subscription: { code: '2', name: 'Premium', plan: { code: '2', name: 'Premium' } },
           environment: 'prod',
           onboarding: true
         },
-        params: { key1: 'value1', key2: 'value2' },
-        token: null
+        params: { key1: 'value1', key2: 'value2' }
       };
       vi.mocked(mockStorageService.get).mockReturnValue(storedState);
 
       // Act
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [Session, { provide: StorageService, useValue: mockStorageService }]
+        providers: [
+          Session,
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          { provide: StorageService, useValue: mockStorageService },
+          { provide: AuthProvider, useValue: createMockAuthProvider() }
+        ]
       });
 
       const newService = TestBed.inject(Session);
 
       // Assert
-      expect(newService.user()).toEqual(storedState.user);
       expect(newService.settings()).toEqual(storedState.settings);
       expect(newService.params()).toEqual(storedState.params);
     });
   });
 
   describe('settings edge cases', () => {
-    it('should handle null settings when merging', () => {
+    it('should set settings when fetched from API', async () => {
       // Arrange
       const newSettings: Partial<Settings> = {
         language: 'fr',
@@ -421,7 +338,9 @@ describe('Session', () => {
       };
 
       // Act
-      service.setSettings(newSettings);
+      const getSettingsPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush(newSettings);
+      await getSettingsPromise;
 
       // Assert
       const currentSettings = service.settings();
@@ -429,25 +348,26 @@ describe('Session', () => {
       expect(currentSettings?.environment).toBe('test');
     });
 
-    it('should preserve existing settings when merging partial', () => {
+    it('should replace settings when getSettings returns partial', async () => {
       // Arrange
-      service.setSettings({
+      const getSettingsPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush({
         language: 'en',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
         environment: 'dev',
         onboarding: false
       });
+      await getSettingsPromise;
 
       // Act
-      service.setSettings({
-        language: 'es'
-      });
+      const secondPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush({ language: 'es' });
+      await secondPromise;
 
-      // Assert
+      // Assert: second response replaces (no merge)
       const currentSettings = service.settings();
       expect(currentSettings?.language).toBe('es');
-      expect(currentSettings?.environment).toBe('dev');
-      expect(currentSettings?.subscription).toBeDefined();
+      expect(currentSettings?.environment).toBeUndefined();
     });
   });
 });

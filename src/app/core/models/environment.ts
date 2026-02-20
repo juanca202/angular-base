@@ -8,6 +8,9 @@ export interface Environment {
   appName: string;
   defaultLocale: string;
   languages: Language[];
+  sessionPrefix: string;
+  filesPath: string;
+  appPath: string;
   // Authentication
   auth: {
     signupUrl: string;
@@ -33,20 +36,8 @@ export interface Environment {
       clientId: string;
     }
   >;
-  sessionPrefix: string;
-  iconSettings: {
-    path: string;
-    collection: string;
-  };
-  filesPath: string;
-  appPath: string;
   graphqlEndpoint?: string;
   restEndpoint: string;
-  apiIdPrefix?: string;
-  // Google APIs
-  googleApi?: {
-    clientId: string;
-  };
   // Google TagManager
   googleTagManager?: {
     trackingCode: string;
@@ -73,4 +64,8 @@ export interface Environment {
     instrumentationKey: string;
   };
   vapidKey?: string;
+  iconSettings?: {
+    path: string;
+    collection: string;
+  };
 }

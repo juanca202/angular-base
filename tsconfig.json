@@ -26,12 +26,10 @@
       "@/features/*": ["src/app/features/*"],
       "@/environments/*": ["src/environments/*"],
       "@/version-info": ["src/version-info"],
-      "@/test/*": [
-        "test/*"
-      ],
-      "monitoring": [
-        "./dist/monitoring"
-      ]
+      "@/test/*": ["test/*"],
+      "auth-core": ["./projects/auth-core/src/public-api.ts", "./dist/auth-core"],
+      "auth-msal": ["./dist/auth-msal"],
+      "monitoring": ["./dist/monitoring"]
     }
   },
   "angularCompilerOptions": {
@@ -53,6 +51,18 @@
     },
     {
       "path": "./projects/monitoring/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/auth-msal/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/auth-msal/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/auth-core/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/auth-core/tsconfig.spec.json"
     }
   ]
 }

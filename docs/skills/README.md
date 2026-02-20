@@ -18,8 +18,12 @@ Separar claramente:
 
 - **ADR-001, ADR-002, ADR-003, ADR-004, ADR-005, ADR-006, ADR-007, ADR-008, ADR-009, ADR-010, ADR-011, ADR-012, ADR-013**
   - Se aplican operacionalmente desde `abp-code-context`.
-- **ADR-015**
+- **ADR-014** (Internacionalización)
+  - Se aplica operacionalmente desde `abp-translate-i18n-missing`.
+- **ADR-015** (Testing)
   - Se aplica operacionalmente desde `abp-testing-signals`.
+- **ADR-016, ADR-017**
+  - Documentación y branching; referenciados en `abp-code-context`.
 
 ## Regla de mantenimiento
 

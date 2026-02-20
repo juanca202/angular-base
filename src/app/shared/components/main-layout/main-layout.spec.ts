@@ -3,12 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { computed } from '@angular/core';
 import { MainLayout } from './main-layout';
-import { AuthProvider } from '@/core/models/auth.provider';
-import { Session } from '@/core/services/session';
+import { AuthProvider, User } from 'auth-core';
 import { MenuItem } from '@/shared/models/menu-item';
-import { User } from '@/core/models/user';
 import {
   createMockRouter,
   createMockActivatedRoute,
@@ -19,20 +16,12 @@ describe('MainLayout', () => {
   let component: MainLayout;
   let fixture: ComponentFixture<MainLayout>;
   let mockAuthProvider: Partial<AuthProvider>;
-  let mockSession: Partial<Session>;
   let mockBottomSheet: Partial<MatBottomSheet>;
   let mockRouter: ReturnType<typeof createMockRouter>;
   let mockActivatedRoute: ReturnType<typeof createMockActivatedRoute>;
 
   beforeEach(async () => {
     // Arrange: Create mocks
-    mockAuthProvider = {
-      logout: vi.fn(),
-      changePassword: vi.fn(),
-      confirmDeleteUser: vi.fn(),
-      getSettings: vi.fn().mockResolvedValue(null)
-    };
-
     const mockUser: User = {
       username: 'testuser',
       email: 'test@example.com',
@@ -42,9 +31,11 @@ describe('MainLayout', () => {
       picture: 'https://example.com/picture.jpg'
     };
 
-    mockSession = {
-      user: computed(() => mockUser),
-      isLoggedIn: computed(() => true)
+    mockAuthProvider = {
+      getUser: vi.fn().mockReturnValue(mockUser),
+      logout: vi.fn(),
+      login: vi.fn().mockResolvedValue(true),
+      isLoggedIn: vi.fn().mockReturnValue(true)
     };
 
     mockBottomSheet = {
@@ -65,7 +56,6 @@ describe('MainLayout', () => {
       imports: [MainLayout, RouterModule],
       providers: [
         { provide: AuthProvider, useValue: mockAuthProvider },
-        { provide: Session, useValue: mockSession },
         { provide: MatBottomSheet, useValue: mockBottomSheet },
         ...COMMON_TEST_PROVIDERS.getRouterProviders(mockRouter, mockActivatedRoute)
       ],
@@ -108,9 +98,8 @@ describe('MainLayout', () => {
 
     it('should inject dependencies', () => {
       // Arrange & Act & Assert
-      expect(component.authService).toBeDefined();
+      expect(component.authProvider).toBeDefined();
       expect(component.bottomSheet).toBeDefined();
-      expect(component.session).toBeDefined();
     });
   });
 

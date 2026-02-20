@@ -5,8 +5,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { AvatarComponent, IconComponent } from '@factor_ec/ui';
 
-import { AuthProvider } from '@/core/models/auth.provider';
-import { Session } from '@/core/services/session';
+import { AuthProvider } from 'auth-core';
 import { MenuItem } from '@/shared/models/menu-item';
 
 /**
@@ -25,9 +24,8 @@ import { MenuItem } from '@/shared/models/menu-item';
 })
 export class MainLayout implements OnInit {
   // Dependency injection
-  public readonly authService = inject(AuthProvider);
+  public readonly authProvider = inject(AuthProvider);
   public readonly bottomSheet = inject(MatBottomSheet);
-  public readonly session = inject(Session);
 
   // Properties
   public readonly navigationOptions = signal<MenuItem[]>([]);

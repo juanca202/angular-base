@@ -5,10 +5,10 @@
       <h1 class="mb-4">{{ error()?.title }}</h1>
       <p class="text-gray-400 mt-0">{{ error()?.message }}</p>
     </div>
-    @if (error()?.icon === '404' || !authService.logout()) {
+    @if (error()?.icon === '404' || !authProvider.logout()) {
       <a routerLink="/" matButton="filled" i18n>Go home</a>
     } @else if (error()?.icon === '403') {
-      <button type="button" matButton="filled" (click)="authService.logout()" i18n>Logout</button>
+      <button type="button" matButton="filled" (click)="authProvider.logout()" i18n>Logout</button>
     } @else if (error()?.icon === 'unknown') {
       <button type="button" matButton="filled" (click)="reload()" i18n>Reload</button>
     }

@@ -6,12 +6,12 @@ import { Settings as SettingsModel } from '@/core/models/settings';
 import { Settings } from './settings';
 import { AppManager } from '@/core/services/app-manager';
 import { LayoutManager } from '@/core/services/layout-manager';
-import { AuthProvider } from '@/core/models/auth.provider';
+import { AuthManager } from '../../managers/auth-manager';
+import { AuthProvider } from 'auth-core';
 import { Session } from '@/core/services/session';
 import { GoogleTagManagerService } from '@factor_ec/utils';
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { computed, signal } from '@angular/core';
-import { User } from '@/core/models/user';
 import { environment } from '@/environments/environment';
 
 describe('Settings', () => {
@@ -19,7 +19,8 @@ describe('Settings', () => {
   let component: Settings;
   let fixture: ComponentFixture<Settings>;
   let mockAppManager: Partial<AppManager>;
-  let mockAuthService: Partial<AuthProvider>;
+  let mockAuthProvider: Partial<AuthProvider>;
+  let mockAuthManager: Partial<AuthManager>;
   let mockLayoutManager: Partial<LayoutManager>;
   let mockSession: Partial<Session>;
   let mockGoogleTagManagerService: Partial<GoogleTagManagerService>;
@@ -36,14 +37,19 @@ describe('Settings', () => {
       getLocale: vi.fn().mockReturnValue('en'),
       updateStatus: signal<string | null>('done')
     };
-    mockAuthService = {
+    mockAuthProvider = {
+      getUser: vi.fn().mockReturnValue(null),
+      login: vi.fn().mockResolvedValue(true),
+      logout: vi.fn().mockResolvedValue(true),
+      isLoggedIn: vi.fn().mockReturnValue(false)
+    };
+    mockAuthManager = {
       changePassword: vi.fn(),
-      confirmDeleteUser: vi.fn(),
-      logout: vi.fn()
+      confirmDeleteUser: vi.fn()
     };
     mockLayoutManager = {};
     mockSession = {
-      user: computed<User | null>(() => null),
+      params: computed(() => null),
       settings: computed<SettingsModel | null>(() => null)
     };
     mockGoogleTagManagerService = {
@@ -64,7 +70,8 @@ describe('Settings', () => {
       imports: [Settings, RouterModule],
       providers: [
         { provide: AppManager, useValue: mockAppManager },
-        { provide: AuthProvider, useValue: mockAuthService },
+        { provide: AuthProvider, useValue: mockAuthProvider },
+        { provide: AuthManager, useValue: mockAuthManager },
         { provide: LayoutManager, useValue: mockLayoutManager },
         { provide: Session, useValue: mockSession },
         { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
@@ -142,7 +149,7 @@ describe('Settings', () => {
       paramMapSubject.next(paramMap as ParamMap);
 
       // Assert
-      expect(mockAuthService.confirmDeleteUser).toHaveBeenCalled();
+      expect(mockAuthManager.confirmDeleteUser).toHaveBeenCalled();
     });
 
     it('should navigate to error page for unknown action', () => {
@@ -173,7 +180,7 @@ describe('Settings', () => {
 
       // Assert
       expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
-      expect(mockAuthService.confirmDeleteUser).not.toHaveBeenCalled();
+      expect(mockAuthManager.confirmDeleteUser).not.toHaveBeenCalled();
     });
   });
 

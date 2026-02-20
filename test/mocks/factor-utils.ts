@@ -21,7 +21,7 @@ export class StorageService {
   delete(key: string, _scope?: 'local' | 'session') {
     return this.removeItem(key);
   }
-  getItem() {
+  getItem(_key?: string) {
     return null;
   }
   setItem(_k?: string, _v?: any) {}

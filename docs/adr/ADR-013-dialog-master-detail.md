@@ -238,3 +238,4 @@ Este ADR no define detalles de estilo visual más allá de la clasificación de 
 
 - [Angular Material Dialog](https://material.angular.io/components/dialog/overview)
 - [ADR-001: Separación de Responsabilidades - Core, Shared y Features](./ADR-001-separation-of-responsibilities.md)
+- [ADR-007: Patrón Manager para Coordinación de Flujos de Negocio](./ADR-007-manager-pattern.md)
