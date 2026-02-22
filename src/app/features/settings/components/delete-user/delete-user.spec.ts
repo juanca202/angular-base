@@ -1,42 +1,60 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { computed, signal } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { DeleteUser } from './delete-user';
 import { AppManager } from '@/core/services/app-manager';
 import { AuthProvider } from 'auth-core';
+import { Session } from '@/core/services/session';
 import { StorageService } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
-import { User } from 'auth-core';
+import { Settings } from '@/core/models/settings';
 import { getApiUrl } from '@/core/utils/async-resources';
 import { of } from 'rxjs';
+import { createMockSession } from '@/test/mocks/service-mocks';
 
 describe('DeleteUser', () => {
   let component: DeleteUser;
   let fixture: ComponentFixture<DeleteUser>;
   let mockAppManager: Partial<AppManager>;
   let mockAuthService: Partial<AuthProvider>;
+  let mockSession: Partial<Session>;
   let mockStorageService: Partial<StorageService>;
   let mockMessageService: Partial<MessageService>;
   let httpMock: HttpTestingController;
-  let mockUser: User;
+
+  const mockSettingsWithEmail = (email: string): Settings =>
+    ({
+      user: {
+        username: 'testuser',
+        email,
+        roles: ['user'],
+        firstName: 'Test',
+        lastName: 'User',
+        picture: '',
+        featureFlags: []
+      },
+      language: 'en',
+      subscription: { code: 'free', name: 'Free', plan: { code: 'basic', name: 'Basic' } },
+      environment: 'test',
+      onboarding: false,
+      country: 'US'
+    }) as Settings;
 
   beforeEach(async () => {
-    mockUser = {
-      username: 'testuser',
-      email: 'test@example.com',
-      roles: ['user'],
-      firstName: 'Test',
-      lastName: 'User',
-      picture: 'https://example.com/picture.jpg'
-    };
-
     mockAppManager = {};
-    mockAuthService = { getUser: vi.fn().mockReturnValue(mockUser), logout: vi.fn() };
+    mockAuthService = {
+      user: signal({ username: 'testuser', roles: ['user'] }),
+      logout: vi.fn()
+    };
+    mockSession = createMockSession({
+      settings: computed(() => mockSettingsWithEmail('test@example.com'))
+    });
     mockStorageService = {
       get: vi.fn().mockReturnValue(null),
       set: vi.fn(),
@@ -58,6 +76,7 @@ describe('DeleteUser', () => {
         provideHttpClientTesting(),
         { provide: AppManager, useValue: mockAppManager },
         { provide: AuthProvider, useValue: mockAuthService },
+        { provide: Session, useValue: mockSession },
         { provide: StorageService, useValue: mockStorageService },
         { provide: MessageService, useValue: mockMessageService }
       ],
@@ -135,6 +154,7 @@ describe('DeleteUser', () => {
           provideHttpClientTesting(),
           { provide: AppManager, useValue: mockAppManager },
           { provide: AuthProvider, useValue: mockAuthService },
+          { provide: Session, useValue: mockSession },
           { provide: StorageService, useValue: mockStorageService },
           { provide: MessageService, useValue: mockMessageService }
         ],

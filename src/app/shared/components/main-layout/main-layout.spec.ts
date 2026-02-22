@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MainLayout } from './main-layout';
 import { AuthProvider, User } from 'auth-core';
@@ -24,18 +24,14 @@ describe('MainLayout', () => {
     // Arrange: Create mocks
     const mockUser: User = {
       username: 'testuser',
-      email: 'test@example.com',
-      roles: ['user'],
-      firstName: 'Test',
-      lastName: 'User',
-      picture: 'https://example.com/picture.jpg'
+      roles: ['user']
     };
 
     mockAuthProvider = {
-      getUser: vi.fn().mockReturnValue(mockUser),
+      user: signal(mockUser),
       logout: vi.fn(),
       login: vi.fn().mockResolvedValue(true),
-      isLoggedIn: vi.fn().mockReturnValue(true)
+      isLoggedIn: signal(true)
     };
 
     mockBottomSheet = {

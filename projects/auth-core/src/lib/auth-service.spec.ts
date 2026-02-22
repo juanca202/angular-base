@@ -8,6 +8,15 @@ import { AUTH_CONFIG } from './auth-config.token';
 import { Login } from './models/login';
 import { AuthToken } from './models/auth-token';
 import type { AuthConfig } from './models/auth-config';
+import type { WritableSignal } from '@angular/core';
+import type { User } from './models/user';
+
+/** Test helper to access private AuthService methods via type assertion */
+interface AuthServiceTestAccess {
+  setToken: (token: AuthToken | null) => void;
+  getToken: () => AuthToken | null;
+  _user: WritableSignal<User | null>;
+}
 
 const createTestAuthConfig = (overrides?: Partial<AuthConfig>): AuthConfig => ({
   sessionPrefix: 'test',
@@ -88,7 +97,10 @@ describe('AuthService', () => {
   describe('addAuthenticationToken', () => {
     it('should add authorization header when token exists', () => {
       const tokenValue = 'valid-access-token';
-      service.setToken({ token: tokenValue, refresh_token: 'refresh-token' });
+      (service as unknown as AuthServiceTestAccess).setToken({
+        token: tokenValue,
+        refresh_token: 'refresh-token'
+      });
       const request = new HttpRequest('GET', '/api/test');
 
       const result = service.addAuthenticationToken(request);
@@ -106,7 +118,10 @@ describe('AuthService', () => {
     });
 
     it('should return original request for signin URL', () => {
-      service.setToken({ token: 'valid-token', refresh_token: 'refresh' });
+      (service as unknown as AuthServiceTestAccess).setToken({
+        token: 'valid-token',
+        refresh_token: 'refresh'
+      });
       const request = new HttpRequest('GET', authConfig.auth.signinUrl);
 
       const result = service.addAuthenticationToken(request);
@@ -115,7 +130,10 @@ describe('AuthService', () => {
     });
 
     it('should return original request for refresh token URL', () => {
-      service.setToken({ token: 'valid-token', refresh_token: 'refresh' });
+      (service as unknown as AuthServiceTestAccess).setToken({
+        token: 'valid-token',
+        refresh_token: 'refresh'
+      });
       const request = new HttpRequest('GET', authConfig.auth.refreshTokenUrl);
 
       const result = service.addAuthenticationToken(request);
@@ -140,8 +158,8 @@ describe('AuthService', () => {
 
       expect(result).toBe(true);
       expect(mockHttpClient.post).toHaveBeenCalledWith(authConfig.auth.signinUrl, loginData);
-      expect(service.getUser()).toBeNull();
-      expect(service.token()).toEqual(authToken);
+      expect(service.user()).toBeNull();
+      expect((service as unknown as AuthServiceTestAccess).getToken()).toEqual(authToken);
     });
   });
 
@@ -204,7 +222,10 @@ describe('AuthService', () => {
 
   describe('refreshToken', () => {
     it('should refresh token successfully', async () => {
-      service.setToken({ token: 'old-token', refresh_token: 'old-refresh-token' });
+      (service as unknown as AuthServiceTestAccess).setToken({
+        token: 'old-token',
+        refresh_token: 'old-refresh-token'
+      });
       const newToken: AuthToken = {
         token: 'new-token',
         refresh_token: 'new-refresh-token'
@@ -219,11 +240,14 @@ describe('AuthService', () => {
       });
 
       expect(token).toEqual(newToken);
-      expect(service.token()).toEqual(newToken);
+      expect((service as unknown as AuthServiceTestAccess).getToken()).toEqual(newToken);
     });
 
     it('should logout on refresh token error', async () => {
-      service.setToken({ token: 'old-token', refresh_token: 'old-refresh-token' });
+      (service as unknown as AuthServiceTestAccess).setToken({
+        token: 'old-token',
+        refresh_token: 'old-refresh-token'
+      });
       vi.mocked(mockHttpClient.post).mockReturnValue(throwError(() => new Error('Refresh failed')));
       const logoutSpy = vi.spyOn(service, 'logout');
 
@@ -373,9 +397,9 @@ describe('AuthService', () => {
     });
   });
 
-  describe('getUser and setUser', () => {
+  describe('user signal', () => {
     it('should return null when no user is set', () => {
-      expect(service.getUser()).toBeNull();
+      expect(service.user()).toBeNull();
     });
 
     it('should return user when set', () => {
@@ -385,11 +409,12 @@ describe('AuthService', () => {
         roles: ['user'],
         firstName: 'Test',
         lastName: 'User',
-        picture: ''
+        picture: '',
+        featureFlags: []
       };
-      service.setUser(user);
+      (service as unknown as AuthServiceTestAccess)._user.set(user);
 
-      expect(service.getUser()).toEqual(user);
+      expect(service.user()).toEqual(user);
     });
   });
 
@@ -404,7 +429,10 @@ describe('AuthService', () => {
       const tokenPayload = { exp: futureExp, username: 'test' };
       const encodedPayload = window.btoa(JSON.stringify(tokenPayload));
       const tokenValue = `header.${encodedPayload}.signature`;
-      service.setToken({ token: tokenValue, refresh_token: 'refresh' });
+      (service as unknown as AuthServiceTestAccess).setToken({
+        token: tokenValue,
+        refresh_token: 'refresh'
+      });
 
       expect(service.isLoggedIn()).toBe(true);
     });

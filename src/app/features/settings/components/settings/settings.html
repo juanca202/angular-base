@@ -14,16 +14,18 @@
         <div class="ft-list__item">
           <div class="flex gap-4 items-center">
             <ft-avatar
-              [label]="authProvider.getUser()?.firstName + ' ' + authProvider.getUser()?.lastName"
-              [src]="authProvider.getUser()?.picture"
+              [label]="
+                session.settings()?.user?.firstName + ' ' + session.settings()?.user?.lastName
+              "
+              [src]="session.settings()?.user?.picture"
             />
             <div>
               <div class="ft-item__label">
-                {{ authProvider.getUser()?.firstName }}
-                {{ authProvider.getUser()?.lastName }}
+                {{ session.settings()?.user?.firstName }}
+                {{ session.settings()?.user?.lastName }}
               </div>
               <div class="text-sm text-gray-400">
-                {{ authProvider.getUser()?.email }}
+                {{ session.settings()?.user?.email }}
               </div>
             </div>
           </div>

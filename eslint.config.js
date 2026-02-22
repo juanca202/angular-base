@@ -172,7 +172,12 @@ module.exports = [
           style: 'kebab-case'
         }
       ],
-      'project-rules/enforce-layer-imports': 'error',
+      'project-rules/enforce-layer-imports': [
+        'error',
+        {
+          crossLayerPackages: ['auth-core', 'auth-msal']
+        }
+      ],
       'no-undef': 'off', // TypeScript handles this
       'no-unused-vars': 'off' // Use TypeScript rule instead
     }

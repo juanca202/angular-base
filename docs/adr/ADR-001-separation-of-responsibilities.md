@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 19/02/2026  
+**Última Actualización:** 22/02/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -43,7 +43,7 @@ Esta combinación permite mantener una estructura predecible y escalable, donde 
 
 Contiene infraestructura y lógica global que se usa en toda la aplicación:
 
-- **Services:** Servicios singleton globales (ej: `HttpClient`, `Logger`, `NotificationService`)
+- **Services:** Servicios singleton globales (ej: `AppManager`, `Session`)
 - **Guards:** Guards de ruta para autenticación y autorización
 - **Interceptors:** Interceptores HTTP para manejo de request/response
 - **Models:** Modelos de datos globales e interfaces usadas entre features
@@ -77,54 +77,19 @@ Cuando dos features necesitan comunicarse sin crear dependencias directas, se ut
 - **Inyección mediante providers:** Las features pueden proporcionar implementaciones de estos contratos usando el sistema de providers de Angular
 - **Desacoplamiento:** Las features no dependen directamente de otras features, sino de los contratos compartidos
 
-**Ejemplo de uso:**
-
-```typescript
-// shared/contracts/sales/sales-port.contract.ts
-export interface ISalesPort {
-  getSales(): Observable<Sale[]>;
-  createSale(sale: Sale): Observable<Sale>;
-}
-
-// shared/contracts/sales/sale.model.ts
-export interface Sale {
-  id: string;
-  amount: number;
-  date: Date;
-}
-
-// features/payments/payments.component.ts
-import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
-
-@Component({...})
-export class PaymentsComponent {
-  constructor(@Inject(ISalesPort) private salesPort: ISalesPort) {}
-
-  // Usa el port sin depender directamente de la feature sales
-}
-```
-
 **Reglas para Contracts:**
 
 - Los contracts deben contener solo interfaces, tipos y modelos (sin implementaciones)
 - Las features pueden implementar estos contracts y proporcionarlos mediante providers
 - Los contracts deben estar en `shared/contracts/{dominio}/` organizados por dominio
 
-### Capa Cross / Auth (`projects/auth-core`, `projects/auth-msal`)
+### Capa Cross (`src/app/cross/`)
 
-Contiene capacidades de dominio transversales que aplican a múltiples features. La autenticación reside en librerías de proyecto:
+Contiene capacidades de dominio transversales que aplican a múltiples features:
 
-- **auth-core:** `AuthProvider`, `User`, guards, interceptors
-- **auth-msal:** `AuthService` (implementación MSAL de `AuthProvider`)
-
-Otras capacidades transversales pueden vivir en `src/app/cross/{dominio}/`:
-
-- **Services:** Servicios de negocio transversales (ej: `Session` en Core)
-- **Repositories:** Acceso a API o almacenamiento reutilizado por diferentes features
-- **Managers:** Coordinadores de flujos compartidos (inicio de sesión, inicialización de analytics)
-- **Models:** Modelos de dominio reutilizados más allá de la infraestructura básica
-- **Policies/Guards:** Reglas aplicables en múltiples contextos (feature toggles, verificaciones de capacidades)
-- **Pipes/Validators:** Helpers específicos del dominio que no encajan en Shared
+- **persistence:** Servicios de persistencia (`DatabaseService`, `SyncService`, `EntityRepository`, `GraphqlService`), componentes de sincronización
+- **global:** Repositorios, managers y modelos compartidos entre features (`TermRepository`, `CategoryManager`, `TagManager`, `Term`)
+- **integrations:** Servicios de integración externa (ej: `SubscriptionService`)
 
 **Principio clave:** Cross solo puede depender de Core.
 
@@ -158,51 +123,55 @@ Contiene funcionalidad específica del dominio organizada por feature:
 src/
 └── app/
     ├── core/
-    │   ├── guards/
-    │   │   └── auth.guard.ts
+    │   ├── components/
+    │   │   └── error/
     │   ├── interceptors/
-    │   │   └── http-error.interceptor.ts
     │   ├── services/
-    │   │   ├── logger.service.ts
-    │   │   └── notification.service.ts
-    │       ├── models/
-    │   └── (User y AuthProvider en projects/auth-core)
+    │   │   ├── app-manager.ts
+    │   │   └── session.ts
+    │   ├── models/
     │   └── utils/
-    │       └── date.util.ts
     │
     ├── shared/
     │   ├── components/
-    │   │   ├── button/
-    │   │   │   └── button.component.ts
-    │   │   └── modal/
-    │   │       └── modal.component.ts
-    │   ├── contracts/
-    │   │   └── sales/
-    │   │       ├── sales-port.contract.ts
-    │   │       └── sale.model.ts
-    │   ├── pipes/
-    │   │   └── currency.pipe.ts
-    │   └── validators/
-    │       └── email.validator.ts
+    │   │   ├── header/
+    │   │   ├── main-layout/
+    │   │   └── filters/
+    │   └── services/
+    │       └── filters.service.ts
     │
-    ├── features/
-    │   └── sales/
-    │       ├── components/
-    │       │   ├── sales-list/
-    │       │   │   └── sales-list.component.ts
-    │       │   └── sale-item/
-    │       │       └── sale-item.component.ts
-    │       ├── services/
-    │       │   └── sales.service.ts
-    │       ├── repositories/
-    │       │   └── sales.repository.ts
-    │       ├── models/
-    │       │   └── sale.model.ts
-    │       └── sales-routes.ts
+    ├── cross/
+    │   ├── persistence/
+    │   │   ├── components/
+    │   │   │   └── sync/
+    │   │   └── services/
+    │   │       ├── database.service.ts
+    │   │       ├── entity-repository.ts
+    │   │       └── sync.service.ts
+    │   ├── global/
+    │   │   ├── managers/
+    │   │   │   └── category-manager.ts
+    │   │   ├── repositories/
+    │   │   │   └── term-repository.ts
+    │   │   └── models/
+    │   │       └── term.ts
+    │   └── integrations/
+    │       └── subscription.service.ts
     │
-    └── projects/
-        ├── auth-core/     # AuthProvider, User, guards, interceptors
-        └── auth-msal/     # AuthService (implementación MSAL)
+    └── features/
+        ├── expenses/
+        │   ├── components/
+        │   │   ├── transactions-view/
+        │   │   └── categories-view/
+        │   ├── repositories/
+        │   │   ├── transaction-repository.ts
+        │   │   └── space-repository.ts
+        │   ├── models/
+        │   │   ├── space.ts
+        │   │   └── transaction.ts
+        │   └── expenses-routes.ts
+        └── settings/
+            └── settings-routes.ts
 ```
 
 ## Reglas de Dependencias
@@ -214,7 +183,7 @@ src/
   │  │  │ puede usar
   ▼  ▼  ▼
 ┌─────────┐    ┌─────────┐
-│  Shared │    │  Auth   │
+│  Shared │    │  Cross  │
 └────┬────┘    └────┬────┘
      │  puede usar        │ puede usar
      ▼                    ▼
@@ -228,76 +197,53 @@ src/
 ✅ **Feature → Core:** Permitido
 
 ```typescript
-// sales/services/sales.service.ts
-import { Logger } from '@/core/services/logger.service';
-import { User } from 'auth-core';
+// features/expenses/components/transactions-view/transactions-view.ts
+import { Session } from '@/core/services/session';
+import { LayoutManager } from '@/core/services/layout-manager';
 ```
 
 ✅ **Feature → Shared:** Permitido
 
 ```typescript
-// sales/components/sales-list.component.ts
-import { ButtonComponent } from '@/shared/components/button/button.component';
-import { CurrencyPipe } from '@/shared/pipes/currency.pipe';
+// features/expenses/components/transactions-view/transactions-view.ts
+import { Header } from '@/shared/components/header/header';
+import { FiltersComponent } from '@/shared/components/filters/filters';
 ```
 
-✅ **Feature → Auth (auth-core):** Permitido
+✅ **Feature → Cross:** Permitido
 
 ```typescript
-// sales/services/sales-auth.facade.ts
-import { AuthProvider } from 'auth-core';
+// features/expenses/repositories/transaction-repository.ts
+import { EntityRepository } from '@/cross/persistence/services/entity-repository';
+import { DatabaseService } from '@/cross/persistence/services/database.service';
+import { TermRepository } from '@/cross/global/repositories/term-repository';
 ```
 
 ✅ **Feature → Shared Contracts (para comunicación entre features):** Permitido
 
-```typescript
-// payments/components/payment-form.component.ts
-import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
-import { Sale } from '@/shared/contracts/sales/sale.model';
-
-@Component({...})
-export class PaymentFormComponent {
-  constructor(@Inject(ISalesPort) private salesPort: ISalesPort) {}
-
-  // Usa el port para comunicarse con la feature sales sin dependencia directa
-}
-```
-
-**Nota:** La feature `sales` debe proporcionar la implementación del contract mediante providers:
-
-```typescript
-// sales/sales-routes.ts o sales.module.ts
-import { ISalesPort } from '@/shared/contracts/sales/sales-port.contract';
-import { SalesService } from './services/sales.service';
-
-export const salesRoutes: Routes = [
-  {
-    path: '',
-    providers: [{ provide: ISalesPort, useClass: SalesService }]
-    // ... rutas
-  }
-];
-```
+Cuando dos features necesiten comunicarse, usar el patrón de contracts en `shared/contracts/` con providers (ver sección "Comunicación entre Features mediante Contracts").
 
 ✅ **Shared → Core:** Permitido
 
 ```typescript
-// shared/components/modal/modal.component.ts
-import { NotificationService } from '@/core/services/notification.service';
-```
-
-✅ **Shared → Core (Session):** Permitido
-
-```typescript
-// shared/components/modal/modal.component.ts
+// shared/components/permissions/permissions.ts
 import { Session } from '@/core/services/session';
+import { AppManager } from '@/core/services/app-manager';
 ```
 
-✅ **Auth (auth-core/auth-msal) → Core:** Permitido
+✅ **Shared → Cross:** Permitido
 
 ```typescript
-// projects/auth-core o auth-msal
-import { NotificationService } from '@/core/services/notification.service';
+// shared/components/permissions/permissions.ts
+import { TermRepository } from '@/cross/global/repositories/term-repository';
+import { CategoryManager } from '@/cross/global/managers/category-manager';
+```
+
+✅ **Cross → Core:** Permitido
+
+```typescript
+// cross/persistence/services/database.service.ts
+import { AppManager } from '@/core/services/app-manager';
 ```
 
 ### Dependencias Prohibidas
@@ -305,83 +251,98 @@ import { NotificationService } from '@/core/services/notification.service';
 ❌ **Core → Shared:** No permitido
 
 ```typescript
-// ❌ NO HACER: core/services/logger.service.ts
-import { ButtonComponent } from '@/shared/components/button/button.component';
+// ❌ NO HACER: core/services/session.ts
+import { Header } from '@/shared/components/header/header';
 ```
 
 ❌ **Core → Feature:** No permitido
 
 ```typescript
-// ❌ NO HACER: core/guards/auth.guard.ts
-import { SalesService } from '@/features/sales/services/sales.service';
+// ❌ NO HACER: core/services/app-manager.ts
+import { TransactionRepository } from '@/features/expenses/repositories/transaction-repository';
 ```
 
-❌ **Core → Auth:** No permitido
+❌ **Core → Cross:** No permitido
 
 ```typescript
-// ❌ NO HACER: core/interceptors/http-error.interceptor.ts
-import { AuthProvider } from 'auth-core';
+// ❌ NO HACER: core/services/session.ts
+import { DatabaseService } from '@/cross/persistence/services/database.service';
 ```
 
 ❌ **Shared → Feature:** No permitido
 
 ```typescript
-// ❌ NO HACER: shared/components/button/button.component.ts
-import { SalesService } from '@/features/sales/services/sales.service';
+// ❌ NO HACER: shared/components/header/header.ts
+import { TransactionRepository } from '@/features/expenses/repositories/transaction-repository';
 ```
 
-❌ **Auth → Shared o Feature:** No permitido
+❌ **Cross → Shared o Feature:** No permitido
 
 ```typescript
-// ❌ NO HACER: projects/auth-core o auth-msal
-import { ButtonComponent } from '@/shared/components/button/button.component';
-// ❌ NO HACER: projects/auth-core
-import { SalesService } from '@/features/sales/services/sales.service';
+// ❌ NO HACER: cross/global/managers/category-manager.ts
+import { Header } from '@/shared/components/header/header';
+// ❌ NO HACER: cross/persistence/services/database.service.ts
+import { TransactionRepository } from '@/features/expenses/repositories/transaction-repository';
 ```
 
 ❌ **Feature → Feature (importación directa):** No permitido
 
 ```typescript
-// ❌ NO HACER: sales/services/sales.service.ts
-import { PaymentService } from '@/features/payments/services/payment.service';
+// ❌ NO HACER: features/expenses/components/dashboard/dashboard.ts
+import { DeleteUser } from '@/features/settings/components/delete-user/delete-user';
 ```
 
-**Alternativa permitida:** Usar contracts en `shared/contracts/` para comunicación entre features mediante providers (ver ejemplo en "Dependencias Permitidas").
+**Alternativa permitida:** Usar contracts en `shared/contracts/` para comunicación entre features mediante providers (ver sección "Comunicación entre Features mediante Contracts").
+
+## Convención de Imports (Path Aliases)
+
+**Regla:** Usar path aliases (`@/core`, `@/shared`, `@/cross`, `@/features`, `@/environments`) es **obligatorio** para imports que cruzan capas.
+
+- **Imports que cruzan capas:** Obligatorio usar alias. Aplica cuando un archivo importa desde otra capa (Core, Shared o Cross).
+  - Ejemplo: `import { EntityRepository } from '@/cross/persistence/services/entity-repository';`
+- **Imports dentro del mismo feature:** Opcional. Se permite tanto alias como rutas relativas.
+  - Ejemplo con alias: `import { Space } from '@/features/expenses/models/space';`
+  - Ejemplo con relativa: `import { Space } from '../models/space';`
+
+Esta convención mejora la legibilidad y hace explícita la capa de origen cuando se importa desde fuera del feature.
 
 ## Definición de Rutas
 
 Cada feature define sus propias rutas en un archivo `{feature-name}-routes.ts` dentro de `src/app/features/{feature-name}/`:
 
 ```typescript
-// app/features/sales/sales-routes.ts
+// src/app/features/expenses/expenses-routes.ts
 import { Routes } from '@angular/router';
-import { SalesListComponent } from './components/sales-list/sales-list.component';
-import { SaleDetailComponent } from './components/sale-detail/sale-detail.component';
+import { MainLayout } from '@/shared/components/main-layout/main-layout';
+import { Sync } from '@/cross/persistence/components/sync/sync';
+import { TransactionsView } from './components/transactions-view/transactions-view';
+import { CategoriesView } from './components/categories-view/categories-view';
 
-export const salesRoutes: Routes = [
+export const expensesRoutes: Routes = [
   {
     path: '',
-    component: SalesListComponent
+    component: MainLayout,
+    children: [
+      { path: 'transactions', component: TransactionsView },
+      { path: 'settings/categories', component: CategoriesView }
+    ]
   },
-  {
-    path: ':id',
-    component: SaleDetailComponent
-  }
+  { path: 'settings/sync', component: Sync }
 ];
 ```
 
 Luego, estas rutas se importan en las rutas principales de la app:
 
 ```typescript
-// app.routes.ts
-import { salesRoutes } from './features/sales/sales-routes';
+// src/app/app.routes.ts
+import { Error } from '@/core/components/error/error';
 
 export const routes: Routes = [
   {
-    path: 'sales',
-    loadChildren: () => import('./features/sales/sales-routes').then((m) => m.salesRoutes)
-  }
-  // ... otras rutas
+    path: '',
+    loadChildren: () => import('./features/expenses/expenses-routes').then((m) => m.expensesRoutes)
+  },
+  { path: 'error/:code', component: Error }
 ];
 ```
 
@@ -405,7 +366,7 @@ export const routes: Routes = [
 ### Mitigación
 
 - Documentar la estructura claramente (este ADR)
-- Usar aliases de ruta (`@/core`, `@/shared`) para hacer los imports claros
+- Usar aliases de ruta obligatoriamente para imports que cruzan capas (ver sección "Convención de Imports")
 - Hacer cumplir las reglas mediante linting (las reglas de ESLint pueden prevenir imports prohibidos)
 - Revisiones de código regulares para asegurar cumplimiento
 

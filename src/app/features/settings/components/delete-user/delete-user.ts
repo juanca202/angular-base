@@ -19,6 +19,7 @@ import { StorageService } from '@factor_ec/utils';
 import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
 
 import { AppManager } from '@/core/services/app-manager';
+import { Session } from '@/core/services/session';
 import { AuthProvider } from 'auth-core';
 import { environment } from '@/environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -59,6 +60,7 @@ export class DeleteUser implements OnInit, OnDestroy {
   // Dependency injection
   public readonly appManager = inject(AppManager);
   public readonly authProvider = inject(AuthProvider);
+  public readonly session = inject(Session);
   private readonly httpClient = inject(HttpClient);
   private readonly messageService = inject(MessageService);
   private readonly storageService = inject(StorageService);
@@ -70,7 +72,7 @@ export class DeleteUser implements OnInit, OnDestroy {
     required(schemaPath.email, { message: $localize`Field required` });
     email(schemaPath.email, { message: $localize`Type a valid email` });
     validate(schemaPath.email, ({ value }) => {
-      const expected = this.authProvider.getUser()?.email;
+      const expected = this.session.settings()?.user?.email;
       if (!expected) return null;
       if (value() !== expected) {
         return { kind: 'pattern', message: this.invalidUserEmail };

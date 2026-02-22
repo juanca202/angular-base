@@ -97,7 +97,7 @@ export class Session {
       };
     }
     const settings = this.settings();
-    const user = this.authProvider.getUser();
+    const user = this.authProvider.user();
     const networkSettings = lastValueFrom<Settings>(
       this.httpClient
         .get<Settings>(getApiUrl('settings'), {

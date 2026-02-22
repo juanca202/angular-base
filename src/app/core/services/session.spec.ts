@@ -61,10 +61,20 @@ describe('Session', () => {
       // Arrange
       const storedState: SessionState = {
         settings: {
+          user: {
+            username: 'test',
+            email: 'test@test.com',
+            roles: [],
+            firstName: '',
+            lastName: '',
+            picture: '',
+            featureFlags: []
+          },
           language: 'en',
           subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
           environment: 'dev',
-          onboarding: false
+          onboarding: false,
+          country: 'US'
         },
         params: { key1: 'value1' }
       };
@@ -300,10 +310,20 @@ describe('Session', () => {
       // Arrange
       const storedState: SessionState = {
         settings: {
+          user: {
+            username: 'test',
+            email: 'test@test.com',
+            roles: [],
+            firstName: '',
+            lastName: '',
+            picture: '',
+            featureFlags: []
+          },
           language: 'es',
           subscription: { code: '2', name: 'Premium', plan: { code: '2', name: 'Premium' } },
           environment: 'prod',
-          onboarding: true
+          onboarding: true,
+          country: 'US'
         },
         params: { key1: 'value1', key2: 'value2' }
       };

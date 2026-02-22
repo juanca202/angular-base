@@ -31,10 +31,10 @@ export function createMockAppManager(overrides?: Partial<AppManager>): Partial<A
  */
 export function createMockAuthService(overrides?: Partial<AuthProvider>): Partial<AuthProvider> {
   return {
-    getUser: vi.fn().mockReturnValue(null),
+    user: signal(null),
     login: vi.fn().mockResolvedValue(true),
     logout: vi.fn().mockResolvedValue(true),
-    isLoggedIn: vi.fn().mockReturnValue(false),
+    isLoggedIn: signal(false),
     signup: vi.fn().mockResolvedValue(undefined),
     ...overrides
   };
@@ -45,10 +45,10 @@ export function createMockAuthService(overrides?: Partial<AuthProvider>): Partia
  */
 export function createMockAuthProvider(overrides?: Partial<AuthProvider>): Partial<AuthProvider> {
   return {
-    getUser: vi.fn().mockReturnValue(null),
+    user: signal(null),
     login: vi.fn().mockResolvedValue(true),
     logout: vi.fn().mockResolvedValue(true),
-    isLoggedIn: vi.fn().mockReturnValue(false),
+    isLoggedIn: signal(false),
     signup: vi.fn().mockResolvedValue(undefined),
     ...overrides
   };

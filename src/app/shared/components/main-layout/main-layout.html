@@ -31,12 +31,14 @@
   <button type="button" routerLink="/settings" class="ft-profile hidden md:block" matButton>
     <div class="flex gap-4 items-center">
       <ft-avatar
-        [label]="authProvider.getUser()?.firstName + ' ' + authProvider.getUser()?.lastName"
-        [src]="authProvider.getUser()?.picture"
+        [label]="session.settings()?.user?.firstName + ' ' + session.settings()?.user?.lastName"
+        [src]="session.settings()?.user?.picture"
       />
       <div class="ft-item__label ft-label">
-        <div>{{ authProvider.getUser()?.firstName }} {{ authProvider.getUser()?.lastName }}</div>
-        <div class="text-gray-400">{{ authProvider.getUser()?.email }}</div>
+        <div>
+          {{ session.settings()?.user?.firstName }} {{ session.settings()?.user?.lastName }}
+        </div>
+        <div class="text-gray-400">{{ session.settings()?.user?.email }}</div>
       </div>
     </div>
   </button>

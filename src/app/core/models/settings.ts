@@ -1,3 +1,5 @@
+import { User } from './user';
+
 export interface Subscription {
   code: string;
   name: string;
@@ -7,9 +9,11 @@ export interface Subscription {
   };
 }
 export interface Settings {
+  user: User;
   language: string;
   subscription: Subscription;
   featureFlags?: string[];
   environment: string;
   onboarding: boolean;
+  country: string;
 }

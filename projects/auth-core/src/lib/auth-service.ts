@@ -51,17 +51,18 @@ export class AuthService extends AuthProvider {
   private readonly config = inject(AUTH_CONFIG);
   private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
-  private readonly _token = signal<AuthToken | null>(null);
   private readonly _user = signal<User | null>(null);
 
   /** Session token key */
   private readonly TOKEN_KEY = `${this.config.sessionPrefix}_sess`;
 
-  /** Application settings persisted in session (read-only computed) */
-  public readonly token = computed(() => this._token());
+  public readonly user = computed(() => this._user());
 
   constructor() {
     super();
+    if (this.isLoggedIn()) {
+      this._user.set(this.extractUserFromToken(this.getToken()?.token ?? ''));
+    }
   }
 
   /**
@@ -79,7 +80,7 @@ export class AuthService extends AuthProvider {
    * @returns
    */
   public addAuthenticationToken(request: HttpRequest<any>): HttpRequest<any> {
-    const token: AuthToken | null = this.token();
+    const token: AuthToken | null = this.getToken();
 
     // If the access token is null, the user is not logged in; return the original request
     if (
@@ -97,7 +98,7 @@ export class AuthService extends AuthProvider {
       }
     });
   }
-  public override async connect(client: 'google'): Promise<boolean> {
+  public async connect(client: 'google'): Promise<boolean> {
     const isChrome =
       navigator.userAgentData?.brands?.some((b) => b.brand === 'Google Chrome') ?? false;
 
@@ -147,7 +148,7 @@ export class AuthService extends AuthProvider {
         });
         const data = await response.json();
         this.setToken(data.token);
-        this.setUser(data.user);
+        this._user.set(data.user);
         location.href = this.config.appPath;
       } catch (e) {
         console.error('FedCM error: ', e);
@@ -163,12 +164,41 @@ export class AuthService extends AuthProvider {
   }
 
   /**
+   * Extracts user claims from a JWT token payload.
+   * Maps common JWT claims (sub, email, given_name, family_name, etc.) to the User model.
+   * @param jwtToken The JWT token string
+   * @returns User object or null if parsing fails
+   */
+  private extractUserFromToken(jwtToken: string): User | null {
+    if (!jwtToken) return null;
+    try {
+      const jwtParts = jwtToken.split('.');
+      if (jwtParts.length !== 3) return null;
+      const payload = JSON.parse(window.atob(jwtParts[1])) as Record<string, unknown>;
+      const roles = Array.isArray(payload['roles'])
+        ? (payload['roles'] as string[])
+        : typeof payload['role'] === 'string'
+          ? [payload['role']]
+          : [];
+      return {
+        username: (payload['sub'] ??
+          payload['preferred_username'] ??
+          payload['username'] ??
+          '') as string,
+        roles
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Extracts the expiration timestamp from a JWT token
    * @param jwtToken The JWT token string
    * @returns The expiration timestamp in seconds (JWT exp format) or undefined if not found/invalid
    */
   private extractExpirationFromToken(jwtToken: string): number | undefined {
-    if (!jwtToken || this.config.auth.tokenType !== 'jwt') {
+    if (!jwtToken) {
       return undefined;
     }
 
@@ -187,9 +217,6 @@ export class AuthService extends AuthProvider {
 
     return undefined;
   }
-  public getUser(): User | null {
-    return this._user();
-  }
   /**
    * Handles the flow of refreshing the access token or redirecting to sign-in
    * @param err HTTP error
@@ -201,7 +228,7 @@ export class AuthService extends AuthProvider {
     request: HttpRequest<any>,
     next: HttpHandlerFn
   ): Observable<any> {
-    const token: AuthToken | null = this.token();
+    const token: AuthToken | null = this.getToken();
     if (token && token.refresh_token && this.config.auth.refreshTokenUrl) {
       if (!this.refreshTokenInProgress) {
         this.refreshTokenInProgress = true;
@@ -284,7 +311,7 @@ export class AuthService extends AuthProvider {
       window.innerWidth < 1000 ? `${this.config.appPath}/auth` : `${this.config.appPath}/signin`;
     return true;
   }
-  public override signup(
+  public async signup(
     data: Signup | Record<string, unknown>,
     options?: Record<string, unknown>
   ): Promise<unknown> {
@@ -334,10 +361,9 @@ export class AuthService extends AuthProvider {
    *
    * @param token - The authentication token object to store
    */
-  public setToken(token: AuthToken | null): void {
+  private setToken(token: AuthToken | null): void {
     const copy: AuthToken | null = token ? { ...token } : null;
     if (copy && typeof document !== 'undefined') {
-      this._token.set(copy);
       const expiresAt = this.extractExpirationFromToken(copy.token);
       const value = encodeURIComponent(JSON.stringify(copy));
       const maxAge = expiresAt
@@ -346,6 +372,7 @@ export class AuthService extends AuthProvider {
       let cookie = `${this.TOKEN_KEY}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Strict`;
       if (typeof location !== 'undefined' && location.protocol === 'https:') cookie += '; Secure';
       document.cookie = cookie;
+      this._user.set(this.extractUserFromToken(copy.token) ?? null);
     }
   }
 
@@ -353,19 +380,9 @@ export class AuthService extends AuthProvider {
    * Clears the authentication token from session state and removes the cookie.
    */
   public clearToken(): void {
-    this._token.set(null);
     if (typeof document !== 'undefined') {
       document.cookie = `${this.TOKEN_KEY}=; Path=/; Max-Age=0`;
     }
-  }
-
-  /**
-   * Sets the current user in session state
-   *
-   * @param user - The user object to store in session
-   */
-  public setUser(user: User): void {
-    this._user.set(user);
   }
 
   /**
@@ -384,7 +401,7 @@ export class AuthService extends AuthProvider {
    * @returns true if a valid token exists, false otherwise
    */
   public readonly isLoggedIn = computed(() => {
-    const token = this._token();
+    const token = this.getToken();
     if (!token) return false;
 
     const expiresAt = this.extractExpirationFromToken(token.token);

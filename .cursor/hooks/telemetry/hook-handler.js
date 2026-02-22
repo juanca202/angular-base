@@ -45,7 +45,6 @@ function main() {
           ...base,
           type: 'chat',
           promptLength: event.prompt?.length ?? 0,
-          responseLength: 0,
           attachmentsCount: attachments.length
         });
       } else if (hookName === 'afterFileEdit') {

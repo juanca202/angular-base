@@ -1,14 +1,26 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
 import type { AccountInfo } from '@azure/msal-browser';
 
-import { AuthProvider, type User } from 'auth-core';
+import { AuthProvider, type Signup, type User } from 'auth-core';
+
+function accountToUser(acc: AccountInfo | null): User | null {
+  if (!acc) return null;
+  return {
+    username: acc.username,
+    roles: ((acc.idTokenClaims as Record<string, unknown>)?.['roles'] as string[]) ?? []
+  };
+}
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService extends AuthProvider {
   private readonly msal = inject(MsalService);
+
+  override readonly user = computed(() => accountToUser(this.msal.instance.getActiveAccount()));
+
+  override readonly isLoggedIn = computed(() => this.msal.instance.getActiveAccount() !== null);
 
   override login(): Promise<boolean> {
     this.msal.loginRedirect();
@@ -20,30 +32,16 @@ export class AuthService extends AuthProvider {
     return Promise.resolve(true);
   }
 
-  override getUser(): User {
-    const acc = this.msal.instance.getActiveAccount();
-    if (!acc) {
-      return {
-        username: '',
-        email: '',
-        roles: [],
-        firstName: '',
-        lastName: '',
-        picture: ''
-      };
-    }
-    return {
-      username: acc.username,
-      email: (acc.idTokenClaims as Record<string, unknown>)?.['email'] as string ?? acc.username,
-      roles: (acc.idTokenClaims as Record<string, unknown>)?.['roles'] as string[] ?? [],
-      firstName: (acc.idTokenClaims as Record<string, unknown>)?.['given_name'] as string ?? '',
-      lastName: (acc.idTokenClaims as Record<string, unknown>)?.['family_name'] as string ?? '',
-      picture: (acc.idTokenClaims as Record<string, unknown>)?.['picture'] as string ?? ''
-    };
+  override connect(_client: 'google'): Promise<boolean> {
+    this.msal.loginRedirect();
+    return Promise.resolve(true);
   }
 
-  override isLoggedIn(): boolean {
-    return this.msal.instance.getActiveAccount() !== null;
+  override async signup(
+    _data?: Signup | Record<string, unknown>,
+    _options?: Record<string, unknown>
+  ): Promise<unknown> {
+    throw new Error('User registration is managed in Azure AD portal');
   }
 
   get account(): AccountInfo | null {

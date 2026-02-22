@@ -38,10 +38,10 @@ describe('Settings', () => {
       updateStatus: signal<string | null>('done')
     };
     mockAuthProvider = {
-      getUser: vi.fn().mockReturnValue(null),
+      user: signal(null),
       login: vi.fn().mockResolvedValue(true),
       logout: vi.fn().mockResolvedValue(true),
-      isLoggedIn: vi.fn().mockReturnValue(false)
+      isLoggedIn: signal(false)
     };
     mockAuthManager = {
       changePassword: vi.fn(),

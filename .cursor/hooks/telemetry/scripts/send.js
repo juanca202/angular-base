@@ -69,7 +69,6 @@ const event = {
         lines_generated: payload.linesGenerated || 0,
         lines_removed: payload.linesRemoved || 0,
         prompt_length: payload.promptLength || 0,
-        response_length: payload.responseLength || 0,
         timestamp: Date.now(),
         conversation_id: payload.conversationId || '',
         status: payload.status || '',

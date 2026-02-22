@@ -25,7 +25,7 @@
   @if (codeExpiresIn()) {
     <p class="text-sm text-gray-400" i18n>
       You have <strong>{{ codeExpiresIn() }} minutes</strong> to enter verification code sent to
-      <strong>{{ authProvider.getUser()?.email }}</strong> to confirm deletion.
+      <strong>{{ session.settings()?.user?.email }}</strong> to confirm deletion.
     </p>
     <form id="step2Form" (submit)="submit()" class="mt-4">
       <div class="grid grid-cols-1 gap-y-2 gap-x-4">

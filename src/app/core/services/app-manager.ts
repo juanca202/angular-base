@@ -49,6 +49,7 @@ export class AppManager {
   public readonly updateStatus = signal<string | null>('done');
   private readonly defaultLocale = 'en';
   public readonly languages = signal<Language[]>(environment.languages);
+  public readonly startTime = performance.now();
 
   // Storage keys
   private readonly clientKey = `${environment.sessionPrefix}_cid`;
@@ -82,7 +83,6 @@ export class AppManager {
     }
   }
   public async init(): Promise<void> {
-    let timerStart = performance.now();
     // Show version in console
     console.log(`${versionInfo.npmPackage.name} ${versionInfo.git.raw}`);
     // React to updates
@@ -105,7 +105,7 @@ export class AppManager {
     }
 
     // Log the time taken to initialize the app
-    console.log('Init app in:', (performance.now() - timerStart).toFixed(2), 'ms');
+    console.log('App initialized in:', (performance.now() - this.startTime).toFixed(2), 'ms');
   }
   public install(): void {
     if (!this.installPrompt) {
