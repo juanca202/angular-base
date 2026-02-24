@@ -19,7 +19,8 @@
     "compodoc:build": "compodoc -p tsconfig.doc.json",
     "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
     "compodoc:serve": "compodoc -s",
-    "icons:pack": "node generate-icons.js"
+    "icons:pack": "node generate-icons.js",
+    "figma:variables": "node scripts/fetch-figma-variables.js"
   },
   "private": true,
   "packageManager": "npm@10.8.2",
