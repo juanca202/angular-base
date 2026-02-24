@@ -1,5 +1,5 @@
 ---
-name: extract-figma-variables
+name: abp-extract-figma-variables
 description: Extracts design variables from a Figma URL and syncs them to src/theme/tokens/theme.css. Maps variable names, converts px to rem (16px base), and imports Google Fonts in index.html. Use when the user provides a Figma URL to sync design tokens, or when they ask to extract Figma variables.
 ---
 
@@ -48,10 +48,10 @@ URL formats:
 }
 ```
 
-**Option B — REST API (if MCP returns no data):** Run the script:
+**Option B — REST API (if MCP returns no data):** Run the script directly (from project root):
 
 ```bash
-FIGMA_ACCESS_TOKEN=<token> npm run figma:variables -- <fileKey|url>
+FIGMA_ACCESS_TOKEN=<token> node .cursor/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey|url>
 ```
 
 - Token: Figma Settings > Security > Personal access tokens
@@ -130,7 +130,7 @@ For nested structures (e.g. `global.color.primary`), map by the last segments (`
 When MCP `get_variable_defs` returns no data, use the script:
 
 ```bash
-FIGMA_ACCESS_TOKEN=<token> npm run figma:variables -- <fileKey|url>
+FIGMA_ACCESS_TOKEN=<token> node .cursor/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey|url>
 ```
 
 The script outputs JSON with `mapped` variables ready for theme.css. Parse the output and apply Step 3–6.
@@ -139,15 +139,15 @@ The script outputs JSON with `mapped` variables ready for theme.css. Parse the o
 
 ## Summary Rules
 
-| Rule       | Detail                                                                               |
-| ---------- | ------------------------------------------------------------------------------------ |
-| No URL     | Ask user for Figma URL before proceeding                                             |
-| MCP tool   | Use `get_variable_defs` from server `user-Figma`                                     |
-| Fallback   | Use `npm run figma:variables` with `FIGMA_ACCESS_TOKEN` if MCP returns no data       |
-| Target CSS | `src/theme/tokens/theme.css`                                                         |
-| px → rem   | Base 16px: `rem = px / 16`                                                           |
-| Fonts      | Assume Google Fonts; import from `https://fonts.googleapis.com/` in `src/index.html` |
-| Mapping    | Use `--ft-*` naming; map by semantic name (primary, secondary, etc.)                 |
+| Rule       | Detail                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| No URL     | Ask user for Figma URL before proceeding                                                                                        |
+| MCP tool   | Use `get_variable_defs` from server `user-Figma`                                                                                |
+| Fallback   | Use `node .cursor/skills/abp-extract-figma-variables/fetch-figma-variables.js` with `FIGMA_ACCESS_TOKEN` if MCP returns no data |
+| Target CSS | `src/theme/tokens/theme.css`                                                                                                    |
+| px → rem   | Base 16px: `rem = px / 16`                                                                                                      |
+| Fonts      | Assume Google Fonts; import from `https://fonts.googleapis.com/` in `src/index.html`                                            |
+| Mapping    | Use `--ft-*` naming; map by semantic name (primary, secondary, etc.)                                                            |
 
 ## Additional Resources
 

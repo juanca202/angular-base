@@ -4,9 +4,9 @@
  *
  * Alternative when MCP get_variable_defs does not return data.
  *
- * Usage:
- *   FIGMA_ACCESS_TOKEN=xxx node scripts/fetch-figma-variables.js <fileKey>
- *   FIGMA_ACCESS_TOKEN=xxx node scripts/fetch-figma-variables.js https://figma.com/design/VT4W8MFWwD8k1TYcABLEjf/Untitled
+ * Usage (run from project root):
+ *   FIGMA_ACCESS_TOKEN=xxx node .cursor/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey>
+ *   FIGMA_ACCESS_TOKEN=xxx node .cursor/skills/abp-extract-figma-variables/fetch-figma-variables.js https://figma.com/design/VT4W8MFWwD8k1TYcABLEjf/Untitled
  *
  * Token: Figma Settings > Security > Personal access tokens
  * Scopes: file_content:read (required), file_variables:read (Enterprise only, for variables)
@@ -216,7 +216,7 @@ async function main() {
   const input = process.argv[2];
   if (!input) {
     console.error(
-      'Usage: FIGMA_ACCESS_TOKEN=xxx node scripts/fetch-figma-variables.js <fileKey|url>'
+      'Usage: FIGMA_ACCESS_TOKEN=xxx node .cursor/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey|url>'
     );
     process.exit(1);
   }

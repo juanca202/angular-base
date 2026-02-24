@@ -1,5 +1,5 @@
 ---
-name: git-commit
+name: ab-git-commit
 description: 'Ejecutar git commit con análisis de mensajes conventional commits, staging inteligente y generación de mensajes. Usar cuando el usuario pida hacer commit de cambios, crear un git commit o mencione "/commit". Soporta: (1) Detección automática de tipo y scope desde los cambios, (2) Generación de mensajes conventional commit desde el diff, (3) Commit interactivo con opciones para sobrescribir tipo/scope/descripción, (4) Staging inteligente de archivos para agrupación lógica'
 license: MIT
 allowed-tools: Bash

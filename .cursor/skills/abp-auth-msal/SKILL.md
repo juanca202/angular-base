@@ -1,5 +1,5 @@
 ---
-name: auth-msal
+name: abp-auth-msal
 description: Implementa la autenticación con Azure AD usando MSAL (Microsoft Authentication Library). Usar cuando se requiera configurar o integrar autenticación con Microsoft Entra ID (Azure AD) en el proyecto Angular.
 ---
 
