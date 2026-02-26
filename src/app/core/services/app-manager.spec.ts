@@ -232,10 +232,14 @@ describe('AppManager', () => {
   });
 
   describe('versionUpdates subscription', () => {
-    it.skip('should handle VERSION_DETECTED event', () => {
+    it('should handle VERSION_DETECTED event', () => {
       // Arrange
       const versionUpdates = new EventEmitter<any>();
-      (mockSwUpdate.versionUpdates as any) = versionUpdates;
+      const swUpdateWithEmitter = {
+        ...mockSwUpdate,
+        versionUpdates,
+        isEnabled: false
+      };
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
@@ -248,12 +252,13 @@ describe('AppManager', () => {
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
-          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
 
       const manager = TestBed.inject(AppManager);
+      void manager.init();
 
       // Act
       versionUpdates.emit({ type: 'VERSION_DETECTED', version: { hash: 'abc123' } });
@@ -262,10 +267,9 @@ describe('AppManager', () => {
       expect(manager.updateStatus()).toBe('checking');
     });
 
-    it.skip('should handle VERSION_READY event', () => {
+    it('should handle VERSION_READY event', () => {
       // Arrange
       const versionUpdates = new EventEmitter<any>();
-      (mockSwUpdate.versionUpdates as any) = versionUpdates;
       const snackBarOpenSpy = vi.spyOn(mockSnackBar, 'open').mockReturnValue({
         onAction: vi.fn().mockReturnValue({
           subscribe: vi.fn((callback: any) => {
@@ -274,6 +278,11 @@ describe('AppManager', () => {
           })
         })
       } as any);
+      const swUpdateWithEmitter = {
+        ...mockSwUpdate,
+        versionUpdates,
+        isEnabled: false
+      };
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
@@ -286,14 +295,16 @@ describe('AppManager', () => {
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
-          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
 
       const manager = TestBed.inject(AppManager);
+      void manager.init();
       Object.defineProperty(window, 'location', {
         writable: true,
+        configurable: true,
         value: {
           ...window.location,
           reload: vi.fn()
@@ -312,10 +323,14 @@ describe('AppManager', () => {
       expect(snackBarOpenSpy).toHaveBeenCalled();
     });
 
-    it.skip('should handle VERSION_INSTALLATION_FAILED event', () => {
+    it('should handle VERSION_INSTALLATION_FAILED event', () => {
       // Arrange
       const versionUpdates = new EventEmitter<any>();
-      (mockSwUpdate.versionUpdates as any) = versionUpdates;
+      const swUpdateWithEmitter = {
+        ...mockSwUpdate,
+        versionUpdates,
+        isEnabled: false
+      };
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
@@ -328,12 +343,13 @@ describe('AppManager', () => {
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
-          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
 
       const manager = TestBed.inject(AppManager);
+      void manager.init();
 
       // Act
       versionUpdates.emit({
@@ -349,7 +365,11 @@ describe('AppManager', () => {
     it('should handle NO_NEW_VERSION_DETECTED event', () => {
       // Arrange
       const versionUpdates = new EventEmitter<any>();
-      (mockSwUpdate.versionUpdates as any) = versionUpdates;
+      const swUpdateWithEmitter = {
+        ...mockSwUpdate,
+        versionUpdates,
+        isEnabled: false
+      };
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
@@ -362,12 +382,13 @@ describe('AppManager', () => {
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
-          { provide: SwUpdate, useValue: { ...mockSwUpdate, versionUpdates } },
+          { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
 
       const manager = TestBed.inject(AppManager);
+      void manager.init();
 
       // Act
       versionUpdates.emit({ type: 'NO_NEW_VERSION_DETECTED' });
