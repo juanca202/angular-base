@@ -3,4 +3,4 @@ export const ENTITY_CONTEXT = {
   DETAIL: 'detail',
   LIST: 'list',
   SEARCH: 'search'
-};
+} as const;
