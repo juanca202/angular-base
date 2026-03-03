@@ -1,38 +1,31 @@
-<div mat-dialog-title>
-  <div class="ft-actions">
+<app-header
+  mat-dialog-title
+  [title]="entity.value() && entity.value()?.firstName + ' ' + entity.value()?.lastName"
+  [subtitle]="entity.value()?.email ?? null"
+>
+  <ng-container ftStart>
     <button type="button" matIconButton i18n-title title="Close" mat-dialog-close>
-      <ft-icon name="arrow-left" class="text-2xl" />
+      <ft-icon name="close" class="text-2xl" />
     </button>
-  </div>
-  <div i18n>{{ entity.value()?.firstName }} {{ entity.value()?.lastName }}</div>
-  <div class="ft-actions">
+  </ng-container>
+  <ng-container ftEnd>
     @let contextMenuItems = entityManager.getContextMenu(entity.value(), ENTITY_CONTEXT.DETAIL);
     @if (contextMenuItems.length > 0) {
-      <button
-        type="button"
-        matIconButton
-        [matMenuTriggerFor]="contextMenu"
-        (click)="$event.stopPropagation()"
-      >
-        <ft-icon name="ellipsis-vertical" />
-      </button>
-      <mat-menu #contextMenu="matMenu">
-        @for (group of contextMenuItems; track group.id) {
-          @if ($index > 0) {
-            <hr class="my-2" />
-          }
-          @for (action of group.children; track action.id) {
-            <button type="button" mat-menu-item (click)="action.click?.()">
-              {{ action.label }}
-            </button>
-          }
-        }
-      </mat-menu>
+      <app-icon-button-context [items]="contextMenuItems" />
     }
-  </div>
-</div>
+  </ng-container>
+</app-header>
 <div mat-dialog-content>
-  @if (!entity.loading()) {
+  @if (entity.loading()) {
+    <app-progress-placeholder
+      class="ft-center p-6"
+      i18n-label
+      label="Loading..."
+      iconClass="ft-progress--3"
+    />
+  } @else if (entity.error()) {
+    <app-error-placeholder class="ft-center" [resource]="entity" />
+  } @else {
     <div class="ft-container flex flex-col gap-4 pt-4">
       <div class="flex items-center justify-between">
         <div>{{ entity.value()?.email }}</div>
@@ -61,33 +54,39 @@
           </div>
         </button>
       </div>
-      <table class="ft-table">
-        <thead>
-          <tr>
-            <th i18n>Name</th>
-            <th i18n>Email</th>
-            <th class="w-[57px]"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (entity of related.value()?.slice(0, 3); track entity.id) {
+      @if (related.loading()) {
+        <app-progress-placeholder
+          class="ft-center p-6"
+          i18n-label
+          label="Loading..."
+          iconClass="ft-progress--3"
+        />
+      } @else if (related.error()) {
+        <app-error-placeholder class="ft-center" [resource]="related" />
+      } @else {
+        <table class="ft-table">
+          <thead>
             <tr>
-              <td>{{ entity.firstName }} {{ entity.lastName }}</td>
-              <td>{{ entity.email }}</td>
-              <td>
-                <button type="button" matIconButton>
-                  <ft-icon name="trash" class="text-2xl" />
-                </button>
-              </td>
+              <th i18n>Name</th>
+              <th i18n>Email</th>
+              <th class="w-[57px]"></th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  } @else if (entity.loading()) {
-    <div class="ft-center">
-      <ft-progress class="ft-progress--3" />
-      <div i18n>Loading...</div>
+          </thead>
+          <tbody>
+            @for (entity of related.value()?.slice(0, 3); track entity.id) {
+              <tr>
+                <td>{{ entity.firstName }} {{ entity.lastName }}</td>
+                <td>{{ entity.email }}</td>
+                <td>
+                  <button type="button" matIconButton>
+                    <ft-icon name="trash" class="text-2xl" />
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
     </div>
   }
 </div>

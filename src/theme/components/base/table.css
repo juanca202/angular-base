@@ -3,7 +3,7 @@
   thead {
     @apply bg-(--ft-color-bg) sticky top-0;
     th {
-      @apply p-2 pt-0 font-medium text-left;
+      @apply p-2 pt-0 font-bold text-left;
     }
   }
   tbody {

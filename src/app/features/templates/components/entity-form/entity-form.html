@@ -1,39 +1,28 @@
 <form (submit)="onSubmit($event)">
-  <div mat-dialog-title>
-    <div class="ft-actions">
+  <app-header mat-dialog-title i18n-title title="Entity">
+    <ng-container ftStart>
       <button type="button" matIconButton i18n-title title="Close" mat-dialog-close>
-        <ft-icon name="arrow-left" class="text-2xl" />
+        <ft-icon name="close" class="text-2xl" />
       </button>
-    </div>
-    <div i18n>Entity</div>
-    <div class="ft-actions">
+    </ng-container>
+    <ng-container ftEnd>
       @let contextMenuItems = entityManager.getContextMenu(entity.value(), ENTITY_CONTEXT.FORM);
       @if (contextMenuItems.length > 0) {
-        <button
-          type="button"
-          matIconButton
-          [matMenuTriggerFor]="contextMenu"
-          (click)="$event.stopPropagation()"
-        >
-          <ft-icon name="ellipsis-vertical" />
-        </button>
-        <mat-menu #contextMenu="matMenu">
-          @for (group of contextMenuItems; track group.id) {
-            @if ($index > 0) {
-              <hr class="my-2" />
-            }
-            @for (action of group.children; track action.id) {
-              <button type="button" mat-menu-item (click)="action.click?.()">
-                {{ action.label }}
-              </button>
-            }
-          }
-        </mat-menu>
+        <app-icon-button-context [items]="contextMenuItems" />
       }
-    </div>
-  </div>
-  <div mat-dialog-content class="!pt-4">
-    @if (!entity.loading()) {
+    </ng-container>
+  </app-header>
+  <div mat-dialog-content class="pt-4!">
+    @if (entity.loading()) {
+      <app-progress-placeholder
+        class="ft-center p-6"
+        i18n-label
+        label="Loading..."
+        iconClass="ft-progress--3"
+      />
+    } @else if (entity.error()) {
+      <app-error-placeholder class="ft-center" [resource]="entity" />
+    } @else {
       <div class="ft-container">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
           <mat-form-field>
@@ -84,11 +73,6 @@
           </mat-form-field>
         </div>
       </div>
-    } @else {
-      <div class="ft-center">
-        <ft-progress class="ft-progress--3" />
-        <div i18n>Loading...</div>
-      </div>
     }
   </div>
   <div mat-dialog-actions>
@@ -110,13 +94,8 @@
       @if (!entityMutations.submitting()) {
         <span i18n>Save</span>
       } @else {
-        <ng-container *ngTemplateOutlet="submittingTemplate" />
+        <app-progress-placeholder />
       }
     </button>
   </div>
 </form>
-<ng-template #submittingTemplate>
-  <div class="text-center">
-    <ft-progress class="ft-progress--2" />
-  </div>
-</ng-template>

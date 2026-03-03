@@ -8,13 +8,17 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { IconComponent, ProgressComponent } from '@factor_ec/ui';
+import { IconComponent } from '@factor_ec/ui';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
 import { EntityManager } from '../../managers/entity-manager';
 import { MatMenuModule } from '@angular/material/menu';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
+import { ProgressPlaceholder } from '@/shared/components/progress-placeholder/progress-placeholder';
+import { Header } from '@/shared/components/header/header';
+import { ErrorPlaceholder } from '@/shared/components/error-placeholder/error-placeholder';
+import { IconButtonContext } from '@/shared/components/icon-button-context/icon-button-context';
 
 /**
  * Presents the entity detail drawer in read-only mode, displaying the full
@@ -33,7 +37,10 @@ import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
     MatDialogModule,
     MatFormFieldModule,
     MatMenuModule,
-    ProgressComponent
+    ProgressPlaceholder,
+    Header,
+    ErrorPlaceholder,
+    IconButtonContext
   ],
   templateUrl: './entity-detail.html',
   styleUrl: './entity-detail.css',

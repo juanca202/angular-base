@@ -1,0 +1,18 @@
+<div class="flex items-center min-w-[5rem]">
+  <ng-content select="[ftStart]"></ng-content>
+</div>
+<ng-content select="[ftCenter]">
+  @if (title() || subtitle()) {
+    <div class="grow">
+      @if (title()) {
+        <div>{{ title() }}</div>
+      }
+      @if (subtitle()) {
+        <div class="text-sm text-gray-500 font-normal">{{ subtitle() }}</div>
+      }
+    </div>
+  }
+</ng-content>
+<div class="flex items-center justify-end min-w-[5rem]">
+  <ng-content select="[ftEnd]"></ng-content>
+</div>

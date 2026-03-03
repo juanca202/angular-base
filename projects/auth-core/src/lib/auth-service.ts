@@ -383,6 +383,7 @@ export class AuthService extends AuthProvider {
     if (typeof document !== 'undefined') {
       document.cookie = `${this.TOKEN_KEY}=; Path=/; Max-Age=0`;
     }
+    this.clearUser();
   }
 
   /**
@@ -401,6 +402,8 @@ export class AuthService extends AuthProvider {
    * @returns true if a valid token exists, false otherwise
    */
   public readonly isLoggedIn = computed(() => {
+    // Depend on _user so computed re-evaluates when setToken/clearToken updates state
+    this._user();
     const token = this.getToken();
     if (!token) return false;
 

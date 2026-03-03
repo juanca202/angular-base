@@ -9,10 +9,18 @@ import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { Entity } from '@/features/templates/models/entity';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { MatButtonModule } from '@angular/material/button';
+import { ErrorPlaceholder } from '@/shared/components/error-placeholder/error-placeholder';
 
 @Component({
   selector: 'app-entity-search',
-  imports: [AvatarComponent, FormField, IconComponent, MatButtonModule, MatDialogContent],
+  imports: [
+    AvatarComponent,
+    FormField,
+    IconComponent,
+    MatButtonModule,
+    MatDialogContent,
+    ErrorPlaceholder
+  ],
   templateUrl: './entity-search.html',
   styleUrl: './entity-search.css',
   changeDetection: ChangeDetectionStrategy.OnPush

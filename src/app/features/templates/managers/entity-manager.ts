@@ -12,6 +12,7 @@ import { EntityRepository } from '../repositories/entity-repository';
 import { Action } from '@/shared/models/action';
 import { ACTION_TYPE } from '@/shared/constants/action-type';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
+import { EntityRelations } from '../components/entity-relations/entity-relations';
 
 /**
  * Coordinates the experience for opening entity detail dialogs.
@@ -90,9 +91,26 @@ export class EntityManager {
               id: 'delete',
               type: ACTION_TYPE.ITEM,
               label: $localize`Delete`,
-              visible: [ENTITY_CONTEXT.LIST, ENTITY_CONTEXT.SEARCH].includes(context ?? ''),
+              visible:
+                !context ||
+                (
+                  [
+                    ENTITY_CONTEXT.LIST,
+                    ENTITY_CONTEXT.SEARCH,
+                    ENTITY_CONTEXT.FORM
+                  ] as EntityContext[]
+                ).includes(context),
               click: () => {
                 this.delete(entity.id);
+              }
+            },
+            {
+              id: 'relations',
+              type: ACTION_TYPE.ITEM,
+              label: $localize`Relations`,
+              visible: context === ENTITY_CONTEXT.LIST,
+              click: () => {
+                this.openRelations(entity.id);
               }
             }
           ].filter((a) => a.visible)
@@ -113,7 +131,8 @@ export class EntityManager {
         position: {
           left: 'auto',
           right: '0'
-        }
+        },
+        autoFocus: false
       };
       if (!view) {
         const dialogRef = this.dialog.open(EntityForm, { ...config, disableClose: true });
@@ -130,6 +149,17 @@ export class EntityManager {
         this.dialog.open(EntityDetail, config);
       }
     });
+  }
+  public openRelations(id?: string): void {
+    const config = {
+      data: {
+        id
+      },
+      panelClass: ['ft-dialog'],
+      width: '600px',
+      autoFocus: false
+    };
+    this.dialog.open(EntityRelations, config);
   }
   public async search(): Promise<Entity> {
     return new Promise<Entity>((resolve) => {

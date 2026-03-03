@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui';
+import { IconComponent, MessageService } from '@factor_ec/ui';
 
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
@@ -25,6 +25,10 @@ import { Operation, OperationType } from '@/core/models/operation';
 import { EntityManager } from '../../managers/entity-manager';
 import { MatMenuModule } from '@angular/material/menu';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
+import { ProgressPlaceholder } from '@/shared/components/progress-placeholder/progress-placeholder';
+import { ErrorPlaceholder } from '@/shared/components/error-placeholder/error-placeholder';
+import { Header } from '@/shared/components/header/header';
+import { IconButtonContext } from '@/shared/components/icon-button-context/icon-button-context';
 
 @Component({
   selector: 'app-entity-form',
@@ -37,7 +41,10 @@ import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
     MatFormFieldModule,
     MatInputModule,
     MatMenuModule,
-    ProgressComponent
+    ProgressPlaceholder,
+    ErrorPlaceholder,
+    Header,
+    IconButtonContext
   ],
   templateUrl: './entity-form.html',
   styleUrl: './entity-form.css',

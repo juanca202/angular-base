@@ -1,0 +1,22 @@
+@if (items().length) {
+  <button
+    type="button"
+    matIconButton
+    [matMenuTriggerFor]="contextMenu"
+    (click)="$event.stopPropagation()"
+  >
+    <ft-icon name="ellipsis-vertical" />
+  </button>
+  <mat-menu #contextMenu="matMenu">
+    @for (group of items(); track group.id) {
+      @if ($index > 0) {
+        <hr class="my-2" />
+      }
+      @for (action of group.children; track action.id) {
+        <button type="button" mat-menu-item (click)="action.click?.()">
+          {{ action.label }}
+        </button>
+      }
+    }
+  </mat-menu>
+}

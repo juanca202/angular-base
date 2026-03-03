@@ -10,9 +10,13 @@ import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
-import { IconComponent, ProgressComponent } from '@factor_ec/ui';
+import { IconComponent } from '@factor_ec/ui';
 import { MatMenuModule } from '@angular/material/menu';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
+import { ProgressPlaceholder } from '@/shared/components/progress-placeholder/progress-placeholder';
+import { ErrorPlaceholder } from '@/shared/components/error-placeholder/error-placeholder';
+import { Header } from '@/shared/components/header/header';
+import { IconButtonContext } from '@/shared/components/icon-button-context/icon-button-context';
 
 /**
  * Displays the sample entity catalog using the reusable table layout.
@@ -23,7 +27,15 @@ import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
  */
 @Component({
   selector: 'app-entity-list',
-  imports: [MatButtonModule, MatMenuModule, IconComponent, ProgressComponent],
+  imports: [
+    MatButtonModule,
+    MatMenuModule,
+    IconComponent,
+    ProgressPlaceholder,
+    ErrorPlaceholder,
+    Header,
+    IconButtonContext
+  ],
   templateUrl: './entity-list.html',
   styleUrl: './entity-list.css',
   host: {

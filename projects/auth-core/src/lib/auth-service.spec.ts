@@ -52,11 +52,16 @@ describe('AuthService', () => {
       closeAll: vi.fn()
     };
 
+    const originalAtob = globalThis.atob?.bind(globalThis);
     Object.defineProperty(window, 'atob', {
       writable: true,
       value: vi.fn((str: string) => {
-        if (str === 'eyJleHAiOjE3MDAwMDAwMDAsInVzZXJuYW1lIjoidGVzdCJ9') {
-          return '{"exp":1700000000,"username":"test"}';
+        if (originalAtob) {
+          try {
+            return originalAtob(str);
+          } catch {
+            return str;
+          }
         }
         return str;
       })
