@@ -1,5 +1,3 @@
-/* theme/components.css */
-
 /* Avatar */
 :root {
   --ft-avatar-size: 2.5rem;
@@ -41,11 +39,22 @@
   --ft-message-info-bg: #cff4fc;
 }
 
-/* List Items */
+/* List */
 :root {
   --ft-list-hover-bg: color-mix(in srgb, var(--ft-color-primary) 10%, transparent);
   --ft-list-focus-bg: color-mix(in srgb, var(--ft-color-primary) 15%, transparent);
   --ft-list-active-bg: color-mix(in srgb, var(--ft-color-primary) 20%, transparent);
+}
+
+/* Table */
+:root {
+  --ft-table-bg: var(--ft-color-bg);
+  --ft-table-border-color: var(--ft-color-border);
+  --ft-table-hover-bg: color-mix(in srgb, var(--ft-color-primary) 10%, transparent);
+  --ft-table-focus-bg: color-mix(in srgb, var(--ft-color-primary) 15%, transparent);
+  --ft-table-active-bg: color-mix(in srgb, var(--ft-color-primary) 20%, transparent);
+  --ft-table-header-font-size: 0.75rem;
+  --ft-table-header-font-weight: 400;
 }
 
 @media (prefers-color-scheme: dark) {

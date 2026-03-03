@@ -1,9 +1,9 @@
 .ft-table {
-  @apply w-full table-auto border-collapse text-sm bg-(--ft-color-bg);
+  @apply w-full table-auto border-collapse text-sm bg-(--ft-table-bg);
   thead {
-    @apply bg-(--ft-color-bg) sticky top-0;
+    @apply bg-(--ft-table-bg) sticky top-0;
     th {
-      @apply p-2 pt-0 font-bold text-left;
+      @apply p-2 font-(--ft-table-header-font-weight) text-left text-(--ft-table-header-font-size);
     }
   }
   tbody {
@@ -13,13 +13,19 @@
       }
       &:not(:last-child) {
         td {
-          @apply border-b border-gray-300;
+          @apply border-b border-(--ft-table-border-color);
         }
       }
       &.ft-table__item--action {
         @apply cursor-pointer;
         &:hover {
-          @apply border-gray-100;
+          @apply bg-(--ft-table-hover-bg);
+        }
+        &:focus {
+          @apply bg-(--ft-table-focus-bg);
+        }
+        &:active {
+          @apply bg-(--ft-table-active-bg);
         }
       }
     }
