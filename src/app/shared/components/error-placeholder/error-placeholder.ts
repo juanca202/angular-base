@@ -1,10 +1,10 @@
 import { Resource } from '@/core/utils/async-resources';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { IconComponent } from '@factor_ec/ui';
+import { Icon } from '@factor_ec/ui';
 
 @Component({
   selector: 'app-error-placeholder',
-  imports: [IconComponent],
+  imports: [Icon],
   templateUrl: './error-placeholder.html',
   styleUrl: './error-placeholder.css',
   host: {

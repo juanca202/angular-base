@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Navigation, Router, RouterModule, UrlTree } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Error } from './error';
-import { AuthProvider } from 'auth-core';
-import { StorageService } from '@factor_ec/utils';
+import { AuthProvider } from '@factor_ec/utils';
+import { Storage } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
 import { EMPTY } from 'rxjs';
@@ -84,7 +84,7 @@ describe('Error', () => {
         imports: [Error, RouterModule],
         providers: [
           { provide: AuthProvider, useValue: mockAuthProvider },
-          { provide: StorageService, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorageService },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
           { provide: ActivatedRoute, useValue: mockActivatedRoute }
@@ -135,7 +135,7 @@ describe('Error', () => {
         imports: [Error, RouterModule],
         providers: [
           { provide: AuthProvider, useValue: mockAuthProvider },
-          { provide: StorageService, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorageService },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
           { provide: ActivatedRoute, useValue: mockActivatedRoute }
@@ -174,7 +174,7 @@ describe('Error', () => {
         imports: [Error, RouterModule],
         providers: [
           { provide: AuthProvider, useValue: mockAuthProvider },
-          { provide: StorageService, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorageService },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
           { provide: ActivatedRoute, useValue: mockActivatedRoute }

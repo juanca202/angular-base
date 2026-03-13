@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { IconComponent } from '@factor_ec/ui';
+import { Icon } from '@factor_ec/ui';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +32,7 @@ import { IconButtonContext } from '@/shared/components/icon-button-context/icon-
 @Component({
   selector: 'app-entity-detail',
   imports: [
-    IconComponent,
+    Icon,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,

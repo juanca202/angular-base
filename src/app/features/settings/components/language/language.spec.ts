@@ -3,7 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { Language } from './language';
 import { AppManager } from '@/core/services/app-manager';
-import { Language as LanguageModel, StorageService } from '@factor_ec/utils';
+import { Language as LanguageModel } from '@/core/models/environment';
+import { Storage } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
 import {
@@ -43,7 +44,7 @@ describe('Language', () => {
       imports: [Language, RouterModule],
       providers: [
         { provide: AppManager, useValue: mockAppManager },
-        { provide: StorageService, useValue: mockStorageService },
+        { provide: Storage, useValue: mockStorageService },
         ...COMMON_TEST_PROVIDERS.getCommonProviders({
           router: mockRouter,
           activatedRoute: mockActivatedRoute,

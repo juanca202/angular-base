@@ -8,7 +8,7 @@ import { Router, ActivatedRoute, UrlTree, Navigation } from '@angular/router';
 import { Subject, EMPTY } from 'rxjs';
 import { signal } from '@angular/core';
 import { UI_OPTIONS } from '@factor_ec/ui';
-import { StorageService } from '@factor_ec/utils';
+import { Storage } from '@factor_ec/utils';
 import { ParamMap } from '@angular/router';
 
 /**
@@ -79,9 +79,7 @@ export function createMockActivatedRouteWithParamMap(
 /**
  * Factory function to create a mock StorageService
  */
-export function createMockStorageService(
-  overrides?: Partial<StorageService>
-): Partial<StorageService> {
+export function createMockStorageService(overrides?: Partial<Storage>): Partial<Storage> {
   return {
     get: vi.fn().mockReturnValue(null),
     set: vi.fn(),
@@ -137,8 +135,8 @@ export const COMMON_TEST_PROVIDERS = {
   /**
    * Get common providers for components that use StorageService
    */
-  getStorageServiceProvider: (mockStorage?: Partial<StorageService>) => [
-    { provide: StorageService, useValue: mockStorage || createMockStorageService() }
+  getStorageServiceProvider: (mockStorage?: Partial<Storage>) => [
+    { provide: Storage, useValue: mockStorage || createMockStorageService() }
   ],
 
   /**
@@ -148,7 +146,7 @@ export const COMMON_TEST_PROVIDERS = {
     router?: Partial<Router>;
     activatedRoute?: Partial<ActivatedRoute>;
     title?: Title;
-    storageService?: Partial<StorageService>;
+    storageService?: Partial<Storage>;
     uiOptions?: Parameters<typeof createMockUIOptions>[0];
   }) => {
     return [

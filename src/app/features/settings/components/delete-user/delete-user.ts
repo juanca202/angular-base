@@ -15,12 +15,12 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 
 import { Subscription, interval, lastValueFrom } from 'rxjs';
-import { StorageService } from '@factor_ec/utils';
-import { MessageService, ProgressComponent, IconComponent } from '@factor_ec/ui';
+import { Storage } from '@factor_ec/utils';
+import { MessageService, Progress, Icon } from '@factor_ec/ui';
 
 import { AppManager } from '@/core/services/app-manager';
 import { Session } from '@/core/services/session';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { getApiUrl } from '@/core/utils/async-resources';
@@ -49,8 +49,8 @@ interface Step2Model {
     MatDialogModule,
     MatFormField,
     MatInputModule,
-    IconComponent,
-    ProgressComponent
+    Icon,
+    Progress
   ],
   templateUrl: './delete-user.html',
   styleUrl: './delete-user.css',
@@ -63,7 +63,7 @@ export class DeleteUser implements OnInit, OnDestroy {
   public readonly session = inject(Session);
   private readonly httpClient = inject(HttpClient);
   private readonly messageService = inject(MessageService);
-  private readonly storageService = inject(StorageService);
+  private readonly storage = inject(Storage);
 
   // Properties
   public readonly step1Model = signal<Step1Model>({ email: '' });
@@ -100,10 +100,7 @@ export class DeleteUser implements OnInit, OnDestroy {
     }
   }
   private initCode(): void {
-    const deleteCodeExpiresAt = this.storageService.get(
-      `${environment.sessionPrefix}_dce`,
-      'local'
-    );
+    const deleteCodeExpiresAt = this.storage.get(`${environment.sessionPrefix}_dce`, 'local');
     if (deleteCodeExpiresAt) {
       this.setCountDown(new Date(deleteCodeExpiresAt));
     }
@@ -138,7 +135,7 @@ export class DeleteUser implements OnInit, OnDestroy {
         await lastValueFrom(this.httpClient.post(getApiUrl('delete-user'), this.step2Model()));
         this.submitting.set(false);
         this.authProvider.logout();
-        this.storageService.delete('lastUser', 'local');
+        this.storage.delete('lastUser', 'local');
       } catch (err: unknown) {
         if (err instanceof HttpErrorResponse) {
           this.messageService.show(err.error?.detail || err.message, {
@@ -150,11 +147,7 @@ export class DeleteUser implements OnInit, OnDestroy {
     }
   }
   private setCountDown(codeExpiresAt: Date): void {
-    this.storageService.set(
-      `${environment.sessionPrefix}_dce`,
-      codeExpiresAt.toISOString(),
-      'local'
-    );
+    this.storage.set(`${environment.sessionPrefix}_dce`, codeExpiresAt.toISOString(), 'local');
     const diff: number = codeExpiresAt.getTime() - Date.now();
     const codeExpired = diff <= 0;
     if (!codeExpired) {

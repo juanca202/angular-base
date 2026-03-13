@@ -8,7 +8,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { lastValueFrom } from 'rxjs';
-import { IconComponent, MessageService, ProgressComponent } from '@factor_ec/ui';
+import { Icon, MessageService, Progress } from '@factor_ec/ui';
 
 import { AppManager } from '@/core/services/app-manager';
 import { environment } from '@/environments/environment';
@@ -37,8 +37,8 @@ interface ResetPasswordModel {
     MatDialogModule,
     MatFormField,
     MatInputModule,
-    IconComponent,
-    ProgressComponent
+    Icon,
+    Progress
   ],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',

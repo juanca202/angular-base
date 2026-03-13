@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { ProgressComponent } from '@factor_ec/ui';
+import { Progress } from '@factor_ec/ui';
 
 @Component({
   selector: 'app-progress-placeholder',
-  imports: [ProgressComponent],
+  imports: [Progress],
   templateUrl: './progress-placeholder.html',
   styleUrl: './progress-placeholder.css',
   host: {

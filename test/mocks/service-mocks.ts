@@ -6,9 +6,9 @@ import { vi } from 'vitest';
 import { signal, computed } from '@angular/core';
 import { of } from 'rxjs';
 import { AppManager } from '@/core/services/app-manager';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider, AuthService } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
-import { GoogleTagManagerService } from '@factor_ec/utils';
+import { GoogleTagManager } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -29,13 +29,14 @@ export function createMockAppManager(overrides?: Partial<AppManager>): Partial<A
 /**
  * Crea un mock de AuthService
  */
-export function createMockAuthService(overrides?: Partial<AuthProvider>): Partial<AuthProvider> {
+export function createMockAuthService(overrides?: Partial<AuthService>): Partial<AuthService> {
   return {
     user: signal(null),
     login: vi.fn().mockResolvedValue(true),
     logout: vi.fn().mockResolvedValue(true),
     isLoggedIn: signal(false),
     signup: vi.fn().mockResolvedValue(undefined),
+    connect: vi.fn().mockResolvedValue(false),
     ...overrides
   };
 }
@@ -43,13 +44,14 @@ export function createMockAuthService(overrides?: Partial<AuthProvider>): Partia
 /**
  * Crea un mock de AuthProvider
  */
-export function createMockAuthProvider(overrides?: Partial<AuthProvider>): Partial<AuthProvider> {
+export function createMockAuthProvider(overrides?: Partial<AuthService>): Partial<AuthService> {
   return {
     user: signal(null),
     login: vi.fn().mockResolvedValue(true),
     logout: vi.fn().mockResolvedValue(true),
     isLoggedIn: signal(false),
     signup: vi.fn().mockResolvedValue(undefined),
+    connect: vi.fn().mockResolvedValue(false),
     ...overrides
   };
 }
@@ -75,8 +77,8 @@ export function createMockSession(overrides?: Partial<Session>): Partial<Session
  * Crea un mock de GoogleTagManagerService
  */
 export function createMockGoogleTagManagerService(
-  overrides?: Partial<GoogleTagManagerService>
-): Partial<GoogleTagManagerService> {
+  overrides?: Partial<GoogleTagManager>
+): Partial<GoogleTagManager> {
   return {
     appendTrackingCode: vi.fn(),
     addVariable: vi.fn(),

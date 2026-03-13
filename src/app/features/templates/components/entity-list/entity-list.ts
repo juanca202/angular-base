@@ -10,7 +10,7 @@ import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
-import { IconComponent } from '@factor_ec/ui';
+import { Icon } from '@factor_ec/ui';
 import { MatMenuModule } from '@angular/material/menu';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 import { ProgressPlaceholder } from '@/shared/components/progress-placeholder/progress-placeholder';
@@ -30,7 +30,7 @@ import { IconButtonContext } from '@/shared/components/icon-button-context/icon-
   imports: [
     MatButtonModule,
     MatMenuModule,
-    IconComponent,
+    Icon,
     ProgressPlaceholder,
     ErrorPlaceholder,
     Header,

@@ -26,8 +26,7 @@
       "@/features/*": ["src/app/features/*"],
       "@/environments/*": ["src/environments/*"],
       "@/version-info": ["src/version-info"],
-      "@/test/*": ["test/*"],
-      "auth-core": ["./projects/auth-core/src/public-api.ts", "./dist/auth-core"]
+      "@/test/*": ["test/*"]
     }
   },
   "angularCompilerOptions": {
@@ -43,12 +42,6 @@
     },
     {
       "path": "./tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/auth-core/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/auth-core/tsconfig.spec.json"
     }
   ]
 }

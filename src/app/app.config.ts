@@ -13,9 +13,9 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideClientHydration } from '@angular/platform-browser';
 
 import { UI_OPTIONS } from '@factor_ec/ui';
-import { GoogleTagManagerService } from '@factor_ec/utils';
+import { GoogleTagManager } from '@factor_ec/utils';
 
-import { AUTH_CONFIG, AuthProvider, AuthService, authInterceptor } from 'auth-core';
+import { AUTH_CONFIG, AuthProvider, AuthService, authInterceptor } from '@factor_ec/utils';
 
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 import { routes } from '@/app.routes';
@@ -31,11 +31,11 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(async () => {
       // Dependency injection
       const appManager = inject(AppManager);
-      const googleTagManagerService = inject(GoogleTagManagerService);
+      const googleTagManager = inject(GoogleTagManager);
 
       // Insert Google Tag Manager tracking code
       if (environment.googleTagManager) {
-        googleTagManagerService.appendTrackingCode(environment.googleTagManager.trackingCode);
+        googleTagManager.appendTrackingCode(environment.googleTagManager.trackingCode);
       }
       await appManager.init();
     }),

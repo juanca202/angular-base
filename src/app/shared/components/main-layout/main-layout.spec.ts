@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MainLayout } from './main-layout';
-import { AuthProvider, User } from 'auth-core';
+import { AuthProvider, User } from '@factor_ec/utils';
 import { MenuItem } from '@/shared/models/menu-item';
 import {
   createMockRouter,

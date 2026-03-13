@@ -17,11 +17,10 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 
-import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
-import { ProgressComponent, MessageService, IconComponent } from '@factor_ec/ui';
+import { AuthService, GoogleTagManager, Storage } from '@factor_ec/utils';
+import { Progress, MessageService, Icon } from '@factor_ec/ui';
 
 import { AppManager } from '@/core/services/app-manager';
-import { AuthProvider } from 'auth-core';
 import { Session } from '@/core/services/session';
 import { ForgotPassword } from '@/features/settings/components/forgot-password/forgot-password';
 import { environment } from '@/environments/environment';
@@ -47,8 +46,8 @@ import { AuthMode, AuthSignin, AuthSignup } from '../../models/auth';
     MatInputModule,
     MatMenuModule,
     RouterModule,
-    IconComponent,
-    ProgressComponent
+    Icon,
+    Progress
   ],
   templateUrl: './auth.html',
   styleUrl: './auth.css',
@@ -61,14 +60,14 @@ import { AuthMode, AuthSignin, AuthSignup } from '../../models/auth';
 export class Auth implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  public readonly authProvider = inject(AuthProvider);
+  public readonly authProvider = inject(AuthService);
   private readonly session = inject(Session);
   private readonly dialog = inject(MatDialog);
-  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  private readonly googleTagManager = inject(GoogleTagManager);
   private readonly messageService = inject(MessageService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly storageService = inject(StorageService);
+  private readonly storage = inject(Storage);
   private readonly title = inject(Title);
 
   // Properties
@@ -135,7 +134,7 @@ export class Auth implements OnInit {
         this.title.setTitle($localize`Start`);
         break;
     }
-    this.googleTagManagerService.addVariable({
+    this.googleTagManager.addVariable({
       event: 'page_view',
       page_title: this.title.getTitle()
     });
@@ -149,17 +148,17 @@ export class Auth implements OnInit {
         const credentials = this.authSignin();
         await this.authProvider.login(credentials);
         const settings = await this.session.getSettings(true);
-        this.googleTagManagerService.addVariable({
+        this.googleTagManager.addVariable({
           event: 'login',
           user_id: credentials.username,
           app_id: environment.appId
         });
         this.submitting.set(false);
         if (settings) {
-          const redirectUrl = this.storageService.get(`${environment.sessionPrefix}_rdi`);
+          const redirectUrl = this.storage.get(`${environment.sessionPrefix}_rdi`);
           if (redirectUrl) {
             this.router.navigateByUrl(redirectUrl);
-            this.storageService.delete(`${environment.sessionPrefix}_rdi`);
+            this.storage.delete(`${environment.sessionPrefix}_rdi`);
           } else {
             this.router.navigateByUrl('/');
           }
@@ -189,7 +188,7 @@ export class Auth implements OnInit {
           username: data.email,
           password: data.password
         });
-        this.googleTagManagerService.addVariable({
+        this.googleTagManager.addVariable({
           event: 'sign_up',
           user_id: data.email,
           app_id: environment.appId
@@ -199,9 +198,9 @@ export class Auth implements OnInit {
           password: data.password
         });
         this.submitting.set(false);
-        if (this.storageService.get(`${environment.sessionPrefix}_rdi`)) {
-          this.router.navigateByUrl(this.storageService.get(`${environment.sessionPrefix}_rdi`));
-          this.storageService.delete(`${environment.sessionPrefix}_rdi`);
+        if (this.storage.get(`${environment.sessionPrefix}_rdi`)) {
+          this.router.navigateByUrl(this.storage.get(`${environment.sessionPrefix}_rdi`));
+          this.storage.delete(`${environment.sessionPrefix}_rdi`);
         } else {
           this.router.navigateByUrl('/');
         }

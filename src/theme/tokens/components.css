@@ -53,7 +53,8 @@
   --ft-table-hover-bg: color-mix(in srgb, var(--ft-color-primary) 10%, transparent);
   --ft-table-focus-bg: color-mix(in srgb, var(--ft-color-primary) 15%, transparent);
   --ft-table-active-bg: color-mix(in srgb, var(--ft-color-primary) 20%, transparent);
-  --ft-table-header-font-size: 0.75rem;
+  --ft-table-header-color: var(--ft-color-primary);
+  --ft-table-header-font-size: var(--text-sm);
   --ft-table-header-font-weight: 400;
 }
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Header } from '@/shared/components/header/header';
-import { IconComponent } from '@factor_ec/ui';
+import { Icon } from '@factor_ec/ui';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EntityRepository } from '../../repositories/entity-repository';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,14 +10,7 @@ import { EntityManager } from '../../managers/entity-manager';
 
 @Component({
   selector: 'app-entity-relations',
-  imports: [
-    Header,
-    IconComponent,
-    MatDialogModule,
-    MatButtonModule,
-    ProgressPlaceholder,
-    ErrorPlaceholder
-  ],
+  imports: [Header, Icon, MatDialogModule, MatButtonModule, ProgressPlaceholder, ErrorPlaceholder],
   templateUrl: './entity-relations.html',
   styleUrl: './entity-relations.css',
   changeDetection: ChangeDetectionStrategy.OnPush

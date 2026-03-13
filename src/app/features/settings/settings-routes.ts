@@ -1,7 +1,7 @@
 import { Language } from '@/features/settings/components/language/language';
 import { Routes } from '@angular/router';
 import { Settings } from './components/settings/settings';
-import { authGuard, loginGuard, resetGuard } from 'auth-core';
+import { authGuard, loginGuard, resetGuard } from '@factor_ec/utils';
 import { Auth } from './components/auth/auth';
 import { ResetPassword } from './components/reset-password/reset-password';
 

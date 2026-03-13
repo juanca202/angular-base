@@ -175,7 +175,7 @@ module.exports = [
       'project-rules/enforce-layer-imports': [
         'error',
         {
-          crossLayerPackages: ['auth-core', 'auth-msal']
+          crossLayerPackages: ['auth-msal']
         }
       ],
       'no-undef': 'off', // TypeScript handles this

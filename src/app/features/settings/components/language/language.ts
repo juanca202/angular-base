@@ -4,8 +4,9 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 
-import { IconComponent } from '@factor_ec/ui';
-import { Language as LanguageModel, StorageService } from '@factor_ec/utils';
+import { Icon } from '@factor_ec/ui';
+import { Language as LanguageModel } from '@/core/models/environment';
+import { Storage } from '@factor_ec/utils';
 
 import { AppManager } from '@/core/services/app-manager';
 import { environment } from '@/environments/environment';
@@ -15,7 +16,7 @@ import { environment } from '@/environments/environment';
  */
 @Component({
   selector: 'app-language',
-  imports: [IconComponent, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
+  imports: [Icon, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
   templateUrl: './language.html',
   styleUrl: './language.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,13 +27,13 @@ import { environment } from '@/environments/environment';
 export class Language {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  private readonly storageService = inject(StorageService);
+  private readonly storage = inject(Storage);
 
   // Properties
   public readonly locale = signal<string | undefined>(this.appManager.getLocale());
 
   public async select(language: LanguageModel): Promise<void> {
-    this.storageService.set(`${environment.sessionPrefix}_loc`, language.code, 'local');
+    this.storage.set(`${environment.sessionPrefix}_loc`, language.code, 'local');
     location.reload();
   }
 }

@@ -7,9 +7,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SwUpdate } from '@angular/service-worker';
 import { EventEmitter } from '@angular/core';
 import { AppManager } from './app-manager';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { Session } from './session';
-import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
+import { GoogleTagManager, Storage } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import {
   createMockAuthProvider,
@@ -25,8 +25,8 @@ describe('AppManager', () => {
   let appManager: AppManager;
   let mockAuthProvider: Partial<AuthProvider>;
   let mockSession: Partial<Session>;
-  let mockStorageService: Partial<StorageService>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManagerService>;
+  let mockStorageService: Partial<Storage>;
+  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
   let mockLocation: Partial<Location>;
   let mockRouter: Partial<Router>;
   let mockSnackBar: Partial<MatSnackBar>;
@@ -48,8 +48,8 @@ describe('AppManager', () => {
         AppManager,
         { provide: AuthProvider, useValue: mockAuthProvider },
         { provide: Session, useValue: mockSession },
-        { provide: StorageService, useValue: mockStorageService },
-        { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+        { provide: Storage, useValue: mockStorageService },
+        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
         { provide: Location, useValue: mockLocation },
         { provide: Router, useValue: mockRouter },
         { provide: MatSnackBar, useValue: mockSnackBar },
@@ -247,8 +247,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: StorageService, useValue: mockStorageService },
-          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorageService },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
@@ -290,8 +290,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: StorageService, useValue: mockStorageService },
-          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorageService },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
@@ -338,8 +338,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: StorageService, useValue: mockStorageService },
-          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorageService },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
@@ -377,8 +377,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: StorageService, useValue: mockStorageService },
-          { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorageService },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },

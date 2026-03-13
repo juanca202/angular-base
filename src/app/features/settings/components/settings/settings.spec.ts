@@ -7,9 +7,9 @@ import { Settings } from './settings';
 import { AppManager } from '@/core/services/app-manager';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { AuthManager } from '../../managers/auth-manager';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
-import { GoogleTagManagerService } from '@factor_ec/utils';
+import { GoogleTagManager } from '@factor_ec/utils';
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { computed, signal } from '@angular/core';
 import { environment } from '@/environments/environment';
@@ -23,7 +23,7 @@ describe('Settings', () => {
   let mockAuthManager: Partial<AuthManager>;
   let mockLayoutManager: Partial<LayoutManager>;
   let mockSession: Partial<Session>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManagerService>;
+  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
   let mockRouter: Partial<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let paramMapSubject: Subject<ParamMap>;
@@ -74,7 +74,7 @@ describe('Settings', () => {
         { provide: AuthManager, useValue: mockAuthManager },
         { provide: LayoutManager, useValue: mockLayoutManager },
         { provide: Session, useValue: mockSession },
-        { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         {

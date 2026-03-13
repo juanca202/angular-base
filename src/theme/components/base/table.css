@@ -3,7 +3,7 @@
   thead {
     @apply bg-(--ft-table-bg) sticky top-0;
     th {
-      @apply p-2 font-(--ft-table-header-font-weight) text-left text-(--ft-table-header-font-size);
+      @apply p-2 font-(--ft-table-header-font-weight) text-left [font-size:var(--ft-table-header-font-size)] [color:var(--ft-table-header-color)];
     }
   }
   tbody {

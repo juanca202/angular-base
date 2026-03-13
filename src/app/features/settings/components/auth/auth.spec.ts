@@ -5,9 +5,8 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Auth } from './auth';
 import { AppManager } from '@/core/services/app-manager';
-import { AuthProvider } from 'auth-core';
 import { Session } from '@/core/services/session';
-import { GoogleTagManagerService, StorageService } from '@factor_ec/utils';
+import { AuthService, GoogleTagManager, Storage } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
@@ -30,10 +29,10 @@ describe('Auth', () => {
   let component: Auth;
   let fixture: ComponentFixture<Auth>;
   let mockAppManager: Partial<AppManager>;
-  let mockAuthService: Partial<AuthProvider>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManagerService>;
+  let mockAuthService: Partial<AuthService>;
+  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
   let mockMessageService: Partial<MessageService>;
-  let mockStorageService: Partial<StorageService>;
+  let mockStorageService: Partial<Storage>;
   let mockRouter: Partial<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockDialog: Partial<MatDialog>;
@@ -63,8 +62,8 @@ describe('Auth', () => {
       imports: [Auth, RouterModule],
       providers: [
         { provide: AppManager, useValue: mockAppManager },
-        { provide: AuthProvider, useValue: mockAuthService },
-        { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
         { provide: MessageService, useValue: mockMessageService },
         { provide: MatDialog, useValue: mockDialog },
         { provide: Session, useValue: mockSession },

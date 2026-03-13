@@ -46,20 +46,18 @@ export class EntityManager {
         actions: [
           {
             label: $localize`Cancel`,
-            value: 0,
-            type: 'stroked',
-            class: 'flex-grow-1'
+            value: '0',
+            type: 'stroked'
           },
           {
             label: $localize`Accept`,
-            value: 1,
-            type: 'flat',
-            class: 'flex-grow-1'
+            value: '1',
+            type: 'flat'
           }
         ]
       })
     );
-    if (value === 1 && id) {
+    if (value === '1' && id) {
       await this.mutations.delete(id);
       this.messageService.show($localize`Entity deleted successfully.`, {
         class: 'ft-message--success',

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, output, signal } fr
 import { form, FormField } from '@angular/forms/signals';
 import { MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 
-import { AvatarComponent, IconComponent } from '@factor_ec/ui';
+import { Avatar, Icon } from '@factor_ec/ui';
 
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
@@ -13,14 +13,7 @@ import { ErrorPlaceholder } from '@/shared/components/error-placeholder/error-pl
 
 @Component({
   selector: 'app-entity-search',
-  imports: [
-    AvatarComponent,
-    FormField,
-    IconComponent,
-    MatButtonModule,
-    MatDialogContent,
-    ErrorPlaceholder
-  ],
+  imports: [Avatar, FormField, Icon, MatButtonModule, MatDialogContent, ErrorPlaceholder],
   templateUrl: './entity-search.html',
   styleUrl: './entity-search.css',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -2,8 +2,8 @@ import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { environment } from '@/environments/environment';
 import { CustomParams, SessionState } from '@/core/models/session-state';
 import { Settings } from '@/core/models/settings';
-import { StorageService } from '@factor_ec/utils';
-import { AuthProvider } from 'auth-core';
+import { Storage } from '@factor_ec/utils';
+import { AuthProvider } from '@factor_ec/utils';
 import { lastValueFrom, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { getApiUrl } from '../utils/async-resources';
@@ -38,7 +38,7 @@ export class Session {
   // Dependency injection
   private readonly authProvider = inject(AuthProvider);
   private readonly httpClient = inject(HttpClient);
-  private readonly storageService = inject(StorageService);
+  private readonly storage = inject(Storage);
 
   /**
    * @internal
@@ -66,7 +66,7 @@ export class Session {
         settings: this._settings(),
         params: this._params()
       };
-      this.storageService.set(STORAGE_KEY, state, 'local');
+      this.storage.set(STORAGE_KEY, state, 'local');
     });
   }
 
@@ -77,7 +77,7 @@ export class Session {
    */
   private restoreFromStorage(): void {
     try {
-      const session = this.storageService.get(STORAGE_KEY, 'local');
+      const session = this.storage.get(STORAGE_KEY, 'local');
       if (session) {
         const s = session as SessionState;
         this._settings.set(s.settings ?? null);
@@ -169,6 +169,6 @@ export class Session {
   public clearAll(): void {
     this.clearSettings();
     this.clearParams();
-    this.storageService.delete(STORAGE_KEY, 'local');
+    this.storage.delete(STORAGE_KEY, 'local');
   }
 }

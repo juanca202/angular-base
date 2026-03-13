@@ -1,5 +1,5 @@
 .ft-card {
-  @apply rounded-lg border overflow-hidden flex flex-col border-[var(--ft-color-border)];
+  @apply rounded-lg border flex flex-col border-(--ft-color-border);
 
   .ft-card__header {
     @apply flex items-center min-h-12 font-bold py-2 pr-1 pl-4;

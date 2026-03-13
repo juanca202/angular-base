@@ -30,4 +30,7 @@ html {
   --mat-menu-container-shape: .5rem;
   --mat-button-outlined-outline-color: var(--ft-color-border);
   --mat-form-field-filled-container-shape: .5rem;
+  --mat-dialog-subhead-size: var(--text-lg);
+  --mat-dialog-subhead-weight: var(--ft-font-weight-bold);
+  --mat-dialog-subhead-color: var(--ft-color-primary);
 }

@@ -7,9 +7,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { DeleteUser } from './delete-user';
 import { AppManager } from '@/core/services/app-manager';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
-import { StorageService } from '@factor_ec/utils';
+import { Storage } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@/environments/environment';
@@ -24,7 +24,7 @@ describe('DeleteUser', () => {
   let mockAppManager: Partial<AppManager>;
   let mockAuthService: Partial<AuthProvider>;
   let mockSession: Partial<Session>;
-  let mockStorageService: Partial<StorageService>;
+  let mockStorageService: Partial<Storage>;
   let mockMessageService: Partial<MessageService>;
   let httpMock: HttpTestingController;
 
@@ -77,7 +77,7 @@ describe('DeleteUser', () => {
         { provide: AppManager, useValue: mockAppManager },
         { provide: AuthProvider, useValue: mockAuthService },
         { provide: Session, useValue: mockSession },
-        { provide: StorageService, useValue: mockStorageService },
+        { provide: Storage, useValue: mockStorageService },
         { provide: MessageService, useValue: mockMessageService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -155,7 +155,7 @@ describe('DeleteUser', () => {
           { provide: AppManager, useValue: mockAppManager },
           { provide: AuthProvider, useValue: mockAuthService },
           { provide: Session, useValue: mockSession },
-          { provide: StorageService, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorageService },
           { provide: MessageService, useValue: mockMessageService }
         ],
         schemas: [NO_ERRORS_SCHEMA]

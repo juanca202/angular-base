@@ -100,39 +100,6 @@
           }
         }
       }
-    },
-    "auth-core": {
-      "projectType": "library",
-      "root": "projects/auth-core",
-      "sourceRoot": "projects/auth-core/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:ng-packagr",
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/auth-core/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/auth-core/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "tsConfig": "projects/auth-core/tsconfig.spec.json"
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["projects/auth-core/**/*.ts", "projects/auth-core/**/*.html"],
-            "eslintConfig": "projects/auth-core/eslint.config.js"
-          }
-        }
-      }
     }
   }
 }

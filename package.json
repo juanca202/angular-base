@@ -39,8 +39,8 @@
     "@angular/platform-browser": "^21.1.4",
     "@angular/router": "^21.1.4",
     "@angular/service-worker": "^21.1.4",
-    "@factor_ec/ui": "^5.0.8",
-    "@factor_ec/utils": "^5.0.8",
+    "@factor_ec/ui": "file:../factor-libraries/dist/factor_ec-ui-6.0.0.tgz",
+    "@factor_ec/utils": "file:../factor-libraries/dist/factor_ec-utils-6.0.0.tgz",
     "git-describe": "^4.1.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

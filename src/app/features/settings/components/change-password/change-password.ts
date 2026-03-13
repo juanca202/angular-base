@@ -5,7 +5,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 
-import { IconComponent, ProgressComponent, MessageService } from '@factor_ec/ui';
+import { Icon, Progress, MessageService } from '@factor_ec/ui';
 import { lastValueFrom } from 'rxjs';
 
 import { AppManager } from '@/core/services/app-manager';
@@ -34,8 +34,8 @@ interface ChangePasswordModel {
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    IconComponent,
-    ProgressComponent
+    Icon,
+    Progress
   ],
   templateUrl: './change-password.html',
   styleUrl: './change-password.css',

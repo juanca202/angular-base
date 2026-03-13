@@ -14,14 +14,14 @@ import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router'
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 
-import { GoogleTagManagerService } from '@factor_ec/utils';
-import { IconComponent, AvatarComponent, ProgressComponent } from '@factor_ec/ui';
-import { Language } from '@factor_ec/utils';
+import { GoogleTagManager } from '@factor_ec/utils';
+import { Icon, Avatar, Progress } from '@factor_ec/ui';
+import { Language } from '@/core/models/environment';
 
 import { AppManager } from '@/core/services/app-manager';
 
 import { LayoutManager } from '@/core/services/layout-manager';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
 import { environment } from '@/environments/environment';
 import { versionInfo } from '@/version-info';
@@ -38,15 +38,15 @@ import { AuthManager } from '../../managers/auth-manager';
 @Component({
   selector: 'app-settings',
   imports: [
-    IconComponent,
-    ProgressComponent,
+    Icon,
+    Progress,
     MatButtonModule,
     MatDialogModule,
     MatMenuModule,
     MatTooltipModule,
     MatRippleModule,
     RouterModule,
-    AvatarComponent
+    Avatar
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
@@ -60,7 +60,7 @@ export class Settings implements OnInit {
   public readonly appManager = inject(AppManager);
   public readonly authManager = inject(AuthManager);
   public readonly authProvider = inject(AuthProvider);
-  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  private readonly googleTagManager = inject(GoogleTagManager);
   public readonly layoutManager = inject(LayoutManager);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -114,12 +114,12 @@ export class Settings implements OnInit {
           url: ''
         })
         .then(() =>
-          this.googleTagManagerService.addVariable({
+          this.googleTagManager.addVariable({
             event: 'share_app_success'
           })
         )
         .catch((error) =>
-          this.googleTagManagerService.addVariable({
+          this.googleTagManager.addVariable({
             event: 'share_app_error',
             message: error.message
           })

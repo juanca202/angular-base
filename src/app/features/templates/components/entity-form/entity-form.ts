@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { IconComponent, MessageService } from '@factor_ec/ui';
+import { Icon, MessageService } from '@factor_ec/ui';
 
 import { LayoutManager } from '@/core/services/layout-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
@@ -35,7 +35,7 @@ import { IconButtonContext } from '@/shared/components/icon-button-context/icon-
   imports: [
     CommonModule,
     FormField,
-    IconComponent,
+    Icon,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,

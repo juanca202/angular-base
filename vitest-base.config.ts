@@ -50,8 +50,7 @@ export default defineConfig({
       '@/environments': path.resolve(__dirname, 'src/environments'),
       '@/version-info': path.resolve(__dirname, 'src/version-info'),
       '@/test': path.resolve(__dirname, 'test'),
-      '@': path.resolve(__dirname, 'src/app'),
-      'auth-core': path.resolve(__dirname, 'projects/auth-core/src/public-api.ts')
+      '@': path.resolve(__dirname, 'src/app')
     }
   }
 });

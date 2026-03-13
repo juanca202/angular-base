@@ -7,7 +7,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { HttpErrorResponse } from '@angular/common/http';
 import { ForgotPassword } from './forgot-password';
 import { MessageService } from '@factor_ec/ui';
-import { GoogleTagManagerService } from '@factor_ec/utils';
+import { GoogleTagManager } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import {
   createMockGoogleTagManagerService,
@@ -19,7 +19,7 @@ describe('ForgotPassword', () => {
   let fixture: ComponentFixture<ForgotPassword>;
   let mockDialogRef: Partial<MatDialogRef<ForgotPassword>>;
   let mockMessageService: Partial<MessageService>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManagerService>;
+  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
@@ -39,7 +39,7 @@ describe('ForgotPassword', () => {
         provideHttpClientTesting(),
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MessageService, useValue: mockMessageService },
-        { provide: GoogleTagManagerService, useValue: mockGoogleTagManagerService }
+        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();

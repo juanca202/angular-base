@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { email, form, FormField, required, submit } from '@angular/forms/signals';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
-import { ProgressComponent, MessageService } from '@factor_ec/ui';
-import { GoogleTagManagerService } from '@factor_ec/utils';
+import { Progress, MessageService } from '@factor_ec/ui';
+import { GoogleTagManager } from '@factor_ec/utils';
 
 import { environment } from '@/environments/environment';
 import { CommonModule } from '@angular/common';
@@ -22,14 +22,7 @@ import { CommonModule } from '@angular/common';
  */
 @Component({
   selector: 'app-forgot-password',
-  imports: [
-    CommonModule,
-    FormField,
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    ProgressComponent
-  ],
+  imports: [CommonModule, FormField, MatButtonModule, MatDialogModule, MatInputModule, Progress],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -37,7 +30,7 @@ import { CommonModule } from '@angular/common';
 export class ForgotPassword {
   // Dependency injection
   private readonly dialogRef = inject<MatDialogRef<ForgotPassword>>(MatDialogRef);
-  private readonly googleTagManagerService = inject(GoogleTagManagerService);
+  private readonly googleTagManager = inject(GoogleTagManager);
   private readonly httpClient = inject(HttpClient);
   private readonly messageService = inject(MessageService);
 
@@ -58,7 +51,7 @@ export class ForgotPassword {
           this.httpClient.post(environment.auth.forgotPasswordUrl, this.forgotModel())
         );
         this.submitting.set(false);
-        this.googleTagManagerService.addVariable({
+        this.googleTagManager.addVariable({
           event: 'forgot_password'
         });
         this.messageService.show(

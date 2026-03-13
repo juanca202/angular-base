@@ -3,9 +3,9 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
-import { AvatarComponent, IconComponent } from '@factor_ec/ui';
+import { Avatar, Icon } from '@factor_ec/ui';
 
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
 import { MenuItem } from '@/shared/models/menu-item';
 
@@ -15,7 +15,7 @@ import { MenuItem } from '@/shared/models/menu-item';
  */
 @Component({
   selector: 'app-main-layout',
-  imports: [AvatarComponent, IconComponent, MatButtonModule, RouterModule, RouterOutlet],
+  imports: [Avatar, Icon, MatButtonModule, RouterModule, RouterOutlet],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

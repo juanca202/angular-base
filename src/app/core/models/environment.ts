@@ -1,4 +1,10 @@
-import { Language } from '@factor_ec/utils';
+/**
+ * Language option for i18n configuration
+ */
+export interface Language {
+  code: string;
+  name: string;
+}
 
 /**
  * Environment variables model

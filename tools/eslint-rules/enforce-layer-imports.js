@@ -112,7 +112,7 @@ module.exports = {
       invalidDependency: '{{from}} cannot import from {{to}} (see ADR-001).'
     }
   },
-  defaultOptions: [{ crossLayerPackages: ['auth-core', 'auth-msal'] }],
+  defaultOptions: [{ crossLayerPackages: ['auth-msal'] }],
   create(context, options) {
     const opts = Array.isArray(options) && options.length > 0 ? options[0] : {};
     const { crossLayerPackages = [] } = opts;

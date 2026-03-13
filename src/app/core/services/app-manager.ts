@@ -9,12 +9,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { StorageService, Language } from '@factor_ec/utils';
+import { Storage } from '@factor_ec/utils';
+import { Language } from '@/core/models/environment';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
 import { Session } from '@/core/services/session';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { NotificationEvent, notificationEvents } from '@/core/utils/notification';
 import { MessageService } from '@factor_ec/ui';
 
@@ -41,7 +42,7 @@ export class AppManager {
   private readonly session = inject(Session);
   private readonly snackbar = inject(MatSnackBar);
   private readonly swUpdate = inject(SwUpdate);
-  private readonly storageService = inject(StorageService);
+  private readonly storage = inject(Storage);
   private readonly messageService = inject(MessageService);
 
   // Properties
@@ -65,15 +66,15 @@ export class AppManager {
     console.log('Check for app updates');
   }
   public getClientId(): string {
-    let cid = this.storageService.get(this.clientKey, 'local');
+    let cid = this.storage.get(this.clientKey, 'local');
     if (!cid) {
       cid = crypto.randomUUID();
-      this.storageService.set(this.clientKey, cid, 'local');
+      this.storage.set(this.clientKey, cid, 'local');
     }
     return cid;
   }
   public getLocale(): string {
-    return this.storageService.get(this.localeKey, 'local') || 'en';
+    return this.storage.get(this.localeKey, 'local') || 'en';
   }
   public goBack(): void {
     if (history.length > 1) {
@@ -114,7 +115,7 @@ export class AppManager {
     this.installPrompt.prompt();
     this.installPrompt.userChoice?.then((result: any) => {
       if (result?.outcome !== 'dismissed') {
-        //this.googleTagManagerService.addVariable({ event: 'install', user_id: this.settings.user?.username, app_id: this.id });
+        //this.googleTagManager.addVariable({ event: 'install', user_id: this.settings.user?.username, app_id: this.id });
       }
     });
   }
@@ -123,10 +124,10 @@ export class AppManager {
       ? this.languages().find((l) => l.code === navigator.language.split('-')[0])?.code
       : null;
     const userLocale = this.languages().find(
-      (l) => l.code === this.storageService.get(this.localeKey, 'local')
+      (l) => l.code === this.storage.get(this.localeKey, 'local')
     )?.code;
     const locale = userLocale || systemLocale || this.defaultLocale;
-    this.storageService.set(this.localeKey, locale, 'local');
+    this.storage.set(this.localeKey, locale, 'local');
 
     // Load base translations
     try {

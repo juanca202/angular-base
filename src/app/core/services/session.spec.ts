@@ -3,11 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { Session } from './session';
-import { StorageService } from '@factor_ec/utils';
+import { Storage } from '@factor_ec/utils';
 import { Settings } from '../models/settings';
 import { SessionState } from '../models/session-state';
 import { getApiUrl } from '../utils/async-resources';
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { createMockAuthProvider } from '@/test/mocks/service-mocks';
 
 describe('Session', () => {
@@ -33,7 +33,7 @@ describe('Session', () => {
         Session,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: StorageService, useValue: mockStorageService },
+        { provide: Storage, useValue: mockStorageService },
         { provide: AuthProvider, useValue: createMockAuthProvider() }
       ]
     });
@@ -87,7 +87,7 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           provideHttpClientTesting(),
-          { provide: StorageService, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorageService },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
       });
@@ -294,7 +294,7 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           provideHttpClientTesting(),
-          { provide: StorageService, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorageService },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
       });
@@ -336,7 +336,7 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           provideHttpClientTesting(),
-          { provide: StorageService, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorageService },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
       });

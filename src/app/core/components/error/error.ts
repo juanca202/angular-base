@@ -4,10 +4,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import { IconComponent } from '@factor_ec/ui';
-import { Error as ErrorModel, StorageService } from '@factor_ec/utils';
+import { Icon } from '@factor_ec/ui';
+import { Error as ErrorModel, Storage } from '@factor_ec/utils';
 
-import { AuthProvider } from 'auth-core';
+import { AuthProvider } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 
 /**
@@ -19,7 +19,7 @@ import { environment } from '@/environments/environment';
  */
 @Component({
   selector: 'app-error',
-  imports: [IconComponent, MatIconModule, MatButtonModule, RouterModule],
+  imports: [Icon, MatIconModule, MatButtonModule, RouterModule],
   templateUrl: './error.html',
   styleUrl: './error.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,7 +30,7 @@ import { environment } from '@/environments/environment';
 export class Error implements OnInit {
   // Dependency injection
   public readonly authProvider = inject(AuthProvider);
-  private readonly storageService = inject(StorageService);
+  private readonly storage = inject(Storage);
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -47,8 +47,8 @@ export class Error implements OnInit {
     location.reload();
   }
   private setError(): void {
-    const message = this.storageService.get(`${environment.sessionPrefix}_msg`, 'session');
-    this.storageService.delete(`${environment.sessionPrefix}_msg`, 'session');
+    const message = this.storage.get(`${environment.sessionPrefix}_msg`, 'session');
+    this.storage.delete(`${environment.sessionPrefix}_msg`, 'session');
     if (this.router.currentNavigation()?.extras.state?.['message']) {
       this.message = this.router.currentNavigation()?.extras.state?.['message'];
     } else if (message) {
