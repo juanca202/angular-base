@@ -1,4 +1,4 @@
-import { Language } from '@/features/settings/components/language/language';
+import { LanguagePicker } from '@/features/settings/components/language-picker/language-picker';
 import { Routes } from '@angular/router';
 import { Settings } from './components/settings/settings';
 import { authGuard, loginGuard, resetGuard } from '@factor_ec/utils';
@@ -9,7 +9,7 @@ export const settingsRoutes: Routes = [
   { path: 'settings', component: Settings, title: $localize`Settings`, canActivate: [authGuard] },
   {
     path: 'settings/language',
-    component: Language,
+    component: LanguagePicker,
     title: $localize`Language`,
     canActivate: [authGuard]
   },

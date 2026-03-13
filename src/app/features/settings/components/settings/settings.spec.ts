@@ -23,7 +23,7 @@ describe('Settings', () => {
   let mockAuthManager: Partial<AuthManager>;
   let mockLayoutManager: Partial<LayoutManager>;
   let mockSession: Partial<Session>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
+  let mockGoogleTagManager: Partial<GoogleTagManager>;
   let mockRouter: Partial<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let paramMapSubject: Subject<ParamMap>;
@@ -52,7 +52,7 @@ describe('Settings', () => {
       params: computed(() => null),
       settings: computed<SettingsModel | null>(() => null)
     };
-    mockGoogleTagManagerService = {
+    mockGoogleTagManager = {
       addVariable: vi.fn()
     };
     mockRouter = {
@@ -74,7 +74,7 @@ describe('Settings', () => {
         { provide: AuthManager, useValue: mockAuthManager },
         { provide: LayoutManager, useValue: mockLayoutManager },
         { provide: Session, useValue: mockSession },
-        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
+        { provide: GoogleTagManager, useValue: mockGoogleTagManager },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         {
@@ -218,7 +218,7 @@ describe('Settings', () => {
 
       // Assert
       await new Promise((resolve) => globalThis.setTimeout(resolve, 100));
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalledWith({
         event: 'share_app_success'
       });
     });
@@ -237,7 +237,7 @@ describe('Settings', () => {
 
       // Assert
       await new Promise((resolve) => globalThis.setTimeout(resolve, 100));
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalledWith({
         event: 'share_app_error',
         message: 'Share failed'
       });

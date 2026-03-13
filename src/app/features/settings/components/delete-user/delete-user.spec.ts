@@ -24,7 +24,7 @@ describe('DeleteUser', () => {
   let mockAppManager: Partial<AppManager>;
   let mockAuthService: Partial<AuthProvider>;
   let mockSession: Partial<Session>;
-  let mockStorageService: Partial<Storage>;
+  let mockStorage: Partial<Storage>;
   let mockMessageService: Partial<MessageService>;
   let httpMock: HttpTestingController;
 
@@ -55,7 +55,7 @@ describe('DeleteUser', () => {
     mockSession = createMockSession({
       settings: computed(() => mockSettingsWithEmail('test@example.com'))
     });
-    mockStorageService = {
+    mockStorage = {
       get: vi.fn().mockReturnValue(null),
       set: vi.fn(),
       delete: vi.fn()
@@ -77,7 +77,7 @@ describe('DeleteUser', () => {
         { provide: AppManager, useValue: mockAppManager },
         { provide: AuthProvider, useValue: mockAuthService },
         { provide: Session, useValue: mockSession },
-        { provide: Storage, useValue: mockStorageService },
+        { provide: Storage, useValue: mockStorage },
         { provide: MessageService, useValue: mockMessageService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -140,7 +140,7 @@ describe('DeleteUser', () => {
   describe('ngOnInit', () => {
     it('should initialize code if exists in storage', () => {
       const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
-      mockStorageService.get = vi.fn().mockReturnValue(expiresAt.toISOString());
+      mockStorage.get = vi.fn().mockReturnValue(expiresAt.toISOString());
 
       TestBed.resetTestingModule();
       TestBed.overrideComponent(DeleteUser, {
@@ -155,7 +155,7 @@ describe('DeleteUser', () => {
           { provide: AppManager, useValue: mockAppManager },
           { provide: AuthProvider, useValue: mockAuthService },
           { provide: Session, useValue: mockSession },
-          { provide: Storage, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorage },
           { provide: MessageService, useValue: mockMessageService }
         ],
         schemas: [NO_ERRORS_SCHEMA]
@@ -166,10 +166,7 @@ describe('DeleteUser', () => {
 
       component.ngOnInit();
 
-      expect(mockStorageService.get).toHaveBeenCalledWith(
-        `${environment.sessionPrefix}_dce`,
-        'local'
-      );
+      expect(mockStorage.get).toHaveBeenCalledWith(`${environment.sessionPrefix}_dce`, 'local');
     });
   });
 
@@ -211,7 +208,7 @@ describe('DeleteUser', () => {
       await generatePromise;
 
       expect(component.submitting()).toBe(false);
-      expect(mockStorageService.set).toHaveBeenCalled();
+      expect(mockStorage.set).toHaveBeenCalled();
     });
 
     it('should handle error on generateCode', async () => {
@@ -256,7 +253,7 @@ describe('DeleteUser', () => {
 
       expect(component.submitting()).toBe(false);
       expect(mockAuthService.logout).toHaveBeenCalled();
-      expect(mockStorageService.delete).toHaveBeenCalledWith('lastUser', 'local');
+      expect(mockStorage.delete).toHaveBeenCalledWith('lastUser', 'local');
     });
 
     it('should handle error on requestDelete', async () => {

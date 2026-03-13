@@ -14,7 +14,7 @@ describe('Session', () => {
   // Arrange
   let service: Session;
   let httpMock: HttpTestingController;
-  let mockStorageService: {
+  let mockStorage: {
     get: ReturnType<typeof vi.fn>;
     set: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
@@ -22,7 +22,7 @@ describe('Session', () => {
 
   beforeEach(() => {
     // Arrange: Create mock storage service
-    mockStorageService = {
+    mockStorage = {
       get: vi.fn(),
       set: vi.fn(),
       delete: vi.fn()
@@ -33,7 +33,7 @@ describe('Session', () => {
         Session,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: Storage, useValue: mockStorageService },
+        { provide: Storage, useValue: mockStorage },
         { provide: AuthProvider, useValue: createMockAuthProvider() }
       ]
     });
@@ -78,7 +78,7 @@ describe('Session', () => {
         },
         params: { key1: 'value1' }
       };
-      vi.mocked(mockStorageService.get).mockReturnValue(storedState);
+      vi.mocked(mockStorage.get).mockReturnValue(storedState);
 
       // Act
       TestBed.resetTestingModule();
@@ -87,7 +87,7 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           provideHttpClientTesting(),
-          { provide: Storage, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorage },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
       });
@@ -95,7 +95,7 @@ describe('Session', () => {
       // Assert
       // Note: This test verifies the restoreFromStorage logic exists
       // Actual restoration happens in constructor, which is hard to test directly
-      expect(mockStorageService.get).toHaveBeenCalled();
+      expect(mockStorage.get).toHaveBeenCalled();
     });
   });
 
@@ -283,7 +283,7 @@ describe('Session', () => {
   describe('restoreFromStorage', () => {
     it('should handle corrupted storage data gracefully', () => {
       // Arrange
-      (mockStorageService.get as any).mockImplementation(() => {
+      (mockStorage.get as any).mockImplementation(() => {
         throw new Error('Corrupted data');
       });
 
@@ -294,7 +294,7 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           provideHttpClientTesting(),
-          { provide: Storage, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorage },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
       });
@@ -327,7 +327,7 @@ describe('Session', () => {
         },
         params: { key1: 'value1', key2: 'value2' }
       };
-      vi.mocked(mockStorageService.get).mockReturnValue(storedState);
+      vi.mocked(mockStorage.get).mockReturnValue(storedState);
 
       // Act
       TestBed.resetTestingModule();
@@ -336,7 +336,7 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           provideHttpClientTesting(),
-          { provide: Storage, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorage },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
       });

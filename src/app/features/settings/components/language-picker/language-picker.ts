@@ -5,7 +5,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 
 import { Icon } from '@factor_ec/ui';
-import { Language as LanguageModel } from '@/core/models/environment';
+import { Language } from '@/core/models/language';
 import { Storage } from '@factor_ec/utils';
 
 import { AppManager } from '@/core/services/app-manager';
@@ -15,16 +15,16 @@ import { environment } from '@/environments/environment';
  * Lets the user review and change the active locale for the application.
  */
 @Component({
-  selector: 'app-language',
+  selector: 'app-language-picker',
   imports: [Icon, MatButtonModule, MatTooltipModule, MatRippleModule, RouterModule],
-  templateUrl: './language.html',
-  styleUrl: './language.css',
+  templateUrl: './language-picker.html',
+  styleUrl: './language-picker.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-page'
   }
 })
-export class Language {
+export class LanguagePicker {
   // Dependency injection
   public readonly appManager = inject(AppManager);
   private readonly storage = inject(Storage);
@@ -32,7 +32,7 @@ export class Language {
   // Properties
   public readonly locale = signal<string | undefined>(this.appManager.getLocale());
 
-  public async select(language: LanguageModel): Promise<void> {
+  public async select(language: Language): Promise<void> {
     this.storage.set(`${environment.sessionPrefix}_loc`, language.code, 'local');
     location.reload();
   }

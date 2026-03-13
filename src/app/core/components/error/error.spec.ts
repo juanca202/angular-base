@@ -23,14 +23,14 @@ describe('Error', () => {
   let fixture: ComponentFixture<Error>;
 
   let mockAuthProvider: Partial<AuthProvider>;
-  let mockStorageService: ReturnType<typeof createMockStorageService>;
+  let mockStorage: ReturnType<typeof createMockStorageService>;
   let mockTitle: ReturnType<typeof createMockTitle>;
   let mockRouter: ReturnType<typeof createMockRouter>;
   let mockActivatedRoute: ReturnType<typeof createMockActivatedRoute>;
 
   beforeEach(async () => {
     mockAuthProvider = createMockAuthProvider();
-    mockStorageService = createMockStorageService({
+    mockStorage = createMockStorageService({
       get: vi.fn().mockReturnValue(null),
       delete: vi.fn()
     });
@@ -46,7 +46,7 @@ describe('Error', () => {
           router: mockRouter,
           activatedRoute: mockActivatedRoute,
           title: mockTitle,
-          storageService: mockStorageService
+          storageService: mockStorage
         })
       ]
     }).compileComponents();
@@ -84,7 +84,7 @@ describe('Error', () => {
         imports: [Error, RouterModule],
         providers: [
           { provide: AuthProvider, useValue: mockAuthProvider },
-          { provide: Storage, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
           { provide: ActivatedRoute, useValue: mockActivatedRoute }
@@ -135,7 +135,7 @@ describe('Error', () => {
         imports: [Error, RouterModule],
         providers: [
           { provide: AuthProvider, useValue: mockAuthProvider },
-          { provide: Storage, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
           { provide: ActivatedRoute, useValue: mockActivatedRoute }
@@ -153,7 +153,7 @@ describe('Error', () => {
     it('should use message from storage when router state is not available', () => {
       const storageMessage = 'Storage error message';
 
-      mockStorageService = createMockStorageService({
+      mockStorage = createMockStorageService({
         get: vi.fn().mockReturnValue(storageMessage),
         delete: vi.fn()
       });
@@ -174,7 +174,7 @@ describe('Error', () => {
         imports: [Error, RouterModule],
         providers: [
           { provide: AuthProvider, useValue: mockAuthProvider },
-          { provide: Storage, useValue: mockStorageService },
+          { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
           { provide: ActivatedRoute, useValue: mockActivatedRoute }
@@ -187,7 +187,7 @@ describe('Error', () => {
       component.ngOnInit();
 
       expect(component.message).toBe(storageMessage);
-      expect(mockStorageService.delete).toHaveBeenCalledWith(
+      expect(mockStorage.delete).toHaveBeenCalledWith(
         `${environment.sessionPrefix}_msg`,
         'session'
       );

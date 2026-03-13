@@ -30,9 +30,9 @@ describe('Auth', () => {
   let fixture: ComponentFixture<Auth>;
   let mockAppManager: Partial<AppManager>;
   let mockAuthService: Partial<AuthService>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
+  let mockGoogleTagManager: Partial<GoogleTagManager>;
   let mockMessageService: Partial<MessageService>;
-  let mockStorageService: Partial<Storage>;
+  let mockStorage: Partial<Storage>;
   let mockRouter: Partial<Router>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockDialog: Partial<MatDialog>;
@@ -41,9 +41,9 @@ describe('Auth', () => {
   beforeEach(async () => {
     mockAppManager = createMockAppManager();
     mockAuthService = createMockAuthService();
-    mockGoogleTagManagerService = createMockGoogleTagManagerService();
+    mockGoogleTagManager = createMockGoogleTagManagerService();
     mockMessageService = createMockMessageService();
-    mockStorageService = createMockStorageService();
+    mockStorage = createMockStorageService();
     mockRouter = createMockRouter({ navigateByUrl: vi.fn().mockResolvedValue(true) });
     mockActivatedRoute = createMockActivatedRoute({
       snapshot: {
@@ -63,14 +63,14 @@ describe('Auth', () => {
       providers: [
         { provide: AppManager, useValue: mockAppManager },
         { provide: AuthService, useValue: mockAuthService },
-        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
+        { provide: GoogleTagManager, useValue: mockGoogleTagManager },
         { provide: MessageService, useValue: mockMessageService },
         { provide: MatDialog, useValue: mockDialog },
         { provide: Session, useValue: mockSession },
         ...COMMON_TEST_PROVIDERS.getCommonProviders({
           router: mockRouter,
           activatedRoute: mockActivatedRoute,
-          storageService: mockStorageService
+          storageService: mockStorage
         })
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -125,7 +125,7 @@ describe('Auth', () => {
     it('should set mode and track page view for signin', () => {
       component.setMode('signin');
       expect(component.mode()).toBe('signin');
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalledWith({
         event: 'page_view',
         page_title: 'Sign in'
       });
@@ -134,7 +134,7 @@ describe('Auth', () => {
     it('should set mode and track page view for signup', () => {
       component.setMode('signup');
       expect(component.mode()).toBe('signup');
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalledWith({
         event: 'page_view',
         page_title: 'Sign up'
       });
@@ -143,7 +143,7 @@ describe('Auth', () => {
     it('should set default page title for unknown mode', () => {
       component.setMode('unknown' as any);
       expect(component.mode()).toBe('unknown');
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalledWith({
         event: 'page_view',
         page_title: 'Start'
       });
@@ -194,7 +194,7 @@ describe('Auth', () => {
         username: 'testuser',
         password: 'password123'
       });
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalled();
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalled();
     });
 
     it('should handle error on signin', async () => {
@@ -243,7 +243,7 @@ describe('Auth', () => {
       expect(component.errorMessage()).toBe('');
       expect(mockAuthService.signup).toHaveBeenCalled();
       expect(mockAuthService.login).toHaveBeenCalled();
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalled();
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalled();
     });
 
     it('should navigate to redirect URL if exists', async () => {
@@ -255,11 +255,11 @@ describe('Auth', () => {
       });
       mockAuthService.signup = vi.fn().mockResolvedValue(undefined);
       mockAuthService.login = vi.fn().mockResolvedValue(true);
-      mockStorageService.get = vi.fn().mockReturnValue('/dashboard');
+      mockStorage.get = vi.fn().mockReturnValue('/dashboard');
       const event = { preventDefault: vi.fn() } as unknown as Event;
       await component.handleSignupSubmit(event);
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/dashboard');
-      expect(mockStorageService.delete).toHaveBeenCalledWith(`${environment.sessionPrefix}_rdi`);
+      expect(mockStorage.delete).toHaveBeenCalledWith(`${environment.sessionPrefix}_rdi`);
     });
 
     it('should navigate to home if no redirect URL', async () => {
@@ -271,7 +271,7 @@ describe('Auth', () => {
       });
       mockAuthService.signup = vi.fn().mockResolvedValue(undefined);
       mockAuthService.login = vi.fn().mockResolvedValue(true);
-      mockStorageService.get = vi.fn().mockReturnValue(null);
+      mockStorage.get = vi.fn().mockReturnValue(null);
       const event = { preventDefault: vi.fn() } as unknown as Event;
       await component.handleSignupSubmit(event);
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');

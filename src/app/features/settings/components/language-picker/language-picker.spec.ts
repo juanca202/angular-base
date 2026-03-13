@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { Language } from './language';
+import { LanguagePicker } from './language-picker';
 import { AppManager } from '@/core/services/app-manager';
-import { Language as LanguageModel } from '@/core/models/environment';
+import { Language as LanguageModel } from '@/core/models/language';
 import { Storage } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { signal } from '@angular/core';
@@ -16,12 +16,12 @@ import {
 import { createMockAppManager } from '@/test/mocks/service-mocks';
 import { withMockLocation } from '@/test/helpers/window-helpers';
 
-describe('Language', () => {
+describe('LanguagePicker', () => {
   // Arrange
-  let component: Language;
-  let fixture: ComponentFixture<Language>;
+  let component: LanguagePicker;
+  let fixture: ComponentFixture<LanguagePicker>;
   let mockAppManager: ReturnType<typeof createMockAppManager>;
-  let mockStorageService: ReturnType<typeof createMockStorageService>;
+  let mockStorage: ReturnType<typeof createMockStorageService>;
   let mockRouter: ReturnType<typeof createMockRouter>;
   let mockActivatedRoute: ReturnType<typeof createMockActivatedRoute>;
 
@@ -34,26 +34,26 @@ describe('Language', () => {
         { code: 'es', name: 'Español' }
       ])
     });
-    mockStorageService = createMockStorageService({
+    mockStorage = createMockStorageService({
       set: vi.fn()
     });
     mockRouter = createMockRouter();
     mockActivatedRoute = createMockActivatedRoute();
 
     await TestBed.configureTestingModule({
-      imports: [Language, RouterModule],
+      imports: [LanguagePicker, RouterModule],
       providers: [
         { provide: AppManager, useValue: mockAppManager },
-        { provide: Storage, useValue: mockStorageService },
+        { provide: Storage, useValue: mockStorage },
         ...COMMON_TEST_PROVIDERS.getCommonProviders({
           router: mockRouter,
           activatedRoute: mockActivatedRoute,
-          storageService: mockStorageService
+          storageService: mockStorage
         })
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Language);
+    fixture = TestBed.createComponent(LanguagePicker);
     component = fixture.componentInstance;
   });
 
@@ -83,7 +83,7 @@ describe('Language', () => {
         await component.select(language);
 
         // Assert
-        expect(mockStorageService.set).toHaveBeenCalledWith(
+        expect(mockStorage.set).toHaveBeenCalledWith(
           `${environment.sessionPrefix}_loc`,
           'es',
           'local'
@@ -101,7 +101,7 @@ describe('Language', () => {
         await component.select(language);
 
         // Assert
-        expect(mockStorageService.set).toHaveBeenCalledWith(
+        expect(mockStorage.set).toHaveBeenCalledWith(
           `${environment.sessionPrefix}_loc`,
           'en',
           'local'

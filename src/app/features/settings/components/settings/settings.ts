@@ -16,7 +16,7 @@ import { MatMenuModule } from '@angular/material/menu';
 
 import { GoogleTagManager } from '@factor_ec/utils';
 import { Icon, Avatar, Progress } from '@factor_ec/ui';
-import { Language } from '@/core/models/environment';
+import { Language } from '@/core/models/language';
 
 import { AppManager } from '@/core/services/app-manager';
 

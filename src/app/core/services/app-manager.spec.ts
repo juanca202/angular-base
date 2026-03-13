@@ -25,8 +25,8 @@ describe('AppManager', () => {
   let appManager: AppManager;
   let mockAuthProvider: Partial<AuthProvider>;
   let mockSession: Partial<Session>;
-  let mockStorageService: Partial<Storage>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
+  let mockStorage: Partial<Storage>;
+  let mockGoogleTagManager: Partial<GoogleTagManager>;
   let mockLocation: Partial<Location>;
   let mockRouter: Partial<Router>;
   let mockSnackBar: Partial<MatSnackBar>;
@@ -36,8 +36,8 @@ describe('AppManager', () => {
     // Arrange: Create mocks
     mockAuthProvider = createMockAuthProvider();
     mockSession = createMockSession();
-    mockStorageService = createMockStorageService();
-    mockGoogleTagManagerService = createMockGoogleTagManagerService();
+    mockStorage = createMockStorageService();
+    mockGoogleTagManager = createMockGoogleTagManagerService();
     mockLocation = createMockLocation();
     mockRouter = createMockRouter();
     mockSnackBar = createMockMatSnackBar();
@@ -48,8 +48,8 @@ describe('AppManager', () => {
         AppManager,
         { provide: AuthProvider, useValue: mockAuthProvider },
         { provide: Session, useValue: mockSession },
-        { provide: Storage, useValue: mockStorageService },
-        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
+        { provide: Storage, useValue: mockStorage },
+        { provide: GoogleTagManager, useValue: mockGoogleTagManager },
         { provide: Location, useValue: mockLocation },
         { provide: Router, useValue: mockRouter },
         { provide: MatSnackBar, useValue: mockSnackBar },
@@ -82,8 +82,8 @@ describe('AppManager', () => {
   describe('getClientId', () => {
     it('should generate new client ID if not exists', () => {
       // Arrange
-      (mockStorageService.get as any).mockReturnValue(null);
-      const setSpy = vi.spyOn(mockStorageService, 'set');
+      (mockStorage.get as any).mockReturnValue(null);
+      const setSpy = vi.spyOn(mockStorage, 'set');
 
       // Act
       const clientId = appManager.getClientId();
@@ -97,21 +97,21 @@ describe('AppManager', () => {
     it('should return existing client ID from storage', () => {
       // Arrange
       const existingId = 'existing-client-id';
-      (mockStorageService.get as any).mockReturnValue(existingId);
+      (mockStorage.get as any).mockReturnValue(existingId);
 
       // Act
       const clientId = appManager.getClientId();
 
       // Assert
       expect(clientId).toBe(existingId);
-      expect(mockStorageService.get).toHaveBeenCalled();
+      expect(mockStorage.get).toHaveBeenCalled();
     });
   });
 
   describe('getLocale', () => {
     it('should return locale from storage', () => {
       // Arrange
-      (mockStorageService.get as any).mockReturnValue('es');
+      (mockStorage.get as any).mockReturnValue('es');
 
       // Act
       const locale = appManager.getLocale();
@@ -122,7 +122,7 @@ describe('AppManager', () => {
 
     it('should return default locale if not in storage', () => {
       // Arrange
-      (mockStorageService.get as any).mockReturnValue(null);
+      (mockStorage.get as any).mockReturnValue(null);
 
       // Act
       const locale = appManager.getLocale();
@@ -247,8 +247,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: Storage, useValue: mockStorageService },
-          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorage },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
@@ -290,8 +290,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: Storage, useValue: mockStorageService },
-          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorage },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
@@ -338,8 +338,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: Storage, useValue: mockStorageService },
-          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorage },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
@@ -377,8 +377,8 @@ describe('AppManager', () => {
           AppManager,
           { provide: AuthProvider, useValue: mockAuthProvider },
           { provide: Session, useValue: mockSession },
-          { provide: Storage, useValue: mockStorageService },
-          { provide: GoogleTagManager, useValue: mockGoogleTagManagerService },
+          { provide: Storage, useValue: mockStorage },
+          { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: Location, useValue: mockLocation },
           { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },

@@ -1,10 +1,4 @@
-/**
- * Language option for i18n configuration
- */
-export interface Language {
-  code: string;
-  name: string;
-}
+import { Language } from './language';
 
 /**
  * Environment variables model

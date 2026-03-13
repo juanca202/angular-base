@@ -19,13 +19,13 @@ describe('ForgotPassword', () => {
   let fixture: ComponentFixture<ForgotPassword>;
   let mockDialogRef: Partial<MatDialogRef<ForgotPassword>>;
   let mockMessageService: Partial<MessageService>;
-  let mockGoogleTagManagerService: Partial<GoogleTagManager>;
+  let mockGoogleTagManager: Partial<GoogleTagManager>;
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     mockDialogRef = { close: vi.fn() };
     mockMessageService = createMockMessageService();
-    mockGoogleTagManagerService = createMockGoogleTagManagerService();
+    mockGoogleTagManager = createMockGoogleTagManagerService();
 
     TestBed.overrideComponent(ForgotPassword, {
       remove: { templateUrl: './forgot-password.html', styleUrl: './forgot-password.css' },
@@ -39,7 +39,7 @@ describe('ForgotPassword', () => {
         provideHttpClientTesting(),
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MessageService, useValue: mockMessageService },
-        { provide: GoogleTagManager, useValue: mockGoogleTagManagerService }
+        { provide: GoogleTagManager, useValue: mockGoogleTagManager }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -101,7 +101,7 @@ describe('ForgotPassword', () => {
 
       await submitPromise;
 
-      expect(mockGoogleTagManagerService.addVariable).toHaveBeenCalledWith({
+      expect(mockGoogleTagManager.addVariable).toHaveBeenCalledWith({
         event: 'forgot_password'
       });
       expect(mockMessageService.show).toHaveBeenCalled();

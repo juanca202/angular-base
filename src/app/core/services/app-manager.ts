@@ -10,7 +10,6 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { Storage } from '@factor_ec/utils';
-import { Language } from '@/core/models/environment';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
@@ -18,6 +17,7 @@ import { Session } from '@/core/services/session';
 import { AuthProvider } from '@factor_ec/utils';
 import { NotificationEvent, notificationEvents } from '@/core/utils/notification';
 import { MessageService } from '@factor_ec/ui';
+import { Language } from '../models/language';
 
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
