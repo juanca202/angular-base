@@ -60,7 +60,7 @@ import { AuthMode, AuthSignin, AuthSignup } from '../../models/auth';
 export class Auth implements OnInit {
   // Dependency injection
   public readonly appManager = inject(AppManager);
-  public readonly authProvider = inject(AuthService);
+  public readonly authService = inject(AuthService);
   private readonly session = inject(Session);
   private readonly dialog = inject(MatDialog);
   private readonly googleTagManager = inject(GoogleTagManager);
@@ -110,7 +110,7 @@ export class Auth implements OnInit {
   }
   public async connect(client: 'google'): Promise<void> {
     this.submitting.set(true);
-    const connected = this.authProvider.connect ? await this.authProvider.connect(client) : false;
+    const connected = this.authService.connect ? await this.authService.connect(client) : false;
     if (!connected) {
       this.submitting.set(false);
     }
@@ -146,7 +146,7 @@ export class Auth implements OnInit {
       try {
         this.submitting.set(true);
         const credentials = this.authSignin();
-        await this.authProvider.login(credentials);
+        await this.authService.login(credentials);
         const settings = await this.session.getSettings(true);
         this.googleTagManager.addVariable({
           event: 'login',
@@ -181,7 +181,7 @@ export class Auth implements OnInit {
         this.errorMessage.set('');
         this.submitting.set(true);
         const data = this.authSignup();
-        await this.authProvider.signup?.({
+        await this.authService.signup?.({
           firstname: data.firstName,
           lastname: data.lastName,
           email: data.email,
@@ -193,7 +193,7 @@ export class Auth implements OnInit {
           user_id: data.email,
           app_id: environment.appId
         });
-        await this.authProvider.login({
+        await this.authService.login({
           username: data.email,
           password: data.password
         });

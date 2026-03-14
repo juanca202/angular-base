@@ -10,7 +10,7 @@
     <p class="text-sm text-gray-400" i18n>
       To continue, enter the email associated with your account.
     </p>
-    <form id="step1Form" class="mt-4" (submit)="submit()">
+    <form id="step1Form" class="mt-4" novalidate (submit)="submit()">
       <div class="grid grid-cols-1 gap-y-2 gap-x-4">
         <mat-form-field>
           <mat-label i18n>Email</mat-label>
@@ -27,7 +27,7 @@
       You have <strong>{{ codeExpiresIn() }} minutes</strong> to enter verification code sent to
       <strong>{{ session.settings()?.user?.email }}</strong> to confirm deletion.
     </p>
-    <form id="step2Form" (submit)="submit()" class="mt-4">
+    <form id="step2Form" novalidate (submit)="submit()" class="mt-4">
       <div class="grid grid-cols-1 gap-y-2 gap-x-4">
         <mat-form-field>
           <mat-label i18n>Verification code</mat-label>

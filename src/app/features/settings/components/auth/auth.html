@@ -1,5 +1,5 @@
 @if (mode() === 'signin' || !allowSignup) {
-  <form (submit)="handleSigninSubmit($event)" class="ft-auth__signin m-auto p-4">
+  <form novalidate (submit)="handleSigninSubmit($event)" class="ft-auth__signin m-auto p-4">
     <div class="mb-4" [class.ft-anim-shake]="errorMessage()">
       <div class="ft-logo"></div>
       <div class="mb-4">
@@ -103,7 +103,7 @@
   </form>
 }
 @if (mode() === 'signup') {
-  <form (submit)="handleSignupSubmit($event)" class="ft-auth__signup">
+  <form novalidate (submit)="handleSignupSubmit($event)" class="ft-auth__signup">
     <div [class.ft-anim-shake]="errorMessage()" class="mb-4 lg:mb-0">
       <div class="ft-logo"></div>
       <div class="mb-4">
