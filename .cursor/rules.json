@@ -7,24 +7,17 @@
     "paths": ["docs/adr/**/*.md"]
   },
   {
-    "name": "Contracts - Models, APIs and Agreements",
-    "description": "Load contracts defined for the project, including data models, API definitions, conditions, and agreements that must be used in implementation.",
-    "priority": "high",
-    "match": ["**/*"],
-    "paths": ["docs/contracts/**/*.md"]
-  },
-  {
     "name": "Glossary - Project Terminology",
     "description": "Load the glossary of terms and definitions used within the project to maintain consistency in nomenclature and domain understanding.",
     "priority": "medium",
     "match": ["**/*"],
-    "paths": ["docs/glossary/**/*.md"]
+    "paths": ["docs/product/glossary.md"]
   },
   {
     "name": "Specifications - Feature Implementation",
     "description": "Load detailed specifications for feature implementation, including planning, data models, tasks, and requirement checklists.",
     "priority": "high",
     "match": ["**/*"],
-    "paths": ["docs/specs/**/*.md"]
+    "paths": ["docs/product/**/*.md"]
   }
 ]
