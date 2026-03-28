@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 19/03/2026  
 **Decisores:** Equipo de Arquitectura
 
 ---
@@ -41,10 +41,11 @@ Usaremos un **enfoque de testing multi-capa** con:
 2. **Integration Testing:** Testing de interacciones componente-servicio
 3. **E2E Testing:** Playwright para flujos de trabajo de usuario end-to-end
 4. **Patrón AAA:** Estructura Arrange, Act, Assert para todos los tests
-5. **Cobertura de Tests:** Objetivo de ≥80% de cobertura de ramas, enfocándose en rutas críticas
-6. **Aislamiento de Tests:** Los tests deben ser independientes y determinísticos
-7. **Inferencia de Tipos Primero:** La inferencia de TypeScript es preferida por defecto
-8. **Contrato de Testing de Signals:** Los Angular Signals deben tratarse como contenedores de estado, no como funciones
+5. **Object Mother Pattern:** Factories centralizadas para datos de prueba y tests más limpios
+6. **Cobertura de Tests:** Objetivo de ≥80% de cobertura de ramas, enfocándose en rutas críticas
+7. **Aislamiento de Tests:** Los tests deben ser independientes y determinísticos
+8. **Inferencia de Tipos Primero:** La inferencia de TypeScript es preferida por defecto
+9. **Contrato de Testing de Signals:** Los Angular Signals deben tratarse como contenedores de estado, no como funciones
 
 ---
 
@@ -104,6 +105,64 @@ it('should calculate total price correctly', () => {
   expect(total).toBe(35);
 });
 ```
+
+---
+
+### Object Mother Pattern
+
+Para mantener los tests limpios y evitar duplicación de datos de prueba, se utiliza el **Object Mother pattern**. Este patrón centraliza la creación de objetos de test con estado conocido y válido.
+
+#### Beneficios
+
+- **Tests más legibles:** El Arrange se simplifica con factories descriptivas
+- **Mantenibilidad:** Cambios en modelos se propagan desde un único punto
+- **Consistencia:** Los datos de prueba siguen invariantes del dominio
+- **Menos ruido:** Se evita setup verboso y repetitivo en cada test
+
+#### Implementación
+
+Los Object Mothers se implementan como funciones o clases que exponen métodos estáticos o factories para crear instancias con valores por defecto, permitiendo sobrescribir solo lo necesario:
+
+```ts
+// customer.mother.ts
+export const CustomerMother = {
+  default: (overrides?: Partial<Customer>): Customer => ({
+    id: 'cust-1',
+    name: 'John Doe',
+    email: 'john@example.com',
+    ...overrides
+  }),
+  withNoEmail: (): Customer => CustomerMother.default({ email: '' }),
+  list: (count: number): Customer[] =>
+    Array.from({ length: count }, (_, i) =>
+      CustomerMother.default({ id: `cust-${i}`, name: `Customer ${i}` })
+    )
+};
+```
+
+Uso en tests:
+
+```ts
+it('should filter customers by name', () => {
+  // Arrange
+  const customers = CustomerMother.list(3);
+  component.setCustomers(customers);
+
+  // Act
+  const result = component.filterByName('Customer 1');
+
+  // Assert
+  expect(result).toHaveLength(1);
+  expect(result[0].name).toBe('Customer 1');
+});
+```
+
+#### Reglas
+
+- Los Object Mothers DEBEN vivir junto a los modelos o en carpetas `testing/` del feature
+- Los nombres DEBEN ser descriptivos (`default`, `withNoEmail`, `list`, etc.)
+- DEBEN aceptar `Partial<T>` para sobrescribir solo campos necesarios
+- NO DEBEN contener lógica de negocio; solo construcción de datos
 
 ---
 

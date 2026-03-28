@@ -96,7 +96,7 @@ export interface ResourceCollection<TParams, TResult extends unknown[]>
  * Mutation function with its associated reactive state.
  */
 export interface Mutate<TResult> {
-  (data: unknown, options?: Options): Promise<TResult | null>;
+  (data: unknown, options?: Options): Promise<TResult>;
   submitting: Signal<boolean>;
   value: Signal<TResult | null>;
   error: Signal<unknown | null>;
@@ -276,7 +276,6 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
 
     loading.set(true);
     error.set(null);
-    value.set(null);
 
     if (!append) {
       accumulated.set(null);

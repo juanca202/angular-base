@@ -9,8 +9,8 @@ import { Entity, EntityContext } from '../models/entity';
 import { MessageService } from '@factor_ec/ui';
 import { firstValueFrom } from 'rxjs';
 import { EntityRepository } from '../repositories/entity-repository';
-import { Action } from '@/shared/models/action';
-import { ACTION_TYPE } from '@/shared/constants/action-type';
+import { Action } from '@/core/models/action';
+import { ACTION_TYPE } from '@/core/constants/action-type';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
 import { EntityRelations } from '../components/entity-relations/entity-relations';
 
