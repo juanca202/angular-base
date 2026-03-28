@@ -6,16 +6,16 @@
 ## Descripción
 
 **Como** administrador de productos  
-**Quiero** crear, ver, editar, **ver el detalle al seleccionar un producto en el listado**, **archivar**, **sacar un producto del archivo** eligiendo **activo** o **inactivo**, o **eliminar** productos con código, nombre, descripción, precio, moneda de operación (`currency`), estado operativo, y **filtrar el listado por estado** cuando consulte el catálogo  
+**Quiero** crear, ver, editar, **ver el detalle al seleccionar un producto en el listado**, **archivar**, **actualizar el estado** de un producto **archivado** a **activo** o **inactivo** (mismo tipo de **update** de `status` que en otras transiciones permitidas), o **eliminar** productos con **SKU**, nombre, descripción, precio, moneda de operación (`currency`), estado operativo, y **filtrar el listado por estado** cuando consulte el catálogo  
 **Para** mantener el catálogo correcto, evitar duplicados, recuperar productos archivados en el estado operativo que corresponda, enfocarme en los productos relevantes en cada contexto, retirar productos del uso operativo cuando haga falta (archivo) o borrarlos definitivamente solo cuando corresponda (eliminación)
 
 ## Características
 
-- **Alta:** dar de alta un producto con **código de producto**, nombre, descripción (opcional), precio, campo **`currency`** (moneda en que se opera el producto) y **estado** inicial. El **estado por defecto** en la alta es siempre **`active`**. El **`currency` por defecto** es **`USD`** y **no puede modificarse** (ni en alta ni en edición; ver reglas). Referencia visual del flujo de alta: [Diálogo de creación de producto](#diálogo-de-creación-de-producto) (wireframe en `assets/wireframe-dialogo-crear-producto.png`).
-- **Listado, filtro y detalle:** ver los productos con información principal (código, nombre, precio, **`currency`**, estado; descripción y demás campos en la **vista de detalle** al **seleccionar la fila o el registro**). El listado incluye un **filtro de estado** cuyas **etiquetas en pantalla** están en **español**: **Todos**, **Activo**, **Inactivo** y **Archivado** (mapeadas internamente a `active`, `inactive` y `archived`). Al elegir un estado concreto, solo se muestran productos en ese estado. **Todos** muestra productos **activos e inactivos** y **excluye** los **archivados**; los archivados **solo** aparecen con el filtro **Archivado**. Con el filtro **Archivado**, el administrador puede **dejar de archivar** cada producto eligiendo si pasa a **activo** o a **inactivo** (ver **Desarchivar**), **mediante el menú contextual u otra acción por fila** definida en planificación. Referencia visual del listado: [Listado de productos](#listado-de-productos) (wireframe en `assets/wireframe-listado-productos.png`).
-- **Edición:** modificar código, nombre, descripción, precio y **transiciones de estado** entre **`active`** e **`inactive`** mientras el producto **no** esté en **`archived`**. El campo **`currency`** **no** es editable: se mantiene fijo (**`USD`** en el alcance actual).
-- **Archivar:** acción **distinta** de la eliminación y de **Desarchivar**; pasa el producto a estado **`archived`**. **No requiere confirmación** ni diálogo previo; el cambio de estado se aplica de forma inmediata.
-- **Desarchivar:** disponible **solo** en el contexto del listado filtrado por estado **`archived`**. Si un producto está **`archived`**, el administrador puede **cambiarlo de estado** a **`active`** o a **`inactive`** (debe poder elegir **uno u otro**). El producto **deja de estar archivado** y queda en el estado operativo elegido. **No requiere confirmación** ni diálogo previo. La forma en pantalla de elegir (**active** vs **inactive**), atajos y contratos se concretan en la **planificación de tareas**.
+- **Alta:** dar de alta un producto con **SKU** ([glosario](../../glossary.md)), nombre, descripción (opcional), precio, campo **`currency`** (moneda en que se opera el producto) y **estado** inicial. El **estado por defecto** en la alta es siempre **`active`**. El **`currency` por defecto** es **`USD`** y **no puede modificarse** (ni en alta ni en edición; ver reglas). Referencia visual del flujo de alta: [Diálogo de creación de producto](#diálogo-de-creación-de-producto) (wireframe en `assets/wireframe-dialogo-crear-producto.png`).
+- **Listado, filtro y detalle:** ver los productos con información principal (**SKU**, nombre, precio, **`currency`**, estado; descripción y demás campos en la **vista de detalle** al **seleccionar la fila o el registro**). El listado incluye un **filtro de estado** cuyas **etiquetas en pantalla** están en **español**: **Todos**, **Activo**, **Inactivo** y **Archivado** (mapeadas internamente a `active`, `inactive` y `archived`). Al elegir un estado concreto, solo se muestran productos en ese estado. **Todos** muestra productos **activos e inactivos** y **excluye** los **archivados**; los archivados **solo** aparecen con el filtro **Archivado**. Con el filtro **Archivado**, el administrador puede **cambiar el estado** de cada producto a **activo** o **inactivo** (**actualización de estado**, misma naturaleza que el resto de transiciones permitidas), **mediante el menú contextual u otra acción por fila** definida en planificación. Referencia visual del listado: [Listado de productos](#listado-de-productos) (wireframe en `assets/wireframe-listado-productos.png`).
+- **Edición:** modificar **SKU**, nombre, descripción, precio y **transiciones de estado** entre **`active`** e **`inactive`** mientras el producto **no** esté en **`archived`**. El campo **`currency`** **no** es editable: se mantiene fijo (**`USD`** en el alcance actual).
+- **Archivar:** acción **distinta** de la eliminación y del **cambio de estado desde archivado**; pasa el producto a estado **`archived`**. **No requiere confirmación** ni diálogo previo; el cambio de estado se aplica de forma inmediata.
+- **Cambio de estado desde `archived`:** es un **update** de **`status`** a **`active`** o **`inactive`** (no hay acción de negocio ni endpoint distintos). Disponible **solo** en el contexto del listado filtrado por **`archived`** (el administrador debe poder elegir **uno u otro** destino). **No requiere confirmación** ni diálogo previo. La forma en pantalla, atajos y contratos se concretan en la **planificación de tareas**.
 - **Eliminar:** acción **distinta** del archivo; **borra el producto de forma definitiva** en el sistema (hard delete). Está permitida **para cualquier producto**, **independientemente de su estado** (`active`, `inactive` o `archived`). **Siempre** exige **confirmación explícita**; el texto del diálogo debe incluir el **nombre del producto** y seguir la redacción obligatoria indicada en **Reglas de negocio**.
 
 ## Tareas
@@ -29,34 +29,36 @@ Orden sugerido de implementación:
 3. [TK-003 — Menú contextual y acciones por fila](./TK-003-menu-contextual-producto.md)
 4. [TK-004 — Diálogos crear y editar producto](./TK-004-dialogo-crear-editar-producto.md)
 
-Referencia técnica consolidada: [catalogo-productos.md](../technical-docs/catalogo-productos.md).
+Las tareas **TK-001–TK-004** son **exclusivamente frontend**. La **normalización de nombre** y la **unicidad** de nombre/**SKU** en dominio son **backend**; no son entregables ni criterios de implementación de esas tareas (salvo mostrar errores cuando exista API).
+
+Referencia técnica consolidada: [catalogo-productos.md](../technical-docs/catalogo-productos.md). [Glosario de producto](../../glossary.md) (p. ej. **SKU**).
 
 ## Referencias de interfaz (wireframes)
 
-Referencias visuales orientativas para alinear maquetación con producto; la implementación debe cumplir las **reglas de negocio** de esta historia (p. ej. campo **`currency`** fijo **USD**, normalización de nombre en servidor, precio a 2 decimales).
+Referencias visuales orientativas para alinear maquetación con producto; la implementación debe cumplir las **reglas de negocio** de esta historia (p. ej. campo **`currency`** fijo **USD**, **SKU** según [glosario](../../glossary.md), normalización de nombre en servidor, precio a 2 decimales).
 
 ### Diálogo de creación de producto
 
 ![Wireframe del diálogo Crear Producto](assets/wireframe-dialogo-crear-producto.png)
 
-Incluye título **Crear Producto**, campos **Código**, **Nombre**, **Precio** (p. ej. con prefijo **$**), **Estado** (desplegable, p. ej. **Activo** por defecto), **Descripción** (área de texto) y botones **Cancelar** / **Guardar**. El wireframe **no** muestra el campo **`currency`**; en desarrollo debe incorporarse como valor **no editable** (**USD**), p. ej. junto a precio o estado, según diseño final.
+Incluye título **Crear Producto**, campos **SKU**, **Nombre**, **Precio** (p. ej. con prefijo **$**), **Estado** (desplegable, p. ej. **Activo** por defecto), **Descripción** (área de texto) y botones **Cancelar** / **Guardar**. El wireframe **no** muestra el campo **`currency`**; en desarrollo debe incorporarse como valor **no editable** (**USD**), p. ej. junto a precio o estado, según diseño final.
 
 ### Listado de productos
 
 ![Wireframe del listado con filtro Estado, búsqueda y tabla](assets/wireframe-listado-productos.png)
 
-Incluye filtro **Estado** con etiqueta en español (p. ej. **Todos**), campo **Buscar…**, tabla con columnas **Código**, **Nombre**, **Precio** (formato con **$** y dos decimales), **Estado** (indicadores **Activo** / **Inactivo**; aplicar también **Archivado** cuando corresponda), **selección de fila o registro para abrir el detalle** del producto y menú de acciones por fila (archivar, eliminar, desarchivar según contexto).
+Incluye filtro **Estado** con etiqueta en español (p. ej. **Todos**), campo **Buscar…**, tabla con columnas **SKU**, **Nombre**, **Precio** (formato con **$** y dos decimales), **Estado** (indicadores **Activo** / **Inactivo**; aplicar también **Archivado** cuando corresponda), **selección de fila o registro para abrir el detalle** del producto y menú de acciones por fila (archivar, eliminar, cambio de estado a activo o inactivo cuando el filtro es Archivado, según contexto).
 
 ## Reglas de negocio
 
-> **Nota:** el detalle técnico de normalizaciones, contratos de API, códigos de error y mocks frente a backend real está en [catalogo-productos.md](../technical-docs/catalogo-productos.md) y en las tareas [TK-001](./TK-001-modelos-repositorio-manager-rutas-documentacion.md)–[TK-004](./TK-004-dialogo-crear-editar-producto.md). Aquí solo se fijan acuerdos de producto que condicionan el alcance.
+> **Nota:** el detalle técnico de **backend** (normalizaciones de unicidad, contratos de API, códigos de error frente a servidor real) está en [catalogo-productos.md](../technical-docs/catalogo-productos.md) **como referencia de contrato**, no como trabajo de las tareas frontend **TK-001–TK-004**. Aquí solo se fijan acuerdos de producto que condicionan el alcance.
 
 - El **nombre del producto** es obligatorio, con **longitud máxima de 60 caracteres**, y debe ser **único** en el catálogo a nivel de dominio. Para la **unicidad**, el **backend** compara nombres tras **normalización** con estas reglas:
   - **Insensible a mayúsculas y minúsculas** (no distingue caso).
   - **Sin considerar acentos** (p. ej. equivalencias entre letras con tilde y sin tilde según la lógica acordada en implementación).
   - **Espacios al inicio y al final:** no se consideran (se descartan).
   - **Espacios entre palabras:** solo se considera **uno**; secuencias de varios espacios consecutivos cuentan como **un único** espacio entre palabras.
-- El **código de producto** es obligatorio y debe ser **único** en el catálogo a nivel de dominio. La **validación definitiva de unicidad** del **código** la realiza el **backend** (reglas de normalización del código, si las hubiera, en planificación de tareas / contrato API). El **cliente** puede tener comprobaciones orientativas o reflejar errores del servidor.
+- El **SKU** ([glosario](../../glossary.md)) es obligatorio y debe ser **único** en el catálogo a nivel de dominio. La **validación definitiva de unicidad** del SKU la realiza el **backend** (reglas de normalización del identificador, si las hubiera, en contrato API). En el **frontend** (tareas TK actuales) solo se reflejan errores del servidor cuando exista integración; **no** se duplica la lógica de dominio.
 - La **descripción** es **opcional**.
 - **`currency`:** atributo que indica la **moneda en que se opera** el producto. Valor por defecto **`USD`**. **No puede modificarse** en interfaz ni en flujos de edición (en el alcance actual todo producto opera en USD de forma fija).
 - El **precio** es obligatorio, numérico y no negativo, interpretado en la moneda del **`currency`** del producto (**`USD`** por defecto). El **redondeo y la presentación** usan **hasta 2 dígitos decimales** (almacenamiento, cálculos y visualización acordes a esta precisión salvo detalle técnico en tareas).
@@ -65,9 +67,9 @@ Incluye filtro **Estado** con etiqueta en español (p. ej. **Todos**), campo **B
   - **`inactive`:** no disponible para uso operativo, pero distinto de archivado (p. ej. pausa temporal).
   - **`archived`:** producto **archivado** mediante la acción **Archivar**; permanece en el sistema con ese estado; no debe tratarse como activo ni como inactivo “operativo”.
 - **Filtro “Todos” vs archivados:** con el filtro **Todos**, el listado **no** debe incluir productos **archivados**. Para verlos, el administrador elige el filtro **Archivado**.
-- **Desarchivar:** las acciones para **salir de `archived`** hacia **`active`** o **`inactive`** aplican a productos listados **únicamente** cuando el filtro de estado es **`archived`**. **No** llevan confirmación. Hasta que el producto siga **`archived`**, no aplica el flujo habitual de edición que alterna solo **active** ↔ **inactive** (salvo lo que se acuerde en tareas para detalle u otras pantallas).
+- **Salida de `archived`:** las acciones que **actualizan `status`** desde **`archived`** hacia **`active`** o **`inactive`** aplican a productos listados **únicamente** cuando el filtro de estado es **`archived`**. **No** llevan confirmación. Hasta que el producto siga **`archived`**, no aplica el flujo habitual de edición que alterna solo **active** ↔ **inactive** (salvo lo que se acuerde en tareas para detalle u otras pantallas).
 - **Archivar vs eliminar:** son **dos acciones diferentes**. **Archivar** → pasa a **`archived`** y **no** lleva confirmación. **Eliminar** → **borrado definitivo**; aplica en **cualquier estado**. **Siempre** debe mostrarse **confirmación** con este texto, sustituyendo **[Nombre del producto]** por el **nombre real del producto** (misma redacción y signos): _¿Desea eliminar [Nombre del producto] definitivamente? Esta acción no se puede recuperar._ Sin confirmación no se ejecuta la eliminación.
-- Tras crear o editar, el administrador debe ver **feedback claro** de éxito o error (validación, conflicto de unicidad o fallo de sistema).
+- Tras crear o editar, el administrador debe ver **feedback claro** de éxito o error (validación de formulario en cliente, y cuando haya API: conflictos/errores devueltos por el **backend**).
 
 ## Criterios de Aceptación
 
@@ -78,12 +80,12 @@ Feature: Gestión de productos
 
   Scenario: Crear un producto válido
     Given que soy administrador de productos
-    When completo código, nombre, precio y descripción opcional, y guardo sin cambiar el estado por defecto ni el currency
-    Then el producto queda registrado en estado active, con currency USD, y aparece en el listado con código, nombre, precio, currency y estado
+    When completo SKU, nombre, precio y descripción opcional, y guardo sin cambiar el estado por defecto ni el currency
+    Then el producto queda registrado en estado active, con currency USD, y aparece en el listado con SKU, nombre, precio, currency y estado
 
-  Scenario: Unicidad de nombre y código validada en backend
-    Given que ya existe un producto con un nombre o código determinado y el backend aplica la regla de unicidad
-    When intento crear o editar otro producto reutilizando ese nombre o ese código
+  Scenario: Unicidad de nombre y SKU validada en backend
+    Given que ya existe un producto con un nombre o SKU determinado y el backend aplica la regla de unicidad
+    When intento crear o editar otro producto reutilizando ese nombre o ese SKU
     Then la operación no se completa y el usuario recibe indicación clara del conflicto según el contrato acordado en planificación de tareas
 
   Scenario: Unicidad de nombre con normalización
@@ -98,7 +100,7 @@ Feature: Gestión de productos
 
   Scenario: Validación al crear o editar
     Given que estoy en el formulario de alta o edición de producto
-    When intento guardar sin código, sin nombre, con precio inválido (vacío o negativo) o sin estado válido
+    When intento guardar sin SKU, sin nombre, con precio inválido (vacío o negativo) o sin estado válido
     Then el sistema no persiste los cambios y muestra mensajes de validación claros
 
   Scenario: Editar producto y cambiar entre activo e inactivo
@@ -172,18 +174,18 @@ Feature: Gestión de productos
 La historia debe alinearse con el modelo **INVEST**. Marcar cada criterio solo si se cumple; si alguno no aplica o está en riesgo, documentarlo en observaciones.
 
 - [x] **I — Independiente:** el valor (ABM con estados, filtro de listado, archivo y eliminación definitiva) es acotado; la primera entrega puede apoyarse en **mocks** sin backend (ver Observaciones).
-- [x] **N — Negociable:** maquetación de la elección activo/inactivo al desarchivar y matices de contrato API se refinan en planificación de tareas.
+- [x] **N — Negociable:** maquetación de la elección activo/inactivo al actualizar estado desde archivado y matices de contrato API se refinan en planificación de tareas.
 - [x] **V — Valiosa:** control del ciclo de vida del producto en catálogo sin duplicados ambiguos.
 - [x] **E — Estimable:** las reglas de listado/filtro y unicidad están acotadas; la capa de datos inicial es **mock**, lo que acota incertidumbre hasta migrar a API real.
 - [x] **S — Pequeña:** un solo agregado con atributos y estados acotados.
-- [x] **T — Testeable:** escenarios cubren unicidad vía backend, longitud de nombre, validaciones, precio a 2 decimales, **`currency`** fijo USD, estados, archivo, restauración desde **`archived`** sin confirmación, eliminación en cualquier estado con texto de confirmación obligatorio y filtros en español (Todos vs Archivado).
+- [x] **T — Testeable:** escenarios cubren unicidad y normalización **en sistema con backend**; en la entrega **solo frontend** (TK actuales) aplican longitud de nombre, validaciones de formulario, precio a 2 decimales, **`currency`** fijo USD, estados, archivo, salida de **`archived`** sin confirmación, eliminación con texto obligatorio y filtros en español (Todos vs Archivado).
 
 ## Complejidad (Fibonacci)
 
 Usar la escala típica de story points: **1, 2, 3, 5, 8, 13** (solo Fibonacci en ese conjunto).
 
 - **Story points propuestos:** 5
-- **Justificación breve:** CRUD con código, estados, **`currency`** fijo, filtro, archivo, restauración desde archivo (**active** o **inactive**) sin confirmación y eliminación definitiva con copy fija y permisiva en cualquier estado; primera iteración con **mock**; contratos y unicidad en backend se concretan en tareas; puede subir a 8 al integrar API real.
+- **Justificación breve:** CRUD con **SKU**, estados, **`currency`** fijo, filtro, archivo, salida de **`archived`** (**active** o **inactive**) sin confirmación y eliminación definitiva con copy fija; primera iteración **frontend** con **mock**; unicidad y normalización de dominio quedan en **backend** (fuera de las TK actuales); puede subir a 8 al integrar API real.
 
 ## Definition of Ready
 
@@ -199,9 +201,9 @@ Criterios para considerar la historia lista para entrar a planificación / desar
 
 ## Observaciones
 
-- **Implementación (alcance actual):** no existe **backend** todavía; esta US se implementará con **mocks** en cliente (datos en memoria o repositorios simulados) respetando reglas funcionales y de filtrado donde aplique. La **validación definitiva de unicidad** y los **contratos** se alinearán con el backend en la **planificación de tareas** (`TK-XXX`, `technical-docs/`).
+- **Implementación (alcance actual — unidad de trabajo frontend):** la primera entrega usa **mocks** en cliente para flujos de UI, filtrado y estados. La **normalización de nombre**, la **unicidad** de dominio y los **contratos** definitivos del **backend** **no** forman parte de las tareas **TK-001–TK-004**; cuando exista API, el cliente solo debe **consumir** y **mostrar** errores según contrato (`technical-docs/`, trabajo backend).
 - **Bloqueos:** no hay **bloqueos críticos de dependencias** declarados para ejecutar esta historia con mocks según el alcance acordado.
-- **Normalización para unicidad del nombre:** las reglas de producto están fijadas en **Reglas de negocio** (case insensitive, sin acentos, trim, un solo espacio entre palabras). El **detalle de implementación** (Unicode, función de comparación, etc.) se documenta en **`technical-docs`** / tareas.
-- **Documentación técnica:** [catalogo-productos.md](../technical-docs/catalogo-productos.md); mantener alineado con la implementación (ver criterios de [TK-001](./TK-001-modelos-repositorio-manager-rutas-documentacion.md)).
-- **Decisiones pendientes (refinamiento):** futura evolución multi-moneda si **`currency`** dejara de ser fijo (fuera de alcance actual); reglas de normalización del **código** de producto si se exigen más allá de igualdad literal (no definido en esta US).
+- **Normalización para unicidad del nombre:** las reglas de producto están en **Reglas de negocio** para el **backend**. La implementación corresponde al **servidor**; **`technical-docs`** describe el contrato esperado. **No** es alcance de las tareas frontend **TK-001–TK-004**.
+- **Documentación técnica:** [catalogo-productos.md](../technical-docs/catalogo-productos.md); alinear la parte **mock/UI** con el frontend; las secciones **backend** sirven de referencia futura, no de criterio de las TK actuales.
+- **Decisiones pendientes (refinamiento):** futura evolución multi-moneda si **`currency`** dejara de ser fijo (fuera de alcance actual); reglas de normalización del **SKU** si se exigen más allá de igualdad literal (no definido en esta US).
 - **Referencias de arquitectura** del repo (orientativas para implementación, no alcance funcional): [ADR-006 Repository pattern](../../adr/ADR-006-repository-pattern.md), [ADR-007 Manager pattern](../../adr/ADR-007-manager-pattern.md), [ADR-010 Form layout structure](../../adr/ADR-010-form-layout-structure.md).

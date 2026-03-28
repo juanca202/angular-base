@@ -5,11 +5,13 @@
 - **Nombre corto:** Tabla de catálogo y detalle
 - **Estado:** Ready
 - **Prioridad:** Alta
-- **Unidad de trabajo:** test2
+- **Unidad de trabajo:** angular-base-project
+
+**Alcance:** solo **frontend**; reglas de dominio del **backend** (p. ej. normalización y unicidad de nombre/**SKU**) **no** se implementan en esta tarea.
 
 ## Descripción
 
-Implementar la pantalla de **listado** del catálogo según el wireframe **[Listado de productos](./README.md#listado-de-productos)** (archivo `assets/wireframe-listado-productos.png` en la misma carpeta que la US): filtro de estado con etiquetas en **español** (Todos, Activo, Inactivo, Archivado), campo de búsqueda opcional, columnas código, nombre, precio (formato con **$** y dos decimales), moneda (`USD`) y estado (Activo / Inactivo / Archivado). **Al hacer clic en una fila (o en el registro)** se abre la **vista de detalle** del producto (ruta hija, panel lateral o patrón acordado con [ADR-013](../../adr/ADR-013-dialog-master-detail.md)) mostrando la información relevante; la navegación desde el detalle de vuelta al listado no rompe el filtro activo cuando tenga sentido en el diseño. **No** incluir en esta tarea el menú contextual ni acciones por fila (archivar, desarchivar, eliminar): eso queda en [TK-003](./TK-003-menu-contextual-producto.md). Consumir datos vía `ProductManager` de [TK-001](./TK-001-modelos-repositorio-manager-rutas-documentacion.md). Respetar `ChangeDetectionStrategy.OnPush`, señales y accesibilidad (etiquetas significativas, controles enfocables, sin violaciones AXE evidentes).
+Implementar la pantalla de **listado** del catálogo según el wireframe **[Listado de productos](./README.md#listado-de-productos)** (archivo `assets/wireframe-listado-productos.png` en la misma carpeta que la US): filtro de estado con etiquetas en **español** (Todos, Activo, Inactivo, Archivado), campo de búsqueda opcional, columnas **SKU**, nombre, precio (formato con **$** y dos decimales), moneda (`USD`) y estado (Activo / Inactivo / Archivado). **Al hacer clic en una fila (o en el registro)** se abre la **vista de detalle** del producto (ruta hija, panel lateral o patrón acordado con [ADR-013](../../adr/ADR-013-dialog-master-detail.md)) mostrando la información relevante; la navegación desde el detalle de vuelta al listado no rompe el filtro activo cuando tenga sentido en el diseño. **No** incluir en esta tarea el menú contextual ni acciones por fila (archivar, cambio de estado desde archivado, eliminar): eso queda en [TK-003](./TK-003-menu-contextual-producto.md). Consumir datos vía `ProductManager` de [TK-001](./TK-001-modelos-repositorio-manager-rutas-documentacion.md). Respetar `ChangeDetectionStrategy.OnPush`, señales y accesibilidad (etiquetas significativas, controles enfocables, sin violaciones AXE evidentes).
 
 ## Referencias
 
