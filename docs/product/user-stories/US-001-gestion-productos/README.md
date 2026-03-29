@@ -23,9 +23,11 @@
 Orden sugerido de implementación:
 
 1. [TK-001 — Modelos, repositorio, manager, rutas y documentación técnica](./TK-001-modelos-repositorio-manager-rutas-documentacion.md)
-2. [TK-002 — Listado, filtrado y detalle al seleccionar registro](./TK-002-vista-listado-filtro-detalle.md)
-3. [TK-003 — Menú contextual y acciones por fila](./TK-003-menu-contextual-producto.md)
-4. [TK-004 — Diálogos crear y editar producto](./TK-004-dialogo-crear-editar-producto.md)
+2. [TK-002 — Diálogos crear y editar producto](./TK-002-dialogo-crear-editar-producto.md)
+3. [TK-003 — Listado, filtrado y detalle al seleccionar registro](./TK-003-vista-listado-filtro-detalle.md)
+4. [TK-004 — Menú contextual y acciones por fila](./TK-004-menu-contextual-producto.md)
+
+**Nota (dependencias):** [TK-003](./TK-003-vista-listado-filtro-detalle.md) solo depende de TK-001. [TK-002](./TK-002-dialogo-crear-editar-producto.md) y [TK-004](./TK-004-menu-contextual-producto.md) requieren el listado/detalle de TK-003 para integrarse en pantalla; puede avanzarse el formulario en TK-002 en paralelo, pero la apertura desde listado o detalle supone TK-003 lista. [TK-004](./TK-004-menu-contextual-producto.md) depende explícitamente de TK-003.
 
 Las tareas **TK-001–TK-004** pertenecen solo a la unidad **angular-base-project** y deben cumplir [Unidades de trabajo](../../work-units.md): sin mezclar alcance con **symfony-base-project** (API, persistencia, normalización, unicidad de negocio en servidor). Ese trabajo implica tareas y repositorio propios del backend, no listadas aquí.
 
