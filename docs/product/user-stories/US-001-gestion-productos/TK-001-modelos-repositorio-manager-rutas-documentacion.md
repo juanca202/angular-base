@@ -9,14 +9,14 @@
 
 ## Descripción
 
-Entregar el cimiento del feature **catalog**: tipos/modelo `Product`, unión de estados (`active` | `inactive` | `archived`), literal fijo de `currency`, constantes de mapeo etiqueta de filtro → parámetro, y rutas **lazy** bajo `src/app/features/catalog/`, registradas en `app.routes.ts`. Implementar `ProductRepository` según [ADR-006](../../../adr/ADR-006-repository-pattern.md) con persistencia **mock** (`MockHttpClient`, semilla JSON opcional bajo `src/test/mocks/repositories/`): colección, filtros por estado y búsqueda opcional, `findBy`, y mutaciones crear; actualizar (incluye transiciones de `status` permitidas, entre ellas `archived` → `active` | `inactive` como **mismo** update, sin recurso dedicado); archivar a `archived`; borrado definitivo. Aplicar en cliente/mock **solo** lo acordado para presentación y persistencia local: redondeo de precio a 2 decimales y `currency: 'USD'` fijo; tomar como referencia la parte aplicable a **mock/UI** en [catalogo-productos.md](../../technical-docs/catalogo-productos.md) (**sin** implementar en el mock normalización ni unicidad de dominio salvo duplicado literal opcional para pruebas de UI). Implementar `ProductManager` según [ADR-007](../../../adr/ADR-007-manager-pattern.md): carga con filtro de estado y búsqueda, estado de carga/error, métodos que delegan en el repositorio y refresco de recursos tras mutaciones; mapear respuestas de error del cliente (mock o HTTP) a feedback visible sin incrustar UI en el manager. Si el mock o la UI divergen de lo ya descrito para mock/UI en [catalogo-productos.md](../../technical-docs/catalogo-productos.md), actualizar solo las líneas pertinentes de esa sección.
+Entregar el cimiento del feature **catalog**: tipos/modelo `Product`, unión de estados (`active` | `inactive` | `archived`), literal fijo de `currency`, constantes de mapeo etiqueta de filtro → parámetro, y rutas **lazy** bajo `src/app/features/catalog/`, registradas en `app.routes.ts`. Implementar `ProductRepository` según [ADR-006](../../../adr/ADR-006-repository-pattern.md) con persistencia **mock** (`MockHttpClient`, semilla JSON opcional bajo `src/test/mocks/repositories/`): colección, filtros por estado, búsqueda por **nombre** (subcadena, sin distinguir mayúsculas; **no** filtrar por SKU en `search`, según [US-001](./README.md#reglas-de-negocio)), `findBy`, y mutaciones crear; actualizar (incluye transiciones de `status` permitidas, entre ellas `archived` → `active` | `inactive` como **mismo** update, sin recurso dedicado); archivar a `archived`; borrado definitivo. En el mock, aplicar **unicidad** al persistir, alineado con US-001 y con [Comportamiento del repositorio mock](../../technical-docs/catalog/product.md#comportamiento-del-repositorio-mock): **`code`** único tras trim (comparación literal); **`name`** único tras la **misma normalización** que en [Reglas de negocio](../../technical-docs/catalog/product.md#reglas-de-negocio) del documento técnico (espacios, mayúsculas, acentos); en `update`, excluir el `id` actual del conjunto comparado. Devolver conflicto (p. ej. 409, códigos `PRODUCT_SKU_CONFLICT` / `PRODUCT_NAME_CONFLICT`) consumible por el manager. Validar en mock que `price` sea **estrictamente positivo** (> 0) en creación y actualización, coherente con [US-001](./README.md#reglas-de-negocio). Redondeo de precio a 2 decimales y `currency: 'USD'` fijo. Implementar `ProductManager` según [ADR-007](../../../adr/ADR-007-manager-pattern.md): carga con filtro de estado y búsqueda, estado de carga/error, métodos que delegan en el repositorio y refresco de recursos tras mutaciones; mapear respuestas de error del cliente (mock o HTTP) a feedback visible sin incrustar UI en el manager. Centralizar la función de **normalización de nombre** en un util compartido del feature (invocado desde el repositorio mock) para una sola definición de regla. Si el mock o el manager divergen de [product.md](../../technical-docs/catalog/product.md), actualizar solo las líneas pertinentes de esa sección.
 
 ## Referencias
 
 - **Historia de usuario:** [US-001](./README.md) — Gestión de productos (catálogo)
-- **Documentación técnica (producto):** [Referencia técnica del catálogo de productos](../../technical-docs/catalogo-productos.md)
+- **Documentación técnica (producto):** [Catálogo — contrato y mock](../../technical-docs/catalog/product.md)
 - **ADRs:** [ADR-006 Repository pattern](../../../adr/ADR-006-repository-pattern.md), [ADR-007 Manager pattern](../../../adr/ADR-007-manager-pattern.md), [ADR-002 Angular style guide](../../../adr/ADR-002-angular-style-guide.md)
-- **Punto de acceso:** `src/app/features/catalog/` (modelos, `product-repository.ts`, `product-manager.ts`, `products-routes.ts`, `app.routes.ts`). El modelo y el mock deben alinearse con los nombres de campo de [catalogo-productos.md](../../technical-docs/catalogo-productos.md) (p. ej. **`code`** en persistencia/API como SKU; las pantallas pueden mostrar la etiqueta «SKU»).
+- **Punto de acceso:** `src/app/features/catalog/` (modelos, util de normalización de nombre si aplica, `product-repository.ts`, `product-manager.ts`, `products-routes.ts`, `app.routes.ts`). El modelo y el mock deben alinearse con los nombres de campo de [product.md](../../technical-docs/catalog/product.md) (p. ej. **`code`** en persistencia/API como SKU; las pantallas pueden mostrar la etiqueta «SKU»).
 - **Plantilla:** `src/app/features/templates/` (repositorio, manager, rutas)
 
 ## Infraestructura y dependencias
@@ -62,6 +62,12 @@ Feature: TK-001 — Contrato de capa de datos del catálogo (trazabilidad US-001
     Then el registro almacenado tiene status active, currency USD y precio persistido con como mucho dos decimales
     # Trazabilidad: US-001 — Crear un producto válido; Precio con dos decimales
 
+  Scenario: Crear o actualizar rechazado si precio no es estrictamente positivo
+    Given una petición de creación o actualización con price igual a 0 o negativo
+    When el repositorio intenta persistir esa mutación en mock
+    Then la operación falla con error de validación (p. ej. VALIDATION_ERROR / 400) y no se almacena el valor inválido
+    # Trazabilidad: US-001 — precio positivo; Validación de campos obligatorios y precio
+
   Scenario: Actualizar no altera currency
     Given un registro existente en la fuente mock
     When el repositorio aplica un update que incluiría otro currency distinto de USD
@@ -92,11 +98,41 @@ Feature: TK-001 — Contrato de capa de datos del catálogo (trazabilidad US-001
     Then el registro deja de existir en la fuente y las lecturas por id o colección filtrada no lo devuelven
     # Trazabilidad: US-001 — Eliminación definitiva (efecto en datos; confirmación en UI es TK-004)
 
+  Scenario: Crear rechazado si SKU duplicado tras trim en mock
+    Given un registro con code " SKU-1 " en la fuente mock
+    When intento crear otro con code "SKU-1" u otro equivalente tras trim espacios
+    Then la operación falla con conflicto SKU (p. ej. PRODUCT_SKU_CONFLICT / 409) y no se persiste duplicado
+    # Trazabilidad: US-001 — Unicidad de producto por nombre o SKU literal
+
+  Scenario: Crear rechazado si nombre colisiona con otro ya normalizado
+    Given un registro cuyo nombre normalizado equivale a "cafe rojo"
+    When intento crear con nombre que tras normalización coincide (p. ej. "Café  Rojo")
+    Then la operación falla con conflicto de nombre (p. ej. PRODUCT_NAME_CONFLICT / 409)
+    # Trazabilidad: US-001 — Unicidad de nombre con normalización
+
+  Scenario: Actualizar el mismo producto con literal distinto pero misma forma normalizada
+    Given un único registro con nombre "Café Rojo"
+    When actualizo ese id con nombre "cafe  rojo" sin otro producto en catálogo
+    Then la operación tiene éxito y el nombre almacenado refleja el literal enviado
+    # Trazabilidad: US-001 — Exclusión del propio id en comprobación de unicidad
+
+  Scenario: Actualizar rechazado si nombre normalizado coincide con otro producto distinto
+    Given dos registros A y B con nombres normalizados distintos
+    When actualizo B con un nombre cuya forma normalizada es igual a la de A
+    Then la operación falla con conflicto de nombre y A no se modifica
+    # Trazabilidad: US-001 — Unicidad de nombre con normalización en edición
+
+  Scenario: Búsqueda por texto aplica solo a nombre en mock
+    Given un registro cuyo code contiene "X" pero name no, y otro cuyo name contiene "xan"
+    When consulto la colección con search "xan" sin distinguir mayúsculas
+    Then la respuesta incluye solo productos cuyo name cumple la subcadena y no incluye el registro que coincide solo por code
+    # Trazabilidad: US-001 — Búsqueda por texto por nombre
+
   Scenario: Errores de validación o conflicto propagados sin renderizar vistas
-    Given una respuesta de error del cliente HTTP o del mock acorde al contrato
+    Given una respuesta de error del mock (validación, 409 por SKU o nombre, etc.)
     When el manager procesa el resultado de la operación
     Then el API del manager expone el fallo de forma consumible por capas superiores y el manager no incrusta plantillas ni widgets
-    # Trazabilidad: US-001 — Unicidad / validación en backend (superficie de error hacia consumidor)
+    # Trazabilidad: US-001 — Mensajes de conflicto y validación hacia la UI
 
   Scenario: Rutas lazy del feature catalog registradas en la app
     Given la configuración de rutas de la aplicación según app.routes.ts
@@ -114,9 +150,9 @@ Feature: TK-001 — Contrato de capa de datos del catálogo (trazabilidad US-001
     Then las señales o streams expuestos por el manager para colección o ítem muestran datos coherentes con la fuente mock sin requerir reinicio manual del proceso
 
   Scenario: Documentación técnica alineada si el mock diverge del documento
-    Given cambios en la semántica del mock o del manager respecto a catalogo-productos.md en la parte mock/UI
+    Given cambios en la semántica del mock o del manager respecto a product.md (sección mock)
     When se completa esta tarea
-    Then las líneas pertinentes de catalogo-productos.md quedan actualizadas
+    Then las líneas pertinentes de product.md quedan actualizadas
 ```
 
-**Nota:** En el mock **no** se exige unicidad ni normalización de dominio como en servidor; duplicado literal opcional solo para pruebas, según la descripción de esta TK. Las etiquetas «Todos» / «Archivado» en escenarios se refieren a **parámetros de consulta nombrados en constantes**, no a textos de interfaz.
+**Nota:** Las etiquetas «Todos» / «Archivado» en escenarios se refieren a **parámetros de consulta nombrados en constantes**, no a textos de interfaz. La **unicidad** (SKU literal tras trim y nombre normalizado) y la **búsqueda solo por nombre** en el mock son obligatorias en esta entrega por [US-001](./README.md).

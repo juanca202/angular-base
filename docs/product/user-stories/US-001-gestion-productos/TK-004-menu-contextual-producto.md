@@ -8,15 +8,14 @@
 
 ## Descripción
 
-En `src/app/features/catalog/`, sobre el listado de [TK-003](./TK-003-vista-listado-filtro-detalle.md), implementar el **menú contextual** (u otra UI equivalente del sistema de diseño) por fila con las acciones de negocio: **Archivar** y **Eliminar** para filas no archivadas; con filtro **Archivado**, permitir **actualizar el estado** a **`active`** o **`inactive`** (misma mutación de `status` que ya expone el manager/repositorio en cliente, según US-001), **sin diálogo de confirmación**. **Archivar** tampoco lleva confirmación. **Eliminar** aplica a **cualquier** estado y **siempre** abre un diálogo cuyo texto debe coincidir **exactamente** con la plantilla de US-001, sustituyendo solo el nombre del producto:  
-`¿Desea eliminar [Nombre del producto] definitivamente? Esta acción no se puede recuperar.`  
+En `src/app/features/catalog/`, sobre el listado de [TK-003](./TK-003-vista-listado-filtro-detalle.md), implementar el **menú contextual** (u otra UI equivalente del sistema de diseño) por fila con las acciones de negocio: **Archivar** y **Eliminar** para filas no archivadas; con filtro **Archivado**, permitir **actualizar el estado** a **`active`** o **`inactive`** (misma mutación de `status` que ya expone el manager/repositorio en cliente, según US-001), **sin diálogo de confirmación**. **Archivar** tampoco lleva confirmación. **Eliminar** aplica a **cualquier** estado y **siempre** abre un diálogo de confirmación cuyo mensaje **debe incluir el nombre del producto** a eliminar (identificable para el usuario), según [US-001 — Reglas de negocio](./README.md#reglas-de-negocio); la redacción exacta es negociable (UX / i18n).  
 Al cancelar, los datos no cambian; al confirmar, se llama al borrado vía manager/repositorio. Las acciones no deben mostrarse cuando violen las reglas de US-001 (p. ej. cambio de estado desde archivado fuera del contexto Archivado). Opciones de implementación coherentes con el diseño: botón partido, submenú con dos entradas, o dos controles con etiquetas accesibles (español / i18n). Enlazar con [ADR-004](../../../adr/ADR-004-component-library.md) y [ADR-013](../../../adr/ADR-013-dialog-master-detail.md) para el diálogo de confirmación.
 
 ## Referencias
 
 - **Historia de usuario:** [US-001](./README.md) — Gestión de productos (catálogo) — Reglas de negocio (Archivar, cambio de estado desde archivado, Eliminar)
-- **Diseño:** [Listado de productos](./README.md#listado-de-productos)
-- **Documentación técnica (producto):** [Referencia técnica del catálogo de productos](../../technical-docs/catalogo-productos.md)
+- **Diseño:** [US-001 — Referencias de UI, ítem 1 (listado)](./README.md#referencias-de-ui)
+- **Documentación técnica (producto):** [Catálogo — contrato y mock](../../technical-docs/catalog/product.md)
 - **ADRs:** [ADR-004 Component library](../../../adr/ADR-004-component-library.md), [ADR-013 Dialog master-detail](../../../adr/ADR-013-dialog-master-detail.md)
 - **Depende de:** [TK-001](./TK-001-modelos-repositorio-manager-rutas-documentacion.md), [TK-003](./TK-003-vista-listado-filtro-detalle.md)
 
@@ -35,28 +34,28 @@ Feature: TK-004 — Menú contextual y acciones por fila (trazabilidad US-001)
     Given que soy administrador de productos y existe un producto que no está archivado en el listado
     When elijo la acción de archivar (distinta de eliminar) desde el menú o acción por fila
     Then el producto pasa a estado archived sin mostrar diálogo de confirmación
-    # Trazabilidad: US-001 — Archivar un producto sin confirmación
+    # Trazabilidad: US-001 — [Reglas de negocio](./README.md#reglas-de-negocio) (filtro `archived`, ciclo de vida) y [Descripción](./README.md#descripción) (actualizar estado); la historia **no** define un escenario Gherkin aparte para archivar
 
   Scenario: Restaurar desde archived a active sin confirmación
     Given que el filtro de estado es archived y hay un producto en estado archived
     When elijo llevar ese producto a active desde el menú o acción por fila
     Then el producto queda en estado active y ya no está archived sin haberse mostrado un diálogo de confirmación
-    # Trazabilidad: US-001 — Restaurar desde archived a active sin confirmación
+    # Trazabilidad: US-001 — [Reglas de negocio](./README.md#reglas-de-negocio) y [TK-001](./TK-001-modelos-repositorio-manager-rutas-documentacion.md) (update archived → operativo); sin escenario Gherkin dedicado en la historia
 
   Scenario: Restaurar desde archived a inactive sin confirmación
     Given que el filtro de estado es archived y hay un producto en estado archived
     When elijo llevar ese producto a inactive desde el menú o acción por fila
     Then el producto queda en estado inactive y ya no está archived sin haberse mostrado un diálogo de confirmación
-    # Trazabilidad: US-001 — Restaurar desde archived a inactive sin confirmación
+    # Trazabilidad: igual que restaurar a active; US-001 manda por reglas de estado, no por criterio Gherkin nombrado
 
-  Scenario: Eliminar producto con texto de confirmación obligatorio
+  Scenario: Eliminar producto con confirmación que incluye el nombre
     Given que existe un producto llamado "Aceite 1L" en cualquier estado (active, inactive o archived)
     When elijo la acción de eliminar (borrado definitivo)
-    Then el sistema exige confirmación y el mensaje es exactamente: ¿Desea eliminar Aceite 1L definitivamente? Esta acción no se puede recuperar
-    # Trazabilidad: US-001 — Eliminar producto en cualquier estado con texto de confirmación obligatorio
+    Then el sistema exige confirmación y el mensaje mostrado incluye el nombre del producto ("Aceite 1L") de forma identificable para el usuario
+    # Trazabilidad: US-001 — Eliminación con confirmación que incluye el nombre del producto
 
   Scenario: Confirmar eliminación definitiva
-    Given que estoy ante el diálogo de confirmación de eliminación con el texto obligatorio visible
+    Given que estoy ante el diálogo de confirmación de eliminación con el mensaje visible
     When confirmo la eliminación
     Then el producto se borra definitivamente y ya no figura en el catálogo
     # Trazabilidad: US-001 — Confirmar eliminación definitiva
