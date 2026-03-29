@@ -20,8 +20,6 @@
 
 ## Tareas
 
-All tasks below belong to the **catalog** feature.
-
 Orden sugerido de implementación:
 
 1. [TK-001 — Modelos, repositorio, manager, rutas y documentación técnica](./TK-001-modelos-repositorio-manager-rutas-documentacion.md)
