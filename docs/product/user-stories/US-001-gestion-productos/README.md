@@ -29,13 +29,13 @@ Orden sugerido de implementación:
 3. [TK-003 — Menú contextual y acciones por fila](./TK-003-menu-contextual-producto.md)
 4. [TK-004 — Diálogos crear y editar producto](./TK-004-dialogo-crear-editar-producto.md)
 
-Las tareas **TK-001–TK-004** son **exclusivamente frontend**. La **normalización de nombre** y la **unicidad** de nombre/**SKU** en dominio son **backend**; no son entregables ni criterios de implementación de esas tareas (salvo mostrar errores cuando exista API).
+Las tareas **TK-001–TK-004** pertenecen solo a la unidad **angular-base-project** y deben cumplir [Unidades de trabajo](../../work-units.md): sin mezclar alcance con **symfony-base-project** (API, persistencia, normalización, unicidad de negocio en servidor). Ese trabajo implica tareas y repositorio propios del backend, no listadas aquí.
 
-Referencia técnica consolidada: [catalogo-productos.md](../technical-docs/catalogo-productos.md). [Glosario de producto](../../glossary.md) (p. ej. **SKU**).
+Referencia técnica consolidada (contrato compartido, no solo frontend): [catalogo-productos.md](../technical-docs/catalogo-productos.md). [Glosario de producto](../../glossary.md) (p. ej. **SKU**).
 
 ## Referencias de interfaz (wireframes)
 
-Referencias visuales orientativas para alinear maquetación con producto; la implementación debe cumplir las **reglas de negocio** de esta historia (p. ej. campo **`currency`** fijo **USD**, **SKU** según [glosario](../../glossary.md), normalización de nombre en servidor, precio a 2 decimales).
+Referencias visuales orientativas para alinear maquetación con producto; la implementación en **angular-base-project** debe cumplir las **reglas de negocio** de esta historia en lo aplicable al cliente (p. ej. **`currency`** fijo **USD**, **SKU** según [glosario](../../glossary.md), precio a 2 decimales). La normalización y unicidad «en servidor» las implementará **symfony-base-project** ([Unidades de trabajo](../../work-units.md)), no las tareas **TK** de esta carpeta.
 
 ### Diálogo de creación de producto
 

@@ -7,11 +7,9 @@
 - **Prioridad:** Alta
 - **Unidad de trabajo:** angular-base-project
 
-**Alcance:** solo **frontend**. Validaciones de **formulario** (obligatoriedad, longitud máxima visible, precio ≥ 0) sí; **normalización de nombre** y **unicidad** de dominio son **backend** y **no** se implementan aquí.
-
 ## Descripción
 
-Implementar en un **mismo patrón de tarea** (uno o dos componentes de diálogo según convenga el equipo) los flujos **Crear producto** y **Editar producto**. **Crear:** según `assets/wireframe-dialogo-crear-producto.png` — **SKU**, nombre, precio, estado con valor por defecto **Activo** (`active`), descripción opcional; mostrar **`currency` solo lectura `USD`** (obligatorio aunque el wireframe no lo muestre). **Editar:** para productos en estado **no archivado**, permitir **SKU**, nombre, descripción, precio y alternancia `active` ↔ `inactive`; **`currency`** permanece solo lectura. **No** abrir el flujo habitual de edición para filas `archived` (cambio de estado a `active` o `inactive` solo vía [TK-003](./TK-003-menu-contextual-producto.md)). Formularios reactivos o Signal Forms según [ADR-009](../../adr/ADR-009-form-strategy.md) y maquetación [ADR-010](../../adr/ADR-010-form-layout-structure.md). Validaciones: **SKU** y nombre obligatorios, nombre máx. 60 caracteres, precio obligatorio y ≥ 0, presentación a dos decimales. Enviar crear/actualizar vía manager; mostrar feedback de éxito o error; cuando exista API, **mostrar** respuestas de conflicto/validación del servidor **sin** replicar en cliente la lógica de unicidad ni normalización del backend. Cerrar el diálogo tras creación exitosa; en edición, refrescar datos coherentes con el listado y el detalle. Los puntos de apertura pueden ser el listado, el detalle o ambos, alineados con TK-002.
+Implementar en un **mismo patrón de tarea** (uno o dos componentes de diálogo según convenga el equipo) los flujos **Crear producto** y **Editar producto**. **Crear:** según `assets/wireframe-dialogo-crear-producto.png` — **SKU**, nombre, precio, estado con valor por defecto **Activo** (`active`), descripción opcional; mostrar **`currency` solo lectura `USD`** (obligatorio aunque el wireframe no lo muestre). **Editar:** para productos en estado **no archivado**, permitir **SKU**, nombre, descripción, precio y alternancia `active` ↔ `inactive`; **`currency`** permanece solo lectura. **No** abrir el flujo habitual de edición para filas `archived` (cambio de estado a `active` o `inactive` solo vía [TK-003](./TK-003-menu-contextual-producto.md)). Formularios reactivos o Signal Forms según [ADR-009](../../adr/ADR-009-form-strategy.md) y maquetación [ADR-010](../../adr/ADR-010-form-layout-structure.md). Validaciones: **SKU** y nombre obligatorios, nombre máx. 60 caracteres, precio obligatorio y ≥ 0, presentación a dos decimales. Enviar crear/actualizar vía manager; mostrar feedback de éxito o error; **mostrar** respuestas de conflicto/validación devueltas por el cliente HTTP o mock **sin** replicar en el formulario lógica de unicidad ni normalización de dominio. Cerrar el diálogo tras creación exitosa; en edición, refrescar datos coherentes con el listado y el detalle. Los puntos de apertura pueden ser el listado, el detalle o ambos, alineados con TK-002.
 
 ## Referencias
 
@@ -37,4 +35,4 @@ Implementar en un **mismo patrón de tarea** (uno o dos componentes de diálogo 
 
 ## Alcance técnico
 
-- Componente(s) de diálogo standalone; **no** implementar normalización de dominio ni unicidad en componente, repositorio mock ni manager: eso es **backend** en la visión acordada de esta unidad de trabajo.
+- Componente(s) de diálogo standalone; **no** implementar normalización ni unicidad de negocio en componente, repositorio mock ni manager.
