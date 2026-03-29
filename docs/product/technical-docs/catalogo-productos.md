@@ -1,6 +1,6 @@
 # Product catalog — technical reference (US-001)
 
-Cross-cutting technical notes for the product aggregate, mock behavior, and future API alignment. Functional rules remain in [US-001](../US-001-gestion-productos/README.md).
+Cross-cutting technical notes for the product aggregate, mock behavior, and future API alignment. Functional rules remain in [US-001](../user-stories/US-001-gestion-productos/README.md).
 
 ## Scope: frontend tasks vs backend
 
@@ -88,5 +88,5 @@ Client maps these to clear messages (wording in i18n / product copy tasks).
 
 - [ADR-006 Repository pattern](../../adr/ADR-006-repository-pattern.md)
 - [ADR-007 Manager pattern](../../adr/ADR-007-manager-pattern.md)
-- [US-001 Gestión de productos](../US-001-gestion-productos/README.md)
+- [US-001 Gestión de productos](../user-stories/US-001-gestion-productos/README.md)
 - [Glosario de producto (SKU)](../glossary.md)

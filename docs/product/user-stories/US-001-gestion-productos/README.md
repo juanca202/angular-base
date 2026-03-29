@@ -23,15 +23,15 @@
 Orden sugerido de implementación:
 
 1. [TK-001 — Modelos, repositorio, manager, rutas y documentación técnica](./TK-001-modelos-repositorio-manager-rutas-documentacion.md)
-2. [TK-002 — Diálogos crear y editar producto](./TK-002-dialogo-crear-editar-producto.md)
-3. [TK-003 — Listado, filtrado y detalle al seleccionar registro](./TK-003-vista-listado-filtro-detalle.md)
+2. [TK-003 — Listado, filtrado y detalle al seleccionar registro](./TK-003-vista-listado-filtro-detalle.md)
+3. [TK-002 — Diálogos crear y editar producto](./TK-002-dialogo-crear-editar-producto.md)
 4. [TK-004 — Menú contextual y acciones por fila](./TK-004-menu-contextual-producto.md)
 
-**Nota (dependencias):** [TK-003](./TK-003-vista-listado-filtro-detalle.md) solo depende de TK-001. [TK-002](./TK-002-dialogo-crear-editar-producto.md) y [TK-004](./TK-004-menu-contextual-producto.md) requieren el listado/detalle de TK-003 para integrarse en pantalla; puede avanzarse el formulario en TK-002 en paralelo, pero la apertura desde listado o detalle supone TK-003 lista. [TK-004](./TK-004-menu-contextual-producto.md) depende explícitamente de TK-003.
+**Nota (dependencias):** [TK-003](./TK-003-vista-listado-filtro-detalle.md) solo depende de TK-001. [TK-002](./TK-002-dialogo-crear-editar-producto.md) y [TK-004](./TK-004-menu-contextual-producto.md) integran sobre la shell de listado/detalle de TK-003. Opcionalmente, **TK-002** puede iniciarse en paralelo a TK-003 si solo se construye el diálogo aislado; la conexión con listado, detalle y botón de alta exige **TK-003** cerrada o en curso con los puntos de entrada acordados en esa tarea. [TK-004](./TK-004-menu-contextual-producto.md) depende explícitamente de TK-003.
 
 Las tareas **TK-001–TK-004** pertenecen solo a la unidad **angular-base-project** y deben cumplir [Unidades de trabajo](../../work-units.md): sin mezclar alcance con **symfony-base-project** (API, persistencia, normalización, unicidad de negocio en servidor). Ese trabajo implica tareas y repositorio propios del backend, no listadas aquí.
 
-Referencia técnica consolidada (contrato compartido, no solo frontend): [catalogo-productos.md](../technical-docs/catalogo-productos.md). [Glosario de producto](../../glossary.md) (p. ej. **SKU**).
+Referencia técnica consolidada (contrato compartido, no solo frontend): [catalogo-productos.md](../../technical-docs/catalogo-productos.md). [Glosario de producto](../../glossary.md) (p. ej. **SKU**).
 
 ## Referencias de interfaz (wireframes)
 
@@ -51,7 +51,7 @@ Incluye filtro **Estado** con etiqueta en español (p. ej. **Todos**), campo **B
 
 ## Reglas de negocio
 
-> **Nota:** el detalle técnico de **backend** (normalizaciones de unicidad, contratos de API, códigos de error frente a servidor real) está en [catalogo-productos.md](../technical-docs/catalogo-productos.md) **como referencia de contrato**, no como trabajo de las tareas frontend **TK-001–TK-004**. Aquí solo se fijan acuerdos de producto que condicionan el alcance.
+> **Nota:** el detalle técnico de **backend** (normalizaciones de unicidad, contratos de API, códigos de error frente a servidor real) está en [catalogo-productos.md](../../technical-docs/catalogo-productos.md) **como referencia de contrato**, no como trabajo de las tareas frontend **TK-001–TK-004**. Aquí solo se fijan acuerdos de producto que condicionan el alcance.
 
 - El **nombre del producto** es obligatorio, con **longitud máxima de 60 caracteres**, y debe ser **único** en el catálogo a nivel de dominio. Para la **unicidad**, el **backend** compara nombres tras **normalización** con estas reglas:
   - **Insensible a mayúsculas y minúsculas** (no distingue caso).
@@ -204,6 +204,6 @@ Criterios para considerar la historia lista para entrar a planificación / desar
 - **Implementación (alcance actual — unidad de trabajo frontend):** la primera entrega usa **mocks** en cliente para flujos de UI, filtrado y estados. La **normalización de nombre**, la **unicidad** de dominio y los **contratos** definitivos del **backend** **no** forman parte de las tareas **TK-001–TK-004**; cuando exista API, el cliente solo debe **consumir** y **mostrar** errores según contrato (`technical-docs/`, trabajo backend).
 - **Bloqueos:** no hay **bloqueos críticos de dependencias** declarados para ejecutar esta historia con mocks según el alcance acordado.
 - **Normalización para unicidad del nombre:** las reglas de producto están en **Reglas de negocio** para el **backend**. La implementación corresponde al **servidor**; **`technical-docs`** describe el contrato esperado. **No** es alcance de las tareas frontend **TK-001–TK-004**.
-- **Documentación técnica:** [catalogo-productos.md](../technical-docs/catalogo-productos.md); alinear la parte **mock/UI** con el frontend; las secciones **backend** sirven de referencia futura, no de criterio de las TK actuales.
+- **Documentación técnica:** [catalogo-productos.md](../../technical-docs/catalogo-productos.md); alinear la parte **mock/UI** con el frontend; las secciones **backend** sirven de referencia futura, no de criterio de las TK actuales.
 - **Decisiones pendientes (refinamiento):** futura evolución multi-moneda si **`currency`** dejara de ser fijo (fuera de alcance actual); reglas de normalización del **SKU** si se exigen más allá de igualdad literal (no definido en esta US).
-- **Referencias de arquitectura** del repo (orientativas para implementación, no alcance funcional): [ADR-006 Repository pattern](../../adr/ADR-006-repository-pattern.md), [ADR-007 Manager pattern](../../adr/ADR-007-manager-pattern.md), [ADR-010 Form layout structure](../../adr/ADR-010-form-layout-structure.md).
+- **Referencias de arquitectura** del repo (orientativas para implementación, no alcance funcional): [ADR-006 Repository pattern](../../../adr/ADR-006-repository-pattern.md), [ADR-007 Manager pattern](../../../adr/ADR-007-manager-pattern.md), [ADR-010 Form layout structure](../../../adr/ADR-010-form-layout-structure.md).
