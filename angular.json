@@ -45,7 +45,7 @@
               ],
               "outputHashing": "all",
               "serviceWorker": "ngsw-config.json",
-              "sourceMap": true
+              "sourceMap": false
             },
             "development": {
               "optimization": false,
