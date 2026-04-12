@@ -25,7 +25,7 @@ describe('MockHttpClient', () => {
 
       // Assert
       // Verificamos que se puede obtener la colección después
-      const result = await firstValueFrom(service.get(`${environment.restEndpoint}/test`));
+      const result = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/test`));
       expect(result).toEqual(data);
     });
 
@@ -35,11 +35,11 @@ describe('MockHttpClient', () => {
       service.loadCollection('test', originalData);
 
       // Act
-      const result: any = await firstValueFrom(service.get(`${environment.restEndpoint}/test`));
+      const result: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/test`));
       result[0].name = 'Modified';
 
       // Assert - El original no debe cambiar
-      const original: any = await firstValueFrom(service.get(`${environment.restEndpoint}/test`));
+      const original: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/test`));
       expect(original[0].name).toBe('Original');
     });
   });
@@ -55,7 +55,7 @@ describe('MockHttpClient', () => {
 
     it('should return all items when no ID is provided', async () => {
       // Act
-      const result: any = await firstValueFrom(service.get(`${environment.restEndpoint}/items`));
+      const result: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/items`));
 
       // Assert
       expect(Array.isArray(result)).toBe(true);
@@ -64,7 +64,9 @@ describe('MockHttpClient', () => {
 
     it('should return single item when ID is provided', async () => {
       // Act
-      const result: any = await firstValueFrom(service.get(`${environment.restEndpoint}/items/1`));
+      const result: any = await firstValueFrom(
+        service.get(`${environment.apiRestBaseUrl}/items/1`)
+      );
 
       // Assert
       expect(result).toEqual({ id: '1', name: 'Item 1', category: 'A' });
@@ -73,7 +75,7 @@ describe('MockHttpClient', () => {
     it('should return error when collection does not exist', async () => {
       // Act & Assert
       await expect(
-        firstValueFrom(service.get(`${environment.restEndpoint}/nonexistent`))
+        firstValueFrom(service.get(`${environment.apiRestBaseUrl}/nonexistent`))
       ).rejects.toThrow("Collection 'nonexistent' not loaded");
     });
 
@@ -83,7 +85,7 @@ describe('MockHttpClient', () => {
 
       // Act
       const result: any = await firstValueFrom(
-        service.get(`${environment.restEndpoint}/items`, { params })
+        service.get(`${environment.apiRestBaseUrl}/items`, { params })
       );
 
       // Assert
@@ -97,7 +99,7 @@ describe('MockHttpClient', () => {
 
       // Act
       const result: any = await firstValueFrom(
-        service.get(`${environment.restEndpoint}/items`, { params })
+        service.get(`${environment.apiRestBaseUrl}/items`, { params })
       );
 
       // Assert
@@ -116,7 +118,7 @@ describe('MockHttpClient', () => {
 
       // Act
       const result: any = await firstValueFrom(
-        service.post(`${environment.restEndpoint}/items`, newItem)
+        service.post(`${environment.apiRestBaseUrl}/items`, newItem)
       );
 
       // Assert
@@ -130,8 +132,10 @@ describe('MockHttpClient', () => {
       const newItem = { name: 'New Item' };
 
       // Act
-      await firstValueFrom(service.post(`${environment.restEndpoint}/items`, newItem));
-      const allItems: any = await firstValueFrom(service.get(`${environment.restEndpoint}/items`));
+      await firstValueFrom(service.post(`${environment.apiRestBaseUrl}/items`, newItem));
+      const allItems: any = await firstValueFrom(
+        service.get(`${environment.apiRestBaseUrl}/items`)
+      );
 
       // Assert
       expect(allItems.length).toBe(2);
@@ -144,7 +148,7 @@ describe('MockHttpClient', () => {
 
       // Act
       const result: any = await firstValueFrom(
-        service.post(`${environment.restEndpoint}/newcollection`, newItem)
+        service.post(`${environment.apiRestBaseUrl}/newcollection`, newItem)
       );
 
       // Assert
@@ -164,7 +168,7 @@ describe('MockHttpClient', () => {
 
       // Act
       const result: any = await firstValueFrom(
-        service.put(`${environment.restEndpoint}/items/1`, updatedData)
+        service.put(`${environment.apiRestBaseUrl}/items/1`, updatedData)
       );
 
       // Assert
@@ -176,14 +180,14 @@ describe('MockHttpClient', () => {
     it('should return error when ID is missing', async () => {
       // Act & Assert
       await expect(
-        firstValueFrom(service.put(`${environment.restEndpoint}/items`, { name: 'Test' }))
+        firstValueFrom(service.put(`${environment.apiRestBaseUrl}/items`, { name: 'Test' }))
       ).rejects.toThrow('Missing id for PUT');
     });
 
     it('should return error when item not found', async () => {
       // Act & Assert
       await expect(
-        firstValueFrom(service.put(`${environment.restEndpoint}/items/999`, { name: 'Test' }))
+        firstValueFrom(service.put(`${environment.apiRestBaseUrl}/items/999`, { name: 'Test' }))
       ).rejects.toThrow('Item not found');
     });
   });
@@ -198,8 +202,8 @@ describe('MockHttpClient', () => {
 
     it('should delete item by ID', async () => {
       // Act
-      await firstValueFrom(service.delete(`${environment.restEndpoint}/items/1`));
-      const result: any = await firstValueFrom(service.get(`${environment.restEndpoint}/items`));
+      await firstValueFrom(service.delete(`${environment.apiRestBaseUrl}/items/1`));
+      const result: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/items`));
 
       // Assert
       expect(result.length).toBe(1);
@@ -209,7 +213,7 @@ describe('MockHttpClient', () => {
     it('should return error when ID is missing', async () => {
       // Act & Assert
       await expect(
-        firstValueFrom(service.delete(`${environment.restEndpoint}/items`))
+        firstValueFrom(service.delete(`${environment.apiRestBaseUrl}/items`))
       ).rejects.toThrow('Missing id for DELETE');
     });
   });

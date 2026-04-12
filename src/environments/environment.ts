@@ -9,55 +9,9 @@ export const environment: Environment = {
     { code: 'es', name: 'Español' }
   ],
   sessionPrefix: '',
-  filesPath: '',
-  appPath: '',
-  auth: {
-    signupUrl: '',
-    signinUrl: '',
-    refreshTokenUrl: '',
-    forgotPasswordUrl: '',
-    resetPasswordUrl: '',
-    settingsUrl: '',
-    allowRefreshToken: true,
-    allowSignup: true,
-    allowAuthFederation: false,
-    tokenType: '',
-    clients: {
-      google: ''
-    }
-  },
-  restEndpoint: ''
-  /*
-  apiIdPrefix: '',
-  graphqlEndpoint: '',
-  fedcm: {
-    google: {
-      tokenUrl: '',
-      configURL: '',
-      clientId: ''
-    }
-  },
-  googleApi: {
-    clientId: ''
-  },
-  googleTagManager: {
-    trackingCode: ''
-  },
-  sentry: {
-    dsn: '',
-    tracingOrigins: ['localhost'],
-    tracesSampleRate: 1.0
-  },
-  firebaseConfig: {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
-    measurementId: ''
-  },
-  vapidKey: ''
-  */
+  apiRestBaseUrl: '',
+  iconSettings: {
+    path: 'images',
+    collection: 'factoricons-regular'
+  }
 };

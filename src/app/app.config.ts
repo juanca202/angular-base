@@ -14,7 +14,6 @@ import { provideClientHydration } from '@angular/platform-browser';
 
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { GoogleTagManager } from '@factor_ec/utils';
-
 import { AUTH_CONFIG, AuthProvider, AuthService, authInterceptor } from '@factor_ec/utils';
 
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
@@ -51,10 +50,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: UI_OPTIONS,
       useValue: {
-        iconSettings: {
-          path: 'images',
-          collection: 'factoricons-regular'
-        }
+        iconSettings: environment.iconSettings
       }
     },
     {

@@ -48,7 +48,7 @@ describe('async-resources', () => {
     it('should return full API URL with path', () => {
       // Arrange
       const path = 'customers/123';
-      const expectedUrl = `${environment.restEndpoint}/${path}`;
+      const expectedUrl = `${environment.apiRestBaseUrl}/${path}`;
 
       // Act
       const result = getApiUrl(path);
@@ -65,7 +65,7 @@ describe('async-resources', () => {
       const result = getApiUrl(path);
 
       // Assert
-      expect(result).toBe(`${environment.restEndpoint}/`);
+      expect(result).toBe(`${environment.apiRestBaseUrl}/`);
     });
   });
 

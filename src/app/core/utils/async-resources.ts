@@ -119,7 +119,7 @@ export class ResourceException extends Error {
  * Builds the full backend API URL for a given path.
  */
 export function getApiUrl(path: string): string {
-  return `${environment.restEndpoint}/${path}`;
+  return `${environment.apiRestBaseUrl}/${path}`;
 }
 
 /**

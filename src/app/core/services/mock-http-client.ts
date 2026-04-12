@@ -88,7 +88,7 @@ export class MockHttpClient {
    *   "/requirement-items/1/recipes"   → { collection: "requirement-items", id: "1", subresource: "recipes" }
    */
   private parseUrl(url: string): { collection: string; id?: string; subresource?: string } {
-    const base = environment.restEndpoint.replace(/\/+$/, '');
+    const base = environment.apiRestBaseUrl.replace(/\/+$/, '');
     url = url.replace(base, '');
 
     const cleaned = url.replace(/^\/+|\/+$/g, '');
@@ -229,7 +229,7 @@ export class MockHttpClient {
    * - Otherwise removes the item with the given ID from the collection.
    */
   public delete<T>(url: string): Observable<T> {
-    const base = environment.restEndpoint.replace(/\/+$/, '');
+    const base = environment.apiRestBaseUrl.replace(/\/+$/, '');
     const cleanUrl = url.replace(base, '').replace(/^\/+|\/+$/g, '');
     const urlParts = cleanUrl.split('/');
 
