@@ -43,7 +43,7 @@ Cada ADR sigue un formato estándar:
 - [ADR-015: Estrategia de Testing](./ADR-015-testing-strategy.md)
 - [ADR-016: Estrategia de Documentación](./ADR-016-documentation-strategy.md)
 - [ADR-017: Modelo de flujo de ramas basado en Features → Staging → Producción](./ADR-017-branching-strategy.md)
-
+- [ADR-018: Sistema de notificación y feedback (`notify`)](./ADR-018-notification-feedback-system.md)
 
 ## ADRs vs Skills (separación de responsabilidades)
 

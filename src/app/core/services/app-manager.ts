@@ -47,7 +47,6 @@ export class AppManager {
   // Properties
   private installPrompt: any = null; // BeforeInstallPromptEvent;
   public readonly updateStatus = signal<string | null>('done');
-  private readonly defaultLocale = 'en';
   public readonly languages = signal<Language[]>(environment.languages);
   public readonly startTime = performance.now();
 
@@ -125,7 +124,7 @@ export class AppManager {
     const userLocale = this.languages().find(
       (l) => l.code === this.storage.get(this.localeKey, 'local')
     )?.code;
-    const locale = userLocale || systemLocale || this.defaultLocale;
+    const locale = userLocale || systemLocale || environment.defaultLocale;
     this.storage.set(this.localeKey, locale, 'local');
 
     // Load base translations

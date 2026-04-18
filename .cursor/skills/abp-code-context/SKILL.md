@@ -45,3 +45,4 @@ description: Contexto operativo para generar código Angular en este repositorio
 - `docs/adr/ADR-015-testing-strategy.md`
 - `docs/adr/ADR-016-documentation-strategy.md`
 - `docs/adr/ADR-017-branching-strategy.md`
+- `docs/adr/ADR-018-notification-feedback-system.md`
