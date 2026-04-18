@@ -14,7 +14,6 @@ import { provideClientHydration } from '@angular/platform-browser';
 
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { GoogleTagManager } from '@factor_ec/utils';
-import { AUTH_CONFIG, AuthProvider, AuthService, authInterceptor } from '@factor_ec/utils';
 
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 import { routes } from '@/app.routes';
@@ -42,10 +41,7 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([authInterceptor, clientInterceptor, languageInterceptor])
-    ),
+    provideHttpClient(withFetch(), withInterceptors([clientInterceptor, languageInterceptor])),
     provideClientHydration(),
     {
       provide: UI_OPTIONS,
@@ -57,11 +53,6 @@ export const appConfig: ApplicationConfig = {
       provide: LOCALE_ID,
       useFactory: (appManager: AppManager) => appManager.getLocale(),
       deps: [AppManager]
-    },
-    { provide: AUTH_CONFIG, useValue: environment },
-    {
-      provide: AuthProvider,
-      useClass: AuthService
     }
   ]
 };
