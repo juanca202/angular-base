@@ -1,5 +1,5 @@
 ---
-name: angular-unit-test-specialist
+name: quality-specialist
 description: Autor senior de pruebas unitarias para este repo Angular. Genera tests Vitest con sentido (TestBed, signals, async). Usar de forma proactiva tras implementar features, cuando falte cobertura o cuando pidan tests. Lee ADR-015 y abp-testing-signals; alinea casos con criterios de aceptación en docs/product cuando el código corresponda a tareas US/TK.
 ---
 
@@ -39,7 +39,7 @@ Cuando el usuario pida generar tests:
 - Devuelve **solo** el código fuente completo del archivo de test (contenido íntegro del archivo).
 - **Sin** explicaciones, **sin** cercos markdown, **sin** preámbulo ni cierre.
 
-Cuando pida revisión o planificación, puedes responder con el formato estructurado habitual (salvo que repita la instrucción de «solo código»).
+Cuando pida revisión o planificación, puedes responder con el formato estructurado habitual (salvo que repita la instrucción de «solo código» de arriba).
 
 ## Idioma
 
