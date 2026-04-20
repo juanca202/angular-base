@@ -45,10 +45,10 @@ const extractLayerFromImport = (importPath, crossLayerPackages = []) => {
   }
   const path = importPath.trim();
 
-  // Cross layer: packages configured as cross (auth-core, auth-msal, monitoring, etc.)
+  // Cross layer: packages configured as cross
   for (const pkg of crossLayerPackages) {
     if (path === pkg || path.startsWith(pkg + '/')) {
-      return 'auth';
+      return 'cross';
     }
   }
 
@@ -60,7 +60,7 @@ const extractLayerFromImport = (importPath, crossLayerPackages = []) => {
     return 'shared';
   }
   if (path.startsWith('@/cross') || path.startsWith('@/cross/')) {
-    return 'auth';
+    return 'cross';
   }
   if (path.startsWith('@/features/')) {
     const parts = path.slice('@/features/'.length).split('/');
@@ -102,7 +102,7 @@ module.exports = {
             type: 'array',
             items: { type: 'string' },
             description:
-              'Package names that belong to the Cross layer (e.g. auth-core, auth-msal). Core cannot import from these.'
+              'Package names that belong to the Cross layer. Core cannot import from these.'
           }
         },
         additionalProperties: false
@@ -129,10 +129,10 @@ module.exports = {
 
         const fromIsFeature = fromLayer.startsWith(FEATURE_PREFIX);
         const toIsFeature = targetLayer.startsWith(FEATURE_PREFIX);
-        const toIsAuth = targetLayer === 'auth';
+        const toIsCross = targetLayer === 'cross';
 
-        // Core cannot import from Shared, Auth, or Features (ADR-001)
-        if (fromLayer === 'core' && (targetLayer === 'shared' || toIsAuth || toIsFeature)) {
+        // Core cannot import from Shared, Cross, or Features (ADR-001)
+        if (fromLayer === 'core' && (targetLayer === 'shared' || toIsCross || toIsFeature)) {
           context.report({
             node,
             messageId: 'invalidDependency',
