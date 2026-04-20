@@ -18,6 +18,11 @@ import { Session } from '@/core/services/session';
 import { NotificationEvent, notificationEvents } from '@/core/utils/notification';
 import { Language } from '@/core/models/language';
 
+interface BeforeInstallPromptEventLike extends Event {
+  readonly prompt: () => Promise<void>;
+  readonly userChoice?: Promise<{ outcome?: string }>;
+}
+
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
 
@@ -45,7 +50,7 @@ export class AppManager {
   private readonly messageService = inject(MessageService);
 
   // Properties
-  private installPrompt: any = null; // BeforeInstallPromptEvent;
+  private installPrompt: BeforeInstallPromptEventLike | null = null;
   public readonly updateStatus = signal<string | null>('done');
   public readonly languages = signal<Language[]>(environment.languages);
   public readonly startTime = performance.now();
@@ -111,7 +116,7 @@ export class AppManager {
       return;
     }
     this.installPrompt.prompt();
-    this.installPrompt.userChoice?.then((result: any) => {
+    this.installPrompt.userChoice?.then((result) => {
       if (result?.outcome !== 'dismissed') {
         //this.googleTagManager.addVariable({ event: 'install', user_id: this.settings.user?.username, app_id: this.id });
       }
@@ -171,7 +176,7 @@ export class AppManager {
     if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('beforeinstallprompt', (event: Event) => {
         event.preventDefault();
-        this.installPrompt = event as any;
+        this.installPrompt = event as BeforeInstallPromptEventLike;
       });
     }
   }
