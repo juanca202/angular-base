@@ -29,7 +29,7 @@ Recommendations draw from the [Angular coding style guide](https://angular.dev/s
 - UI code under `src`; bootstrap in `src/main.ts`.
 - Keep TS, template, and styles **in the same folder**; tests next to code under test.
 - Organize by **feature areas**, not only by technical type at the top level.
-- Project-specific conventions or overrides may be recorded in `docs/MEMORY.md`; read it before asking the user when a repo-only rule is needed.
+- Project-specific conventions or overrides may be recorded in `.ai/MEMORY.md`; read it before asking the user when a repo-only rule is needed.
 
 ### Dependency injection
 
