@@ -50,9 +50,7 @@ Cada ADR sigue un formato estándar:
 Para mantener la documentación limpia y reutilizable:
 
 - **ADRs (`docs/adr/`)** documentan decisiones arquitectónicas y su justificación.
-- **Skills (`.cursor/skills/`)** contienen instrucciones operativas para asistentes de IA.
-
-Consulta el índice de skills en [docs/skills/README.md](../skills/README.md).
+- **Skills (`.ai/skills/`)** contienen instrucciones operativas para asistentes de IA (cada skill es una carpeta con `SKILL.md`).
 
 ## Crear un Nuevo ADR
 

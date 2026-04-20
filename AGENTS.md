@@ -120,4 +120,4 @@ Mensajes de error, notificaciones y textos de datos/config **que vea el usuario*
 
 ## 11. Índice de ADRs (referencia)
 
-Detalle normativo en `docs/adr/README.md`. Flujo resumido también en `.cursor/skills/abp-code-context/SKILL.md`.
+Detalle normativo en `docs/adr/README.md`. Flujo resumido también en `.ai/skills/abp-code-context/SKILL.md`.

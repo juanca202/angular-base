@@ -1,8 +1,8 @@
 # ADR-013: Uso de Diálogos para Interacciones Maestro–Detalle
 
-**Estado:** Propuesto  
+**Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 20/04/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto

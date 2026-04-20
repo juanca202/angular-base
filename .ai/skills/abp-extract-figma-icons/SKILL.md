@@ -40,19 +40,19 @@ URL formats:
 This skill includes `fetch-figma-icons.js` in its folder. Run it directly (from project root):
 
 ```bash
-FIGMA_ACCESS_TOKEN=<token> node .cursor/skills/abp-extract-figma-icons/fetch-figma-icons.js "<figma-url-with-node-id>"
+FIGMA_ACCESS_TOKEN=<token> node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js "<figma-url-with-node-id>"
 ```
 
 Or with fileKey and nodeId separately:
 
 ```bash
-FIGMA_ACCESS_TOKEN=<token> node .cursor/skills/abp-extract-figma-icons/fetch-figma-icons.js <fileKey> <nodeId>
+FIGMA_ACCESS_TOKEN=<token> node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js <fileKey> <nodeId>
 ```
 
 Example:
 
 ```bash
-FIGMA_ACCESS_TOKEN=xxx node .cursor/skills/abp-extract-figma-icons/fetch-figma-icons.js "https://www.figma.com/design/VT4W8MFWwD8k1TYcABLEjf/Design-system-template?node-id=6-2"
+FIGMA_ACCESS_TOKEN=xxx node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js "https://www.figma.com/design/VT4W8MFWwD8k1TYcABLEjf/Design-system-template?node-id=6-2"
 ```
 
 **Required**: `FIGMA_ACCESS_TOKEN` must be set. Create at: Figma Settings > Security > Personal access tokens. Scope: `file_content:read`.
@@ -79,7 +79,7 @@ This generates `public/images/icons.svg` with all SVGs packed as `<symbol>` elem
 | ------ | --------------------------------------------------------------------------------------------------- |
 | No URL | Ask user for Figma URL with node-id before proceeding                                               |
 | Token  | `FIGMA_ACCESS_TOKEN` required; scope `file_content:read`                                            |
-| Script | Use `node .cursor/skills/abp-extract-figma-icons/fetch-figma-icons.js` with URL or fileKey + nodeId |
+| Script | Use `node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js` with URL or fileKey + nodeId |
 | Output | SVGs saved to `src/theme/icons/`                                                                    |
 | Pack   | Always run `npm run icons:pack` after extraction                                                    |
 | Target | Final sprite: `public/images/icons.svg`                                                             |

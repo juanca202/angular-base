@@ -307,7 +307,6 @@ Las reglas de este ADR se implementan mediante:
 
 - Convenciones de código del proyecto
 - ESLint y revisiones de PR
-- Skills operativos para asistentes de IA (ver `docs/skills/README.md`)
 
 Esto asegura:
 
@@ -345,4 +344,4 @@ Esto asegura:
 
 - [Guía de Estilo Oficial de Angular](https://angular.dev/style-guide)
 - [Documentación de Angular](https://angular.dev)
-- [Skills del proyecto para asistentes de IA](../skills/README.md)
+- [Skills del proyecto para asistentes de IA](../../.ai/skills/)

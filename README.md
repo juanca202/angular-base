@@ -73,7 +73,7 @@ Enlaces directos a toda la documentación disponible:
 
 - 🚀 [Comenzando](./docs/getting-started.md) - Cómo usar este proyecto base
 - 📋 [Registros de Decisiones Arquitectónicas (ADRs)](./docs/adr/README.md) - Decisiones arquitectónicas documentadas
-- 🧠 [Skills del Proyecto](./docs/skills/README.md) - Guías operativas para asistentes de IA
+- 🧠 [Skills del Proyecto](./.ai/skills/) - Guías operativas para asistentes de IA (carpetas con `SKILL.md`)
 
 ---
 
@@ -83,9 +83,9 @@ Este proyecto documenta todas las decisiones arquitectónicas importantes en ADR
 
 **Útil para:** Entender las decisiones arquitectónicas del proyecto y las razones detrás de ellas.
 
-### 🧠 [Skills del Proyecto](./docs/skills/README.md)
+### 🧠 [Skills del Proyecto](./.ai/skills/)
 
-Documenta las guías operativas para asistentes de IA y cómo aplican los ADRs al generar código.
+Las guías operativas para asistentes de IA viven en subcarpetas con `SKILL.md` y complementan los ADRs al generar código.
 
 **Útil para:** Estandarizar generación de código asistida por IA sin mezclar reglas operativas con decisiones arquitectónicas.
 

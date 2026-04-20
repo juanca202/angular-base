@@ -127,11 +127,11 @@ Para formularios que usen Angular Material, combinar `FormField` con `mat-form-f
 
 ### Mitigación
 
-- Documentación operativa en `.cursor/skills/abp-forms/SKILL.md`
+- Documentación operativa en `.ai/skills/abp-forms/SKILL.md`
 - Para aplicaciones que requieran máxima estabilidad, considerar Formularios Reactivos hasta que Signal Forms sea estable
 
 ## Referencias
 
 - [Angular Signal Forms (experimental)](https://angular.dev/guide/forms/signal-forms)
-- [Skill: abp-forms](../../.cursor/skills/abp-forms/SKILL.md)
+- [Skill: abp-forms](../../.ai/skills/abp-forms/SKILL.md)
 - [ADR-010: Layout y Estructura de Formularios](./ADR-010-form-layout-structure.md)

@@ -11,7 +11,7 @@ El Angular Base Project es un **boilerplate** diseñado para servir como base pa
 - Mejores prácticas y convenciones
 - Documentación y ADRs
 - Componentes y servicios listos para usar
-- Listo para trabajar con agentes de IA 
+- Listo para trabajar con agentes de IA
 
 ## Instalación
 
@@ -47,7 +47,7 @@ Al configurar tu proyecto, tendrás dos remotes:
 
 ### Agregar el proyecto base a un repositorio vacío
 
-Si partes de un repositorio de implementación vacío (*angular-app*), configura el proyecto base como remoto *upstream* e intégralo así:
+Si partes de un repositorio de implementación vacío (_angular-app_), configura el proyecto base como remoto _upstream_ e intégralo así:
 
 ```bash
 git remote add upstream <URL del proyecto base>
@@ -64,26 +64,31 @@ Cuando tu proyecto ya está creado a partir del base y quieres traer los último
 ![Flujo de actualización desde el proyecto base](./images/update-base-project.png)
 
 1. **Traer referencias remotas**
+
    ```bash
    git fetch main
    ```
 
 2. **Cambiar a la rama de integración**
+
    ```bash
    git checkout upstream-sync
    ```
 
 3. **Integrar tu rama de desarrollo en la rama de integración**
+
    ```bash
    git merge develop
    ```
 
 4. **Traer los últimos cambios del proyecto base**
+
    ```bash
    git fetch upstream main
    ```
 
 5. **Fusionar el proyecto base en la rama de integración**
+
    ```bash
    git merge upstream/main
    ```
@@ -92,6 +97,7 @@ Cuando tu proyecto ya está creado a partir del base y quieres traer los último
    Revisa los archivos en conflicto, resuelve manteniendo tus personalizaciones donde corresponda y completa la fusión.
 
 7. **Volver a tu rama de desarrollo**
+
    ```bash
    git checkout develop
    ```
@@ -159,6 +165,6 @@ Actualiza los siguientes archivos con información específica de tu proyecto:
 
 - [Documentación de Arquitectura](./README.md)
 - [Registros de Decisiones Arquitectónicas (ADRs)](./adr/README.md)
-- [Skills del Proyecto](./skills/README.md)
+- [Skills del Proyecto](../.ai/skills/)
 - [Documentación de Angular](https://angular.dev)
 - [README del Proyecto](../README.md)

@@ -9,7 +9,7 @@ Eres un ingeniero de software senior especializado en escribir pruebas unitarias
 
 - **Principal:** Angular con **Vitest** (`ng test`), **TestBed**, **ComponentFixture** y utilidades de testing de Angular. Usa solo la API de Vitest (`vi`, `expect`, etc.) alineada con `package.json` y los tests existentes del repo.
 - **Estrategia:** Sigue `docs/adr/ADR-015-testing-strategy.md` (AAA, Object Mother cuando ayude, objetivos de cobertura de ramas, contrato de testing de signals).
-- **Detalle operativo de signals:** Sigue `.cursor/skills/abp-testing-signals/SKILL.md` (léelo cuando los tests toquen `signal` / `computed`).
+- **Detalle operativo de signals:** Sigue `.ai/skills/abp-testing-signals/SKILL.md` (léelo cuando los tests toquen `signal` / `computed`).
 
 ## Alineación con producto
 
