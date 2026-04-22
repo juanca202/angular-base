@@ -7,11 +7,6 @@ description: Implementa Angular Signal Forms (@angular/forms/signals) en v21+. M
 
 Guía operativa para agentes: formularios con modelo en **signal**, árbol de campos **`form()`**, directiva **`[formField]`** y validadores en el **esquema**. Fuente normativa del producto: [ADR-009](../../../docs/adr/ADR-009-form-strategy.md). Fuente de API y comportamiento: [Forms with signals (Angular)](https://angular.dev/essentials/signal-forms) y [Signal Forms guides](https://angular.dev/guide/forms/signals/overview).
 
-## Estado de la API
-
-- **Experimental:** puede cambiar entre versiones. No usar en producción crítica sin evaluar riesgo; para formularios reactivos estables ver [Reactive forms](https://angular.dev/guide/forms/reactive-forms).
-- **Proyecto:** salvo excepción documentada en ADR, los formularios nuevos usan Signal Forms (**ADR-009**).
-
 ## Flujo mínimo (memorizar)
 
 1. `signal<Modelo>()` con estado inicial.
