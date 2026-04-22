@@ -104,7 +104,7 @@ export class Session {
           headers
         })
         .pipe(
-          tap((response: any) => {
+          tap((response: Settings) => {
             this.setSettings(response);
           })
         )
@@ -143,7 +143,7 @@ export class Session {
    * @param key - The parameter key
    * @param value - The parameter value
    */
-  public setParam(key: string, value: any): void {
+  public setParam(key: string, value: unknown): void {
     this._params.update((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -152,7 +152,7 @@ export class Session {
    *
    * @param values - Object containing key-value pairs to merge
    */
-  public setParams(values: Record<string, any>): void {
+  public setParams(values: Record<string, unknown>): void {
     this._params.update((prev) => ({ ...prev, ...values }));
   }
 

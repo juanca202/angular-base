@@ -1,7 +1,7 @@
 import { Settings } from './settings';
 
 export interface CustomParams {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface SessionState {
