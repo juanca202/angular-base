@@ -1,5 +1,5 @@
 ---
-name: abp-testing-signals
+name: abp-testing
 description: Guía operativa para escribir tests unitarios/integración con Angular Signals y Vitest en este repositorio. Usar cuando la tarea involucre tests de servicios, componentes o estado reactivo.
 ---
 
@@ -21,7 +21,7 @@ description: Guía operativa para escribir tests unitarios/integración con Angu
 
 ## Comandos sugeridos
 
-- `ng test`
+- `ng test:ci`
 - `ng test --watch`
 - `ng test --coverage`
 

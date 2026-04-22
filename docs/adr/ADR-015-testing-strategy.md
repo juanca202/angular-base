@@ -276,7 +276,7 @@ Los Signals siempre deben ser signals reales.
 
 ## Guías Operativas para Asistentes de IA
 
-Las instrucciones operativas para asistentes de IA se mantienen fuera de los ADRs, en skills dedicados bajo `.ai/skills/` (p. ej. `abp-testing-signals/SKILL.md`).
+Las instrucciones operativas para asistentes de IA se mantienen fuera de los ADRs, en skills dedicados bajo `.ai/skills/` (p. ej. `abp-testing/SKILL.md`).
 
 Este ADR mantiene únicamente la decisión arquitectónica y sus reglas técnicas de testing.
 
