@@ -165,6 +165,6 @@ Actualiza los siguientes archivos con información específica de tu proyecto:
 
 - [Documentación de Arquitectura](./README.md)
 - [Registros de Decisiones Arquitectónicas (ADRs)](./adr/README.md)
-- [Skills del Proyecto](../.ai/skills/)
+- [Skills del Proyecto](../.agents/skills/)
 - [Documentación de Angular](https://angular.dev)
 - [README del Proyecto](../README.md)

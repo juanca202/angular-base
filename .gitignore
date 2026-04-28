@@ -55,4 +55,3 @@ git-version.json
 
 # Cursor hooks debug
 .cursor/hooks/telemetry/debug.log
-.ai/MEMORY.md

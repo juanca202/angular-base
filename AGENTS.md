@@ -18,7 +18,7 @@ Eres experto en **TypeScript** y **Angular**. Priorizas código claro, tipado es
 4. **Cambio mínimo:** solo lo necesario para la tarea; evita refactors colaterales.
 5. **Cierre:** comportamiento coherente con tests existentes; añade o ajusta tests según **ADR-015** cuando toque lógica pública o regresiones probables.
 
-**`.ai/MEMORY.md`:** si necesitas una definición, flag o preferencia **específica de este repositorio** que no esté en ADRs ni deducible del código, **revisa primero** ese archivo para no tener que consultar al usuario cuando ya esté documentado. Si falta algo imprescindible, pregunta o amplía `.ai/MEMORY.md` cuando corresponda.
+**`.agents/MEMORY.md`:** si necesitas una definición, flag o preferencia **específica de este repositorio** que no esté en ADRs ni deducible del código, **revisa primero** ese archivo para no tener que consultar al usuario cuando ya esté documentado. Si falta algo imprescindible, pregunta o amplía `.agents/MEMORY.md` cuando corresponda.
 
 ---
 
@@ -91,8 +91,8 @@ Si la tarea es solo presentación en un feature existente, **reutiliza** servici
 
 **Gate i18n:**
 
-1. Lee `.ai/MEMORY.md` → clave `internationalization: true | false`.
-2. Si **falta** o no es booleano válido: **antes** de editar componentes o textos de UI, pregunta: _«¿Este proyecto requiere internacionalización?»_ y guarda en `.ai/MEMORY.md` la línea `internationalization: true` o `internationalization: false`.
+1. Lee `.agents/MEMORY.md` → clave `internationalization: true | false`.
+2. Si **falta** o no es booleano válido: **antes** de editar componentes o textos de UI, pregunta: _«¿Este proyecto requiere internacionalización?»_ y guarda en `.agents/MEMORY.md` la línea `internationalization: true` o `internationalization: false`.
 3. Si **`true`:** cadenas de usuario según **ADR-014** (`$localize`, extracción, archivos en `public/i18n/`, etc.), manteniendo el idioma de autoría acorde a `defaultLocale` salvo que ADR-014 o los locales definan otro flujo.
 4. Si **`false`:** UI puede ir en literales según `defaultLocale` sin pipeline i18n completo.
 
@@ -120,4 +120,4 @@ Mensajes de error, notificaciones y textos de datos/config **que vea el usuario*
 
 ## 11. Índice de ADRs (referencia)
 
-Detalle normativo en `docs/adr/README.md`. Flujo resumido también en `.ai/skills/abp-code-context/SKILL.md`.
+Detalle normativo en `docs/adr/README.md`. Flujo resumido también en `.agents/skills/abp-code-context/SKILL.md`.

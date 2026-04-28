@@ -86,6 +86,6 @@ Cuando no hay backend real disponible, se crea un repositorio mock con `MockHttp
 
 ## Referencias
 
-- **Skill operativo:** [abp-repository](../../.ai/skills/abp-repository/SKILL.md) — instrucciones para crear, modificar y usar repositories
+- **Skill operativo:** [abp-repository](../../.agents/skills/abp-repository/SKILL.md) — instrucciones para crear, modificar y usar repositories
 - [Angular HttpClient](https://angular.dev/api/common/http/HttpClient)
 - [Documentación de Signals](https://angular.dev/guide/signals)

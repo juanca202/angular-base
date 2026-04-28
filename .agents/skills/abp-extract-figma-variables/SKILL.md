@@ -51,7 +51,7 @@ URL formats:
 **Option B — REST API (if MCP returns no data):** Run the script directly (from project root):
 
 ```bash
-FIGMA_ACCESS_TOKEN=<token> node .ai/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey|url>
+FIGMA_ACCESS_TOKEN=<token> node .agents/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey|url>
 ```
 
 - Token: Figma Settings > Security > Personal access tokens
@@ -130,7 +130,7 @@ For nested structures (e.g. `global.color.primary`), map by the last segments (`
 When MCP `get_variable_defs` returns no data, use the script:
 
 ```bash
-FIGMA_ACCESS_TOKEN=<token> node .ai/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey|url>
+FIGMA_ACCESS_TOKEN=<token> node .agents/skills/abp-extract-figma-variables/fetch-figma-variables.js <fileKey|url>
 ```
 
 The script outputs JSON with `mapped` variables ready for theme.css. Parse the output and apply Step 3–6.
@@ -143,7 +143,7 @@ The script outputs JSON with `mapped` variables ready for theme.css. Parse the o
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | No URL     | Ask user for Figma URL before proceeding                                                                                        |
 | MCP tool   | Use `get_variable_defs` from server `user-Figma`                                                                                |
-| Fallback   | Use `node .ai/skills/abp-extract-figma-variables/fetch-figma-variables.js` with `FIGMA_ACCESS_TOKEN` if MCP returns no data |
+| Fallback   | Use `node .agents/skills/abp-extract-figma-variables/fetch-figma-variables.js` with `FIGMA_ACCESS_TOKEN` if MCP returns no data |
 | Target CSS | `src/theme/tokens/theme.css`                                                                                                    |
 | px → rem   | Base 16px: `rem = px / 16`                                                                                                      |
 | Fonts      | Assume Google Fonts; import from `https://fonts.googleapis.com/` in `src/index.html`                                            |

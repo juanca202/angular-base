@@ -344,4 +344,4 @@ Esto asegura:
 
 - [Guía de Estilo Oficial de Angular](https://angular.dev/style-guide)
 - [Documentación de Angular](https://angular.dev)
-- [Skills del proyecto para asistentes de IA](../../.ai/skills/)
+- [Skills del proyecto para asistentes de IA](../../.agents/skills/)

@@ -3,8 +3,8 @@
  * Fetches icons from a Figma page/frame and saves them as SVG files.
  *
  * Usage (run from project root):
- *   FIGMA_ACCESS_TOKEN=xxx node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js <fileKey> <nodeId>
- *   FIGMA_ACCESS_TOKEN=xxx node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js https://figma.com/design/VT4W8MFWwD8k1TYcABLEjf/Design-system-template?node-id=6-2
+ *   FIGMA_ACCESS_TOKEN=xxx node .agents/skills/abp-extract-figma-icons/fetch-figma-icons.js <fileKey> <nodeId>
+ *   FIGMA_ACCESS_TOKEN=xxx node .agents/skills/abp-extract-figma-icons/fetch-figma-icons.js https://figma.com/design/VT4W8MFWwD8k1TYcABLEjf/Design-system-template?node-id=6-2
  *
  * Token: Figma Settings > Security > Personal access tokens
  * Scopes: file_content:read (required)
@@ -118,10 +118,10 @@ async function main() {
     nodeId = nodeIdArg.replace(/-/g, ':');
   } else {
     console.error(
-      'Usage: FIGMA_ACCESS_TOKEN=xxx node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js <fileKey> <nodeId>'
+      'Usage: FIGMA_ACCESS_TOKEN=xxx node .agents/skills/abp-extract-figma-icons/fetch-figma-icons.js <fileKey> <nodeId>'
     );
     console.error(
-      '   or: FIGMA_ACCESS_TOKEN=xxx node .ai/skills/abp-extract-figma-icons/fetch-figma-icons.js <figma-url-with-node-id>'
+      '   or: FIGMA_ACCESS_TOKEN=xxx node .agents/skills/abp-extract-figma-icons/fetch-figma-icons.js <figma-url-with-node-id>'
     );
     process.exit(1);
   }

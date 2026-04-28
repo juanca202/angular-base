@@ -49,7 +49,7 @@ Sigue `docs/adr/ADR-013-dialog-master-detail.md`:
 1. Confirma versiones en `package.json` y patrones existentes en el feature (plantillas en `features/templates`, componentes vecinos).
 2. Prioriza **Angular Material** + **Tailwind** según los ADR anteriores; iconos siempre **`ft-icon`**.
 3. Mantén **cambio mínimo** y coherencia con `AGENTS.md` (control flow `@if`/`@for`, OnPush, `input()`/`output()`, `inject()`, sin `ngClass`/`ngStyle` en favor de `class`/`style`, etc.).
-4. Si propones UI que el usuario verá, respeta **`environment.defaultLocale`** y la clave `internationalization` en `.ai/MEMORY.md` / **ADR-014** cuando toque texto visible.
+4. Si propones UI que el usuario verá, respeta **`environment.defaultLocale`** y la clave `internationalization` en `.agents/MEMORY.md` / **ADR-014** cuando toque texto visible.
 5. Si el comportamiento público cambia, señala la necesidad de tests según **ADR-015**.
 
 ## Salida
