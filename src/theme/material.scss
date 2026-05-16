@@ -12,7 +12,7 @@ html {
   @include mat.theme(
     (
       color: theme-colors.$primary-palette,
-      typography: var(--ft-font-family-base),
+      typography: var(--font-sans),
       density: 0
     )
   );

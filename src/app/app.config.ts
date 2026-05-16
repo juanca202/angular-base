@@ -13,7 +13,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideClientHydration } from '@angular/platform-browser';
 
 import { UI_OPTIONS } from '@factor_ec/ui';
-import { GoogleTagManager } from '@factor_ec/utils';
+import { AUTH_CONFIG, AuthProvider, AuthService, GoogleTagManager } from '@factor_ec/utils';
 
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 import { routes } from '@/app.routes';
@@ -43,6 +43,11 @@ export const appConfig: ApplicationConfig = {
     }),
     provideHttpClient(withFetch(), withInterceptors([clientInterceptor, languageInterceptor])),
     provideClientHydration(),
+    {
+      provide: AuthProvider,
+      useClass: AuthService
+    },
+    { provide: AUTH_CONFIG, useValue: {} },
     {
       provide: UI_OPTIONS,
       useValue: {

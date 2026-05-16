@@ -1,6 +1,0 @@
-.ft-thumbnail {
-  @apply h-(--ft-thumbnail-size) w-(--ft-thumbnail-size) flex items-center justify-center rounded-full bg-(--mat-sys-surface-container) relative;
-  .ft-thumbnail__badge {
-    @apply absolute bottom-0 right-[-.25em] border-(--ft-color-bg) bg-(--ft-color-primary) rounded-full;
-  }
-}

@@ -21,7 +21,7 @@
       class="ft-center p-6"
       i18n-label
       label="Loading..."
-      iconClass="ft-progress--3"
+      iconClass="text-4xl"
     />
   } @else if (entity.error()) {
     <app-error-placeholder class="ft-center" [resource]="entity" />
@@ -59,7 +59,7 @@
           class="ft-center p-6"
           i18n-label
           label="Loading..."
-          iconClass="ft-progress--3"
+          iconClass="text-4xl"
         />
       } @else if (related.error()) {
         <app-error-placeholder class="ft-center" [resource]="related" />

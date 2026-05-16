@@ -40,7 +40,7 @@ export class EntityManager {
         class: 'text-center flex flex-col items-center gap-3',
         icon: {
           name: 'trash',
-          class: 'text-danger ft-icon--4',
+          class: 'text-danger text-5xl',
           collection: 'factoricons-slim'
         },
         actions: [

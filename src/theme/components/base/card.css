@@ -1,5 +1,5 @@
 .ft-card {
-  @apply rounded-lg border flex flex-col border-(--ft-color-border);
+  @apply rounded-lg border flex flex-col border-(--color-border);
 
   .ft-card__header {
     @apply flex items-center min-h-12 font-bold py-2 pr-1 pl-4;
@@ -7,7 +7,7 @@
 
   .ft-card__tabs {
     display: flex;
-    background-color: color-mix(in srgb, var(--ft-color-border) 40%, transparent);
+    background-color: color-mix(in srgb, var(--color-border) 40%, transparent);
 
     button {
       flex: 1;
@@ -24,7 +24,7 @@
         border-radius: 0;
         border-top-left-radius: 0.5rem;
         border-top-right-radius: 0.5rem;
-        background-color: var(--ft-color-bg);
+        background-color: var(--color-background);
       }
     }
   }

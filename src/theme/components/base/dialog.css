@@ -25,7 +25,7 @@
   &.ft-dialog--stacked {
     animation: ft-dialog-stacked-animation 0.4s;
     .mdc-dialog__surface {
-      @apply rounded-r-none bg-(--ft-color-bg);
+      @apply rounded-r-none bg-(--color-background);
     }
     .mdc-dialog__content {
       @apply max-h-none;
@@ -38,7 +38,7 @@
     @apply max-w-none!;
     animation: ft-dialog-stacked-animation 0.4s;
     .mdc-dialog__surface {
-      @apply rounded-none bg-(--ft-color-bg);
+      @apply rounded-none bg-(--color-background);
     }
     .mdc-dialog__content {
       @apply max-h-none;

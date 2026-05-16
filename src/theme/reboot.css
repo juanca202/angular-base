@@ -6,11 +6,6 @@ body {
 body {
   overscroll-behavior-y: contain;
   margin: 0;
-  font: var(--ft-font-weight-base)
-        var(--ft-font-size-base) / var(--ft-line-height-base)
-        var(--ft-font-family-base);
-  color: var(--ft-color-text);
-  background-color: var(--ft-color-bg);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
@@ -30,24 +25,6 @@ textarea {
   line-height: inherit;
 }
 
-h1 {
-  font-size: var(--ft-h1-font-size);
-  font-weight: 700;
-  margin-block: 0.5rem;
-}
-
-h2 {
-  font-size: var(--ft-h2-font-size);
-  font-weight: 700;
-  margin-block: 0.5rem;
-}
-
-h3 {
-  font-size: var(--ft-h3-font-size);
-  font-weight: 700;
-  margin-block: 0.5rem;
-}
-
 button:not(:disabled),
 [type='button']:not(:disabled),
 [type='reset']:not(:disabled),
@@ -61,11 +38,6 @@ meta[name='supported-color-schemes'][content='dark light'] {
   --samsung-invert-colors: 0 !important;
 }
 
-hr {
-  border: 0;
-  border-top: 1px solid var(--ft-color-border);
-}
-
 *,
 *::before,
 *::after {
@@ -77,19 +49,9 @@ app-root {
   height: 100%;
 }
 
-.mat-mdc-form-field {
-  width: 100%;
-}
-
 .mdc-icon-button {
   .ft-icon {
     @apply block;
-  }
-
-  .ft-badge {
-    @apply absolute text-[10px] bg-(--ft-color-danger) text-(--ft-color-light) font-bold rounded-full min-w-[18px] h-[18px] top-0 left-0 p-0 px-1 flex items-center justify-center;
-    box-shadow: 0 0 0 2px var(--ft-color-light);
-    animation: ft-bounce 0.3s ease;
   }
 }
 
@@ -97,18 +59,6 @@ app-root {
   line-height: 1 !important;
 }
 
-.mat-bottom-sheet-container {
-  @apply p-0!;
-}
-
 .mat-mdc-form-field {
   @apply w-full!;
-}
-
-.mat-mdc-menu-panel.ft-auth-menu {
-  max-width: calc(400px - 4rem - 3rem);
-
-  .mat-mdc-menu-content {
-      width: calc(100vw - 4rem);
-  }
 }

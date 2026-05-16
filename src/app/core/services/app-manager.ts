@@ -6,8 +6,6 @@ import localeEn from '@angular/common/locales/en';
 import localeEs from '@angular/common/locales/es';
 import { SwUpdate } from '@angular/service-worker';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
 
 import { AuthProvider, Storage } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
@@ -40,9 +38,7 @@ registerLocaleData(localeEs, 'es');
 export class AppManager {
   // Dependency injection
   private readonly authProvider = inject(AuthProvider);
-  private readonly location = inject(Location);
   private readonly platformId = inject<object>(PLATFORM_ID);
-  private readonly router = inject(Router);
   private readonly session = inject(Session);
   private readonly snackbar = inject(MatSnackBar);
   private readonly swUpdate = inject(SwUpdate);
@@ -79,13 +75,6 @@ export class AppManager {
   public getLocale(): string {
     return this.storage.get(this.localeKey, 'local') || 'en';
   }
-  public goBack(): void {
-    if (history.length > 1) {
-      this.location.back();
-    } else {
-      this.router.navigateByUrl('/');
-    }
-  }
   public async init(): Promise<void> {
     // Show version in console
     console.log(`${versionInfo.npmPackage.name} ${versionInfo.git.raw}`);
@@ -116,11 +105,6 @@ export class AppManager {
       return;
     }
     this.installPrompt.prompt();
-    this.installPrompt.userChoice?.then((result) => {
-      if (result?.outcome !== 'dismissed') {
-        //this.googleTagManager.addVariable({ event: 'install', user_id: this.settings.user?.username, app_id: this.id });
-      }
-    });
   }
   private async setLocale(): Promise<string> {
     const systemLocale = isPlatformBrowser(this.platformId)

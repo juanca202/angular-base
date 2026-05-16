@@ -1,8 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SwUpdate } from '@angular/service-worker';
 import { EventEmitter } from '@angular/core';
@@ -15,11 +13,10 @@ import {
   createMockAuthProvider,
   createMockSession,
   createMockGoogleTagManagerService,
-  createMockLocation,
   createMockMatSnackBar,
   createMockSwUpdate
 } from '@/test/mocks/service-mocks';
-import { createMockStorageService, createMockRouter } from '@/test/mocks/angular-mocks';
+import { createMockStorageService } from '@/test/mocks/angular-mocks';
 
 describe('AppManager', () => {
   let appManager: AppManager;
@@ -27,8 +24,6 @@ describe('AppManager', () => {
   let mockSession: Partial<Session>;
   let mockStorage: Partial<Storage>;
   let mockGoogleTagManager: Partial<GoogleTagManager>;
-  let mockLocation: Partial<Location>;
-  let mockRouter: Partial<Router>;
   let mockSnackBar: Partial<MatSnackBar>;
   let mockSwUpdate: Partial<SwUpdate>;
 
@@ -38,8 +33,6 @@ describe('AppManager', () => {
     mockSession = createMockSession();
     mockStorage = createMockStorageService();
     mockGoogleTagManager = createMockGoogleTagManagerService();
-    mockLocation = createMockLocation();
-    mockRouter = createMockRouter();
     mockSnackBar = createMockMatSnackBar();
     mockSwUpdate = createMockSwUpdate();
 
@@ -50,8 +43,6 @@ describe('AppManager', () => {
         { provide: Session, useValue: mockSession },
         { provide: Storage, useValue: mockStorage },
         { provide: GoogleTagManager, useValue: mockGoogleTagManager },
-        { provide: Location, useValue: mockLocation },
-        { provide: Router, useValue: mockRouter },
         { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: SwUpdate, useValue: mockSwUpdate },
         { provide: PLATFORM_ID, useValue: 'browser' }
@@ -129,38 +120,6 @@ describe('AppManager', () => {
 
       // Assert
       expect(locale).toBe('en');
-    });
-  });
-
-  describe('goBack', () => {
-    it('should navigate back if history length > 1', () => {
-      // Arrange
-      Object.defineProperty(window, 'history', {
-        value: { length: 2 },
-        writable: true,
-        configurable: true
-      });
-
-      // Act
-      appManager.goBack();
-
-      // Assert
-      expect(mockLocation.back).toHaveBeenCalled();
-    });
-
-    it('should navigate to home if history length <= 1', () => {
-      // Arrange
-      Object.defineProperty(window, 'history', {
-        value: { length: 1 },
-        writable: true,
-        configurable: true
-      });
-
-      // Act
-      appManager.goBack();
-
-      // Assert
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
     });
   });
 
@@ -249,8 +208,6 @@ describe('AppManager', () => {
           { provide: Session, useValue: mockSession },
           { provide: Storage, useValue: mockStorage },
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
-          { provide: Location, useValue: mockLocation },
-          { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }
@@ -292,8 +249,6 @@ describe('AppManager', () => {
           { provide: Session, useValue: mockSession },
           { provide: Storage, useValue: mockStorage },
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
-          { provide: Location, useValue: mockLocation },
-          { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }
@@ -340,8 +295,6 @@ describe('AppManager', () => {
           { provide: Session, useValue: mockSession },
           { provide: Storage, useValue: mockStorage },
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
-          { provide: Location, useValue: mockLocation },
-          { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }
@@ -379,8 +332,6 @@ describe('AppManager', () => {
           { provide: Session, useValue: mockSession },
           { provide: Storage, useValue: mockStorage },
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
-          { provide: Location, useValue: mockLocation },
-          { provide: Router, useValue: mockRouter },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           { provide: PLATFORM_ID, useValue: 'browser' }

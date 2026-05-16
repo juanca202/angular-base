@@ -111,7 +111,7 @@
 @keyframes ft-blink {
   0%,
   100% {
-    border-color: var(--ft-color-text);
+    border-color: var(--color-foreground);
   }
 
   50% {

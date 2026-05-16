@@ -1,36 +1,37 @@
 html {
   /* Colores del sistema Material */
-  --md-sys-color-primary: var(--ft-color-primary);
-  --md-sys-color-on-primary: var(--ft-color-dark);
+  --md-sys-color-primary: var(--color-primary);
+  --md-sys-color-on-primary: var(--color-primary-foreground);
 
-  --md-sys-color-secondary: var(--ft-color-secondary);
-  --md-sys-color-on-secondary: var(--ft-color-light);
+  --md-sys-color-secondary: var(--color-secondary);
+  --md-sys-color-on-secondary: var(--color-secondary-foreground);
 
-  --md-sys-color-tertiary: var(--ft-color-tertiary);
+  --md-sys-color-tertiary: var(--color-tertiary);
 
-  --md-sys-color-error: var(--ft-color-danger);
-  --md-sys-color-warning: var(--ft-color-warning);
-  --md-sys-color-success: var(--ft-color-success);
+  --md-sys-color-error: var(--color-danger);
+  --md-sys-color-warning: var(--color-warning);
+  --md-sys-color-success: var(--color-success);
 
   /* Background + Surface */
-  --md-sys-color-background: var(--ft-color-bg);
-  --md-sys-color-surface: var(--ft-color-bg);
+  --md-sys-color-background: var(--color-background);
+  --md-sys-color-surface: var(--color-background);
 
   /* Tipografías */
-  --md-sys-typescale-body-medium-font: var(--ft-font-family-base);
-  --md-sys-typescale-body-medium-size: var(--ft-font-size-base);
-  --md-sys-typescale-body-medium-weight: var(--ft-font-weight-base);
+  --md-sys-typescale-body-medium-font: var(--font-sans);
+  --md-sys-typescale-body-medium-size: var(--text-base);
+  --md-sys-typescale-body-medium-weight: var(--font-weight-base);
 
   /* Espaciados */
-  --md-ref-spacing-small: calc(var(--spacing) * 1);
-  --md-ref-spacing-medium: calc(var(--spacing) * 4);
-  --md-ref-spacing-large: calc(var(--spacing) * 12);
+  --md-ref-spacing-small: var(--spacing-sm);
+  --md-ref-spacing-medium: var(--spacing-md);
+  --md-ref-spacing-large: var(--spacing-lg);
 
   --mat-sys-body-large-tracking: 0;
-  --mat-menu-container-shape: .5rem;
-  --mat-button-outlined-outline-color: var(--ft-color-border);
-  --mat-form-field-filled-container-shape: .5rem;
+
+  --mat-menu-container-shape: 0.5rem;
+  --mat-button-outlined-outline-color: var(--color-border);
+  --mat-form-field-filled-container-shape: 0.5rem;
   --mat-dialog-subhead-size: var(--text-lg);
-  --mat-dialog-subhead-weight: var(--ft-font-weight-bold);
-  --mat-dialog-subhead-color: var(--ft-color-primary);
+  --mat-dialog-subhead-weight: var(--font-weight-bold);
+  --mat-dialog-subhead-color: var(--color-primary);
 }

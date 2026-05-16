@@ -1,43 +1,93 @@
-/* theme/tokens.css */
-:root {
-  color-scheme: light dark;
+/**
+ * DESIGN.md app theme + shadcn-like token names (--color-*-foreground).
+ * @theme exposes Tailwind theme keys; trailing.
+ */
 
-  /* ===== Colors ===== */
-  --ft-color-primary: #ff9800;
-  --ft-color-secondary: #2196f3;
-  --ft-color-tertiary: #9c27b0;
+@theme {
+  /* Colors — core */
+  --color-primary: #ed8116;
+  --color-primary-foreground: #ffffff;
 
-  --ft-color-success: #4caf50;
-  --ft-color-warning: #ffc107;
-  --ft-color-danger: #ba1a1a;
-  --ft-color-info: #0dcaf0;
+  --color-secondary: #64748b;
+  --color-secondary-foreground: #ffffff;
 
-  --ft-color-light: #fff;
-  --ft-color-dark: #333;
+  --color-background: #ffffff;
+  --color-foreground: #212529;
 
-  --ft-color-text: var(--ft-color-dark);
-  --ft-color-text-muted: var(--ft-color-dark);
-  --ft-color-bg: var(--ft-color-light);
-  --ft-color-border: color-mix(in srgb, var(--ft-color-text) 20%, transparent);
+  --color-muted: #f8f9fa;
+  --color-muted-foreground: #49454f;
 
-  --ft-font-family-base: sans-serif;
-  --ft-font-weight-base: 400;
-  --ft-font-size-base: 1rem;
-  --ft-line-height-base: 1.5;
+  --color-border: #ebeced;
+  --color-ring: #ed8116;
 
-  --ft-h1-font-size: 1.5rem;
-  --ft-h2-font-size: 1rem;
-  --ft-h3-font-size: 0.875rem;
+  --color-success: #28a745;
+  --color-warning: #f59e0b;
+  --color-danger: #ff0000;
 
-  /* ===== Shadows ===== */
-  --ft-shadow-overlapped: 0 0 1px rgba(0, 0, 0, 0.14), 0 0 6px rgba(0, 0, 0, 0.12);
-}
+  /* Colors — DESIGN extras (hover, accents) */
+  --color-primary-hover: #e87a0a;
+  --color-primary-active: #d96e00;
+  --color-accent: #1e7cff;
+  --color-accent-foreground: #ffffff;
+  --color-tertiary: #009dfb;
+  --color-tertiary-foreground: #ffffff;
+  --color-info: #1e7cff;
+  --color-info-foreground: #ffffff;
+  --color-link-accent: #0a66c2;
+  --color-red-500: #f44336;
+  --color-red-500-foreground: #ffffff;
+  --color-light: #ffffff;
+  --color-dark: #212529;
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ft-color-text: var(--ft-color-light);
-    --ft-color-bg: var(--ft-color-dark);
-    --ft-color-danger: #ff4d4d; /* Tu override */
-  }
+  /* Typography */
+  --font-sans:
+    Quicksand, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-hero: 9.5rem;
+  --spacing-touch-target: 2.75rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 4px 12px rgb(0 0 0 / 0.08);
+  --shadow-xl: 0 8px 24px rgb(0 0 0 / 0.12);
+  --shadow-subtle:
+    0px 0px 0.0394838px 0px rgb(0 0 0 / 0.004), 0px 0px 0.236903px 0px rgb(0 0 0 / 0.004);
+  --shadow-primary-hover: 0 2px 8px rgb(237 129 22 / 0.2);
+
+  /* Layout */
+  --max-width-layout: 90rem;
+  --header-height: 4rem;
+  --sidebar-width: 15rem;
+
+  /* Animation */
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+
+  /* Z-index */
+  --z-dropdown: 1000;
+  --z-modal: 1100;
+  --z-toast: 1200;
+
+  --breakpoint-mobile-lg: 30rem;
+  --breakpoint-tablet: 48rem;
+  --breakpoint-desktop: 64rem;
+  --breakpoint-desktop-lg: 90rem;
 }
