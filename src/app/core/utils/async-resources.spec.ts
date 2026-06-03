@@ -10,12 +10,13 @@ import {
 } from './async-resources';
 import { environment } from '@/environments/environment';
 import { notificationEvents, type NotificationEvent } from './notification';
+import { getNotificationDetail } from '@/test/helpers/notification-event.helpers';
 
 describe('async-resources', () => {
   let notifiedEvents: NotificationEvent[];
 
   const notifyHandler = (event: Event): void => {
-    notifiedEvents.push((event as Event & { detail: NotificationEvent }).detail);
+    notifiedEvents.push(getNotificationDetail(event));
   };
 
   beforeEach(() => {
@@ -158,7 +159,7 @@ describe('async-resources', () => {
 
     it('should destroy resource and cancel pending requests', async () => {
       // Arrange
-      let resolvePromise: (value: any) => void;
+      let resolvePromise: (value: { id: string; name?: string }) => void;
       const promise = new Promise((resolve) => {
         resolvePromise = resolve;
       });
@@ -281,7 +282,7 @@ describe('async-resources', () => {
     it('should set submitting state during mutation', async () => {
       // Arrange
       const testData = { id: '1' };
-      let resolvePromise: (value: any) => void;
+      let resolvePromise: (value: { id: string; name?: string }) => void;
       const promise = new Promise((resolve) => {
         resolvePromise = resolve;
       });

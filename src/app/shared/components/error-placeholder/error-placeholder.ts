@@ -1,6 +1,10 @@
-import { Resource } from '@/core/utils/async-resources';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, Signal } from '@angular/core';
 import { Icon } from '@factor_ec/ui';
+
+export interface ErrorResource {
+  readonly error: Signal<unknown | null>;
+  readonly reload: () => Promise<unknown>;
+}
 
 @Component({
   selector: 'app-error-placeholder',
@@ -13,5 +17,5 @@ import { Icon } from '@factor_ec/ui';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorPlaceholder {
-  public readonly resource = input<Resource<any, any>>();
+  public readonly resource = input<ErrorResource>();
 }

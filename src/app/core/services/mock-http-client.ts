@@ -4,15 +4,19 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
+type MockEntity = Record<string, unknown> & { id?: string | number };
+type QueryParams = Record<string, unknown>;
+type RequestHeaders = Record<string, string>;
+
 /** Handler para rutas custom que no son colecciones (auth, settings, etc.) */
-type CustomRouteHandler = (url: string, body?: any) => Observable<any>;
+type CustomRouteHandler = (url: string, body?: unknown) => Observable<unknown>;
 
 @Injectable({
   providedIn: 'root'
 })
 export class MockHttpClient {
   /** In-memory mock database. Keys are collection names. */
-  private db: Record<string, any[]> = {};
+  private db: Record<string, MockEntity[]> = {};
 
   /** Artificial latency (ms) added to all responses to simulate real network delay. */
   private readonly latency = 500;
@@ -62,7 +66,7 @@ export class MockHttpClient {
    * This allows repositories to preload JSON files and simulate REST responses
    * without an actual backend.
    */
-  public loadCollection(key: string, data: any[]) {
+  public loadCollection(key: string, data: MockEntity[]): void {
     this.db[key] = structuredClone(data);
   }
 
@@ -111,11 +115,11 @@ export class MockHttpClient {
    */
   public get<T>(
     url: string,
-    options?: { params?: HttpParams | Record<string, any>; headers?: any }
+    options?: { params?: HttpParams | QueryParams; headers?: RequestHeaders }
   ): Observable<T> {
     const customHandler = this.findCustomHandler('GET', url);
     if (customHandler) {
-      return customHandler(url).pipe(delay(this.latency)) as Observable<T>;
+      return customHandler(url).pipe(delay(this.latency)) as Observable<unknown> as Observable<T>;
     }
 
     const { collection, id, subresource } = this.parseUrl(url);
@@ -134,8 +138,7 @@ export class MockHttpClient {
           () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
         );
       }
-      // Return the subresource array from the item, or empty array if not found
-      const subresourceData = item[subresource] || [];
+      const subresourceData = this.getSubresourceItems(item, subresource);
       return of({ data: subresourceData } as unknown as T).pipe(delay(this.latency));
     }
 
@@ -146,7 +149,7 @@ export class MockHttpClient {
           () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
         );
       }
-      return of(structuredClone(item)).pipe(delay(this.latency));
+      return of(structuredClone(item) as T).pipe(delay(this.latency));
     }
 
     const params = this.normalizeParams(options?.params);
@@ -167,10 +170,12 @@ export class MockHttpClient {
    * - Otherwise creates a new item in the collection.
    * - Automatically assigns a UUID as its ID.
    */
-  public post<T>(url: string, body: any, _options?: any): Observable<T> {
+  public post<T>(url: string, body: unknown, _options?: unknown): Observable<T> {
     const customHandler = this.findCustomHandler('POST', url);
     if (customHandler) {
-      return customHandler(url, body).pipe(delay(this.latency)) as Observable<T>;
+      return customHandler(url, body).pipe(
+        delay(this.latency)
+      ) as Observable<unknown> as Observable<T>;
     }
 
     const { collection, id, subresource } = this.parseUrl(url);
@@ -183,20 +188,25 @@ export class MockHttpClient {
           () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
         );
       }
-      if (!item[subresource]) {
-        item[subresource] = [];
-      }
-      const newSubItem = { id: crypto.randomUUID(), ...body };
-      item[subresource].unshift(newSubItem);
+      const subresourceItems = this.getSubresourceItems(item, subresource);
+      const newSubItem: MockEntity = {
+        id: crypto.randomUUID(),
+        ...(typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : {})
+      };
+      subresourceItems.unshift(newSubItem);
+      item[subresource] = subresourceItems;
       return of({ data: structuredClone(newSubItem) } as unknown as T).pipe(delay(this.latency));
     }
 
     if (!this.db[collection]) this.db[collection] = [];
 
-    const item = { id: crypto.randomUUID(), ...body };
+    const item: MockEntity = {
+      id: crypto.randomUUID(),
+      ...(typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : {})
+    };
     this.db[collection].unshift(item);
 
-    return of(structuredClone(item)).pipe(delay(this.latency));
+    return of(structuredClone(item) as T).pipe(delay(this.latency));
   }
 
   // ---------------------------------------------------------------------------
@@ -208,13 +218,16 @@ export class MockHttpClient {
    * - Replaces an existing item.
    * - Throws an error if the ID is missing or not found.
    */
-  public put<T>(url: string, body: any): Observable<T> {
+  public put<T>(url: string, body: unknown): Observable<T> {
     const { collection, id } = this.parseUrl(url);
     if (!id) return throwError(() => new Error('Missing id for PUT'));
     const index = this.db[collection]?.findIndex((x) => x.id == id);
     if (index === -1) return throwError(() => new Error('Item not found'));
-    this.db[collection][index] = { ...this.db[collection][index], ...body };
-    return of(structuredClone(this.db[collection][index])).pipe(delay(this.latency));
+    this.db[collection][index] = {
+      ...this.db[collection][index],
+      ...(typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : {})
+    };
+    return of(structuredClone(this.db[collection][index]) as T).pipe(delay(this.latency));
   }
 
   // ---------------------------------------------------------------------------
@@ -246,23 +259,31 @@ export class MockHttpClient {
           () => new Error(`Item with id '${id}' not found in collection '${collection}'`)
         );
       }
-      if (!item[subresource]) {
-        item[subresource] = [];
-      }
-      item[subresource] = item[subresource].filter((x: any) => String(x.id) != subresourceId);
-      return of(true as any).pipe(delay(this.latency));
+      const subresourceItems = this.getSubresourceItems(item, subresource);
+      item[subresource] = subresourceItems.filter((x) => String(x.id) != subresourceId);
+      return of(true as T).pipe(delay(this.latency));
     }
 
     this.db[collection] = this.db[collection]?.filter((x) => x.id != id) ?? [];
 
-    return of(true as any).pipe(delay(this.latency));
+    return of(true as T).pipe(delay(this.latency));
   }
 
-  private normalizeParams(params?: HttpParams | Record<string, any>): Record<string, any> {
+  private getSubresourceItems(item: MockEntity, subresource: string): MockEntity[] {
+    const value = item[subresource];
+    if (Array.isArray(value)) {
+      return value as MockEntity[];
+    }
+    const items: MockEntity[] = [];
+    item[subresource] = items;
+    return items;
+  }
+
+  private normalizeParams(params?: HttpParams | QueryParams): QueryParams {
     if (!params) return {};
 
     if (params instanceof HttpParams) {
-      const result: Record<string, any> = {};
+      const result: QueryParams = {};
       params.keys().forEach((key) => {
         const values = params.getAll(key);
         result[key] = values && values.length > 1 ? values : values?.[0];
@@ -273,7 +294,7 @@ export class MockHttpClient {
     return params;
   }
 
-  private applyFilters(data: any[], params: Record<string, any>): any[] {
+  private applyFilters(data: MockEntity[], params: QueryParams): MockEntity[] {
     // Excluir parámetros de paginación del filtrado
     const { page, pageSize, ...filters } = params;
 
@@ -295,7 +316,7 @@ export class MockHttpClient {
     return filteredData;
   }
 
-  private applyPagination(data: any[], params: Record<string, any>): any[] {
+  private applyPagination(data: MockEntity[], params: QueryParams): MockEntity[] {
     if (params['pageSize'] && params['page']) {
       const start = (Number(params['page']) - 1) * Number(params['pageSize']);
       return data.slice(start, start + Number(params['pageSize']));

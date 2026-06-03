@@ -185,7 +185,7 @@ module.exports = [
 
   // Configuration for test files
   {
-    files: ['**/*.spec.ts', '**/*.test.ts'],
+    files: ['**/*.spec.ts', '**/*.test.ts', 'test/**/*.ts'],
     plugins: {
       '@typescript-eslint': tseslint
     },
@@ -206,6 +206,7 @@ module.exports = [
         HTMLInputElement: 'readonly',
         HTMLButtonElement: 'readonly',
         Event: 'readonly',
+        CustomEvent: 'readonly',
         ErrorEvent: 'readonly',
         // Browser globals for testing
         window: 'readonly',

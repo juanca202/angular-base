@@ -4,7 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { EntityManager } from './entity-manager';
 import { EntityRepository } from '../repositories/entity-repository';
-import { notificationEvents, type ConfirmEvent } from '@/core/utils/notification';
+import { notificationEvents } from '@/core/utils/notification';
+import { getConfirmDetail } from '@/test/helpers/notification-event.helpers';
 import { Entity } from '../models/entity';
 import { Operation } from '@/core/models/operation';
 import { OPERATION_TYPE } from '@/core/constants/operation-type';
@@ -15,14 +16,14 @@ import { EntitySearch } from '../components/entity-search/entity-search';
 
 describe('EntityManager', () => {
   let manager: EntityManager;
-  let mockDialog: Partial<MatDialog>;
+  let mockDialog: Pick<MatDialog, 'open'>;
   let mockEntityRepository: Partial<EntityRepository>;
   let confirmResponse: string;
   let confirmCalled: boolean;
 
   const confirmHandler = (event: Event): void => {
     confirmCalled = true;
-    const { resolve } = (event as Event & { detail: ConfirmEvent }).detail;
+    const { resolve } = getConfirmDetail(event);
     resolve(confirmResponse);
   };
 
@@ -47,7 +48,7 @@ describe('EntityManager', () => {
     // Arrange: Create mocks
     mockDialog = {
       open: vi.fn()
-    };
+    } as Pick<MatDialog, 'open'>;
 
     const deleteMutation = vi.fn().mockResolvedValue(void 0);
     mockEntityRepository = {
@@ -143,7 +144,7 @@ describe('EntityManager', () => {
       const actions = manager.getContextMenu(mockEntity, ENTITY_CONTEXT.FORM);
 
       // Assert
-      const editAction = actions[0]?.children?.find((a: any) => a.id === 'edit');
+      const editAction = actions[0]?.children?.find((a) => a.id === 'edit');
       expect(editAction).toBeUndefined();
     });
 
@@ -152,7 +153,7 @@ describe('EntityManager', () => {
       const actions = manager.getContextMenu(mockEntity, ENTITY_CONTEXT.DETAIL);
 
       // Assert
-      const deleteAction = actions[0]?.children?.find((a: any) => a.id === 'delete');
+      const deleteAction = actions[0]?.children?.find((a) => a.id === 'delete');
       expect(deleteAction).toBeUndefined();
     });
 
@@ -161,7 +162,7 @@ describe('EntityManager', () => {
       const actions = manager.getContextMenu(mockEntity, ENTITY_CONTEXT.LIST);
 
       // Assert
-      const deleteAction = actions[0]?.children?.find((a: any) => a.id === 'delete');
+      const deleteAction = actions[0]?.children?.find((a) => a.id === 'delete');
       expect(deleteAction).toBeDefined();
     });
 
@@ -170,7 +171,7 @@ describe('EntityManager', () => {
       const actions = manager.getContextMenu(mockEntity, ENTITY_CONTEXT.SEARCH);
 
       // Assert
-      const deleteAction = actions[0]?.children?.find((a: any) => a.id === 'delete');
+      const deleteAction = actions[0]?.children?.find((a) => a.id === 'delete');
       expect(deleteAction).toBeDefined();
     });
   });
@@ -180,10 +181,10 @@ describe('EntityManager', () => {
       // Arrange
       const mockDialogRef = {
         componentInstance: {
-          afterSubmit: of({ type: OPERATION_TYPE.CREATE, entity: mockEntity } as Operation)
+          afterSubmit: of({ type: OPERATION_TYPE.CREATE, entity: mockEntity } as Operation<Entity>)
         }
       };
-      (mockDialog.open as any).mockReturnValue(mockDialogRef);
+      vi.mocked(mockDialog.open).mockReturnValue(mockDialogRef as ReturnType<MatDialog['open']>);
 
       // Act - Don't await to avoid timeout
       manager.open('1', false);
@@ -203,7 +204,7 @@ describe('EntityManager', () => {
       const mockDialogRef = {
         componentInstance: {}
       };
-      (mockDialog.open as any).mockReturnValue(mockDialogRef);
+      vi.mocked(mockDialog.open).mockReturnValue(mockDialogRef as ReturnType<MatDialog['open']>);
 
       // Act - Don't await to avoid timeout
       manager.open('1', true);
@@ -221,10 +222,10 @@ describe('EntityManager', () => {
       // Arrange
       const mockDialogRef = {
         componentInstance: {
-          afterSubmit: of({ type: OPERATION_TYPE.CREATE, entity: mockEntity } as Operation)
+          afterSubmit: of({ type: OPERATION_TYPE.CREATE, entity: mockEntity } as Operation<Entity>)
         }
       };
-      (mockDialog.open as any).mockReturnValue(mockDialogRef);
+      vi.mocked(mockDialog.open).mockReturnValue(mockDialogRef as ReturnType<MatDialog['open']>);
 
       // Act - Don't await to avoid hanging
       manager.open();
@@ -247,7 +248,7 @@ describe('EntityManager', () => {
           selected: of(mockEntity)
         }
       };
-      (mockDialog.open as any).mockReturnValue(mockDialogRef);
+      vi.mocked(mockDialog.open).mockReturnValue(mockDialogRef as ReturnType<MatDialog['open']>);
 
       // Act - Don't await to avoid hanging
       manager.search();
@@ -269,7 +270,7 @@ describe('EntityManager', () => {
           selected: of(mockEntity)
         }
       };
-      (mockDialog.open as any).mockReturnValue(mockDialogRef);
+      vi.mocked(mockDialog.open).mockReturnValue(mockDialogRef as ReturnType<MatDialog['open']>);
 
       // Act - Start the search (don't await to avoid hanging on null)
       manager.search();

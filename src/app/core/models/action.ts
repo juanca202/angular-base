@@ -8,7 +8,7 @@ export interface Action {
   selected?: boolean;
   children?: Action[];
   click?: () => void;
-  payload?: Record<string, any>;
+  payload?: Record<string, unknown>;
 }
 
 export type ActionType = (typeof ACTION_TYPE)[keyof typeof ACTION_TYPE];

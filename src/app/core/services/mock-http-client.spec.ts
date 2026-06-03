@@ -5,6 +5,12 @@ import { firstValueFrom } from 'rxjs';
 import { MockHttpClient } from './mock-http-client';
 import { environment } from '@/environments/environment';
 
+type MockItem = Record<string, unknown> & {
+  id: string;
+  name?: string;
+  category?: string;
+};
+
 describe('MockHttpClient', () => {
   let service: MockHttpClient;
 
@@ -35,11 +41,15 @@ describe('MockHttpClient', () => {
       service.loadCollection('test', originalData);
 
       // Act
-      const result: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/test`));
+      const result = await firstValueFrom(
+        service.get<MockItem[]>(`${environment.apiRestBaseUrl}/test`)
+      );
       result[0].name = 'Modified';
 
       // Assert - El original no debe cambiar
-      const original: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/test`));
+      const original = await firstValueFrom(
+        service.get<MockItem[]>(`${environment.apiRestBaseUrl}/test`)
+      );
       expect(original[0].name).toBe('Original');
     });
   });
@@ -55,7 +65,9 @@ describe('MockHttpClient', () => {
 
     it('should return all items when no ID is provided', async () => {
       // Act
-      const result: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/items`));
+      const result = await firstValueFrom(
+        service.get<MockItem[]>(`${environment.apiRestBaseUrl}/items`)
+      );
 
       // Assert
       expect(Array.isArray(result)).toBe(true);
@@ -64,8 +76,8 @@ describe('MockHttpClient', () => {
 
     it('should return single item when ID is provided', async () => {
       // Act
-      const result: any = await firstValueFrom(
-        service.get(`${environment.apiRestBaseUrl}/items/1`)
+      const result = await firstValueFrom(
+        service.get<MockItem>(`${environment.apiRestBaseUrl}/items/1`)
       );
 
       // Assert
@@ -84,13 +96,13 @@ describe('MockHttpClient', () => {
       const params = new HttpParams().set('category', 'A');
 
       // Act
-      const result: any = await firstValueFrom(
-        service.get(`${environment.apiRestBaseUrl}/items`, { params })
+      const result = await firstValueFrom(
+        service.get<MockItem[]>(`${environment.apiRestBaseUrl}/items`, { params })
       );
 
       // Assert
       expect(result.length).toBe(2);
-      expect(result.every((item: any) => item.category === 'A')).toBe(true);
+      expect(result.every((item) => item.category === 'A')).toBe(true);
     });
 
     it('should apply pagination with page and pageSize', async () => {
@@ -98,8 +110,8 @@ describe('MockHttpClient', () => {
       const params = new HttpParams().set('page', '1').set('pageSize', '2');
 
       // Act
-      const result: any = await firstValueFrom(
-        service.get(`${environment.apiRestBaseUrl}/items`, { params })
+      const result = await firstValueFrom(
+        service.get<MockItem[]>(`${environment.apiRestBaseUrl}/items`, { params })
       );
 
       // Assert
@@ -117,8 +129,8 @@ describe('MockHttpClient', () => {
       const newItem = { name: 'New Item' };
 
       // Act
-      const result: any = await firstValueFrom(
-        service.post(`${environment.apiRestBaseUrl}/items`, newItem)
+      const result = await firstValueFrom(
+        service.post<MockItem>(`${environment.apiRestBaseUrl}/items`, newItem)
       );
 
       // Assert
@@ -133,8 +145,8 @@ describe('MockHttpClient', () => {
 
       // Act
       await firstValueFrom(service.post(`${environment.apiRestBaseUrl}/items`, newItem));
-      const allItems: any = await firstValueFrom(
-        service.get(`${environment.apiRestBaseUrl}/items`)
+      const allItems = await firstValueFrom(
+        service.get<MockItem[]>(`${environment.apiRestBaseUrl}/items`)
       );
 
       // Assert
@@ -147,8 +159,8 @@ describe('MockHttpClient', () => {
       const newItem = { name: 'New Item' };
 
       // Act
-      const result: any = await firstValueFrom(
-        service.post(`${environment.apiRestBaseUrl}/newcollection`, newItem)
+      const result = await firstValueFrom(
+        service.post<MockItem>(`${environment.apiRestBaseUrl}/newcollection`, newItem)
       );
 
       // Assert
@@ -167,8 +179,11 @@ describe('MockHttpClient', () => {
       const updatedData = { name: 'Updated Item', value: 20 };
 
       // Act
-      const result: any = await firstValueFrom(
-        service.put(`${environment.apiRestBaseUrl}/items/1`, updatedData)
+      const result = await firstValueFrom(
+        service.put<MockItem & { value?: number }>(
+          `${environment.apiRestBaseUrl}/items/1`,
+          updatedData
+        )
       );
 
       // Assert
@@ -203,7 +218,9 @@ describe('MockHttpClient', () => {
     it('should delete item by ID', async () => {
       // Act
       await firstValueFrom(service.delete(`${environment.apiRestBaseUrl}/items/1`));
-      const result: any = await firstValueFrom(service.get(`${environment.apiRestBaseUrl}/items`));
+      const result = await firstValueFrom(
+        service.get<MockItem[]>(`${environment.apiRestBaseUrl}/items`)
+      );
 
       // Assert
       expect(result.length).toBe(1);

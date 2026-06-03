@@ -1,8 +1,8 @@
 import { OPERATION_TYPE } from '../constants/operation-type';
 
-export interface Operation {
+export interface Operation<TEntity = unknown> {
   type: OperationType;
-  entity: any;
+  entity: TEntity;
 }
 
 export type OperationType = (typeof OPERATION_TYPE)[keyof typeof OPERATION_TYPE];

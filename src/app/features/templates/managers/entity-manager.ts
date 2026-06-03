@@ -53,7 +53,7 @@ export class EntityManager {
       ]
     });
     if (value === '1' && id) {
-      await this.mutations.delete(id);
+      await this.mutations['delete'](id);
       notify($localize`Entity deleted successfully.`, { level: 'success' });
     }
     return value;
@@ -109,8 +109,8 @@ export class EntityManager {
     }
     return actions;
   }
-  public async open(id?: string, view?: boolean): Promise<Operation> {
-    return new Promise<Operation>((resolve) => {
+  public async open(id?: string, view?: boolean): Promise<Operation<Entity>> {
+    return new Promise<Operation<Entity>>((resolve) => {
       const config = {
         data: {
           id

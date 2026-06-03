@@ -1,5 +1,5 @@
 export interface Option {
   label: string;
   value: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }

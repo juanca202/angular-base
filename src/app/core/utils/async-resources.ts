@@ -22,11 +22,6 @@ export type AsyncFactory<TParams, TResult> = (
 ) => Observable<TResult> | Promise<TResult>;
 
 /**
- * Unwraps Observable<T> or Promise<T> to T
- */
-type UnwrapAsync<T> = T extends Observable<infer U> ? U : T extends Promise<infer U> ? U : T;
-
-/**
  * Options for load and mutate methods.
  */
 interface Options {
@@ -93,13 +88,83 @@ export interface ResourceCollection<TParams, TResult extends unknown[]>
 }
 
 /**
+ * Resolves optional load/mutate params for a given factory param type.
+ */
+type FactoryParams<TParams> = TParams extends void ? undefined : TParams;
+
+/**
+ * Extracts the params type from an async factory.
+ */
+type ParamsOf<TFactory> = TFactory extends AsyncFactory<infer TParams, unknown> ? TParams : never;
+
+/**
+ * Extracts the result type from an async factory.
+ */
+type ResultOf<TFactory> = TFactory extends AsyncFactory<unknown, infer TResult> ? TResult : never;
+
+/**
  * Mutation function with its associated reactive state.
  */
-export interface Mutate<TResult> {
-  (data: unknown, options?: Options): Promise<TResult>;
+export interface Mutate<TParams = unknown, TResult = unknown> {
+  (data: FactoryParams<TParams>, options?: Options): Promise<TResult>;
   submitting: Signal<boolean>;
   value: Signal<TResult | null>;
   error: Signal<unknown | null>;
+}
+
+type MutationsResult<T> = {
+  [K in keyof T]: T[K] extends AsyncFactory<infer TParams, infer TResult>
+    ? Mutate<TParams, TResult>
+    : never;
+} & {
+  submitting: Signal<boolean>;
+  error: Signal<unknown | null>;
+};
+
+function createMutationHandler<TParams, TResult>(
+  factory: AsyncFactory<TParams, TResult>,
+  submitting: ReturnType<typeof signal<boolean>>,
+  value: ReturnType<typeof signal<TResult | null>>,
+  error: ReturnType<typeof signal<unknown | null>>,
+  globalError: ReturnType<typeof signal<unknown | null>>,
+  onGlobalStart: () => void,
+  onGlobalEnd: () => void
+): Mutate<TParams, TResult> {
+  const fn = async (data: FactoryParams<TParams>, options?: Options): Promise<TResult> => {
+    const { notifyError = true } = options || {};
+    submitting.set(true);
+    error.set(null);
+    value.set(null);
+    onGlobalStart();
+
+    const request$ = toObservable(factory(data)).pipe(
+      tap((result) => value.set(result ?? null)),
+      catchError((err) => {
+        const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
+
+        error.set(msg);
+        globalError.set(msg);
+
+        if (notifyError) {
+          notify(msg, { level: 'error' });
+        }
+
+        throw new ResourceException(msg, err);
+      }),
+      finalize(() => {
+        submitting.set(false);
+        onGlobalEnd();
+      })
+    );
+
+    return firstValueFrom(request$);
+  };
+
+  fn.submitting = submitting.asReadonly();
+  fn.value = value.asReadonly();
+  fn.error = error.asReadonly();
+
+  return fn;
 }
 
 /**
@@ -125,64 +190,38 @@ export function getApiUrl(path: string): string {
 /**
  * Creates a set of mutation handlers (POST / PUT / DELETE).
  */
-export function getMutations<T extends Record<string, AsyncFactory<any, any>>>(
-  factories: T
-): {
-  [K in keyof T]: Mutate<UnwrapAsync<ReturnType<T[K]>>>;
-} & {
-  submitting: Signal<boolean>;
-  error: Signal<unknown | null>;
-} {
-  const mutations: any = {};
+export function getMutations<T extends object>(factories: T): MutationsResult<T> {
+  const mutations = {} as MutationsResult<T>;
   const globalSubmitting = signal(false);
   const globalError = signal<unknown | null>(null);
 
   const submittingSignals: Signal<boolean>[] = [];
 
-  for (const key in factories) {
+  const syncGlobalSubmitting = (): void => {
+    globalSubmitting.set(submittingSignals.some((s) => s()));
+  };
+
+  (Object.keys(factories) as Array<keyof T & string>).forEach((key) => {
+    const factory = factories[key] as AsyncFactory<
+      ParamsOf<T[typeof key]>,
+      ResultOf<T[typeof key]>
+    >;
     const submitting = signal(false);
-    const value = signal<unknown | null>(null);
+    const value = signal<ResultOf<T[typeof key]> | null>(null);
     const error = signal<unknown | null>(null);
 
     submittingSignals.push(submitting);
 
-    const fn: Mutate<any> = async (data: unknown, options?: Options) => {
-      const { notifyError = true } = options || {};
-      submitting.set(true);
-      error.set(null);
-      value.set(null);
-      globalSubmitting.set(true);
-
-      const request$ = toObservable(factories[key](data as any)).pipe(
-        tap((result) => value.set(result ?? null)),
-        catchError((err) => {
-          const msg =
-            err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
-
-          error.set(msg);
-          globalError.set(msg);
-
-          if (notifyError) {
-            notify(msg, { level: 'error' });
-          }
-
-          throw new ResourceException(msg, err);
-        }),
-        finalize(() => {
-          submitting.set(false);
-          globalSubmitting.set(submittingSignals.some((s) => s()));
-        })
-      );
-
-      return firstValueFrom(request$);
-    };
-
-    fn.submitting = submitting.asReadonly();
-    fn.value = value.asReadonly();
-    fn.error = error.asReadonly();
-
-    mutations[key] = fn;
-  }
+    mutations[key] = createMutationHandler(
+      factory,
+      submitting,
+      value,
+      error,
+      globalError,
+      () => globalSubmitting.set(true),
+      syncGlobalSubmitting
+    ) as MutationsResult<T>[typeof key];
+  });
 
   mutations.submitting = globalSubmitting.asReadonly();
   mutations.error = globalError.asReadonly();
@@ -201,21 +240,18 @@ export function getResource<TParams, TResult>(
   const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
 
-  let lastParams: TParams extends void ? undefined : TParams;
+  let lastParams: FactoryParams<TParams> | undefined;
   let lastOptions: Options | undefined;
 
-  const load = async (
-    params?: TParams extends void ? undefined : TParams,
-    options?: Options
-  ): Promise<TResult> => {
+  const load = async (params?: FactoryParams<TParams>, options?: Options): Promise<TResult> => {
     const { notifyError = true } = options || {};
-    lastParams = params as any;
+    lastParams = params;
     lastOptions = options;
 
     loading.set(true);
     error.set(null);
 
-    const request$ = toObservable(factory(params as any)).pipe(
+    const request$ = toObservable(factory(params as FactoryParams<TParams>)).pipe(
       tap((result) => value.set(result ?? null)),
       catchError((err) => {
         const msg = err?.error?.messages?.[0] ?? err?.message ?? err ?? $localize`Unexpected error`;
@@ -263,15 +299,15 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
   const error = signal<unknown | null>(null);
   const destroy$ = new Subject<void>();
 
-  let lastParams: TParams extends void ? undefined : TParams;
+  let lastParams: FactoryParams<TParams> | undefined;
   let lastOptions: CollectionOptions | undefined;
 
   const load = async (
-    params?: TParams extends void ? undefined : TParams,
+    params?: FactoryParams<TParams>,
     options?: CollectionOptions
   ): Promise<TResult> => {
     const { notifyError = true, append = false } = options || {};
-    lastParams = params as any;
+    lastParams = params;
     lastOptions = options;
 
     loading.set(true);
@@ -282,7 +318,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
       total.set(null);
     }
 
-    const request$ = toObservable(factory(params as any)).pipe(
+    const request$ = toObservable(factory(params as FactoryParams<TParams>)).pipe(
       tap((result) => {
         const data: TResult | null = isCollectionResult(result)
           ? (result.data as TResult)

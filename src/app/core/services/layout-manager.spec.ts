@@ -117,7 +117,7 @@ describe('LayoutManager', () => {
       const event = false;
 
       // Act & Assert
-      expect(() => service.setOverlapped(event, element as any)).not.toThrow();
+      expect(() => service.setOverlapped(event, element)).not.toThrow();
     });
 
     it('should not throw error when element is undefined', () => {
@@ -126,12 +126,12 @@ describe('LayoutManager', () => {
       const event = false;
 
       // Act & Assert
-      expect(() => service.setOverlapped(event, element as any)).not.toThrow();
+      expect(() => service.setOverlapped(event, element)).not.toThrow();
     });
 
     it('should handle element without nativeElement property', () => {
       // Arrange
-      const element = {} as any;
+      const element = { nativeElement: undefined } as { nativeElement?: HTMLElement };
       const event = false;
 
       // Act & Assert

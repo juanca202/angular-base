@@ -19,10 +19,10 @@ import { Icon } from '@factor_ec/ui';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { notify } from '@/core/utils/notification';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
+import { Operation, OperationType } from '@/core/models/operation';
 import { Entity, EntityInput } from '../../models/entity';
 import { EntityMapper } from '../../utils/entity-mapper';
 import { OPERATION_TYPE } from '@/core/constants/operation-type';
-import { Operation, OperationType } from '@/core/models/operation';
 import { EntityManager } from '../../managers/entity-manager';
 import { MatMenuModule } from '@angular/material/menu';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
@@ -84,7 +84,7 @@ export class EntityForm implements OnInit, OnDestroy {
   });
 
   // Events
-  public readonly afterSubmit = output<Operation | null>();
+  public readonly afterSubmit = output<Operation<Entity> | null>();
 
   ngOnInit(): void {
     if (this.data?.id) {
@@ -125,6 +125,9 @@ export class EntityForm implements OnInit, OnDestroy {
             EntityMapper.mapInputToRequestCreate(formData)
           );
           type = OPERATION_TYPE.CREATE;
+        }
+        if (!entity) {
+          return;
         }
         this.dialogRef.close();
         notify($localize`Saved successfully.`, { level: 'success' });

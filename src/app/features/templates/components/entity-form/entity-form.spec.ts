@@ -7,6 +7,7 @@ import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { LayoutManager } from '@/core/services/layout-manager';
 import { notificationEvents, type NotificationEvent } from '@/core/utils/notification';
+import { getNotificationDetail } from '@/test/helpers/notification-event.helpers';
 import { Entity } from '@/features/templates/models/entity';
 import { OPERATION_TYPE } from '@/core/constants/operation-type';
 import { of } from 'rxjs';
@@ -22,7 +23,7 @@ describe('EntityForm', () => {
   let notifiedEvents: NotificationEvent[];
 
   const notifyHandler = (event: Event): void => {
-    notifiedEvents.push((event as Event & { detail: NotificationEvent }).detail);
+    notifiedEvents.push(getNotificationDetail(event));
   };
 
   const mockEntity: Entity = {

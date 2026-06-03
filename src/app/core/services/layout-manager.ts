@@ -7,7 +7,10 @@ export class LayoutManager {
   public getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  public setOverlapped(event: boolean, element: HTMLElement | any): void {
+  public setOverlapped(
+    event: boolean,
+    element: HTMLElement | { nativeElement?: HTMLElement } | null | undefined
+  ): void {
     const targetElement = element instanceof HTMLElement ? element : element?.nativeElement;
     if (targetElement) {
       if (!event) {
