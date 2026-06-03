@@ -1,0 +1,15 @@
+services:
+  web:
+    image: nginx:1.27-alpine
+    ports:
+      - '${APP_PORT:-80}:80'
+    volumes:
+      - ./browser:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1/health']
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

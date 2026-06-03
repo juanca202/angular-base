@@ -4,7 +4,23 @@
 const { gitDescribeSync } = require('git-describe');
 const { writeFileSync } = require('fs');
 
-const gitInfo = gitDescribeSync();
-const versionInfoJson = JSON.stringify(gitInfo, null, 2);
+const fallbackGitInfo = {
+  dirty: false,
+  raw: 'no-git',
+  hash: '0000000',
+  distance: null,
+  tag: null,
+  semver: null,
+  suffix: 'no-git',
+  semverString: null
+};
 
-writeFileSync('git-version.json', versionInfoJson);
+let gitInfo = fallbackGitInfo;
+
+try {
+  gitInfo = gitDescribeSync();
+} catch {
+  // Non-git environments (some CI runners, shallow clones)
+}
+
+writeFileSync('git-version.json', JSON.stringify(gitInfo, null, 2));
