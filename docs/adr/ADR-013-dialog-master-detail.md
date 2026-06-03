@@ -28,7 +28,7 @@ Todos los diálogos:
 - Siguen el patrón maestro–detalle
 - Deben abrirse exclusivamente desde manejadores de entidades
 - Utilizan `MatDialog` de Angular Material
-- Deben configurarse explícitamente (tamaño, posición y clases)
+- Deben configurarse explícitamente (tamaño y clases)
 
 ### 1. Diálogo Simple (`ft-dialog`)
 

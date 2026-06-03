@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { EntityManager } from './entity-manager';
 import { EntityRepository } from '../repositories/entity-repository';
-import { MessageService } from '@factor_ec/ui';
+import { notificationEvents, type ConfirmEvent } from '@/core/utils/notification';
 import { Entity } from '../models/entity';
 import { Operation } from '@/core/models/operation';
 import { OPERATION_TYPE } from '@/core/constants/operation-type';
@@ -17,7 +17,14 @@ describe('EntityManager', () => {
   let manager: EntityManager;
   let mockDialog: Partial<MatDialog>;
   let mockEntityRepository: Partial<EntityRepository>;
-  let mockMessageService: Partial<MessageService>;
+  let confirmResponse: string;
+  let confirmCalled: boolean;
+
+  const confirmHandler = (event: Event): void => {
+    confirmCalled = true;
+    const { resolve } = (event as Event & { detail: ConfirmEvent }).detail;
+    resolve(confirmResponse);
+  };
 
   const mockEntity: Entity = {
     id: '1',
@@ -33,6 +40,10 @@ describe('EntityManager', () => {
   };
 
   beforeEach(() => {
+    confirmCalled = false;
+    confirmResponse = '1';
+    notificationEvents.addEventListener('confirm', confirmHandler);
+
     // Arrange: Create mocks
     mockDialog = {
       open: vi.fn()
@@ -45,54 +56,53 @@ describe('EntityManager', () => {
       })
     };
 
-    mockMessageService = {
-      show: vi.fn().mockReturnValue(of(1)) // Return 1 for "Accept"
-    };
-
     TestBed.configureTestingModule({
       providers: [
         EntityManager,
         { provide: MatDialog, useValue: mockDialog },
-        { provide: EntityRepository, useValue: mockEntityRepository },
-        { provide: MessageService, useValue: mockMessageService }
+        { provide: EntityRepository, useValue: mockEntityRepository }
       ]
     });
 
     manager = TestBed.inject(EntityManager);
   });
 
+  afterEach(() => {
+    notificationEvents.removeEventListener('confirm', confirmHandler);
+  });
+
   describe('delete', () => {
     it('should show confirmation dialog', async () => {
       // Arrange
-      (mockMessageService.show as any).mockReturnValue(of(0)); // User cancels
+      confirmResponse = '0'; // User cancels
 
       // Act
       await manager.delete('1');
 
       // Assert
-      expect(mockMessageService.show).toHaveBeenCalled();
+      expect(confirmCalled).toBe(true);
     });
 
     it('should return confirmation value', async () => {
       // Arrange
-      (mockMessageService.show as any).mockReturnValue(of(1)); // User accepts
+      confirmResponse = '1'; // User accepts
 
       // Act
       const result = await manager.delete('1');
 
       // Assert
-      expect(result).toBe(1);
+      expect(result).toBe('1');
     });
 
     it('should not delete when id is not provided', async () => {
       // Arrange
-      (mockMessageService.show as any).mockReturnValue(of(1));
+      confirmResponse = '1';
 
       // Act
       const result = await manager.delete();
 
       // Assert
-      expect(result).toBe(1);
+      expect(result).toBe('1');
       // When id is not provided, delete mutation should not be called
       // (verified by the fact that mutations.delete is not accessible in test)
     });

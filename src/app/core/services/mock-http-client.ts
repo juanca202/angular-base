@@ -24,8 +24,6 @@ export class MockHttpClient {
     handler: CustomRouteHandler;
   }> = [];
 
-  constructor() {}
-
   /**
    * Registra un handler para una URL específica (usado para auth, settings, etc.).
    * La URL puede ser un string (coincide con includes) o un RegExp.

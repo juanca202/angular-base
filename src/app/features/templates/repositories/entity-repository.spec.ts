@@ -5,7 +5,6 @@ import { EntityRepository } from './entity-repository';
 import { MockHttpClient } from '@/core/services/mock-http-client';
 import { Entity } from '../models/entity';
 import { HttpApiResponse } from '@/core/models/http-api-response';
-import { MessageService } from '@factor_ec/ui';
 
 describe('EntityRepository', () => {
   let repository: EntityRepository;
@@ -39,16 +38,8 @@ describe('EntityRepository', () => {
       loadCollection: vi.fn()
     };
 
-    const mockMessageService = {
-      show: vi.fn()
-    };
-
     TestBed.configureTestingModule({
-      providers: [
-        EntityRepository,
-        { provide: MockHttpClient, useValue: mockHttpClient },
-        { provide: MessageService, useValue: mockMessageService }
-      ]
+      providers: [EntityRepository, { provide: MockHttpClient, useValue: mockHttpClient }]
     });
 
     repository = TestBed.inject(EntityRepository);

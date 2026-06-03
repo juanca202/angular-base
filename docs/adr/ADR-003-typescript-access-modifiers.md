@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 31/12/2025  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 03/06/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -15,21 +15,27 @@ Necesitamos una convención clara que mejore la consistencia, reduzca errores po
 
 Adoptamos las siguientes reglas para todas las clases del código base:
 
-1. **Especificar siempre el modificador de acceso explícitamente**
+1. **Especificar siempre el modificador de acceso explícitamente** en **propiedades y métodos** definidos por el desarrollador.
 
 - `public`: miembros que forman parte de la API pública de la clase.
 - `private`: miembros de implementación interna.
 - `protected`: miembros accesibles desde subclases (herencia).
 
+> **Alcance:** esta regla **no** exige un modificador en la **declaración del constructor** (ver punto 3).
+
 2. **Usar `readonly` siempre que la propiedad no deba cambiar tras la inicialización**
 
 Esto aplica a IDs, configuración, referencias a servicios inyectados que no deben mutar, y otras constantes de instancia.
 
-3. **Constructor**: usar modificadores en parámetros solo cuando el parámetro definirá una propiedad de instancia.
+3. **Constructor**
+
+- **Declaración:** no es necesario (ni se exige) añadir un modificador de acceso explícito en la firma del constructor (`constructor(...)`). En TypeScript, omitirlo equivale a `public`; formas como `EntityRepository.constructor()` o `MockHttpClient.constructor()` **cumplen** la convención.
+- **Parámetros:** usar modificadores en parámetros **solo** cuando el parámetro definirá una propiedad de instancia (parameter properties).
 
 Ejemplo correcto:
 
 ```typescript
+// Sin modificador en la declaración del constructor — válido
 constructor(
   public name: string,
   private readonly service: ApiService,
@@ -55,10 +61,13 @@ Motivo: la guía de estilo de Angular no utiliza `public` en hooks y los hooks s
 
 Configurar ESLint para advertir (warning) cuando:
 
-- Falte un modificador de acceso en una propiedad o método definido por el desarrollador.
+- Falte un modificador de acceso en una **propiedad o método** definido por el desarrollador.
 - Se muten propiedades que deberían ser `readonly`.
 
-Además, excluir los lifecycle hooks de Angular de la regla que obliga a especificar `public`.
+Además, excluir de la regla que obliga a especificar `public`:
+
+- Los lifecycle hooks de Angular.
+- La **declaración del constructor** (no aplica a parameter properties, que siguen las reglas del punto 3).
 
 ## Implementación
 

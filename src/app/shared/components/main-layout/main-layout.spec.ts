@@ -5,12 +5,14 @@ import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MainLayout } from './main-layout';
 import { AuthProvider, User } from '@factor_ec/utils';
+import { Session } from '@/core/services/session';
 import { MenuItem } from '@/shared/models/menu-item';
 import {
   createMockRouter,
   createMockActivatedRoute,
   COMMON_TEST_PROVIDERS
 } from '@/test/mocks/angular-mocks';
+import { createMockSession } from '@/test/mocks/service-mocks';
 
 describe('MainLayout', () => {
   let component: MainLayout;
@@ -53,6 +55,7 @@ describe('MainLayout', () => {
       providers: [
         { provide: AuthProvider, useValue: mockAuthProvider },
         { provide: MatBottomSheet, useValue: mockBottomSheet },
+        { provide: Session, useValue: createMockSession() },
         ...COMMON_TEST_PROVIDERS.getRouterProviders(mockRouter, mockActivatedRoute)
       ],
       schemas: [NO_ERRORS_SCHEMA]

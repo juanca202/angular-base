@@ -6,9 +6,8 @@ import { EntitySearch } from '@/features/templates/components/entity-search/enti
 import { EntityForm } from '../components/entity-form/entity-form';
 import { Operation } from '@/core/models/operation';
 import { Entity, EntityContext } from '../models/entity';
-import { MessageService } from '@factor_ec/ui';
-import { firstValueFrom } from 'rxjs';
 import { EntityRepository } from '../repositories/entity-repository';
+import { confirm, notify } from '@/core/utils/notification';
 import { Action } from '@/core/models/action';
 import { ACTION_TYPE } from '@/core/constants/action-type';
 import { ENTITY_CONTEXT } from '@/shared/constants/entity-context';
@@ -28,41 +27,34 @@ export class EntityManager {
   // Dependency injection
   private readonly entityRepository = inject(EntityRepository);
   private readonly dialog = inject(MatDialog);
-  private readonly messageService = inject(MessageService);
 
   // Properties
   private readonly mutations = this.entityRepository.mutations();
 
-  public async delete(id?: string): Promise<void> {
-    const value = await firstValueFrom(
-      this.messageService.show($localize`Are you sure you want to delete this entity?`, {
-        type: 'modal',
-        class: 'text-center flex flex-col items-center gap-3',
-        icon: {
-          name: 'trash',
-          class: 'text-danger text-5xl',
-          collection: 'factoricons-slim'
+  public async delete(id?: string): Promise<string | number | undefined> {
+    const value = await confirm($localize`Are you sure you want to delete this entity?`, {
+      class: 'text-center flex flex-col items-center gap-3',
+      icon: {
+        name: 'trash',
+        class: 'text-danger text-5xl',
+        collection: 'factoricons-slim'
+      },
+      actions: [
+        {
+          label: $localize`Cancel`,
+          value: '0',
+          type: 'stroked'
         },
-        actions: [
-          {
-            label: $localize`Cancel`,
-            value: '0',
-            type: 'stroked'
-          },
-          {
-            label: $localize`Accept`,
-            value: '1',
-            type: 'flat'
-          }
-        ]
-      })
-    );
+        {
+          label: $localize`Accept`,
+          value: '1',
+          type: 'flat'
+        }
+      ]
+    });
     if (value === '1' && id) {
       await this.mutations.delete(id);
-      this.messageService.show($localize`Entity deleted successfully.`, {
-        class: 'ft-message--success',
-        icon: 'check--circle'
-      });
+      notify($localize`Entity deleted successfully.`, { level: 'success' });
     }
     return value;
   }

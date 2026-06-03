@@ -8,12 +8,19 @@ import { SwUpdate } from '@angular/service-worker';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthProvider, Storage } from '@factor_ec/utils';
-import { MessageService } from '@factor_ec/ui';
+import { MessageService, type MessageOptions } from '@factor_ec/ui';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
 import { Session } from '@/core/services/session';
-import { NotificationEvent, notificationEvents } from '@/core/utils/notification';
+import {
+  ConfirmEvent,
+  ConfirmOptions,
+  NotificationEvent,
+  NotificationOptions,
+  notificationEvents
+} from '@/core/utils/notification';
+import { firstValueFrom } from 'rxjs';
 import { Language } from '@/core/models/language';
 
 interface BeforeInstallPromptEventLike extends Event {
@@ -85,9 +92,14 @@ export class AppManager {
     // Listen for notifications
     notificationEvents.addEventListener('notify', (event: Event) => {
       const { message, options } = (event as CustomEvent<NotificationEvent>).detail;
-      this.messageService.show(message, {
-        type: options?.type || 'notification'
-      });
+      this.messageService.show(message, this.buildMessageOptions(options));
+    });
+    notificationEvents.addEventListener('confirm', async (event: Event) => {
+      const { message, options, resolve } = (event as CustomEvent<ConfirmEvent>).detail;
+      const value = await firstValueFrom(
+        this.messageService.show(message, this.buildConfirmOptions(options))
+      );
+      resolve(value);
     });
     // Load the configured application language
     const locale = await this.setLocale();
@@ -129,6 +141,29 @@ export class AppManager {
     loadTranslations(localeTranslations.default);
 
     return locale;
+  }
+  private buildMessageOptions(options?: NotificationOptions): MessageOptions {
+    const type = options?.type ?? 'notification';
+    switch (options?.level) {
+      case 'success':
+        return { type, class: 'ft-message--success', icon: 'check--circle' };
+      case 'error':
+        return { type, class: 'ft-message--error' };
+      case 'warning':
+        return { type, class: 'ft-message--warning' };
+      case 'info':
+        return { type, class: 'ft-message--info' };
+      default:
+        return { type };
+    }
+  }
+  private buildConfirmOptions(options?: ConfirmOptions): MessageOptions {
+    return {
+      type: 'modal',
+      class: options?.class,
+      icon: options?.icon,
+      actions: options?.actions
+    };
   }
   private setUpdateListeners(): void {
     this.swUpdate.versionUpdates.subscribe((evt) => {

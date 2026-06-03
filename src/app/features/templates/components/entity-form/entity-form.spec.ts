@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -6,7 +6,7 @@ import { EntityForm } from './entity-form';
 import { EntityManager } from '@/features/templates/managers/entity-manager';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { LayoutManager } from '@/core/services/layout-manager';
-import { MessageService } from '@factor_ec/ui';
+import { notificationEvents, type NotificationEvent } from '@/core/utils/notification';
 import { Entity } from '@/features/templates/models/entity';
 import { OPERATION_TYPE } from '@/core/constants/operation-type';
 import { of } from 'rxjs';
@@ -18,8 +18,12 @@ describe('EntityForm', () => {
   let mockEntityRepository: Partial<EntityRepository>;
   let mockLayoutManager: Partial<LayoutManager>;
   let mockDialogRef: Partial<MatDialogRef<EntityForm>>;
-  let mockMessageService: Partial<MessageService>;
   let mockDialogData: { id?: string };
+  let notifiedEvents: NotificationEvent[];
+
+  const notifyHandler = (event: Event): void => {
+    notifiedEvents.push((event as Event & { detail: NotificationEvent }).detail);
+  };
 
   const mockEntity: Entity = {
     id: '1',
@@ -35,6 +39,9 @@ describe('EntityForm', () => {
   };
 
   beforeEach(async () => {
+    notifiedEvents = [];
+    notificationEvents.addEventListener('notify', notifyHandler);
+
     // Arrange: Create mocks
     mockEntityManager = {
       getContextMenu: vi.fn().mockReturnValue([])
@@ -64,10 +71,6 @@ describe('EntityForm', () => {
       close: vi.fn()
     };
 
-    mockMessageService = {
-      show: vi.fn().mockReturnValue(of(undefined))
-    };
-
     mockDialogData = {};
 
     // Override component before configuring the module
@@ -83,7 +86,6 @@ describe('EntityForm', () => {
         { provide: EntityRepository, useValue: mockEntityRepository },
         { provide: LayoutManager, useValue: mockLayoutManager },
         { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MessageService, useValue: mockMessageService },
         { provide: MAT_DIALOG_DATA, useValue: mockDialogData }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -91,6 +93,10 @@ describe('EntityForm', () => {
 
     fixture = TestBed.createComponent(EntityForm);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    notificationEvents.removeEventListener('notify', notifyHandler);
   });
 
   describe('initialization', () => {
@@ -165,7 +171,6 @@ describe('EntityForm', () => {
           { provide: EntityRepository, useValue: mockEntityRepository },
           { provide: LayoutManager, useValue: mockLayoutManager },
           { provide: MatDialogRef, useValue: mockDialogRef },
-          { provide: MessageService, useValue: mockMessageService },
           { provide: MAT_DIALOG_DATA, useValue: mockDialogData }
         ],
         schemas: [NO_ERRORS_SCHEMA]
@@ -208,7 +213,6 @@ describe('EntityForm', () => {
           { provide: EntityRepository, useValue: mockEntityRepository },
           { provide: LayoutManager, useValue: mockLayoutManager },
           { provide: MatDialogRef, useValue: mockDialogRef },
-          { provide: MessageService, useValue: mockMessageService },
           { provide: MAT_DIALOG_DATA, useValue: mockDialogData }
         ],
         schemas: [NO_ERRORS_SCHEMA]
@@ -265,7 +269,6 @@ describe('EntityForm', () => {
           { provide: EntityRepository, useValue: testMockEntityRepository },
           { provide: LayoutManager, useValue: mockLayoutManager },
           { provide: MatDialogRef, useValue: mockDialogRef },
-          { provide: MessageService, useValue: mockMessageService },
           { provide: MAT_DIALOG_DATA, useValue: mockDialogData }
         ],
         schemas: [NO_ERRORS_SCHEMA]
@@ -323,7 +326,6 @@ describe('EntityForm', () => {
           { provide: EntityRepository, useValue: mockEntityRepository },
           { provide: LayoutManager, useValue: mockLayoutManager },
           { provide: MatDialogRef, useValue: mockDialogRef },
-          { provide: MessageService, useValue: mockMessageService },
           { provide: MAT_DIALOG_DATA, useValue: mockDialogData }
         ],
         schemas: [NO_ERRORS_SCHEMA]
@@ -349,7 +351,8 @@ describe('EntityForm', () => {
       // Assert
       expect(createSpy).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalled();
-      expect(mockMessageService.show).toHaveBeenCalled();
+      expect(notifiedEvents).toHaveLength(1);
+      expect(notifiedEvents[0].options).toEqual({ level: 'success' });
       expect(afterSubmitSpy).toHaveBeenCalledWith({
         type: OPERATION_TYPE.CREATE,
         entity: mockEntity
@@ -381,7 +384,6 @@ describe('EntityForm', () => {
           { provide: EntityRepository, useValue: mockEntityRepository },
           { provide: LayoutManager, useValue: mockLayoutManager },
           { provide: MatDialogRef, useValue: mockDialogRef },
-          { provide: MessageService, useValue: mockMessageService },
           { provide: MAT_DIALOG_DATA, useValue: mockDialogData }
         ],
         schemas: [NO_ERRORS_SCHEMA]
@@ -415,7 +417,8 @@ describe('EntityForm', () => {
         })
       );
       expect(mockDialogRef.close).toHaveBeenCalled();
-      expect(mockMessageService.show).toHaveBeenCalled();
+      expect(notifiedEvents).toHaveLength(1);
+      expect(notifiedEvents[0].options).toEqual({ level: 'success' });
       expect(afterSubmitSpy).toHaveBeenCalledWith({
         type: OPERATION_TYPE.UPDATE,
         entity: mockEntity

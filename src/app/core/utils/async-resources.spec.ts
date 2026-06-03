@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import {
@@ -8,40 +8,25 @@ import {
   getApiUrl,
   ResourceException
 } from './async-resources';
-import { MessageService } from '@factor_ec/ui';
 import { environment } from '@/environments/environment';
 import { notificationEvents, type NotificationEvent } from './notification';
 
 describe('async-resources', () => {
-  // Arrange
-  let mockMessageService: Partial<MessageService>;
-  let notificationHandler: (event: Event) => void;
+  let notifiedEvents: NotificationEvent[];
+
+  const notifyHandler = (event: Event): void => {
+    notifiedEvents.push((event as Event & { detail: NotificationEvent }).detail);
+  };
 
   beforeEach(() => {
-    // Arrange: Create mock message service
-    mockMessageService = {
-      show: vi.fn()
-    };
+    notifiedEvents = [];
+    notificationEvents.addEventListener('notify', notifyHandler);
 
-    // Setup notification event listener to call mockMessageService.show
-    notificationHandler = (event: Event) => {
-      const { message, options } = (event as Event & { detail: NotificationEvent }).detail;
-      mockMessageService.show!(message, {
-        type: options?.type || ('notification' as const)
-      });
-    };
-    notificationEvents.addEventListener('notify', notificationHandler);
-
-    TestBed.configureTestingModule({
-      providers: [{ provide: MessageService, useValue: mockMessageService }]
-    });
+    TestBed.configureTestingModule({});
   });
 
   afterEach(() => {
-    // Clean up event listener
-    if (notificationHandler) {
-      notificationEvents.removeEventListener('notify', notificationHandler);
-    }
+    notificationEvents.removeEventListener('notify', notifyHandler);
   });
 
   describe('getApiUrl', () => {
@@ -140,7 +125,7 @@ describe('async-resources', () => {
       // Assert
       await expect(resource.load()).rejects.toThrow();
       expect(resource.error()).toBeDefined();
-      expect(mockMessageService.show).toHaveBeenCalled();
+      expect(notifiedEvents.length).toBeGreaterThan(0);
     });
 
     it('should not show error message when notifyError is false', async () => {
@@ -153,7 +138,7 @@ describe('async-resources', () => {
 
       // Assert
       await expect(resource.load(undefined, { notifyError: false })).rejects.toThrow();
-      expect(mockMessageService.show).not.toHaveBeenCalled();
+      expect(notifiedEvents).toHaveLength(0);
     });
 
     it('should refresh with last parameters', async () => {
@@ -328,7 +313,7 @@ describe('async-resources', () => {
       // Assert
       await expect(mutations.create({})).rejects.toThrow();
       expect(mutations.create.error()).toBeDefined();
-      expect(mockMessageService.show).toHaveBeenCalled();
+      expect(notifiedEvents.length).toBeGreaterThan(0);
     });
 
     it('should not show error message when notifyError is false', async () => {
@@ -343,7 +328,7 @@ describe('async-resources', () => {
 
       // Assert
       await expect(mutations.create({}, { notifyError: false })).rejects.toThrow();
-      expect(mockMessageService.show).not.toHaveBeenCalled();
+      expect(notifiedEvents).toHaveLength(0);
     });
 
     it('should track global submitting state across mutations', async () => {

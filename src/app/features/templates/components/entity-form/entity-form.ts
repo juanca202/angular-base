@@ -14,9 +14,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { Icon, MessageService } from '@factor_ec/ui';
+import { Icon } from '@factor_ec/ui';
 
 import { LayoutManager } from '@/core/services/layout-manager';
+import { notify } from '@/core/utils/notification';
 import { EntityRepository } from '@/features/templates/repositories/entity-repository';
 import { Entity, EntityInput } from '../../models/entity';
 import { EntityMapper } from '../../utils/entity-mapper';
@@ -57,7 +58,6 @@ export class EntityForm implements OnInit, OnDestroy {
   public readonly data = inject<{ id: string }>(MAT_DIALOG_DATA);
   public readonly layoutManager = inject(LayoutManager);
   private readonly dialogRef = inject(MatDialogRef<EntityForm>);
-  private readonly messageService = inject(MessageService);
 
   // Constants
   public readonly ENTITY_CONTEXT = ENTITY_CONTEXT;
@@ -127,10 +127,7 @@ export class EntityForm implements OnInit, OnDestroy {
           type = OPERATION_TYPE.CREATE;
         }
         this.dialogRef.close();
-        this.messageService.show($localize`Saved successfully.`, {
-          class: 'ft-message--success',
-          icon: 'check--circle'
-        });
+        notify($localize`Saved successfully.`, { level: 'success' });
         this.afterSubmit.emit({ type, entity });
       } finally {
         // Form re-enables when submitting signal becomes false
