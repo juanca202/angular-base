@@ -188,6 +188,40 @@ describe('AppManager', () => {
       // Arrange & Act & Assert
       expect(typeof appManager.init).toBe('function');
     });
+
+    it('should not load translations when environment.i18n is false', async () => {
+      // Arrange
+      const originalI18n = environment.i18n;
+      environment.i18n = false;
+      (mockStorage.get as any).mockReturnValue(null);
+      const loadSpy = vi.spyOn(appManager as any, 'loadTranslationsForLocale');
+
+      // Act
+      await appManager.init();
+
+      // Assert
+      expect(loadSpy).not.toHaveBeenCalled();
+
+      // Cleanup
+      environment.i18n = originalI18n;
+    });
+
+    it('should load translations when environment.i18n is true', async () => {
+      // Arrange
+      const originalI18n = environment.i18n;
+      environment.i18n = true;
+      (mockStorage.get as any).mockReturnValue(null);
+      const loadSpy = vi.spyOn(appManager as any, 'loadTranslationsForLocale');
+
+      // Act
+      await appManager.init();
+
+      // Assert
+      expect(loadSpy).toHaveBeenCalled();
+
+      // Cleanup
+      environment.i18n = originalI18n;
+    });
   });
 
   describe('versionUpdates subscription', () => {

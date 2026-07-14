@@ -128,6 +128,13 @@ export class AppManager {
     const locale = userLocale || systemLocale || environment.defaultLocale;
     this.storage.set(this.localeKey, locale, 'local');
 
+    if (environment.i18n) {
+      await this.loadTranslationsForLocale(locale);
+    }
+
+    return locale;
+  }
+  private async loadTranslationsForLocale(locale: string): Promise<void> {
     // Load base translations
     try {
       const localeBaseTranslations = await import(`../../../../public/i18n/${locale}-base.js`);
@@ -139,8 +146,6 @@ export class AppManager {
     // Load translation file
     const localeTranslations = await import(`../../../../public/i18n/${locale}.js`);
     loadTranslations(localeTranslations.default);
-
-    return locale;
   }
   private buildMessageOptions(options?: NotificationOptions): MessageOptions {
     const type = options?.type ?? 'notification';
