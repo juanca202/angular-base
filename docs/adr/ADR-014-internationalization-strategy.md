@@ -2,483 +2,70 @@
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 06/01/2026  
+**Última Actualización:** 14/07/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
 
-La aplicación necesita soportar múltiples idiomas para servir a una audiencia global. Los requisitos clave incluyen:
-
-- Soporte para múltiples idiomas sin reconstruir la aplicación
-- Cambio de idioma en tiempo de ejecución
-- Flujo de trabajo de traducción mantenible
-- Sincronización entre código fuente y archivos de traducción
-- Detección de traducciones faltantes
-- Inglés como idioma base para todas las traducciones
-- Integración con las capacidades i18n integradas de Angular
-
-Sin una estrategia i18n bien definida, corremos el riesgo de:
-
-- Cadenas hardcodeadas en la UI
-- Gestión de traducciones inconsistente
-- Mantenimiento difícil de archivos de traducción
-- Mala experiencia del desarrollador al agregar nuevas cadenas
-- Traducciones faltantes que pasan desapercibidas
+La aplicación debe soportar múltiples idiomas para una audiencia global, con cambio de idioma en tiempo de ejecución (sin reconstruir), un flujo de traducción mantenible, sincronización entre código fuente y archivos de traducción, detección automática de traducciones faltantes, e inglés como idioma base. Sin una estrategia definida se corre el riesgo de cadenas hardcodeadas, gestión inconsistente de traducciones y traducciones faltantes que pasan desapercibidas.
 
 ## Decisión
 
-Usaremos **i18n integrado de Angular** con **carga de traducciones en tiempo de ejecución** usando `loadTranslations()` de `@angular/localize`. La implementación incluye:
+Usaremos **i18n integrado de Angular** con **carga de traducciones en tiempo de ejecución** vía `loadTranslations()` de `@angular/localize`:
 
-1. **Atributos i18n de Angular** en templates para extracción de cadenas
-2. **JSON como formato base** (`en.json`) extraído del código fuente
-3. **Módulos JavaScript** (archivos `.js`) para carga en tiempo de ejecución
-4. **Script personalizado** (`generate-i18n.js`) para gestión de archivos de traducción
-5. **Detección de locale en tiempo de ejecución** y carga dinámica de traducciones
-6. **Detección de traducciones faltantes** a través de herramientas automatizadas
+1. **Extracción por marcado**: atributo `i18n` en templates y `$localize` en clases TypeScript.
+2. **`en.json`** como formato base extraído del código fuente (fuente de verdad).
+3. **Módulos JS por idioma** (`{lang}.js`) generados a partir de `en.json` para carga en runtime.
+4. **Script `generate-i18n.js`** (`npm run extract-i18n`, `npm run i18n -- {lang}`) gestiona la generación, sincronización y detección de traducciones faltantes (`{lang}-missing.json`).
+5. **Archivos con sufijo por ámbito** `{lang}-{sufijo}.js` (p. ej. `es-base.js`, `es-module.js`) separan traducciones comunes o por dominio; el script excluye del archivo principal los IDs ya cubiertos por un archivo con sufijo. En runtime se cargan primero los `-base.js` y después el archivo principal, que sobrescribe duplicados.
+6. **Detección de locale** con prioridad: preferencia del usuario (localStorage) → `navigator.language` → idioma por defecto (`en`).
 
-## Implementación
+## Reglas de código
 
-### Estructura de Archivos
-
-```
-public/
-└── i18n/
-    ├── en.json          # Traducciones base en inglés (extraídas por Angular)
-    ├── en.js            # Módulo JavaScript generado para inglés
-    ├── en-base.js       # Traducciones compartidas/base en inglés (carga prioritaria)
-    ├── es.js            # Traducciones en español
-    ├── es-base.js       # Traducciones compartidas/base en español (carga prioritaria)
-    ├── fr.js            # Traducciones en francés
-    ├── es-missing.json  # Traducciones faltantes en español (generado)
-    └── ...
-```
-
-**Archivos con sufijo por ámbito (`{lang}-{sufijo}.js`):**
-
-Además del archivo principal por idioma (por ejemplo, `es.js`), se pueden usar **archivos con sufijo** para separar traducciones por ámbito. El patrón de nombre es `{código de idioma}-{sufijo}.js`. Ejemplos:
-
-- **`es-base.js`**, **`en-base.js`**: Traducciones compartidas o comunes (mensajes de error, navegación, etc.) que la aplicación carga en primer lugar.
-- **`es-module.js`**, **`en-module.js`**: Traducciones de un módulo o ámbito concreto (por ejemplo, un feature o librería compartida).
-- Cualquier otro sufijo (por ejemplo, `es-recipes.js`, `en-admin.js`) para organizar por dominio o equipo.
-
-Comportamiento:
-
-- El script `generate-i18n.js` considera **todos** los archivos que coinciden con `{lang}-*.js` (cualquier sufijo después del guion) como archivos “prefijados”.
-- Recopila los IDs de traducción de todos esos archivos y **excluye** esos IDs del archivo principal `{lang}.js` al generarlo, para evitar duplicados y mantener cada clave en un solo ámbito.
-- En tiempo de ejecución, la aplicación carga primero las traducciones base (`{locale}-base.js`) y después el archivo principal (`{locale}.js`). Otros archivos con sufijo (por ejemplo, `-module.js`) pueden cargarse de forma explícita si la aplicación lo requiere.
-
-Así se consigue:
-
-- Separar traducciones por ámbito (común, módulo, feature, etc.).
-- Mantener el archivo principal generado sin duplicar IDs que ya viven en archivos con sufijo.
-- Organizar y mantener las traducciones por equipos o dominios usando sufijos descriptivos.
-
-### Flujo de Trabajo de Traducción
-
-#### 1. Agregar Nuevas Cadenas
-
-Los desarrolladores agregan el atributo `i18n` a las cadenas traducibles en los templates:
+- Todo texto visible en la UI usa `i18n` en templates o `$localize` en TypeScript; nunca cadenas hardcodeadas.
+- Comentarios, documentación, nombres de variables y funciones en inglés.
+- Contenido externo en otro idioma se traduce a inglés natural antes de mostrarse, preservando el significado.
 
 ```html
-<!-- ✅ Correcto - Usando atributo i18n -->
-<button mat-flat-button color="primary" i18n>Save</button>
-<mat-label i18n>Username or email</mat-label>
-<div i18n>Welcome, {{ userName() }}</div>
-
-<!-- ❌ Incorrecto - Cadenas hardcodeadas -->
-<button mat-flat-button color="primary">Save</button>
-<mat-label>Username or email</mat-label>
-```
-
-#### 2. Extraer Traducciones
-
-Ejecutar el comando de extracción para generar `en.json`:
-
-```bash
-npm run extract-i18n
-```
-
-Este comando:
-
-- Escanea todos los templates en busca de atributos `i18n`
-- Extrae cadenas y genera IDs únicos
-- Crea `public/i18n/en.json` con todas las cadenas en inglés
-
-#### 3. Generar Archivos de Idioma
-
-Para generar o actualizar un archivo de idioma:
-
-```bash
-npm run i18n -- es    # Generar/actualizar español
-npm run i18n -- fr    # Generar/actualizar francés
-```
-
-El script `generate-i18n.js`:
-
-- Lee `en.json` (traducciones base)
-- Compara con el archivo de idioma objetivo existente (ej: `es.js`)
-- **Excluye del archivo principal los IDs que ya existen en archivos con sufijo** (`{lang}-*.js`, p. ej. `es-base.js`, `es-module.js`); así se evitan duplicados y se separan por ámbito
-- Genera/actualiza el archivo JS del idioma objetivo
-- Crea `{lang}-missing.json` para traducciones faltantes
-- Genera `en.js` desde `en.json` para carga en tiempo de ejecución (también excluyendo IDs de archivos con sufijo)
-
-#### 4. Formato de Archivo de Traducción
-
-**Formato JSON base** (`en.json`):
-
-```json
-{
-  "translations": {
-    "439130533561834924": " Accept ",
-    "1519954996184640001": "Error",
-    "5207635742003539443": "Sign in",
-    "8164791295086777340": "Don't have an account?",
-    ...
-  }
-}
-```
-
-**Formato JS generado** (`es.js`):
-
-```javascript
-export default {
-  '439130533561834924': ' Aceptar ',
-  '1519954996184640001': 'Error',
-  '5207635742003539443': 'Iniciar sesión',
-  '8164791295086777340': '¿No tienes una cuenta?',
-  ...
-};
-```
-
-**Traducciones faltantes** (`es-missing.json`):
-
-```json
-{
-  "1234567890123456789": "New string that needs translation"
-}
-```
-
-### Carga de Traducciones en Tiempo de Ejecución
-
-El servicio `AppManager` maneja la detección de locale y la carga de traducciones:
-
-```typescript
-private async setLocale(): Promise<string> {
-  // 1. Detectar locale desde preferencia del usuario, sistema o defecto
-  const systemLocale = isPlatformBrowser(this.platformId)
-    ? this.languages().find((l) => l.code === navigator.language.split('-')[0])?.code
-    : null;
-  const userLocale = this.languages().find(
-    (l) => l.code === this.storageService.get(this.localeKey, 'local')
-  )?.code;
-  const locale = userLocale || systemLocale || this.defaultLocale;
-
-  // 2. Almacenar preferencia del usuario
-  this.storageService.set(this.localeKey, locale, 'local');
-
-  // 3. Cargar primero las traducciones base (si existen)
-  try {
-    const localeBaseTranslations = await import(`../../../../public/i18n/${locale}-base.js`);
-    loadTranslations(localeBaseTranslations.default);
-  } catch (error) {
-    console.error(`Error loading base translations for ${locale}:`, error);
-  }
-
-  // 4. Importar dinámicamente el archivo de traducción principal
-  const localeTranslationsModule = await import(`../../../../public/i18n/${locale}.js`);
-
-  // 5. Cargar traducciones en tiempo de ejecución (sobrescribe duplicados si existen)
-  loadTranslations(localeTranslationsModule.default);
-
-  // 6. Configurar moment.js para localización de fecha/hora
-  moment.locale(locale);
-
-  return locale;
-}
-```
-
-**Orden de Carga:**
-
-1. **Archivos `-base.js`**: Se cargan primero (por ejemplo, `en-base.js`, `es-base.js`)
-   - Contienen traducciones compartidas/comunes
-   - Si el archivo no existe, se ignora el error silenciosamente
-
-2. **Archivos principales**: Se cargan después (por ejemplo, `en.js`, `es.js`)
-   - Contienen traducciones específicas de features
-   - Si hay IDs duplicados, los del archivo principal sobrescriben los de `-base.js`
-
-### Prioridad de Detección de Locale
-
-1. **Preferencia del usuario** (almacenada en localStorage)
-2. **Locale del sistema** (`navigator.language` del navegador)
-3. **Locale por defecto** (Inglés - `en`)
-
-### Cambio de Idioma
-
-Los usuarios pueden cambiar idiomas a través del componente de configuración, que actualiza la preferencia almacenada y recarga las traducciones:
-
-```typescript
-changeLanguage(language: Language): void {
-  this.appManager.setLocale(language.code);
-  // AppManager maneja la recarga de traducciones
-}
-```
-
-## Características Clave
-
-### 1. Carga en Tiempo de Ejecución
-
-- Las traducciones se cargan dinámicamente en tiempo de ejecución
-- No es necesario reconstruir la aplicación para nuevos idiomas
-- Soporta carga diferida de archivos de traducción
-
-### 2. Detección de Traducciones Faltantes
-
-El script `generate-i18n.js` automáticamente:
-
-- Identifica traducciones faltantes
-- Crea archivos `{lang}-missing.json`
-- Elimina archivos faltantes cuando todas las traducciones están completas
-
-### 3. Sincronización de Traducciones
-
-- El archivo base (`en.json`) es la fuente de verdad
-- Todos los archivos de idioma se sincronizan con la base
-- Las claves se ordenan automáticamente según el archivo base
-
-### 4. Seguridad
-
-El script `generate-i18n.js` incluye medidas de seguridad:
-
-- Validación de código de idioma (solo alfanumérico)
-- Prevención de path traversal
-- Resolución segura de archivos
-
-## Ejemplos
-
-### Ejemplo 1: Cadena Simple
-
-```html
-<!-- Template -->
 <button i18n>Save</button>
-
-<!-- Generado en en.json -->
-{ "translations": { "1234567890123456789": "Save" } }
 ```
-
-### Ejemplo 2: Cadena con Interpolación
-
-```html
-<!-- Template -->
-<div i18n>Welcome, {{ userName() }}</div>
-
-<!-- Angular maneja la interpolación automáticamente -->
-```
-
-### Ejemplo 3: Cadena con Enlaces
-
-```html
-<!-- Template -->
-<div i18n>
-  If you continue, you agree to our {$START_LINK}Terms and Conditions{$CLOSE_LINK} and
-  {$START_LINK_1}Privacy Policy{$CLOSE_LINK}.
-</div>
-
-<!-- Generado con placeholders -->
-{ "translations": { "6749157715538041035": " If you continue with the service, you agree to our
-{$START_LINK}Terms and Conditions{$CLOSE_LINK} and {$START_LINK_1}Privacy Policies{$CLOSE_LINK}. " }
-}
-```
-
-### Ejemplo 4: Componente Completo
-
-```html
-<!-- user-profile.component.html -->
-<mat-card>
-  <mat-card-header>
-    <mat-card-title i18n>User Profile</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <mat-form-field>
-      <mat-label i18n>First name</mat-label>
-      <input matInput [formControl]="firstName" />
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label i18n>Last name</mat-label>
-      <input matInput [formControl]="lastName" />
-    </mat-form-field>
-
-    <button mat-flat-button color="primary" i18n>Save Changes</button>
-  </mat-card-content>
-</mat-card>
-```
-
-### Ejemplo 5: Usando $localize en Clases TypeScript
-
-Cuando necesites traducir cadenas desde código TypeScript (servicios, componentes, etc.), usa la función `$localize`:
 
 ```typescript
-import { Component, inject } from '@angular/core';
-import { NotificationService } from '@factor_ec/utils';
-
-@Component({
-  selector: 'app-user-profile',
-  standalone: true,
-  template: `
-    <div>
-      <h1>{{ title }}</h1>
-      <button (click)="saveUser()">{{ saveButtonText }}</button>
-    </div>
-  `
-})
-export class UserProfileComponent {
-  private notificationService = inject(NotificationService);
-
-  // ✅ Correcto - Usando $localize para cadenas traducibles
-  title = $localize`User Profile`;
-  saveButtonText = $localize`Save Changes`;
-
-  saveUser(): void {
-    // ✅ Correcto - Usando $localize con interpolación
-    const userName = 'John Doe';
-    this.notificationService.success($localize`User ${userName} has been saved successfully.`);
-  }
-
-  showError(): void {
-    // ✅ Correcto - Usando $localize para mensajes de error
-    this.notificationService.error(
-      $localize`An error occurred while saving the user. Please try again.`
-    );
-  }
-}
+title = $localize`User Profile`;
 ```
 
-**Notas Importantes:**
+## Estructura de archivos
 
-- `$localize` usa sintaxis de template literal con backticks (`` ` ``)
-- La interpolación se hace usando la sintaxis `${variable}`
-- La cadena será extraída durante el proceso `npm run extract-i18n`
-- La cadena extraída aparecerá en `en.json` con un ID generado
-
-**Generado en en.json:**
-
-```json
-{
-  "translations": {
-    "1234567890123456789": "User Profile",
-    "9876543210987654321": "Save Changes",
-    "5555555555555555555": "User {$PH} has been saved successfully.",
-    "1111111111111111111": "An error occurred while saving the user. Please try again."
-  }
-}
 ```
-
-## Flujo de Trabajo de Desarrollo
-
-### Agregar un Nuevo Idioma
-
-1. **Extraer traducciones base:**
-
-   ```bash
-   npm run extract-i18n
-   ```
-
-2. **Generar archivo de idioma:**
-
-   ```bash
-   npm run i18n -- de  # Para alemán
-   ```
-
-3. **Traducir cadenas faltantes:**
-   - Abrir `public/i18n/de-missing.json`
-   - Traducir todas las cadenas
-   - Copiar traducciones a `public/i18n/de.js`
-
-4. **Regenerar para verificar:**
-
-   ```bash
-   npm run i18n -- de
-   ```
-
-   - Si todas las traducciones están completas, `de-missing.json` será eliminado
-
-### Actualizar Traducciones
-
-1. **Agregar nuevas cadenas** a los templates con atributo `i18n`
-2. **Extraer** nuevas cadenas: `npm run extract-i18n`
-3. **Actualizar archivos de idioma:** `npm run i18n -- es`
-4. **Traducir** nuevas cadenas en `{lang}-missing.json`
-5. **Regenerar** para aplicar traducciones
-
-## Reglas y Guías
-
-### Reglas de Código
-
-- **Todo el texto visible en la UI debe usar el atributo `i18n`** en templates
-- **Para clases TypeScript**, usar `$localize` para cadenas traducibles
-- **No cadenas hardcodeadas** en templates o código TypeScript
-- **Comentarios de código y documentación** deben estar en inglés
-- **Nombres de variables y funciones** deben estar en inglés
-
-#### Consideraciones Adicionales
-
-- **El texto visible en la UI NO debe estar hardcodeado.**
-  - Cualquier cadena mostrada en la interfaz de usuario debe usar **localización de Angular (`i18n`)**.
-  - Ejemplo correcto:
-    ```html
-    <button i18n>Save</button>
-    ```
-  - Ejemplo incorrecto:
-    ```html
-    <button>Save</button>
-    ```
-
-- **Traducción automática de contenido externo:**
-  - Si el sistema recibe contenido en un idioma diferente, debe traducirlo automáticamente a **inglés natural** preservando el significado.
-
-- **Detección y reemplazo de cadenas hardcodeadas:**
-  - Si se detectan cadenas hardcodeadas en la UI, deben ser reemplazadas con el uso apropiado de Angular `i18n` y se debe sugerir un ID i18n apropiado si falta.
-
-### Guías de Traducción
-
-- **Idioma base:** Siempre inglés (`en`)
-- **Calidad de traducción:** Usar traductores profesionales cuando sea posible
-- **Contexto:** Proporcionar comentarios de contexto para traductores cuando sea necesario
-- **Consistencia:** Usar terminología consistente en todas las traducciones
-- **Pluralización:** Angular maneja la pluralización automáticamente
+public/i18n/
+├── en.json          # Base extraída por Angular (fuente de verdad)
+├── en.js / es.js     # Módulos runtime por idioma
+├── en-base.js / es-base.js  # Traducciones compartidas (carga prioritaria)
+└── es-missing.json  # Generado; se elimina al completar traducciones
+```
 
 ## Consecuencias
 
 ### Positivas
 
-- **Cambio de Idioma en Tiempo de Ejecución:** Los usuarios pueden cambiar idioma sin recargar la página
-- **No Requiere Reconstrucción:** Nuevos idiomas pueden agregarse sin reconstruir
-- **Flujo de Trabajo Mantenible:** Las herramientas automatizadas simplifican la gestión de traducciones
-- **Detección de Traducciones Faltantes:** Detección automatizada de cadenas no traducidas
-- **Seguridad de Tipos:** Los IDs de traducción se generan y rastrean
-- **Integración con Angular:** Usa las capacidades i18n integradas de Angular
-- **Experiencia del Desarrollador:** Atributo `i18n` simple para marcar cadenas traducibles
+- Cambio de idioma en runtime sin recargar ni reconstruir la aplicación.
+- Detección automatizada de traducciones faltantes y sincronización con la base en inglés.
+- Integración nativa con las capacidades i18n de Angular; `i18n`/`$localize` son sencillos de aplicar.
 
 ### Negativas
 
-- **Archivos de Traducción Grandes:** Todas las traducciones se cargan a la vez (puede optimizarse con carga diferida por feature)
-- **IDs Numéricos:** Angular genera IDs numéricos que no son legibles por humanos
-- **Paso de Build Requerido:** Debe ejecutarse la extracción antes de generar archivos de idioma
-- **Traducción Manual:** Requiere trabajo de traducción manual (aunque las herramientas ayudan)
-- **Gestión de Archivos:** Múltiples archivos para gestionar (JSON, JS, archivos faltantes)
+- Todas las traducciones de un idioma se cargan a la vez (sin code-splitting por feature salvo los archivos con sufijo).
+- IDs de traducción numéricos, no legibles por humanos.
+- Requiere paso de extracción/build antes de generar archivos de idioma, y traducción manual de las cadenas nuevas.
 
 ### Mitigación
 
-- **Carga Diferida:** Considerar carga de traducciones basada en features para aplicaciones grandes
-- **Gestión de Traducciones:** Usar herramientas de gestión de traducciones para mejor flujo de trabajo
-- **Reglas de Pluralización:** Asegurar pluralización adecuada para todos los idiomas
-- **Testing Automatizado:** Agregar tests para detectar traducciones faltantes
-- **Documentación:** Documentación clara para traductores y desarrolladores
-- **Integración CI/CD:** Automatizar extracción de traducciones en el pipeline CI/CD
+- Flujo operativo de traducción de faltantes documentado en el skill `abp-translate-i18n-missing`.
+- Para aplicaciones grandes, evaluar carga diferida de traducciones por feature usando archivos con sufijo.
 
 ## Referencias
 
 - [Documentación de i18n de Angular](https://angular.dev/guide/i18n)
 - [API de Localize de Angular](https://angular.dev/api/localize)
+- [Skill: abp-translate-i18n-missing](../../.agents/skills/abp-translate-i18n-missing/SKILL.md)
 - [README - Sección de Internacionalización](../../README.md#internationalization-i18n)
