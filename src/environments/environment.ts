@@ -10,6 +10,7 @@ export const environment: Environment = {
   ],
   sessionPrefix: '',
   apiRestBaseUrl: '',
+  i18n: false,
   iconSettings: {
     path: 'images',
     collection: 'factoricons-regular'

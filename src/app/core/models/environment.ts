@@ -10,6 +10,7 @@ export interface Environment {
   languages: Language[];
   sessionPrefix: string;
   apiRestBaseUrl: string;
+  i18n?: boolean;
   iconSettings?: {
     path: string;
     collection: string;
