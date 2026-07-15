@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado  
 **Fecha de Creación:** 06/01/2026  
-**Última Actualización:** 14/07/2026  
+**Última Actualización:** 15/07/2026  
 **Decisores:** Equipo de Arquitectura
 
 ## Contexto
@@ -19,12 +19,13 @@ Usaremos **i18n integrado de Angular** con **carga de traducciones en tiempo de 
 4. **Script `scripts/generate-i18n.js`** (`npm run extract-i18n`, `npm run i18n -- {lang}`) gestiona la generación, sincronización y detección de traducciones faltantes (`{lang}-missing.json`).
 5. **Archivos con sufijo por ámbito** `{lang}-{sufijo}.js` (p. ej. `es-base.js`, `es-module.js`) separan traducciones comunes o por dominio; el script excluye del archivo principal los IDs ya cubiertos por un archivo con sufijo. En runtime se cargan primero los `-base.js` y después el archivo principal, que sobrescribe duplicados.
 6. **Detección de locale** con prioridad: preferencia del usuario (localStorage) → `navigator.language` → idioma por defecto (`en`).
-7. **Adopción opt-in por proyecto**: la configuración de i18n vive agrupada en `environment.i18n` (`{ enabled, defaultLocale, languages }`); `enabled` controla si `AppManager` carga traducciones en runtime. Los proyectos nuevos creados a partir de este proyecto base inician con `i18n.enabled: false`; el resto de la infraestructura (`public/i18n/*`, `scripts/generate-i18n.js`, scripts npm, interceptor HTTP, regla ESLint) permanece siempre presente y se activa poniendo `enabled` en `true`.
+7. **Adopción opt-in por proyecto**: la configuración de i18n vive agrupada en `environment.i18n` (`{ enabled, defaultLocale, languages }`); `enabled` controla si `AppManager` carga traducciones en runtime. Los proyectos nuevos creados a partir de este proyecto base inician con `i18n.enabled: false`; el resto de la infraestructura (`public/i18n/*`, `scripts/generate-i18n.js`, scripts npm, interceptor HTTP) permanece siempre presente y se activa poniendo `enabled` en `true`.
+8. **Regla ESLint condicionada al flag**: `@angular-eslint/template/i18n` (en `eslint.config.js`) lee `environment.i18n.enabled` desde `src/environments/environment.ts` en tiempo de lint; con `enabled: true` se reporta como `error`, con `enabled: false` queda en `off`. Así, un proyecto que aún no adopta i18n no se ve forzado a marcar texto con `i18n`/`$localize` de antemano.
 
 ## Activar i18n en un proyecto
 
-1. Poner `i18n.enabled: true` en todos los `src/environments/environment*.ts` del proyecto.
-2. Marcar el texto visible de la UI con `i18n` (templates) o `$localize` (TypeScript) — ver [Reglas de código](#reglas-de-código).
+1. Poner `i18n.enabled: true` en `src/environments/environment.ts` (la regla ESLint lee este archivo; ver punto 8 de [Decisión](#decisión)).
+2. Ejecutar `npm run lint` para detectar todo el texto visible sin marcar y corregirlo agregando `i18n` (templates) o `$localize` (TypeScript) — ver [Reglas de código](#reglas-de-código).
 3. Ejecutar `npm run extract-i18n` y `npm run i18n -- {lang}` para generar los archivos de idioma.
 4. Confirmar que este ADR-014 sigue presente en `docs/adr/` del proyecto; si se hubiera perdido en el merge, restaurarlo o documentarlo de nuevo con el skill `adr-manage`.
 
@@ -65,11 +66,13 @@ public/i18n/
 - Todas las traducciones de un idioma se cargan a la vez (sin code-splitting por feature salvo los archivos con sufijo).
 - IDs de traducción numéricos, no legibles por humanos.
 - Requiere paso de extracción/build antes de generar archivos de idioma, y traducción manual de las cadenas nuevas.
+- Con `i18n.enabled: false`, el lint no marca texto sin `i18n`/`$localize`; al activar el flag más adelante puede haber que revisar y marcar retroactivamente texto ya existente.
 
 ### Mitigación
 
 - Flujo operativo de traducción de faltantes documentado en el skill `abp-translate-i18n-missing`.
 - Para aplicaciones grandes, evaluar carga diferida de traducciones por feature usando archivos con sufijo.
+- Al activar `i18n.enabled: true` en un proyecto con historia, correr `npm run lint` inmediatamente después para detectar y marcar el texto pendiente antes de continuar el desarrollo.
 
 ## Referencias
 

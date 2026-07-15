@@ -1,4 +1,6 @@
 // @ts-check
+const fs = require('fs');
+const path = require('path');
 const eslint = require('@eslint/js');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const angular = require('@angular-eslint/eslint-plugin');
@@ -15,6 +17,23 @@ const projectTemplateRules = {
     'no-ngclass': require('./tools/eslint-rules/no-ngclass')
   }
 };
+
+/**
+ * Reads `environment.i18n.enabled` directly from source instead of importing the
+ * TS module, since eslint.config.js runs as CommonJS and can't `require()` a
+ * TS file with ESM imports. See ADR-014, punto 8.
+ */
+function isI18nEnabled() {
+  try {
+    const envPath = path.join(__dirname, 'src', 'environments', 'environment.ts');
+    const content = fs.readFileSync(envPath, 'utf-8');
+    const i18nBlockMatch = content.match(/i18n:\s*{([^}]*)}/);
+    if (!i18nBlockMatch) return false;
+    return /enabled:\s*true/.test(i18nBlockMatch[1]);
+  } catch {
+    return false;
+  }
+}
 
 module.exports = [
   // Global ignore configuration
@@ -52,7 +71,7 @@ module.exports = [
     },
     rules: {
       '@angular-eslint/template/i18n': [
-        'error',
+        isI18nEnabled() ? 'error' : 'off',
         {
           checkId: false,
           checkText: true,
