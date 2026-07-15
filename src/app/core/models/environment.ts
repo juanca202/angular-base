@@ -6,11 +6,13 @@ import { Language } from './language';
 export interface Environment {
   appId: string;
   appName: string;
-  defaultLocale: string;
-  languages: Language[];
   sessionPrefix: string;
   apiRestBaseUrl: string;
-  i18n?: boolean;
+  i18n: {
+    enabled: boolean;
+    defaultLocale: string;
+    languages: Language[];
+  };
   iconSettings?: {
     path: string;
     collection: string;

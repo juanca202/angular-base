@@ -58,7 +58,7 @@ describe('AppManager', () => {
       const languages = appManager.languages();
 
       // Assert
-      expect(languages).toEqual(environment.languages);
+      expect(languages).toEqual(environment.i18n.languages);
     });
 
     it('should have updateStatus signal', () => {
@@ -189,10 +189,10 @@ describe('AppManager', () => {
       expect(typeof appManager.init).toBe('function');
     });
 
-    it('should not load translations when environment.i18n is false', async () => {
+    it('should not load translations when environment.i18n.enabled is false', async () => {
       // Arrange
-      const originalI18n = environment.i18n;
-      environment.i18n = false;
+      const originalEnabled = environment.i18n.enabled;
+      environment.i18n.enabled = false;
       (mockStorage.get as any).mockReturnValue(null);
       const loadSpy = vi.spyOn(appManager as any, 'loadTranslationsForLocale');
 
@@ -203,13 +203,13 @@ describe('AppManager', () => {
       expect(loadSpy).not.toHaveBeenCalled();
 
       // Cleanup
-      environment.i18n = originalI18n;
+      environment.i18n.enabled = originalEnabled;
     });
 
-    it('should load translations when environment.i18n is true', async () => {
+    it('should load translations when environment.i18n.enabled is true', async () => {
       // Arrange
-      const originalI18n = environment.i18n;
-      environment.i18n = true;
+      const originalEnabled = environment.i18n.enabled;
+      environment.i18n.enabled = true;
       (mockStorage.get as any).mockReturnValue(null);
       const loadSpy = vi.spyOn(appManager as any, 'loadTranslationsForLocale');
 
@@ -220,7 +220,7 @@ describe('AppManager', () => {
       expect(loadSpy).toHaveBeenCalled();
 
       // Cleanup
-      environment.i18n = originalI18n;
+      environment.i18n.enabled = originalEnabled;
     });
   });
 

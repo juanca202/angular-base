@@ -55,7 +55,7 @@ export class AppManager {
   // Properties
   private installPrompt: BeforeInstallPromptEventLike | null = null;
   public readonly updateStatus = signal<string | null>('done');
-  public readonly languages = signal<Language[]>(environment.languages);
+  public readonly languages = signal<Language[]>(environment.i18n.languages);
   public readonly startTime = performance.now();
 
   // Storage keys
@@ -125,10 +125,10 @@ export class AppManager {
     const userLocale = this.languages().find(
       (l) => l.code === this.storage.get(this.localeKey, 'local')
     )?.code;
-    const locale = userLocale || systemLocale || environment.defaultLocale;
+    const locale = userLocale || systemLocale || environment.i18n.defaultLocale;
     this.storage.set(this.localeKey, locale, 'local');
 
-    if (environment.i18n) {
+    if (environment.i18n.enabled) {
       await this.loadTranslationsForLocale(locale);
     }
 

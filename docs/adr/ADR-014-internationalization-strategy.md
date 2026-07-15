@@ -19,11 +19,11 @@ Usaremos **i18n integrado de Angular** con **carga de traducciones en tiempo de 
 4. **Script `generate-i18n.js`** (`npm run extract-i18n`, `npm run i18n -- {lang}`) gestiona la generación, sincronización y detección de traducciones faltantes (`{lang}-missing.json`).
 5. **Archivos con sufijo por ámbito** `{lang}-{sufijo}.js` (p. ej. `es-base.js`, `es-module.js`) separan traducciones comunes o por dominio; el script excluye del archivo principal los IDs ya cubiertos por un archivo con sufijo. En runtime se cargan primero los `-base.js` y después el archivo principal, que sobrescribe duplicados.
 6. **Detección de locale** con prioridad: preferencia del usuario (localStorage) → `navigator.language` → idioma por defecto (`en`).
-7. **Adopción opt-in por proyecto**: el flag `environment.i18n` (boolean) controla si `AppManager` carga traducciones en runtime. Los proyectos nuevos creados a partir de este proyecto base inician con `i18n: false`; el resto de la infraestructura (`public/i18n/*`, `generate-i18n.js`, scripts npm, interceptor HTTP, regla ESLint) permanece siempre presente y se activa poniendo el flag en `true`.
+7. **Adopción opt-in por proyecto**: la configuración de i18n vive agrupada en `environment.i18n` (`{ enabled, defaultLocale, languages }`); `enabled` controla si `AppManager` carga traducciones en runtime. Los proyectos nuevos creados a partir de este proyecto base inician con `i18n.enabled: false`; el resto de la infraestructura (`public/i18n/*`, `generate-i18n.js`, scripts npm, interceptor HTTP, regla ESLint) permanece siempre presente y se activa poniendo `enabled` en `true`.
 
 ## Activar i18n en un proyecto
 
-1. Poner `i18n: true` en todos los `src/environments/environment*.ts` del proyecto.
+1. Poner `i18n.enabled: true` en todos los `src/environments/environment*.ts` del proyecto.
 2. Marcar el texto visible de la UI con `i18n` (templates) o `$localize` (TypeScript) — ver [Reglas de código](#reglas-de-código).
 3. Ejecutar `npm run extract-i18n` y `npm run i18n -- {lang}` para generar los archivos de idioma.
 4. Confirmar que este ADR-014 sigue presente en `docs/adr/` del proyecto; si se hubiera perdido en el merge, restaurarlo o documentarlo de nuevo con el skill `adr-manage`.
