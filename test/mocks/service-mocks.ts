@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import { signal, computed } from '@angular/core';
 import { of } from 'rxjs';
 import { AppManager } from '@/core/services/app-manager';
-import { AuthProvider, AuthService } from '@factor_ec/utils';
+import { AuthService } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
 import { GoogleTagManager } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';

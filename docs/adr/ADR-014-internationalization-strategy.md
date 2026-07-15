@@ -16,10 +16,10 @@ Usaremos **i18n integrado de Angular** con **carga de traducciones en tiempo de 
 1. **Extracción por marcado**: atributo `i18n` en templates y `$localize` en clases TypeScript.
 2. **`en.json`** como formato base extraído del código fuente (fuente de verdad).
 3. **Módulos JS por idioma** (`{lang}.js`) generados a partir de `en.json` para carga en runtime.
-4. **Script `generate-i18n.js`** (`npm run extract-i18n`, `npm run i18n -- {lang}`) gestiona la generación, sincronización y detección de traducciones faltantes (`{lang}-missing.json`).
+4. **Script `scripts/generate-i18n.js`** (`npm run extract-i18n`, `npm run i18n -- {lang}`) gestiona la generación, sincronización y detección de traducciones faltantes (`{lang}-missing.json`).
 5. **Archivos con sufijo por ámbito** `{lang}-{sufijo}.js` (p. ej. `es-base.js`, `es-module.js`) separan traducciones comunes o por dominio; el script excluye del archivo principal los IDs ya cubiertos por un archivo con sufijo. En runtime se cargan primero los `-base.js` y después el archivo principal, que sobrescribe duplicados.
 6. **Detección de locale** con prioridad: preferencia del usuario (localStorage) → `navigator.language` → idioma por defecto (`en`).
-7. **Adopción opt-in por proyecto**: la configuración de i18n vive agrupada en `environment.i18n` (`{ enabled, defaultLocale, languages }`); `enabled` controla si `AppManager` carga traducciones en runtime. Los proyectos nuevos creados a partir de este proyecto base inician con `i18n.enabled: false`; el resto de la infraestructura (`public/i18n/*`, `generate-i18n.js`, scripts npm, interceptor HTTP, regla ESLint) permanece siempre presente y se activa poniendo `enabled` en `true`.
+7. **Adopción opt-in por proyecto**: la configuración de i18n vive agrupada en `environment.i18n` (`{ enabled, defaultLocale, languages }`); `enabled` controla si `AppManager` carga traducciones en runtime. Los proyectos nuevos creados a partir de este proyecto base inician con `i18n.enabled: false`; el resto de la infraestructura (`public/i18n/*`, `scripts/generate-i18n.js`, scripts npm, interceptor HTTP, regla ESLint) permanece siempre presente y se activa poniendo `enabled` en `true`.
 
 ## Activar i18n en un proyecto
 

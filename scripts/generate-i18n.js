@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
-const i18nDir = path.join(__dirname, 'public', 'i18n');
+const i18nDir = path.join(__dirname, '..', 'public', 'i18n');
 const basesJsonPath = path.join(i18nDir, 'en.json');
 const baseJsPath = path.join(i18nDir, 'en.js');
 

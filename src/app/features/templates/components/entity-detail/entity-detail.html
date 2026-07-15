@@ -15,6 +15,7 @@
     }
   </ng-container>
 </app-header>
+<button i18n>Hola que tal</button>
 <div mat-dialog-content>
   @if (entity.loading()) {
     <app-progress-placeholder
@@ -29,7 +30,7 @@
     <div class="ft-container flex flex-col gap-4 pt-4">
       <div class="flex items-center justify-between">
         <div>{{ entity.value()?.email }}</div>
-        <a [href]="`mailto:${entity.value()?.email}`" matButton="outlined">
+        <a [href]="`mailto:${entity.value()?.email ?? ''}`" matButton="outlined">
           <div class="flex items-center gap-2">
             <ft-icon name="paper-plane" class="text-2xl" />
             <div i18n>Send email</div>
@@ -38,7 +39,7 @@
       </div>
       <div class="flex items-center justify-between">
         <div>{{ entity.value()?.phone }}</div>
-        <a [href]="`tel:${entity.value()?.phone}`" matButton="outlined">
+        <a [href]="`tel:${$safeNavigationMigration(entity.value()?.phone)}`" matButton="outlined">
           <div class="flex items-center gap-2">
             <ft-icon name="phone" class="text-2xl" />
             <div i18n>Call</div>

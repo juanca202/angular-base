@@ -7,10 +7,9 @@ import {
   isDevMode,
   provideAppInitializer
 } from '@angular/core';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
-import { provideClientHydration } from '@angular/platform-browser';
 
 import { UI_OPTIONS } from '@factor_ec/ui';
 import { AuthProvider, AuthService, GoogleTagManager } from '@factor_ec/utils';
@@ -41,8 +40,7 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    provideHttpClient(withFetch(), withInterceptors([clientInterceptor, languageInterceptor])),
-    provideClientHydration(),
+    provideHttpClient(withInterceptors([clientInterceptor, languageInterceptor])),
     {
       provide: AuthProvider,
       useClass: AuthService
