@@ -137,15 +137,15 @@ export class AppManager {
   private async loadTranslationsForLocale(locale: string): Promise<void> {
     // Load base translations
     try {
-      const localeBaseTranslations = await import(`../../../../public/i18n/${locale}-base.js`);
-      loadTranslations(localeBaseTranslations.default);
+      // const localeBaseTranslations = await import(`../../../../public/i18n/${locale}-base.js`);
+      // loadTranslations(localeBaseTranslations.default);
     } catch (error) {
       console.error(`Error loading base translations for ${locale}:`, error);
     }
 
     // Load translation file
-    const localeTranslations = await import(`../../../../public/i18n/${locale}.js`);
-    loadTranslations(localeTranslations.default);
+    // const localeTranslations = await import(`../../../../public/i18n/${locale}.js`);
+    // loadTranslations(localeTranslations.default);
   }
   private buildMessageOptions(options?: NotificationOptions): MessageOptions {
     const type = options?.type ?? 'notification';
@@ -167,7 +167,7 @@ export class AppManager {
       type: 'modal',
       class: options?.class,
       icon: options?.icon,
-      actions: options?.actions
+      actions: options?.actions as MessageOptions['actions']
     };
   }
   private setUpdateListeners(): void {

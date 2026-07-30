@@ -7,7 +7,7 @@ export const environment: Environment = {
   apiRestBaseUrl: '',
   i18n: {
     enabled: false,
-    defaultLocale: 'en',
+    defaultLocale: 'es',
     languages: [
       { code: 'en', name: 'English' },
       { code: 'es', name: 'Español' }

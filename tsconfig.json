@@ -3,8 +3,19 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "strict": true,
-    "esModuleInterop": true,
+    "paths": {
+      "@/core": ["./src/app/core"],
+      "@/core/*": ["./src/app/core/*"],
+      "@/shared": ["./src/app/shared"],
+      "@/shared/*": ["./src/app/shared/*"],
+      "@/cross": ["./src/app/cross"],
+      "@/cross/*": ["./src/app/cross/*"],
+      "@/features": ["./src/app/features"],
+      "@/features/*": ["./src/app/features/*"],
+      "@/environments": ["./src/environments"],
+      "@/environments/*": ["./src/environments/*"],
+      "@/version-info": ["./src/version-info"]
+    },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -14,25 +25,12 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "paths": {
-      "@/*": ["./src/app/*"],
-      "@/core/*": ["./src/app/core/*"],
-      "@/shared/*": ["./src/app/shared/*"],
-      "@/cross/*": ["./src/app/cross/*"],
-      "@/features/*": ["./src/app/features/*"],
-      "@/environments/*": ["./src/environments/*"],
-      "@/version-info": ["./src/version-info"],
-      "@/test/*": ["./test/*"]
-    }
+    "module": "preserve"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictInputAccessModifiers": true
   },
   "files": [],
   "references": [

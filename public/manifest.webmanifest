@@ -1,6 +1,6 @@
 {
-  "name": "angular-base-project",
-  "short_name": "angular-base-project",
+  "name": "ABP",
+  "short_name": "ABP",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

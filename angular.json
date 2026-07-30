@@ -2,13 +2,11 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm",
-    "schematicCollections": ["@angular-eslint/schematics"],
-    "analytics": false
+    "packageManager": "npm"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "angular-base-project": {
+    "abp": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -26,8 +24,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/theme/material.scss", "src/styles.css"],
-            "polyfills": ["@angular/localize/init"]
+            "styles": ["src/styles.css"]
           },
           "configurations": {
             "production": {
@@ -35,7 +32,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "2MB"
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -44,8 +41,7 @@
                 }
               ],
               "outputHashing": "all",
-              "serviceWorker": "ngsw-config.json",
-              "sourceMap": false
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,
@@ -65,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "angular-base-project:build:production"
+              "buildTarget": "abp:build:production"
             },
             "development": {
-              "buildTarget": "angular-base-project:build:development"
+              "buildTarget": "abp:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,26 +72,12 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "runnerConfig": true
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
-          }
-        },
-        "e2e": {
-          "builder": "playwright-ng-schematics:playwright",
-          "options": {
-            "devServerTarget": "angular-base-project:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "angular-base-project:serve:production"
+            "coverage": true,
+            "coverageThresholds": {
+              "statements": 80,
+              "branches": 80,
+              "functions": 80,
+              "lines": 80
             }
           }
         }

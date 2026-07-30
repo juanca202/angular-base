@@ -26,6 +26,7 @@ yarn-error.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/mcp.json
 .history/*
 
 # Miscellaneous
@@ -33,25 +34,17 @@ yarn-error.log
 .sass-cache/
 /connect.lock
 /coverage
-/documentation
 /libpeerconnection.log
 testem.log
 /typings
-
-# System files
-.DS_Store
-Thumbs.db
-
-# Sentry Config File
-.sentryclirc
-
-# Project
-git-version.json
+__screenshots__/
 
 # Playwright
 /test-results/
 /playwright-report/
+/blob-report/
 /playwright/.cache/
 
-# Cursor hooks debug
-.cursor/hooks/telemetry/debug.log
+# System files
+.DS_Store
+Thumbs.db

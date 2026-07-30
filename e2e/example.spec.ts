@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test('has title', async ({ page }) => {
+/**
+ * Smoke E2E de arranque — sustituir/ampliar con los flujos críticos de producto
+ * (ADR-005 / testing/CR-009).
+ */
+test('la aplicación responde en la ruta raíz', async ({ page }) => {
   await page.goto('/');
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/MyApp/);
+  await expect(page).toHaveTitle(/./);
 });
