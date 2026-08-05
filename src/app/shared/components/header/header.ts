@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, input } from '@angular/core';
+import { Component, ElementRef, inject, input } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -7,8 +7,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, inject, input } from '@
   styleUrl: './header.css',
   host: {
     class: 'flex items-center min-h-14 p-2 text-2xl font-bold text-center'
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  }
 })
 export class Header {
   // Dependency injection

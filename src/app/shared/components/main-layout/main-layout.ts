@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, RouterOutlet } from '@angular/router';
@@ -18,7 +18,6 @@ import { MenuItem } from '@/shared/models/menu-item';
   imports: [Avatar, Icon, MatButtonModule, RouterModule, RouterOutlet],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'ft-main-layout'
   }

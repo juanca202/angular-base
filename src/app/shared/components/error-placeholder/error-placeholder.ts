@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, Signal } from '@angular/core';
+import { Component, input, Signal } from '@angular/core';
 import { Icon } from '@factor_ec/ui';
 
 export interface ErrorResource {
@@ -13,8 +13,7 @@ export interface ErrorResource {
   styleUrl: './error-placeholder.css',
   host: {
     class: 'p-6'
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  }
 })
 export class ErrorPlaceholder {
   public readonly resource = input<ErrorResource>();

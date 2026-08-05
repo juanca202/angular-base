@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Progress } from '@factor_ec/ui';
 
 @Component({
@@ -8,8 +8,7 @@ import { Progress } from '@factor_ec/ui';
   styleUrl: './progress-placeholder.css',
   host: {
     class: 'text-center'
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  }
 })
 export class ProgressPlaceholder {
   public readonly iconClass = input<string | null>(null);
