@@ -31,7 +31,11 @@ function check(cr, enfoque, descripcion, fn) {
 // Una sola ejecución de ESLint, reutilizada por los dos CR de este estándar.
 let eslintResults = [];
 try {
-  const output = execSync('npx eslint . --format json', { stdio: 'pipe', encoding: 'utf8' });
+  const output = execSync('npx eslint . --format json', {
+    stdio: 'pipe',
+    encoding: 'utf8',
+    maxBuffer: 20 * 1024 * 1024,
+  });
   eslintResults = JSON.parse(output || '[]');
 } catch (err) {
   eslintResults = JSON.parse(err.stdout?.toString?.() || '[]');

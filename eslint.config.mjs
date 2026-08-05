@@ -27,6 +27,7 @@ export default defineConfig(
       'e2e/**',
       'playwright-report/**',
       'test-results/**',
+      '.angular/**',
       '*.js',
       '!eslint.config.mjs',
     ],

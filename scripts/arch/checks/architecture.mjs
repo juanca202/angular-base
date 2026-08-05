@@ -140,6 +140,7 @@ check('CR-004', 'bloqueante', 'path alias obligatorio entre capas', () => {
       stdio: 'pipe',
       encoding: 'utf8',
       cwd: repoRoot,
+      maxBuffer: 20 * 1024 * 1024,
     });
   } catch (err) {
     output = err.stdout?.toString?.() ?? '';
