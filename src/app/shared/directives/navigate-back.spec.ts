@@ -11,7 +11,7 @@ import { NavigateBack } from './navigate-back';
   template: '<button appNavigateBack [fallback]="fallbackRoute">Back</button>'
 })
 class TestComponent {
-  fallbackRoute: string | null = null;
+  public fallbackRoute: string | null = null;
 }
 
 describe('NavigateBack', () => {
