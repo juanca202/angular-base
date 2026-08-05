@@ -1,12 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
+import { NO_ERRORS_SCHEMA, computed, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MainLayout } from './main-layout';
 import { AuthProvider, User } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
 import { MenuItem } from '@/shared/models/menu-item';
+import { Settings } from '@/core/models/settings';
 import {
   createMockRouter,
   createMockActivatedRoute,
@@ -184,6 +185,125 @@ describe('MainLayout', () => {
 
       // Assert
       expect(component.selectedOption()).toEqual(menuItem);
+    });
+  });
+
+  describe('template rendering', () => {
+    let renderFixture: ComponentFixture<MainLayout>;
+    let renderComponent: MainLayout;
+
+    const mockSettings: Settings = {
+      user: {
+        username: 'testuser',
+        roles: ['user'],
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        email: 'ada@example.com',
+        picture: '',
+        featureFlags: []
+      },
+      language: 'en',
+      subscription: { code: 'sub', name: 'Subscription', plan: { code: 'plan', name: 'Plan' } },
+      environment: 'test',
+      onboarding: false,
+      country: 'EC'
+    };
+
+    const menuItems: MenuItem[] = [
+      {
+        url: '/home',
+        label: 'Home',
+        icon: 'home',
+        children: [{ url: '/home/dashboard', label: 'Dashboard', icon: 'dashboard' }]
+      },
+      { url: '/about', label: 'About', icon: 'info' }
+    ];
+
+    beforeEach(async () => {
+      // Arrange: render the real template (no override), with a populated session
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [MainLayout, RouterModule],
+        providers: [
+          { provide: AuthProvider, useValue: mockAuthProvider },
+          { provide: MatBottomSheet, useValue: mockBottomSheet },
+          {
+            provide: Session,
+            useValue: createMockSession({ settings: computed(() => mockSettings) })
+          },
+          ...COMMON_TEST_PROVIDERS.getRouterProviders(mockRouter, mockActivatedRoute),
+          ...COMMON_TEST_PROVIDERS.getUIOptionsProvider()
+        ],
+        schemas: [NO_ERRORS_SCHEMA]
+      }).compileComponents();
+
+      renderFixture = TestBed.createComponent(MainLayout);
+      renderComponent = renderFixture.componentInstance;
+      renderComponent.navigationOptions.set(menuItems);
+      renderFixture.detectChanges();
+    });
+
+    it('should render a button for each navigation option', () => {
+      // Act
+      const buttons = renderFixture.nativeElement.querySelectorAll('.ft-navbar__actions button');
+
+      // Assert
+      expect(buttons.length).toBe(menuItems.length);
+      expect(buttons[0].textContent).toContain('Home');
+      expect(buttons[1].textContent).toContain('About');
+    });
+
+    it('should not render children submenu when no option is selected', () => {
+      // Act
+      const actionsBlocks = renderFixture.nativeElement.querySelectorAll('.ft-navbar__actions');
+
+      // Assert: only the top-level actions block is rendered
+      expect(actionsBlocks.length).toBe(1);
+    });
+
+    it('should render children submenu when the selected option has children', () => {
+      // Act
+      renderComponent.selectedOption.set(menuItems[0]);
+      renderFixture.detectChanges();
+      const actionsBlocks = renderFixture.nativeElement.querySelectorAll('.ft-navbar__actions');
+
+      // Assert
+      expect(actionsBlocks.length).toBe(2);
+      expect(actionsBlocks[1].textContent).toContain('Dashboard');
+    });
+
+    it('should set selected option when a navigation button is clicked', () => {
+      // Act
+      const firstButton: HTMLButtonElement =
+        renderFixture.nativeElement.querySelectorAll('.ft-navbar__actions button')[0];
+      firstButton.click();
+      renderFixture.detectChanges();
+
+      // Assert
+      expect(renderComponent.selectedOption()).toEqual(menuItems[0]);
+    });
+
+    it('should render the session user profile information', () => {
+      // Act
+      const profileLabel = renderFixture.nativeElement.querySelector('.ft-item__label');
+
+      // Assert
+      expect(profileLabel.textContent).toContain('Ada Lovelace');
+      expect(profileLabel.textContent).toContain('ada@example.com');
+    });
+
+    it('should toggle the collapsed class when the splitter is clicked', () => {
+      // Arrange
+      const navbar: HTMLElement = renderFixture.nativeElement.querySelector('.ft-navbar');
+      const splitter: HTMLElement = renderFixture.nativeElement.querySelector('.ft-splitter');
+      expect(navbar.classList).not.toContain('ft-navbar--collapsed');
+
+      // Act
+      splitter.click();
+      renderFixture.detectChanges();
+
+      // Assert
+      expect(navbar.classList).toContain('ft-navbar--collapsed');
     });
   });
 });

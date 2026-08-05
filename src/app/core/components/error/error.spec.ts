@@ -205,4 +205,176 @@ describe('Error', () => {
       });
     });
   });
+
+  describe('setError codes', () => {
+    const renderWithCode = (code: number | string): Error => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        imports: [Error, RouterModule],
+        providers: [
+          { provide: AuthProvider, useValue: mockAuthProvider },
+          { provide: Storage, useValue: mockStorage },
+          { provide: Title, useValue: mockTitle },
+          { provide: Router, useValue: mockRouter },
+          {
+            provide: ActivatedRoute,
+            useValue: { snapshot: { params: { code: String(code) }, data: {} } }
+          }
+        ]
+      });
+
+      const codeFixture = TestBed.createComponent(Error);
+      codeFixture.componentInstance.ngOnInit();
+      return codeFixture.componentInstance;
+    };
+
+    it('should set error for code 0 (Connection Error)', () => {
+      // Act
+      const error = renderWithCode(0).error();
+
+      // Assert
+      expect(error?.icon).toBe('0');
+      expect(error?.title).toContain('Connection Error');
+    });
+
+    it('should set error for code 400 (Bad Request)', () => {
+      // Act
+      const error = renderWithCode(400).error();
+
+      // Assert
+      expect(error?.icon).toBe('400');
+      expect(error?.title).toContain('Bad Request');
+    });
+
+    it('should set error for code 403 (Forbidden)', () => {
+      // Act
+      const error = renderWithCode(403).error();
+
+      // Assert
+      expect(error?.icon).toBe('403');
+      expect(error?.title).toContain('Forbidden');
+    });
+
+    it('should set error for code 412 (Precondition Failed)', () => {
+      // Act
+      const error = renderWithCode(412).error();
+
+      // Assert
+      expect(error?.icon).toBe('412');
+      expect(error?.title).toContain('Precondition Failed');
+    });
+
+    it('should set error for code 503 (Service Unavailable)', () => {
+      // Act
+      const error = renderWithCode(503).error();
+
+      // Assert
+      expect(error?.icon).toBe('503');
+      expect(error?.title).toContain('Service Unavailable');
+    });
+
+    it('should set unknown error for an unmapped code', () => {
+      // Act
+      const error = renderWithCode(999).error();
+
+      // Assert
+      expect(error?.icon).toBe('unknown');
+      expect(error?.title).toContain('Unknown Error');
+    });
+
+    it('should read the code from route data when not present in params', () => {
+      // Arrange
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        imports: [Error, RouterModule],
+        providers: [
+          { provide: AuthProvider, useValue: mockAuthProvider },
+          { provide: Storage, useValue: mockStorage },
+          { provide: Title, useValue: mockTitle },
+          { provide: Router, useValue: mockRouter },
+          { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: { code: 404 } } } }
+        ]
+      });
+      const dataFixture = TestBed.createComponent(Error);
+
+      // Act
+      dataFixture.componentInstance.ngOnInit();
+
+      // Assert
+      expect(dataFixture.componentInstance.error()?.icon).toBe('404');
+    });
+  });
+
+  describe('template rendering', () => {
+    const renderWithCode = (code: number, logout: ReturnType<typeof vi.fn>): ComponentFixture<Error> => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        imports: [Error, RouterModule],
+        providers: [
+          { provide: AuthProvider, useValue: { ...mockAuthProvider, logout } },
+          { provide: Storage, useValue: mockStorage },
+          { provide: Title, useValue: mockTitle },
+          { provide: Router, useValue: mockRouter },
+          {
+            provide: ActivatedRoute,
+            useValue: { snapshot: { params: { code: String(code) }, data: {} } }
+          }
+        ]
+      });
+      const renderFixture = TestBed.createComponent(Error);
+      renderFixture.detectChanges();
+      return renderFixture;
+    };
+
+    it('should render a "Go home" link for a 404 error', () => {
+      // Act
+      const renderFixture = renderWithCode(404, vi.fn().mockResolvedValue(false));
+
+      // Assert
+      const link = renderFixture.nativeElement.querySelector('a[routerLink]');
+      expect(link).not.toBeNull();
+      expect(renderFixture.nativeElement.querySelector('h1').textContent).toContain('Not Found');
+    });
+
+    it('should render a "Logout" button for a 403 error', () => {
+      // Act
+      const renderFixture = renderWithCode(403, vi.fn().mockResolvedValue(true));
+
+      // Assert
+      const buttons = renderFixture.nativeElement.querySelectorAll('button');
+      expect(buttons.length).toBe(1);
+      expect(renderFixture.nativeElement.querySelector('a[routerLink]')).toBeNull();
+    });
+
+    it('should call authProvider.logout when the Logout button is clicked', () => {
+      // Arrange
+      const logout = vi.fn().mockResolvedValue(true);
+      const renderFixture = renderWithCode(403, logout);
+      const button: HTMLButtonElement = renderFixture.nativeElement.querySelector('button');
+
+      // Act
+      button.click();
+
+      // Assert
+      expect(logout).toHaveBeenCalled();
+    });
+
+    it('should render a "Reload" button for an unknown error', () => {
+      // Act
+      const renderFixture = renderWithCode(999, vi.fn().mockResolvedValue(true));
+
+      // Assert
+      const buttons = renderFixture.nativeElement.querySelectorAll('button');
+      expect(buttons.length).toBe(1);
+    });
+
+    it('should not render a recovery action for a 400 error', () => {
+      // Act
+      const renderFixture = renderWithCode(400, vi.fn().mockResolvedValue(true));
+
+      // Assert
+      expect(renderFixture.nativeElement.querySelector('a[routerLink]')).toBeNull();
+      expect(renderFixture.nativeElement.querySelector('button')).toBeNull();
+    });
+  });
 });

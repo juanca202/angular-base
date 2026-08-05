@@ -14,7 +14,9 @@
       "@/features/*": ["./src/app/features/*"],
       "@/environments": ["./src/environments"],
       "@/environments/*": ["./src/environments/*"],
-      "@/version-info": ["./src/version-info"]
+      "@/version-info": ["./src/version-info"],
+      "@/test": ["./test"],
+      "@/test/*": ["./test/*"]
     },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

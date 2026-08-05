@@ -9,12 +9,14 @@ import { AuthProvider } from '@factor_ec/utils';
 import { Session } from './session';
 import { GoogleTagManager, Storage } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
+import { notificationEvents } from '@/core/utils/notification';
 import {
   createMockAuthProvider,
   createMockSession,
   createMockGoogleTagManagerService,
   createMockMatSnackBar,
-  createMockSwUpdate
+  createMockSwUpdate,
+  createMockMessageServiceProvider
 } from '@/test/mocks/service-mocks';
 import { createMockStorageService } from '@/test/mocks/angular-mocks';
 
@@ -26,6 +28,8 @@ describe('AppManager', () => {
   let mockGoogleTagManager: Partial<GoogleTagManager>;
   let mockSnackBar: Partial<MatSnackBar>;
   let mockSwUpdate: Partial<SwUpdate>;
+  let mockMessageServiceProvider: ReturnType<typeof createMockMessageServiceProvider>;
+  let mockMessageService: ReturnType<typeof createMockMessageServiceProvider>['useValue'];
 
   beforeEach(() => {
     // Arrange: Create mocks
@@ -35,6 +39,8 @@ describe('AppManager', () => {
     mockGoogleTagManager = createMockGoogleTagManagerService();
     mockSnackBar = createMockMatSnackBar();
     mockSwUpdate = createMockSwUpdate();
+    mockMessageServiceProvider = createMockMessageServiceProvider();
+    mockMessageService = mockMessageServiceProvider.useValue;
 
     TestBed.configureTestingModule({
       providers: [
@@ -45,6 +51,7 @@ describe('AppManager', () => {
         { provide: GoogleTagManager, useValue: mockGoogleTagManager },
         { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: SwUpdate, useValue: mockSwUpdate },
+        mockMessageServiceProvider,
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     });
@@ -244,6 +251,7 @@ describe('AppManager', () => {
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
+          mockMessageServiceProvider,
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
@@ -285,6 +293,7 @@ describe('AppManager', () => {
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
+          mockMessageServiceProvider,
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
@@ -331,6 +340,7 @@ describe('AppManager', () => {
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
+          mockMessageServiceProvider,
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
@@ -368,6 +378,7 @@ describe('AppManager', () => {
           { provide: GoogleTagManager, useValue: mockGoogleTagManager },
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
+          mockMessageServiceProvider,
           { provide: PLATFORM_ID, useValue: 'browser' }
         ]
       });
@@ -380,6 +391,103 @@ describe('AppManager', () => {
 
       // Assert
       expect(manager.updateStatus()).toBe('done');
+    });
+  });
+
+  describe('notify/confirm event listeners', () => {
+    it('should build message options for each notify level', async () => {
+      // Arrange
+      void appManager.init();
+      const cases: Array<{ level?: 'success' | 'error' | 'warning' | 'info'; expected: object }> = [
+        { level: 'success', expected: { class: 'ft-message--success', icon: 'check--circle' } },
+        { level: 'error', expected: { class: 'ft-message--error' } },
+        { level: 'warning', expected: { class: 'ft-message--warning' } },
+        { level: 'info', expected: { class: 'ft-message--info' } },
+        { expected: {} }
+      ];
+
+      // Act
+      for (const { level } of cases) {
+        notificationEvents.dispatchEvent(
+          new CustomEvent('notify', {
+            detail: { message: 'msg', options: level ? { level } : undefined }
+          })
+        );
+      }
+
+      // Assert
+      expect(mockMessageService.show).toHaveBeenCalledTimes(cases.length);
+      cases.forEach(({ expected }, index) => {
+        expect((mockMessageService.show as any).mock.calls[index][1]).toEqual(
+          expect.objectContaining({ type: 'notification', ...expected })
+        );
+      });
+    });
+
+    it('should honor a modal presentation type on notify events', () => {
+      // Arrange
+      void appManager.init();
+
+      // Act
+      notificationEvents.dispatchEvent(
+        new CustomEvent('notify', { detail: { message: 'msg', options: { type: 'modal' } } })
+      );
+
+      // Assert
+      expect((mockMessageService.show as any).mock.calls[0][1]).toEqual(
+        expect.objectContaining({ type: 'modal' })
+      );
+    });
+
+    it('should resolve a confirm event through MessageService', async () => {
+      // Arrange
+      void appManager.init();
+      const resolve = vi.fn();
+
+      // Act
+      notificationEvents.dispatchEvent(
+        new CustomEvent('confirm', {
+          detail: { message: 'Are you sure?', options: { class: 'c', icon: 'i' }, resolve }
+        })
+      );
+
+      // Assert
+      await vi.waitFor(() => expect(resolve).toHaveBeenCalled());
+      expect((mockMessageService.show as any).mock.calls[0]).toEqual([
+        'Are you sure?',
+        expect.objectContaining({ type: 'modal', class: 'c', icon: 'i' })
+      ]);
+    });
+  });
+
+  describe('init with a logged-in user', () => {
+    it('should fetch session settings when the user is already authenticated', async () => {
+      // Arrange
+      const getSettingsSpy = vi.spyOn(mockSession, 'getSettings' as any);
+      (mockAuthProvider.isLoggedIn as any).set(true);
+
+      // Act
+      await appManager.init();
+
+      // Assert
+      expect(getSettingsSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('beforeinstallprompt', () => {
+    it('should capture the install prompt event on the browser platform', () => {
+      // Arrange
+      void appManager.init();
+      const preventDefault = vi.fn();
+      const prompt = vi.fn();
+
+      // Act
+      window.dispatchEvent(Object.assign(new Event('beforeinstallprompt'), { preventDefault, prompt }));
+      appManager.install();
+
+      // Assert
+      expect(preventDefault).toHaveBeenCalled();
+      expect(prompt).toHaveBeenCalled();
     });
   });
 });

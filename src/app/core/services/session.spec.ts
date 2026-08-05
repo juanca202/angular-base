@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import type { WritableSignal } from '@angular/core';
+import type { User } from '@factor_ec/utils';
 import { Session } from './session';
 import { Storage } from '@factor_ec/utils';
 import { Settings } from '../models/settings';
@@ -19,6 +21,7 @@ describe('Session', () => {
     set: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
+  let mockAuthProvider: ReturnType<typeof createMockAuthProvider>;
 
   beforeEach(() => {
     // Arrange: Create mock storage service
@@ -27,6 +30,7 @@ describe('Session', () => {
       set: vi.fn(),
       delete: vi.fn()
     };
+    mockAuthProvider = createMockAuthProvider();
 
     TestBed.configureTestingModule({
       providers: [
@@ -34,7 +38,7 @@ describe('Session', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: Storage, useValue: mockStorage },
-        { provide: AuthProvider, useValue: createMockAuthProvider() }
+        { provide: AuthProvider, useValue: mockAuthProvider }
       ]
     });
 
@@ -388,6 +392,52 @@ describe('Session', () => {
       const currentSettings = service.settings();
       expect(currentSettings?.language).toBe('es');
       expect(currentSettings?.environment).toBeUndefined();
+    });
+  });
+
+  describe('persistence effect', () => {
+    it('should persist settings and params to local storage when they change', () => {
+      // Act
+      service.setParam('key1', 'value1');
+      TestBed.tick();
+
+      // Assert
+      expect(mockStorage.set).toHaveBeenCalledWith(
+        expect.stringContaining('_sess'),
+        expect.objectContaining({ params: { key1: 'value1' } }),
+        'local'
+      );
+    });
+  });
+
+  describe('getSettings request options', () => {
+    it('should include the push token header when provided', async () => {
+      // Act
+      const getSettingsPromise = service.getSettings(true, 'push-token-123');
+      const req = httpMock.expectOne(getApiUrl('settings'));
+
+      // Assert
+      expect(req.request.headers.get('Push-Token')).toBe('push-token-123');
+      req.flush({ language: 'en' });
+      await getSettingsPromise;
+    });
+
+    it('should return the already-loaded local settings for an authenticated user', async () => {
+      // Arrange: populate local settings first
+      let getSettingsPromise = service.getSettings(true);
+      httpMock.expectOne(getApiUrl('settings')).flush({ language: 'en', environment: 'dev' });
+      await getSettingsPromise;
+      (mockAuthProvider.user as WritableSignal<User | null>).set({ username: 'ada', roles: [] });
+
+      // Act
+      getSettingsPromise = service.getSettings();
+      const result = await getSettingsPromise;
+
+      // Assert
+      expect(result).toEqual(expect.objectContaining({ language: 'en' }));
+
+      // Cleanup: the network fetch is still triggered under the hood
+      httpMock.expectOne(getApiUrl('settings')).flush({ language: 'en' });
     });
   });
 });
