@@ -1,76 +1,59 @@
-/**
- * Puente de notificaciones por eventos (ADR-009).
- * Publica feedback de usuario sin acoplar el resto de Core a la librería visual.
- */
-
-export type NotifyLevel = 'success' | 'error' | 'info' | 'warning';
-export type NotifyPresentation = 'modal' | 'notification';
-
-export interface NotificationOptions {
-  readonly level?: NotifyLevel;
-  readonly type?: NotifyPresentation;
-}
-
-/** @deprecated Usar `NotificationOptions`. */
-export type NotifyOptions = NotificationOptions;
-
-export interface NotificationEvent {
-  readonly message: string;
-  readonly options?: NotificationOptions;
-}
-
-/** Acción de confirmación alineada con MessageAction de la UI, sin importar `@factor_ec/ui`. */
-export interface ConfirmAction {
-  readonly type: 'outlined' | 'filled' | 'raised' | 'flat' | 'stroked';
-  readonly label: string;
-  readonly value: string | number;
-  readonly metadata?: {
-    readonly color?: string;
-  };
-}
-
-export interface ConfirmOptions {
-  readonly class?: string;
-  readonly icon?: string;
-  readonly actions?: ConfirmAction[];
-}
-
-export interface ConfirmEvent {
-  readonly message: string;
-  readonly options?: ConfirmOptions;
-  readonly resolve: (value: unknown) => void;
-}
-
-/** EventTarget compartido para los canales `notify` y `confirm`. */
 export const notificationEvents = new EventTarget();
 
-/**
- * Publica un mensaje de feedback al usuario vía `CustomEvent('notify')`.
- * El texto debe estar ya localizado cuando sea visible al usuario.
- *
- * @example
- * notify($localize`Changes saved`);
- * notify($localize`Request failed`, { level: 'error' });
- */
+export type NotificationOptions = {
+  level?: 'success' | 'error' | 'info' | 'warning';
+  type?: 'modal' | 'notification';
+};
+
+export type NotificationEvent = {
+  message: string;
+  options?: NotificationOptions;
+};
+
+export type ConfirmActionType = 'raised' | 'flat' | 'stroked' | 'outlined' | 'filled';
+
+export type ConfirmAction = {
+  label: string;
+  value: string;
+  type: ConfirmActionType;
+  metadata?: Record<string, unknown>;
+};
+
+export type ConfirmOptions = {
+  class?: string;
+  icon?: string | { name: string; class?: string; collection?: string };
+  actions?: ConfirmAction[];
+};
+
+export type ConfirmEvent = {
+  message: string;
+  options?: ConfirmOptions;
+  resolve: (value: string | number | undefined) => void;
+};
+
 export function notify(message: string, options?: NotificationOptions): void {
-  const detail: NotificationEvent = { message, options };
   notificationEvents.dispatchEvent(
-    new CustomEvent<NotificationEvent>('notify', {
-      detail,
+    new CustomEvent('notify', {
+      detail: { message, options }
     })
   );
 }
 
-/**
- * Solicita confirmación al usuario vía `CustomEvent('confirm')`.
- * Resuelve cuando `AppManager` completa el diálogo modal.
- */
-export function confirm(message: string, options?: ConfirmOptions): Promise<unknown> {
+/** FL-01: a failed `chat.resume` after an interrupt is resolved must not fail silently. */
+export function notifyAgentResumeFailure(): void {
+  notify($localize`Could not send your response to the assistant. Please try again.`, {
+    level: 'error'
+  });
+}
+
+export function confirm(
+  message: string,
+  options?: ConfirmOptions
+): Promise<string | number | undefined> {
   return new Promise((resolve) => {
-    const detail: ConfirmEvent = { message, options, resolve };
     notificationEvents.dispatchEvent(
-      new CustomEvent<ConfirmEvent>('confirm', {
-        detail,
+      new CustomEvent('confirm', {
+        detail: { message, options, resolve }
       })
     );
   });
