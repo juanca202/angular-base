@@ -1,8 +1,8 @@
 import { Environment } from '../app/core/models/environment';
 
 export const environment: Environment = {
-  appId: 'abp',
-  appName: 'ABP',
+  appId: 'angular-base',
+  appName: 'Angular Base',
   sessionPrefix: '',
   apiRestBaseUrl: '',
   i18n: {

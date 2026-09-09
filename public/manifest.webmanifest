@@ -1,6 +1,6 @@
 {
-  "name": "ABP",
-  "short_name": "ABP",
+  "name": "Angular Base",
+  "short_name": "Angular Base",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
