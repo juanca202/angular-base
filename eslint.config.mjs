@@ -3,7 +3,7 @@ import js from '@eslint/js';
 import angular from 'angular-eslint';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
-import requireLayerPathAlias from './tools/eslint-rules/require-layer-path-alias.mjs';
+import requireLayerPathAlias from './scripts/eslint-rules/require-layer-path-alias.mjs';
 
 const ANGULAR_LIFECYCLE_HOOKS = [
   'ngOnChanges',
@@ -23,7 +23,6 @@ export default defineConfig(
       'node_modules/**',
       'coverage/**',
       'scripts/**',
-      'tools/**',
       'e2e/**',
       'playwright-report/**',
       'test-results/**',

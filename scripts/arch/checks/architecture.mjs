@@ -141,7 +141,7 @@ check('CR-002', 'bloqueante', 'dirección de dependencias entre capas', () => {
 // --- CR-004 (bloqueante) -------------------------------------------------------
 // Ningún import relativo debe cruzar de capa sin usar el path alias correspondiente
 // (ver ADR-001). Se verifica con la regla ESLint personalizada
-// project-rules/require-layer-path-alias (tools/eslint-rules/require-layer-path-alias.js),
+// project-rules/require-layer-path-alias (scripts/eslint-rules/require-layer-path-alias.mjs),
 // aislando sus violaciones de la salida JSON de ESLint.
 check('CR-004', 'bloqueante', 'path alias obligatorio entre capas', () => {
   let output;
