@@ -1,16 +1,13 @@
-# Agents
+# Fuentes de contexto
 
-## Reglas operativas y arquitectónicas
+- @.agents/MEMORY.md — Preferencias del proyecto
+- @docs/adr/README.md — Índice de decisiones arquitectónicas de este repositorio
+- @docs/standards/README.md — Índice de estándares de arquitectura de este repositorio
+- @README.md — Acerca de este repositorio
 
-- @.agents/MEMORY.md — memoria persistente del proyecto
-- @docs/adr/README.md — índice de Architecture Decision Records (decisiones arquitectónicas vigentes)
-- @docs/standards/README.md — índice de Estándares de Arquitectura
+# Reglas generales
 
-### Consideraciones
-
-- Si la información es arquitectónica → consultar ADRs y/o Estándares
-- Si es preferencia o regla operativa → usar MEMORY.md
-- Si hay conflicto → prioridad: ADRs → Estándares → MEMORY.md
+<!-- Normas de trabajo para agentes que no son preferencias (MEMORY), decisiones de arquitectura (ADR/estándares) ni stack: convenciones de código, comandos del repo, restricciones operativas. Ejemplo: "Seguir el estilo del código vecino; no reformatear líneas que no formen parte del cambio." -->
 
 ## Stack tecnológico
 
@@ -18,20 +15,19 @@
 |------|------------|
 | Framework | Angular 22 (standalone, signals, application builder) |
 | Lenguaje | TypeScript ~6 |
-| UI / design system | `@factor_ec/ui` (p. ej. `ft-icon`, `MessageService`) |
+| UI / design system | `@factor_ec/ui` + `@factor_ec/utils` (p. ej. `ft-icon`, `MessageService`, `AuthProvider`); Angular Material |
 | Estilos | Tailwind CSS v4 + PostCSS (`@tailwindcss/postcss`) |
 | Reactividad | RxJS 7; estado local con signals de Angular |
 | HTTP / datos | `HttpClient` + patrón Repository (`getApiUrl`, `async-resources`) |
-| Mocks HTTP | MSW (Mock Service Worker) |
-| Unit testing | Vitest + Testing Library (`@angular/build:unit-test`) |
-| E2E | Playwright (`e2e/`) |
-| Lint / formato | ESLint (angular-eslint, typescript-eslint) + Prettier |
-| Commits | Conventional Commits (commitlint) + Husky |
+| Mocks HTTP | MSW (Mock Service Worker) en `src/mocks/` |
+| PWA | `@angular/service-worker` |
+| Unit testing | Vitest + Testing Library (`@angular/build:unit-test`); helpers en `test/` |
+| E2E | Playwright (`e2e/`; `npm run e2e`) |
+| Lint / formato | ESLint (angular-eslint, typescript-eslint, reglas en `scripts/eslint-rules/`) + Prettier |
+| Commits | GitFlow + Conventional Commits (commitlint) + Husky |
 | Arquitectura (gate) | `npm run arch` — dependency-cruiser + fitness functions en `scripts/arch/` |
 | Empaquetado | npm (`packageManager`: npm@11) |
-| i18n | `@angular/localize` + scripts `extract-i18n` / `i18n` |
-
-Detalle normativo y decisiones: `docs/adr/`, `docs/standards/`.
+| i18n | `$localize` / `@angular/localize` (opt-in `environment.i18n`) + scripts `extract-i18n` / `i18n` |
 
 ## TypeScript Best Practices
 
