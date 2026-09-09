@@ -2,11 +2,11 @@
  * ESLint rule: project-rules/require-layer-path-alias
  *
  * ADR-001 / architecture CR-004 — los imports relativos no deben cruzar de capa.
- * Entre capas hay que usar los path aliases (@/core, @/shared, @/cross, @/features).
+ * Entre capas hay que usar los path aliases (@/core, @/shared, @/features).
  */
 import path from 'node:path';
 
-const LAYERS = ['core', 'shared', 'cross', 'features'];
+const LAYERS = ['core', 'shared', 'features'];
 const APP_SEGMENTS = ['src', 'app'];
 
 /**
@@ -44,7 +44,7 @@ const rule = {
     type: 'problem',
     docs: {
       description:
-        'Require path aliases when importing across Core/Shared/Cross/Features layers (ADR-001).',
+        'Require path aliases when importing across Core/Shared/Features layers (ADR-001).',
     },
     schema: [],
     messages: {

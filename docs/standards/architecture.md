@@ -2,7 +2,7 @@
 name: Architecture Standards
 domain: architecture
 status: Active
-last_update: 2026-07-30
+last_update: 2026-09-09
 source_adrs: [ADR-001, ADR-009, ADR-010, ADR-011, ADR-012]
 tags: [angular, capas, features, dependencias, modularidad, notify, eventos, ui, repository, rest, manager, mapper]
 ---
@@ -15,18 +15,20 @@ features entre sí, la convención de imports entre capas, el puente de notifica
 Core, el patrón Repository para REST, el patrón Manager para orquestación y los mappers de
 transformación por entidad. Aplica a todo el código bajo `src/app/`.
 
-## Organización en capas (Core, Shared, Cross, Features)
+## Organización en capas (Core, Shared, Features)
 
 **ID:** layer-organization
 
-Todo artefacto de `src/app/` **DEBE** ubicarse dentro de una de las cuatro capas de primer nivel (ver
+Todo artefacto de `src/app/` **DEBE** ubicarse dentro de una de las tres capas de primer nivel (ver
 ADR-001):
 
 - **Core** (`core/`) — infraestructura global.
 - **Shared** (`shared/`) — componentes/utilidades reutilizables y los contracts de comunicación entre
   features.
-- **Cross** (`cross/`) — capacidades de dominio transversales.
 - **Features** (`features/{feature}/`) — lógica de negocio de cada funcionalidad.
+
+El código de dominio usado por varias features **DEBE** clasificarse en Core (infraestructura), Shared
+(reutilizable) o en la feature poseedora del flujo.
 
 **NO DEBE** crearse una carpeta de primer nivel adicional bajo `src/app/` para código de infraestructura
 o de negocio sin documentar antes un ADR que la incorpore como capa o como excepción.
@@ -43,10 +45,9 @@ en la raíz de `src/app/` no pertenecen a ninguna capa y quedan fuera de este re
 Las dependencias entre capas **DEBEN** respetar una única dirección, para evitar dependencias inversas
 (p. ej. Core dependiendo de una feature) y dependencias directas entre features:
 
-- Core **NO DEBE** depender de Shared, Cross ni Features.
-- Shared **NO DEBE** depender de Features; **PUEDE** depender de Core y de Cross.
-- Cross **DEBE** depender únicamente de Core; **NO DEBE** depender de Shared ni de Features.
-- Una Feature **PUEDE** depender de Core, Shared y Cross; **NO DEBE** importar directamente artefactos
+- Core **NO DEBE** depender de Shared ni Features.
+- Shared **NO DEBE** depender de Features; **PUEDE** depender de Core.
+- Una Feature **PUEDE** depender de Core y Shared; **NO DEBE** importar directamente artefactos
   de otra Feature — la comunicación entre Features **DEBE** resolverse mediante el requisito
   «Comunicación entre Features mediante Contracts».
 
@@ -76,9 +77,8 @@ Ninguna.
 **ID:** path-alias-convention
 
 Todo import cuyo módulo de destino pertenezca a una capa distinta de la del archivo que importa **DEBE**
-usar el path alias de esa capa configurado en `tsconfig.json` (`@/core`, `@/shared`, `@/cross`,
-`@/features`), en vez de una ruta relativa, para que la capa de origen quede explícita en el propio
-import.
+usar el path alias de esa capa configurado en `tsconfig.json` (`@/core`, `@/shared`, `@/features`),
+en vez de una ruta relativa, para que la capa de origen quede explícita en el propio import.
 
 - **NO DEBE** usarse una ruta relativa (`../`, `./`) para cruzar de capa.
 - Los imports dentro de la misma capa — incluidos los imports dentro de una misma feature — **PUEDEN**
@@ -225,8 +225,8 @@ puras, ubicado en la feature correspondiente.
 
 | ID     | Requisito                       | Descripción                                                                                                                                                                                                                                        | Origen                                                            | Automatizable | Enfoque    | Verificación |
 | ------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------- | ---------- | ------------ |
-| CR-001 | layer-organization              | Las carpetas `src/app/core/`, `src/app/shared/`, `src/app/cross/` y `src/app/features/` **DEBEN** existir                                                                                                                                          | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | no           |
-| CR-002 | layer-dependency-direction      | Todo módulo de `src/app/` **NO DEBE** importar (directa o transitivamente vía el grafo de dependencias) un módulo de una capa en dirección prohibida: Core→{Shared,Cross,Features}, Shared→Features, Cross→{Shared,Features}, Feature→otra Feature | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
+| CR-001 | layer-organization              | Las carpetas `src/app/core/`, `src/app/shared/` y `src/app/features/` **DEBEN** existir                                                                                                                     | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
+| CR-002 | layer-dependency-direction      | Todo módulo de `src/app/` **NO DEBE** importar (directa o transitivamente vía el grafo de dependencias) un módulo de una capa en dirección prohibida: Core→{Shared,Features}, Shared→Features, Feature→otra Feature | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
 | CR-003 | feature-contracts               | Los archivos bajo `shared/contracts/**` **DEBEN** limitarse a `interface`, `type` y `enum` (sin `class` con implementación ni funciones con lógica)                                                                                                | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | no            | bloqueante | no           |
 | CR-004 | path-alias-convention           | Todo import relativo (`../`, `./`) **NO DEBE** resolver a un archivo de una capa distinta a la del archivo que importa                                                                                                                             | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
 | CR-007 | core-event-notification-bridge  | `async-resources` **DEBE** usar `notify({ level: 'error' })` en fallos cuando `notifyError` es `true` (default)                                                                                                                                    | [ADR-009](../adr/ADR-009-core-event-notification-bridge.md)      | no            | bloqueante | no           |

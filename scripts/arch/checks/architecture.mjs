@@ -120,6 +120,16 @@ function walkFiles(dir, predicate, acc = []) {
   return acc;
 }
 
+// --- CR-001 (bloqueante) ------------------------------------------------------
+// Las capas de primer nivel son Core, Shared y Features (ver ADR-001).
+check('CR-001', 'bloqueante', 'carpetas de capas', () => {
+  const appRoot = join(repoRoot, 'src/app');
+  const missing = ['core', 'shared', 'features'].filter((d) => !existsSync(join(appRoot, d)));
+  if (missing.length > 0) {
+    throw new Error(`Faltan carpetas de capa: ${missing.map((d) => `src/app/${d}/`).join(', ')}`);
+  }
+});
+
 // --- CR-002 (bloqueante) ------------------------------------------------------
 // Ningún módulo de src/app/ debe importar (directa o transitivamente) un módulo
 // de otra capa en dirección prohibida (ver ADR-001). Se verifica con

@@ -10,13 +10,6 @@ module.exports = {
       to: { path: '^src/app/shared' },
     },
     {
-      name: 'no-core-to-cross',
-      comment: 'Core no debe depender de Cross (ADR-001).',
-      severity: 'error',
-      from: { path: '^src/app/core' },
-      to: { path: '^src/app/cross' },
-    },
-    {
       name: 'no-core-to-features',
       comment: 'Core no debe depender de Features (ADR-001).',
       severity: 'error',
@@ -28,20 +21,6 @@ module.exports = {
       comment: 'Shared no debe depender de Features (ADR-001).',
       severity: 'error',
       from: { path: '^src/app/shared' },
-      to: { path: '^src/app/features' },
-    },
-    {
-      name: 'no-cross-to-shared',
-      comment: 'Cross no debe depender de Shared (ADR-001).',
-      severity: 'error',
-      from: { path: '^src/app/cross' },
-      to: { path: '^src/app/shared' },
-    },
-    {
-      name: 'no-cross-to-features',
-      comment: 'Cross no debe depender de Features (ADR-001).',
-      severity: 'error',
-      from: { path: '^src/app/cross' },
       to: { path: '^src/app/features' },
     },
     {

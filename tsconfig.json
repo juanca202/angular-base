@@ -8,8 +8,6 @@
       "@/core/*": ["./src/app/core/*"],
       "@/shared": ["./src/app/shared"],
       "@/shared/*": ["./src/app/shared/*"],
-      "@/cross": ["./src/app/cross"],
-      "@/cross/*": ["./src/app/cross/*"],
       "@/features": ["./src/app/features"],
       "@/features/*": ["./src/app/features/*"],
       "@/environments": ["./src/environments"],

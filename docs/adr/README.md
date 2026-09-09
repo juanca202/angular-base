@@ -2,7 +2,7 @@
 
 Índice de decisiones arquitectónicas del proyecto.
 
-- [ADR-001: Arquitectura híbrida por capas y por funcionalidades (Core, Shared, Cross, Features)](./ADR-001-hybrid-layered-feature-architecture.md)
+- [ADR-001: Arquitectura híbrida por capas y por funcionalidades (Core, Shared, Features)](./ADR-001-hybrid-layered-feature-architecture.md)
 - [ADR-002: Modificadores de acceso explícitos y uso de readonly en clases](./ADR-002-explicit-member-accessibility-and-readonly.md)
 - [ADR-003: Estrategia de pruebas unitarias con Vitest, Testing Library y convenciones AAA / Object Mother](./ADR-003-unit-testing-vitest-testing-library.md)
 - [ADR-004: Documentación de código con TSDoc durante el desarrollo](./ADR-004-tsdoc-documentation-during-development.md)
