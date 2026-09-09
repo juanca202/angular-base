@@ -13,7 +13,6 @@
       "@/environments": ["./src/environments"],
       "@/environments/*": ["./src/environments/*"],
       "@/version-info": ["./src/version-info"],
-      "@/test": ["./test"],
       "@/test/*": ["./test/*"]
     },
     "noImplicitOverride": true,
