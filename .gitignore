@@ -49,3 +49,9 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 git-version.json
+
+# SDD Devkit
+.sdd-devkit/test-run.json
+
+# TypeScript incremental build cache
+*.tsbuildinfo
