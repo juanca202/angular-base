@@ -1,28 +1,70 @@
 /**
  * ESLint rule: project-rules/require-layer-path-alias
  *
- * ADR-001 / architecture CR-004 — los imports relativos no deben cruzar de capa.
- * Entre capas hay que usar los path aliases (@/core, @/shared, @/features).
+ * ADR-001 / architecture CR-004 — todo import relativo cuyo destino sea
+ * alcanzable mediante un path alias configurado en tsconfig.json (`@/core`,
+ * `@/shared`, `@/features`, `@/environments`, `@/version-info`, `@/test`)
+ * DEBE usar ese alias, sea o no cruce de capa.
+ *
+ * Los alias se leen de tsconfig.json en vez de hardcodearse, para que la
+ * regla no se desincronice si el mapa de paths cambia.
  */
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const LAYERS = ['core', 'shared', 'features'];
-const APP_SEGMENTS = ['src', 'app'];
+const repoRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
+
+/** @typedef {{ alias: string, dir: string, wildcard: boolean }} AliasEntry */
+
+/** Lee `compilerOptions.paths` de tsconfig.json y las resuelve a rutas absolutas. */
+function loadAliasTable() {
+  const tsconfigPath = path.join(repoRoot, 'tsconfig.json');
+  let tsconfig;
+  try {
+    // tsconfig.json admite comentarios; para esta lectura simple basta con
+    // despojarlos antes de parsear (no hay comentarios de bloque anidados aquí).
+    const raw = readFileSync(tsconfigPath, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+    tsconfig = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+
+  const paths = tsconfig.compilerOptions?.paths ?? {};
+  /** @type {AliasEntry[]} */
+  const entries = [];
+  for (const [alias, targets] of Object.entries(paths)) {
+    const target = targets[0];
+    if (!target) continue;
+    const wildcard = alias.endsWith('/*');
+    const aliasBase = wildcard ? alias.slice(0, -2) : alias;
+    const targetBase = wildcard ? target.slice(0, -2) : target;
+    entries.push({
+      alias: aliasBase,
+      dir: path.resolve(repoRoot, targetBase),
+      wildcard,
+    });
+  }
+  // Los más específicos (rutas más largas) primero, por si algún día se anidan.
+  return entries.sort((a, b) => b.dir.length - a.dir.length);
+}
+
+const ALIAS_TABLE = loadAliasTable();
 
 /**
- * @param {string} filePath
- * @returns {string | null}
+ * @param {string} absolutePath
+ * @returns {string | null} el import con alias equivalente, o null si `absolutePath`
+ *   no cae bajo ningún alias configurado.
  */
-function layerOf(filePath) {
-  const normalized = filePath.replaceAll('\\', '/');
-  const parts = normalized.split('/');
-  for (let i = 0; i < parts.length - 1; i += 1) {
-    if (
-      parts[i] === APP_SEGMENTS[0] &&
-      parts[i + 1] === APP_SEGMENTS[1] &&
-      LAYERS.includes(parts[i + 2])
-    ) {
-      return parts[i + 2];
+function toAliasImport(absolutePath) {
+  const normalized = absolutePath.replaceAll('\\', '/');
+  for (const { alias, dir, wildcard } of ALIAS_TABLE) {
+    const dirNormalized = dir.replaceAll('\\', '/');
+    if (normalized === dirNormalized) {
+      return alias;
+    }
+    if (wildcard && normalized.startsWith(`${dirNormalized}/`)) {
+      return `${alias}${normalized.slice(dirNormalized.length)}`;
     }
   }
   return null;
@@ -44,22 +86,17 @@ const rule = {
     type: 'problem',
     docs: {
       description:
-        'Require path aliases when importing across Core/Shared/Features layers (ADR-001).',
+        'Require the configured path alias instead of a relative import whenever one resolves the same target (ADR-001).',
     },
     schema: [],
     messages: {
       useAlias:
-        "Import relativo cruza de capa '{{fromLayer}}' → '{{toLayer}}'. Usa el path alias '@/{{toLayer}}' en lugar de una ruta relativa.",
+        "Import relativo '{{source}}' resuelve a un destino con alias configurado. Usa '{{aliasImport}}' en vez de la ruta relativa.",
     },
   },
   create(context) {
     const filename = context.filename ?? context.getFilename();
-    if (!filename || filename === '<input>') {
-      return {};
-    }
-
-    const fromLayer = layerOf(filename);
-    if (!fromLayer) {
+    if (!filename || filename === '<input>' || ALIAS_TABLE.length === 0) {
       return {};
     }
 
@@ -73,15 +110,15 @@ const rule = {
       }
 
       const resolved = resolveImport(filename, sourceValue);
-      const toLayer = layerOf(resolved);
-      if (!toLayer || toLayer === fromLayer) {
+      const aliasImport = toAliasImport(resolved);
+      if (!aliasImport) {
         return;
       }
 
       context.report({
         node,
         messageId: 'useAlias',
-        data: { fromLayer, toLayer },
+        data: { source: sourceValue, aliasImport },
       });
     }
 

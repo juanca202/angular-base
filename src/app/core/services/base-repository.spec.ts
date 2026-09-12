@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { BaseRepository } from './base-repository';
-import { RepositoryChange } from '../models/repository-change';
+import { BaseRepository } from '@/core/services/base-repository';
+import { RepositoryChange } from '@/core/models/repository-change';
 
 /**
  * Test implementation of BaseRepository for testing purposes

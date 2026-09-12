@@ -1,8 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Navigation, Router, RouterModule, UrlTree } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  Navigation,
+  Router,
+  RouterModule,
+  UrlTree
+} from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Error } from './error';
+import { Error } from '@/core/components/error/error';
 import { AuthProvider } from '@factor_ec/utils';
 import { Storage } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
@@ -76,7 +83,7 @@ describe('Error', () => {
         snapshot: {
           params: { code: '404' },
           data: {}
-        } as any
+        } as unknown as ActivatedRouteSnapshot
       };
 
       TestBed.resetTestingModule();
@@ -127,7 +134,7 @@ describe('Error', () => {
         snapshot: {
           params: { code: '404' },
           data: {}
-        } as any
+        } as unknown as ActivatedRouteSnapshot
       };
 
       TestBed.resetTestingModule();
@@ -166,7 +173,7 @@ describe('Error', () => {
         snapshot: {
           params: { code: '404' },
           data: {}
-        } as any
+        } as unknown as ActivatedRouteSnapshot
       };
 
       TestBed.resetTestingModule();

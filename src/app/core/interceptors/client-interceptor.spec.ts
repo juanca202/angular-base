@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpRequest, HttpHandlerFn, HttpHeaders } from '@angular/common/http';
 import { of } from 'rxjs';
-import { clientInterceptor } from './client-interceptor';
-import { AppManager } from '../services/app-manager';
+import { clientInterceptor } from '@/core/interceptors/client-interceptor';
+import { AppManager } from '@/core/services/app-manager';
 import { environment } from '@/environments/environment';
 
 describe('clientInterceptor', () => {
@@ -38,7 +38,7 @@ describe('clientInterceptor', () => {
       clientInterceptor(req, next).subscribe();
     });
 
-    const intercepted = (next as any).mock.calls[0][0];
+    const intercepted = (next as unknown as Mock).mock.calls[0][0] as HttpRequest<unknown>;
     expect(intercepted.headers.get('Client-Id')).toBe('test-client-id');
   });
 
@@ -49,7 +49,7 @@ describe('clientInterceptor', () => {
       clientInterceptor(req, next).subscribe();
     });
 
-    const intercepted = (next as any).mock.calls[0][0];
+    const intercepted = (next as unknown as Mock).mock.calls[0][0] as HttpRequest<unknown>;
     expect(intercepted.headers.get('App-Id')).toBe('test-app');
   });
 
@@ -60,7 +60,7 @@ describe('clientInterceptor', () => {
       clientInterceptor(req, next).subscribe();
     });
 
-    const intercepted = (next as any).mock.calls[0][0];
+    const intercepted = (next as unknown as Mock).mock.calls[0][0] as HttpRequest<unknown>;
     expect(intercepted.headers.has('App-Version')).toBe(true);
     expect(typeof intercepted.headers.get('App-Version')).toBe('string');
   });
@@ -74,7 +74,7 @@ describe('clientInterceptor', () => {
       clientInterceptor(req, next).subscribe();
     });
 
-    const intercepted = (next as any).mock.calls[0][0];
+    const intercepted = (next as unknown as Mock).mock.calls[0][0] as HttpRequest<unknown>;
     expect(intercepted.headers.get('Custom-Header')).toBe('custom-value');
     expect(intercepted.headers.has('Client-Id')).toBe(true);
   });

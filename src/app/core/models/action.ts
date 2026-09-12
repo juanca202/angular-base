@@ -1,4 +1,4 @@
-import { ACTION_TYPE } from '../constants/action-type';
+import { ACTION_TYPE } from '@/core/constants/action-type';
 
 export interface Action {
   id: string;

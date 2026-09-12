@@ -1,4 +1,4 @@
-import { Environment } from '../app/core/models/environment';
+import { Environment } from '@/core/models/environment';
 
 export const environment: Environment = {
   appId: 'angular-base',

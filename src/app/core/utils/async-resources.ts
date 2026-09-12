@@ -11,7 +11,7 @@ import {
   takeUntil,
   tap
 } from 'rxjs';
-import { notify } from './notification';
+import { notify } from '@/core/utils/notification';
 
 /**
  * Factory function that returns an Observable or a Promise.

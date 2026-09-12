@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { RepositoryChange } from '../models/repository-change';
+import { RepositoryChange } from '@/core/models/repository-change';
 
 /**
  * Base class for `{Entity}Repository` implementations (see ADR-010).

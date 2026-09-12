@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { NavigateBack } from './navigate-back';
+import { NavigateBack } from '@/shared/directives/navigate-back';
 
 // Componente de prueba que usa la directiva
 @Component({

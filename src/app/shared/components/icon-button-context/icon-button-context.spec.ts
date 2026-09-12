@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IconButtonContext } from './icon-button-context';
+import { IconButtonContext } from '@/shared/components/icon-button-context/icon-button-context';
 import { Action } from '@/core/models/action';
 import { ACTION_TYPE } from '@/core/constants/action-type';
 

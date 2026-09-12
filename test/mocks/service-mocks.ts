@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import { signal, computed } from '@angular/core';
 import { of } from 'rxjs';
 import { AppManager } from '@/core/services/app-manager';
-import { AuthProvider, AuthService } from '@factor_ec/utils';
+import { AuthService } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
 import { GoogleTagManager } from '@factor_ec/utils';
 import { MessageService } from '@factor_ec/ui';
@@ -120,7 +120,7 @@ export function createMockMatDialog(overrides?: Partial<MatDialog>): Partial<Mat
 /**
  * Crea un mock de MatDialogRef
  */
-export function createMockMatDialogRef<T = any>(
+export function createMockMatDialogRef<T = unknown>(
   overrides?: Partial<MatDialogRef<T>>
 ): Partial<MatDialogRef<T>> {
   return {
@@ -165,7 +165,7 @@ export function createMockSwUpdate(overrides?: Partial<SwUpdate>): Partial<SwUpd
     checkForUpdate: vi.fn(),
     versionUpdates: {
       subscribe: vi.fn()
-    } as any,
+    } as unknown as SwUpdate['versionUpdates'],
     ...overrides
   };
 }

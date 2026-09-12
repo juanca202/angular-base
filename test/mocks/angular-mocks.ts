@@ -4,7 +4,7 @@
  */
 import { vi } from 'vitest';
 import { Title } from '@angular/platform-browser';
-import { Router, ActivatedRoute, UrlTree, Navigation } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRouteSnapshot, UrlTree, Navigation } from '@angular/router';
 import { Subject, EMPTY } from 'rxjs';
 import { signal } from '@angular/core';
 import { UI_OPTIONS } from '@factor_ec/ui';
@@ -21,7 +21,7 @@ export function createMockTitle(): Title {
       currentTitle = t;
     }),
     getTitle: vi.fn().mockImplementation(() => currentTitle)
-  } as any;
+  } as unknown as Title;
 }
 
 /**
@@ -49,7 +49,7 @@ export function createMockActivatedRoute(
     snapshot: {
       params: {},
       data: {}
-    } as any,
+    } as unknown as ActivatedRouteSnapshot,
     paramMap: new Subject<ParamMap>().asObservable(),
     ...overrides
   };
@@ -68,7 +68,7 @@ export function createMockActivatedRouteWithParamMap(
       snapshot: {
         params: {},
         data: {}
-      } as any,
+      } as unknown as ActivatedRouteSnapshot,
       paramMap: subject.asObservable(),
       ...overrides
     },

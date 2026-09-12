@@ -1,4 +1,4 @@
-import { Language } from './language';
+import { Language } from '@/core/models/language';
 
 /**
  * Environment variables model

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProgressPlaceholder } from './progress-placeholder';
+import { ProgressPlaceholder } from '@/shared/components/progress-placeholder/progress-placeholder';
 
 describe('ProgressPlaceholder', () => {
   let component: ProgressPlaceholder;

@@ -14,7 +14,7 @@ export interface MockLocation {
   pathname: string;
   search: string;
   hash: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**

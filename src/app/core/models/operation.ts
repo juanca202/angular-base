@@ -1,4 +1,4 @@
-import { OPERATION_TYPE } from '../constants/operation-type';
+import { OPERATION_TYPE } from '@/core/constants/operation-type';
 
 export interface Operation<TEntity = unknown> {
   type: OperationType;

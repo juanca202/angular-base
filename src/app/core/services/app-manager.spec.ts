@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { PLATFORM_ID } from '@angular/core';
+import { PLATFORM_ID, type WritableSignal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SwUpdate } from '@angular/service-worker';
+import { SwUpdate, type VersionEvent } from '@angular/service-worker';
 import { EventEmitter } from '@angular/core';
-import { AppManager } from './app-manager';
+import { AppManager } from '@/core/services/app-manager';
 import { AuthProvider } from '@factor_ec/utils';
-import { Session } from './session';
+import { Session } from '@/core/services/session';
 import { GoogleTagManager, Storage } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 import { notificationEvents } from '@/core/utils/notification';
@@ -19,6 +19,12 @@ import {
   createMockMessageServiceProvider
 } from '@/test/mocks/service-mocks';
 import { createMockStorageService } from '@/test/mocks/angular-mocks';
+
+/** Acceso tipado a miembros privados de AppManager, solo para pruebas. */
+type AppManagerPrivate = {
+  installPrompt: { prompt: () => void; userChoice: Promise<{ outcome: string }> } | null;
+  loadTranslationsForLocale: (locale: string) => Promise<void>;
+};
 
 describe('AppManager', () => {
   let appManager: AppManager;
@@ -80,7 +86,7 @@ describe('AppManager', () => {
   describe('getClientId', () => {
     it('should generate new client ID if not exists', () => {
       // Arrange
-      (mockStorage.get as any).mockReturnValue(null);
+      vi.mocked(mockStorage.get!).mockReturnValue(null);
       const setSpy = vi.spyOn(mockStorage, 'set');
 
       // Act
@@ -95,7 +101,7 @@ describe('AppManager', () => {
     it('should return existing client ID from storage', () => {
       // Arrange
       const existingId = 'existing-client-id';
-      (mockStorage.get as any).mockReturnValue(existingId);
+      vi.mocked(mockStorage.get!).mockReturnValue(existingId);
 
       // Act
       const clientId = appManager.getClientId();
@@ -109,7 +115,7 @@ describe('AppManager', () => {
   describe('getLocale', () => {
     it('should return locale from storage', () => {
       // Arrange
-      (mockStorage.get as any).mockReturnValue('es');
+      vi.mocked(mockStorage.get!).mockReturnValue('es');
 
       // Act
       const locale = appManager.getLocale();
@@ -120,7 +126,7 @@ describe('AppManager', () => {
 
     it('should return default locale if not in storage', () => {
       // Arrange
-      (mockStorage.get as any).mockReturnValue(null);
+      vi.mocked(mockStorage.get!).mockReturnValue(null);
 
       // Act
       const locale = appManager.getLocale();
@@ -133,7 +139,7 @@ describe('AppManager', () => {
   describe('checkForUpdates', () => {
     it('should check for updates when service worker is enabled', () => {
       // Arrange
-      (mockSwUpdate.isEnabled as any) = true;
+      (mockSwUpdate as unknown as { isEnabled: boolean }).isEnabled = true;
       const checkSpy = vi.spyOn(mockSwUpdate, 'checkForUpdate');
 
       // Act
@@ -146,7 +152,7 @@ describe('AppManager', () => {
 
     it('should set status to failed when service worker is disabled', () => {
       // Arrange
-      (mockSwUpdate.isEnabled as any) = false;
+      (mockSwUpdate as unknown as { isEnabled: boolean }).isEnabled = false;
 
       // Act
       appManager.checkForUpdates();
@@ -161,7 +167,7 @@ describe('AppManager', () => {
       // Arrange
       const mockPrompt = vi.fn();
       const mockUserChoice = Promise.resolve({ outcome: 'accepted' });
-      (appManager as any).installPrompt = {
+      (appManager as unknown as AppManagerPrivate).installPrompt = {
         prompt: mockPrompt,
         userChoice: mockUserChoice
       };
@@ -175,7 +181,7 @@ describe('AppManager', () => {
 
     it('should not prompt when installPrompt is null', () => {
       // Arrange
-      (appManager as any).installPrompt = null;
+      (appManager as unknown as AppManagerPrivate).installPrompt = null;
 
       // Act
       appManager.install();
@@ -200,8 +206,8 @@ describe('AppManager', () => {
       // Arrange
       const originalEnabled = environment.i18n.enabled;
       environment.i18n.enabled = false;
-      (mockStorage.get as any).mockReturnValue(null);
-      const loadSpy = vi.spyOn(appManager as any, 'loadTranslationsForLocale');
+      vi.mocked(mockStorage.get!).mockReturnValue(null);
+      const loadSpy = vi.spyOn(appManager as unknown as AppManagerPrivate, 'loadTranslationsForLocale');
 
       // Act
       await appManager.init();
@@ -217,8 +223,8 @@ describe('AppManager', () => {
       // Arrange
       const originalEnabled = environment.i18n.enabled;
       environment.i18n.enabled = true;
-      (mockStorage.get as any).mockReturnValue(null);
-      const loadSpy = vi.spyOn(appManager as any, 'loadTranslationsForLocale');
+      vi.mocked(mockStorage.get!).mockReturnValue(null);
+      const loadSpy = vi.spyOn(appManager as unknown as AppManagerPrivate, 'loadTranslationsForLocale');
 
       // Act
       await appManager.init();
@@ -234,7 +240,7 @@ describe('AppManager', () => {
   describe('versionUpdates subscription', () => {
     it('should handle VERSION_DETECTED event', () => {
       // Arrange
-      const versionUpdates = new EventEmitter<any>();
+      const versionUpdates = new EventEmitter<VersionEvent>();
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
@@ -268,15 +274,15 @@ describe('AppManager', () => {
 
     it('should handle VERSION_READY event', () => {
       // Arrange
-      const versionUpdates = new EventEmitter<any>();
+      const versionUpdates = new EventEmitter<VersionEvent>();
       const snackBarOpenSpy = vi.spyOn(mockSnackBar, 'open').mockReturnValue({
         onAction: vi.fn().mockReturnValue({
-          subscribe: vi.fn((callback: any) => {
+          subscribe: vi.fn((callback: () => void) => {
             callback();
             return { unsubscribe: vi.fn() };
           })
         })
-      } as any);
+      } as unknown as ReturnType<MatSnackBar['open']>);
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
@@ -323,7 +329,7 @@ describe('AppManager', () => {
 
     it('should handle VERSION_INSTALLATION_FAILED event', () => {
       // Arrange
-      const versionUpdates = new EventEmitter<any>();
+      const versionUpdates = new EventEmitter<VersionEvent>();
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
@@ -352,7 +358,7 @@ describe('AppManager', () => {
       versionUpdates.emit({
         type: 'VERSION_INSTALLATION_FAILED',
         version: { hash: 'abc123' },
-        error: new Error('Installation failed')
+        error: 'Installation failed'
       });
 
       // Assert
@@ -361,7 +367,7 @@ describe('AppManager', () => {
 
     it('should handle NO_NEW_VERSION_DETECTED event', () => {
       // Arrange
-      const versionUpdates = new EventEmitter<any>();
+      const versionUpdates = new EventEmitter<VersionEvent>();
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
@@ -387,7 +393,7 @@ describe('AppManager', () => {
       void manager.init();
 
       // Act
-      versionUpdates.emit({ type: 'NO_NEW_VERSION_DETECTED' });
+      versionUpdates.emit({ type: 'NO_NEW_VERSION_DETECTED', version: { hash: 'abc123' } });
 
       // Assert
       expect(manager.updateStatus()).toBe('done');
@@ -418,7 +424,7 @@ describe('AppManager', () => {
       // Assert
       expect(mockMessageService.show).toHaveBeenCalledTimes(cases.length);
       cases.forEach(({ expected }, index) => {
-        expect((mockMessageService.show as any).mock.calls[index][1]).toEqual(
+        expect(vi.mocked(mockMessageService.show!).mock.calls[index][1]).toEqual(
           expect.objectContaining({ type: 'notification', ...expected })
         );
       });
@@ -434,7 +440,7 @@ describe('AppManager', () => {
       );
 
       // Assert
-      expect((mockMessageService.show as any).mock.calls[0][1]).toEqual(
+      expect(vi.mocked(mockMessageService.show!).mock.calls[0][1]).toEqual(
         expect.objectContaining({ type: 'modal' })
       );
     });
@@ -453,7 +459,7 @@ describe('AppManager', () => {
 
       // Assert
       await vi.waitFor(() => expect(resolve).toHaveBeenCalled());
-      expect((mockMessageService.show as any).mock.calls[0]).toEqual([
+      expect(vi.mocked(mockMessageService.show!).mock.calls[0]).toEqual([
         'Are you sure?',
         expect.objectContaining({ type: 'modal', class: 'c', icon: 'i' })
       ]);
@@ -463,8 +469,8 @@ describe('AppManager', () => {
   describe('init with a logged-in user', () => {
     it('should fetch session settings when the user is already authenticated', async () => {
       // Arrange
-      const getSettingsSpy = vi.spyOn(mockSession, 'getSettings' as any);
-      (mockAuthProvider.isLoggedIn as any).set(true);
+      const getSettingsSpy = vi.spyOn(mockSession as Required<Session>, 'getSettings');
+      (mockAuthProvider.isLoggedIn as unknown as WritableSignal<boolean>).set(true);
 
       // Act
       await appManager.init();

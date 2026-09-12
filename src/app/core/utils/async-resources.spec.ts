@@ -7,9 +7,9 @@ import {
   getMutations,
   getApiUrl,
   ResourceException
-} from './async-resources';
+} from '@/core/utils/async-resources';
 import { environment } from '@/environments/environment';
-import { notificationEvents, type NotificationEvent } from './notification';
+import { notificationEvents, type NotificationEvent } from '@/core/utils/notification';
 import { getNotificationDetail } from '@/test/helpers/notification-event.helpers';
 
 describe('async-resources', () => {

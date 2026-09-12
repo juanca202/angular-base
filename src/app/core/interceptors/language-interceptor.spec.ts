@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpRequest, HttpHandlerFn, HttpHeaders } from '@angular/common/http';
 import { of } from 'rxjs';
-import { languageInterceptor } from './language-interceptor';
-import { AppManager } from '../services/app-manager';
+import { languageInterceptor } from '@/core/interceptors/language-interceptor';
+import { AppManager } from '@/core/services/app-manager';
 
 describe('languageInterceptor', () => {
   let appManager: AppManager;
@@ -35,7 +35,7 @@ describe('languageInterceptor', () => {
       languageInterceptor(req, next).subscribe();
     });
 
-    const interceptedReq = (next as any).mock.calls[0][0];
+    const interceptedReq = (next as unknown as Mock).mock.calls[0][0] as HttpRequest<unknown>;
     expect(interceptedReq.headers.get('Accept-Language')).toBe('es');
   });
 
@@ -50,7 +50,7 @@ describe('languageInterceptor', () => {
       languageInterceptor(req, next).subscribe();
     });
 
-    const interceptedReq = (next as any).mock.calls[0][0];
+    const interceptedReq = (next as unknown as Mock).mock.calls[0][0] as HttpRequest<unknown>;
     expect(interceptedReq.headers.get('Authorization')).toBe('Bearer token123');
     expect(interceptedReq.headers.get('Accept-Language')).toBe('en');
   });
@@ -79,8 +79,8 @@ describe('languageInterceptor', () => {
       languageInterceptor(req, next).subscribe();
     });
 
-    const first = (next as any).mock.calls[0][0];
-    const second = (next as any).mock.calls[1][0];
+    const first = (next as unknown as Mock).mock.calls[0][0] as HttpRequest<unknown>;
+    const second = (next as unknown as Mock).mock.calls[1][0] as HttpRequest<unknown>;
 
     expect(first.headers.get('Accept-Language')).toBe('en');
     expect(second.headers.get('Accept-Language')).toBe('es');

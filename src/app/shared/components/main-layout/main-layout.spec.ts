@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { NO_ERRORS_SCHEMA, computed, signal } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { MainLayout } from './main-layout';
+import { MainLayout } from '@/shared/components/main-layout/main-layout';
 import { AuthProvider, User } from '@factor_ec/utils';
 import { Session } from '@/core/services/session';
 import { MenuItem } from '@/shared/models/menu-item';

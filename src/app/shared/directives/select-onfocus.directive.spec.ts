@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { SelectOnfocusDirective } from './select-onfocus.directive';
+import { SelectOnfocusDirective } from '@/shared/directives/select-onfocus.directive';
 
 // Componente de prueba que usa la directiva
 @Component({

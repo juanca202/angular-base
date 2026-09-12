@@ -2,7 +2,7 @@
 name: Architecture Standards
 domain: architecture
 status: Active
-last_update: 2026-09-09
+last_update: 2026-09-12
 source_adrs: [ADR-001, ADR-009, ADR-010, ADR-011, ADR-012]
 tags: [angular, capas, features, dependencias, modularidad, notify, eventos, ui, repository, rest, manager, mapper]
 ---
@@ -72,17 +72,19 @@ patrón de **contracts**: interfaces y tipos (sin implementación) ubicados en
 
 Ninguna.
 
-## Convención de path aliases entre capas
+## Convención de path aliases
 
 **ID:** path-alias-convention
 
-Todo import cuyo módulo de destino pertenezca a una capa distinta de la del archivo que importa **DEBE**
-usar el path alias de esa capa configurado en `tsconfig.json` (`@/core`, `@/shared`, `@/features`),
-en vez de una ruta relativa, para que la capa de origen quede explícita en el propio import.
+Todo import relativo (`../`, `./`) cuyo módulo de destino sea alcanzable mediante alguno de los path
+aliases configurados en `tsconfig.json` (`@/core`, `@/shared`, `@/features`, `@/environments`,
+`@/version-info`, `@/test`) **DEBE** usar ese alias en vez de la ruta relativa, para que el origen de
+cada import quede explícito en el propio código — sin excepción por pertenecer a la misma capa o al
+mismo directorio.
 
-- **NO DEBE** usarse una ruta relativa (`../`, `./`) para cruzar de capa.
-- Los imports dentro de la misma capa — incluidos los imports dentro de una misma feature — **PUEDEN**
-  usar alias o ruta relativa indistintamente.
+- **NO DEBE** usarse una ruta relativa cuando exista un path alias configurado que resuelva al mismo
+  destino, tanto al cruzar de capa (`@/core`, `@/shared`, `@/features`) como al importar cualquier otra
+  raíz con alias declarado (`@/environments`, `@/version-info`, `@/test`) o dentro de la misma capa.
 
 ### Excepciones
 
@@ -189,8 +191,8 @@ delegar esa coordinación al Manager.
 
 - Coordinaciones triviales de un solo paso y un solo colaborador **PUEDEN** vivir en el componente o
   en el servicio llamado directamente, sin crear un Manager.
-- Managers históricos en Core bajo `services/` (p. ej. `AppManager`, `LayoutManager`) **PUEDEN**
-  permanecer ahí; no es obligatorio moverlos a una carpeta `managers/`.
+- Managers históricos en Core bajo `services/` (p. ej. `AppManager`) **PUEDEN** permanecer ahí; no es
+  obligatorio moverlos a una carpeta `managers/`.
 
 ## Mappers de transformación por entidad
 
@@ -228,7 +230,7 @@ puras, ubicado en la feature correspondiente.
 | CR-001 | layer-organization              | Las carpetas `src/app/core/`, `src/app/shared/` y `src/app/features/` **DEBEN** existir                                                                                                                     | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
 | CR-002 | layer-dependency-direction      | Todo módulo de `src/app/` **NO DEBE** importar (directa o transitivamente vía el grafo de dependencias) un módulo de una capa en dirección prohibida: Core→{Shared,Features}, Shared→Features, Feature→otra Feature | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
 | CR-003 | feature-contracts               | Los archivos bajo `shared/contracts/**` **DEBEN** limitarse a `interface`, `type` y `enum` (sin `class` con implementación ni funciones con lógica)                                                                                                | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | no            | bloqueante | no           |
-| CR-004 | path-alias-convention           | Todo import relativo (`../`, `./`) **NO DEBE** resolver a un archivo de una capa distinta a la del archivo que importa                                                                                                                             | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
+| CR-004 | path-alias-convention           | Todo import relativo (`../`, `./`) **NO DEBE** resolver a un módulo alcanzable mediante un path alias configurado en `tsconfig.json` (`@/core`, `@/shared`, `@/features`, `@/environments`, `@/version-info`, `@/test`), sea o no cruce de capa    | [ADR-001](../adr/ADR-001-hybrid-layered-feature-architecture.md) | yes           | bloqueante | yes          |
 | CR-007 | core-event-notification-bridge  | `async-resources` **DEBE** usar `notify({ level: 'error' })` en fallos cuando `notifyError` es `true` (default)                                                                                                                                    | [ADR-009](../adr/ADR-009-core-event-notification-bridge.md)      | no            | bloqueante | no           |
 | CR-009 | rest-repository-pattern         | Las URLs REST de la API propia **DEBEN** construirse con `getApiUrl`; **NO DEBE** hardcodearse `/api/v1/` (u otro prefijo de versión) en callers                                                                                                  | [ADR-010](../adr/ADR-010-repository-pattern-rest-api.md)         | yes           | bloqueante | yes          |
 | CR-010 | rest-repository-pattern         | Cada entidad con acceso REST **DEBE** exponerse mediante una clase `{Entity}Repository` con convenciones `mutations` / `find*`                                                                                                                     | [ADR-010](../adr/ADR-010-repository-pattern-rest-api.md)         | no            | bloqueante | no           |

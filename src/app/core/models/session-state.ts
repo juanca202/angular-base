@@ -1,4 +1,4 @@
-import { Settings } from './settings';
+import { Settings } from '@/core/models/settings';
 
 export interface CustomParams {
   [key: string]: unknown;
