@@ -5,73 +5,68 @@
 // UN archivo por ESTÁNDAR (no por criterio): agrupa los chequeos de todos los
 // criterios de cumplimiento (CR) automatizables de docs/standards/coding-style.md.
 //
+// Los CR se delegan en reglas de ESLint (nativas o de project-rules/). `npm run lint` y
+// `npm run arch` son compuertas separadas: este archivo NO ejecuta ESLint, solo
+// audita que eslint.config.mjs registre la regla en al menos severidad "warn"
+// (ver scripts/arch/lib/eslint-config.mjs). Si la regla detecta una violación
+// real en el código, eso lo reporta `npm run lint`, no `npm run arch`.
+//
 // El runner (../verify.mjs) descubre este archivo por convención
 // (checks/coding-style.mjs) y lo ejecuta junto al resto; con
 // `node scripts/arch/verify.mjs coding-style` se ejecuta solo este estándar.
 // =============================================================================
-import { execSync } from 'node:child_process';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { loadEslintConfig, requireRuleSeverity, ruleTag } from '../lib/eslint-config.mjs';
+import { colorStatus } from '../lib/colors.mjs';
 
 const STANDARD = 'coding-style';
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 let blockingFailures = 0;
 
 // Registra y ejecuta el chequeo de UN criterio de cumplimiento.
 function check(cr, enfoque, descripcion, fn) {
   try {
     fn();
-    console.log(`PASS ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus('PASS')} ${STANDARD}/${cr} — ${descripcion}`);
   } catch (err) {
     const status = enfoque === 'warning' ? 'WARN' : 'FAIL';
     if (status === 'FAIL') blockingFailures += 1;
-    console.log(`${status} ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus(status)} ${STANDARD}/${cr} — ${descripcion}`);
     const detail = err?.message || '';
     if (detail) console.log(detail.trim().split('\n').map((l) => `     ${l}`).join('\n'));
   }
 }
 
-// Una sola ejecución de ESLint, reutilizada por los dos CR de este estándar.
-let eslintResults = [];
-try {
-  const output = execSync('npx eslint . --format json', {
-    stdio: 'pipe',
-    encoding: 'utf8',
-    maxBuffer: 20 * 1024 * 1024,
-  });
-  eslintResults = JSON.parse(output || '[]');
-} catch (err) {
-  eslintResults = JSON.parse(err.stdout?.toString?.() || '[]');
-}
-
-const countByRule = (ruleId) =>
-  eslintResults.reduce(
-    (acc, file) => acc + file.messages.filter((m) => m.ruleId === ruleId).length,
-    0
-  );
+const eslintConfig = await loadEslintConfig(repoRoot);
 
 // --- CR-001 (warning) ---------------------------------------------------------
 // Toda propiedad/método definido por el desarrollador debe declarar su
 // modificador de acceso explícito, salvo el constructor y los lifecycle hooks
-// de Angular (ver ADR-002). Se verifica con
-// @typescript-eslint/explicit-member-accessibility.
-check('CR-001', 'warning', 'modificador de acceso explícito en miembros de clase', () => {
-  const count = countByRule('@typescript-eslint/explicit-member-accessibility');
-  if (count > 0) {
-    throw new Error(
-      `${count} miembro(s) de clase sin modificador de acceso explícito. Ejecuta 'npx eslint .' para ver el detalle.`
-    );
-  }
+// de Angular (ver ADR-002). Enforcement: @typescript-eslint/explicit-member-accessibility.
+check('CR-001', 'warning', `regla de modificador de acceso explícito en miembros de clase activa${ruleTag('@typescript-eslint/explicit-member-accessibility')}`, () => {
+  requireRuleSeverity(eslintConfig, '@typescript-eslint/explicit-member-accessibility', 'warn', {
+    label: 'ADR-002',
+  });
 });
 
 // --- CR-002 (warning) ----------------------------------------------------------
 // Las propiedades private que nunca se reasignan fuera del constructor deben
-// declararse readonly (ver ADR-002). Se verifica con
-// @typescript-eslint/prefer-readonly.
-check('CR-002', 'warning', 'uso de readonly en propiedades private inmutables', () => {
-  const count = countByRule('@typescript-eslint/prefer-readonly');
-  if (count > 0) {
-    throw new Error(
-      `${count} propiedad(es) private podrían declararse readonly. Ejecuta 'npx eslint .' para ver el detalle.`
-    );
-  }
+// declararse readonly (ver ADR-002). Enforcement: @typescript-eslint/prefer-readonly.
+check('CR-002', 'warning', `regla de uso de readonly en propiedades private inmutables activa${ruleTag('@typescript-eslint/prefer-readonly')}`, () => {
+  requireRuleSeverity(eslintConfig, '@typescript-eslint/prefer-readonly', 'warn', {
+    label: 'ADR-002',
+  });
+});
+
+// --- CR-005 (warning) ----------------------------------------------------------
+// Los servicios de alcance de aplicación deben declararse con @Service en vez de
+// @Injectable({ providedIn: 'root' }) (ver ADR-015). Enforcement:
+// project-rules/prefer-service-decorator (scripts/eslint-rules/prefer-service-decorator.mjs).
+check('CR-005', 'warning', `regla de decorador @Service para servicios de aplicación activa${ruleTag('project-rules/prefer-service-decorator')}`, () => {
+  requireRuleSeverity(eslintConfig, 'project-rules/prefer-service-decorator', 'warn', {
+    label: 'ADR-015',
+  });
 });
 
 process.exit(blockingFailures > 0 ? 1 : 0);

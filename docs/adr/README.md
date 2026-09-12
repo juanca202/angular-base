@@ -16,3 +16,4 @@
 - [ADR-012: Mappers como objetos de funciones puras por feature](./ADR-012-feature-mappers-pure-functions.md)
 - [ADR-013: Componente unificado de iconos (`ft-icon`)](./ADR-013-unified-ft-icon-component.md)
 - [ADR-014: Formateo de código con Prettier](./ADR-014-prettier-code-formatting.md)
+- [ADR-015: Adopción del decorador `@Service` para servicios singleton](./ADR-015-service-decorator-for-singletons.md)

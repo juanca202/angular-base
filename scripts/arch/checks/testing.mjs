@@ -5,14 +5,20 @@
 // UN archivo por ESTÁNDAR (no por criterio): agrupa los chequeos de todos los
 // criterios de cumplimiento (CR) automatizables de docs/standards/testing.md.
 //
+// CR-008 delega en una regla nativa de ESLint la parte de "sin imports de
+// Playwright fuera de e2e/". `npm run lint` y `npm run arch` son compuertas
+// separadas: este archivo NO ejecuta ESLint, solo audita que eslint.config.mjs
+// registre la regla en severidad "error" (ver scripts/arch/lib/eslint-config.mjs).
+//
 // El runner (../verify.mjs) descubre este archivo por convención
 // (checks/testing.mjs) y lo ejecuta junto al resto; con
 // `node scripts/arch/verify.mjs testing` se ejecuta solo este estándar.
 // =============================================================================
-import { execSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEslintConfig, requireRuleSeverity, ruleTag } from '../lib/eslint-config.mjs';
+import { colorStatus } from '../lib/colors.mjs';
 
 const STANDARD = 'testing';
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -21,22 +27,21 @@ let blockingFailures = 0;
 function check(cr, enfoque, descripcion, fn) {
   try {
     fn();
-    console.log(`PASS ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus('PASS')} ${STANDARD}/${cr} — ${descripcion}`);
   } catch (err) {
     const status = enfoque === 'warning' ? 'WARN' : 'FAIL';
     if (status === 'FAIL') blockingFailures += 1;
-    console.log(`${status} ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus(status)} ${STANDARD}/${cr} — ${descripcion}`);
     const detail = err?.stdout?.toString?.() || err?.message || '';
     if (detail) console.log(detail.trim().split('\n').map((l) => `     ${l}`).join('\n'));
   }
 }
 
-const run = (cmd) =>
-  execSync(cmd, { stdio: 'pipe', encoding: 'utf8', cwd: repoRoot, maxBuffer: 20 * 1024 * 1024 });
-
 function readJson(relPath) {
   return JSON.parse(readFileSync(join(repoRoot, relPath), 'utf8'));
 }
+
+const eslintConfig = await loadEslintConfig(repoRoot);
 
 function walkFiles(dir, predicate, acc = []) {
   if (!existsSync(dir)) return acc;
@@ -87,9 +92,12 @@ check('CR-002', 'bloqueante', 'colocation de archivos *.spec.ts', () => {
 });
 
 // --- CR-005 (bloqueante) ------------------------------------------------------
-// Cobertura de pruebas unitarias ≥ 80%. Se verifica con el builder nativo
-// @angular/build:unit-test + umbrales en angular.json y ejecución de ng test.
-check('CR-005', 'bloqueante', 'cobertura unitaria ≥ 80%', () => {
+// Cobertura de pruebas unitarias ≥ 80%. Se verifica que el builder nativo
+// @angular/build:unit-test tenga la cobertura activada y el umbral cableado en
+// angular.json; que la cobertura real de hoy cumpla ese umbral ya lo hace fallar
+// cualquier `ng test` (coverage+coverageThresholds son opciones por defecto del
+// target), así que no se re-ejecuta aquí la suite completa.
+check('CR-005', 'bloqueante', 'umbral de cobertura ≥ 80% configurado (no re-ejecuta la suite)', () => {
   const angular = readJson('angular.json');
   const project = Object.values(angular.projects ?? {})[0];
   const options = project?.architect?.test?.options ?? {};
@@ -104,8 +112,6 @@ check('CR-005', 'bloqueante', 'cobertura unitaria ≥ 80%', () => {
       `angular.json: coverageThresholds debe ser ≥ 80 para: ${weak.join(', ')}`
     );
   }
-
-  run('npx ng test --watch=false --coverage');
 });
 
 // --- CR-007 (bloqueante) ------------------------------------------------------
@@ -142,9 +148,10 @@ check('CR-007', 'bloqueante', 'stack Playwright para E2E', () => {
 
 // --- CR-008 (bloqueante) ------------------------------------------------------
 // Los archivos de prueba E2E deben vivir bajo e2e/ (raíz del repo). Se verifica
-// que e2e/ exista, que playwright.config apunte a ese testDir, y que no haya
-// specs E2E fuera de e2e/.
-check('CR-008', 'bloqueante', 'ubicación E2E bajo e2e/', () => {
+// que e2e/ exista y que playwright.config apunte a ese testDir; que no haya
+// imports de @playwright/test fuera de e2e/ se verifica con la regla ESLint
+// no-restricted-imports (ver eslint.config.mjs; e2e/ está fuera de su alcance).
+check('CR-008', 'bloqueante', `regla de ubicación E2E bajo e2e/ activa${ruleTag('no-restricted-imports')}`, () => {
   const e2eRoot = join(repoRoot, 'e2e');
   if (!existsSync(e2eRoot) || !statSync(e2eRoot).isDirectory()) {
     throw new Error('Debe existir el directorio e2e/ en la raíz del repositorio');
@@ -162,28 +169,10 @@ check('CR-008', 'bloqueante', 'ubicación E2E bajo e2e/', () => {
     }
   }
 
-  const misplacedRoots = ['src', 'tests', 'test', '__tests__'].map((d) => join(repoRoot, d));
-  const misplaced = misplacedRoots.flatMap((dir) =>
-    walkFiles(dir, (f) => {
-      const rel = relative(repoRoot, f);
-      // Heurística: specs Playwright suelen importar @playwright/test
-      if (!f.endsWith('.spec.ts') && !f.endsWith('.spec.js') && !f.endsWith('.test.ts')) {
-        return false;
-      }
-      try {
-        return readFileSync(f, 'utf8').includes('@playwright/test');
-      } catch {
-        return false;
-      }
-    })
-  );
-  if (misplaced.length > 0) {
-    throw new Error(
-      `Hay pruebas Playwright fuera de e2e/:\n${misplaced
-        .map((p) => `  - ${relative(repoRoot, p)}`)
-        .join('\n')}`
-    );
-  }
+  requireRuleSeverity(eslintConfig, 'no-restricted-imports', 'error', {
+    contains: '@playwright/test',
+    label: 'ADR-005',
+  });
 });
 
 process.exit(blockingFailures > 0 ? 1 : 0);

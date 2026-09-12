@@ -13,6 +13,7 @@ import { execSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { colorStatus } from '../lib/colors.mjs';
 
 const STANDARD = 'devops';
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -21,11 +22,11 @@ let blockingFailures = 0;
 function check(cr, enfoque, descripcion, fn) {
   try {
     fn();
-    console.log(`PASS ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus('PASS')} ${STANDARD}/${cr} — ${descripcion}`);
   } catch (err) {
     const status = enfoque === 'warning' ? 'WARN' : 'FAIL';
     if (status === 'FAIL') blockingFailures += 1;
-    console.log(`${status} ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus(status)} ${STANDARD}/${cr} — ${descripcion}`);
     const detail = err?.stdout?.toString?.() || err?.stderr?.toString?.() || err?.message || '';
     if (detail) console.log(detail.trim().split('\n').map((l) => `     ${l}`).join('\n'));
   }

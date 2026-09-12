@@ -30,10 +30,20 @@ import { readdirSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { stripAnsi } from './lib/colors.mjs';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const checksDir = join(scriptDir, 'checks');
 const requested = process.argv.slice(2);
+
+// Los checks hijos escriben a un pipe, no a esta terminal: sin ayuda, su propia
+// detección de TTY vería `isTTY: false` y no colorearían PASS/WARN/FAIL. Si esta
+// terminal sí admite color (y el usuario no fijó NO_COLOR/FORCE_COLOR), se lo
+// indicamos vía FORCE_COLOR para que el color sobreviva al pipe entre procesos.
+const childEnv =
+  process.stdout.isTTY && !('NO_COLOR' in process.env) && !('FORCE_COLOR' in process.env)
+    ? { ...process.env, FORCE_COLOR: '1' }
+    : process.env;
 
 if (!existsSync(checksDir)) {
   console.log(`No existe el directorio de checks: ${checksDir}`);
@@ -69,10 +79,14 @@ const failedStandards = [];
 for (const file of selected) {
   const slug = file.replace(/\.(mjs|js)$/, '');
   console.log(`\n=== ${slug} (checks/${file}) ===`);
-  const res = spawnSync(process.execPath, [join(checksDir, file)], { encoding: 'utf8' });
+  const res = spawnSync(process.execPath, [join(checksDir, file)], {
+    encoding: 'utf8',
+    env: childEnv,
+  });
   if (res.stdout) process.stdout.write(res.stdout);
   if (res.stderr) process.stderr.write(res.stderr);
-  for (const line of (res.stdout ?? '').split('\n')) {
+  for (const rawLine of (res.stdout ?? '').split('\n')) {
+    const line = stripAnsi(rawLine);
     if (line.startsWith('PASS ')) pass += 1;
     else if (line.startsWith('WARN ')) warn += 1;
     else if (line.startsWith('FAIL ')) fail += 1;

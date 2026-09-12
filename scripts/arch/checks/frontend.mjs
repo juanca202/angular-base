@@ -5,27 +5,35 @@
 // UN archivo por ESTÁNDAR (no por criterio): agrupa los chequeos de todos los
 // criterios de cumplimiento (CR) automatizables de docs/standards/frontend.md.
 //
+// CR-002 se delega en una regla nativa de ESLint. `npm run lint` y
+// `npm run arch` son compuertas separadas: este archivo NO ejecuta ESLint,
+// solo audita que eslint.config.mjs registre la regla en severidad "error"
+// (ver scripts/arch/lib/eslint-config.mjs).
+//
 // El runner (../verify.mjs) descubre este archivo por convención
 // (checks/frontend.mjs) y lo ejecuta junto al resto; con
 // `node scripts/arch/verify.mjs frontend` se ejecuta solo este estándar.
 // =============================================================================
-import { execSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEslintConfig, requireRuleSeverity, ruleTag } from '../lib/eslint-config.mjs';
+import { colorStatus } from '../lib/colors.mjs';
 
 const STANDARD = 'frontend';
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 let blockingFailures = 0;
 
+const eslintConfig = await loadEslintConfig(repoRoot);
+
 function check(cr, enfoque, descripcion, fn) {
   try {
     fn();
-    console.log(`PASS ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus('PASS')} ${STANDARD}/${cr} — ${descripcion}`);
   } catch (err) {
     const status = enfoque === 'warning' ? 'WARN' : 'FAIL';
     if (status === 'FAIL') blockingFailures += 1;
-    console.log(`${status} ${STANDARD}/${cr} — ${descripcion}`);
+    console.log(`${colorStatus(status)} ${STANDARD}/${cr} — ${descripcion}`);
     const detail = err?.stdout?.toString?.() || err?.message || '';
     if (detail) console.log(detail.trim().split('\n').map((l) => `     ${l}`).join('\n'));
   }
@@ -109,33 +117,11 @@ function collectStyleSources() {
 // --- CR-002 (bloqueante) ------------------------------------------------------
 // Sin estilos en línea en plantillas (style / ngStyle). Los [style.*] bindings
 // se permiten (allowBindToStyle) por la excepción de valores dinámicos.
-// Se verifica con @angular-eslint/template/no-inline-styles.
-check('CR-002', 'bloqueante', 'sin estilos en línea en plantillas', () => {
-  let output;
-  try {
-    output = execSync('npx eslint "src/**/*.html" --format json', {
-      stdio: 'pipe',
-      encoding: 'utf8',
-      cwd: repoRoot,
-    });
-  } catch (err) {
-    output = err.stdout?.toString?.() ?? '';
-  }
-  const results = JSON.parse(output || '[]');
-  const ruleId = '@angular-eslint/template/no-inline-styles';
-  const hits = [];
-  for (const file of results) {
-    for (const msg of file.messages ?? []) {
-      if (msg.ruleId === ruleId) {
-        hits.push(`${relative(repoRoot, file.filePath)}:${msg.line} — ${msg.message}`);
-      }
-    }
-  }
-  if (hits.length > 0) {
-    throw new Error(
-      `${hits.length} estilo(s) en línea prohibido(s):\n${hits.map((h) => `  - ${h}`).join('\n')}`
-    );
-  }
+// Enforcement: @angular-eslint/template/no-inline-styles.
+check('CR-002', 'bloqueante', `regla de prohibición de estilos en línea en plantillas activa${ruleTag('@angular-eslint/template/no-inline-styles')}`, () => {
+  requireRuleSeverity(eslintConfig, '@angular-eslint/template/no-inline-styles', 'error', {
+    label: 'ADR-006',
+  });
 });
 
 // --- CR-003 (bloqueante) ------------------------------------------------------
