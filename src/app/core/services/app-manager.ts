@@ -1,6 +1,5 @@
-import { Injectable, PLATFORM_ID, signal, inject } from '@angular/core';
+import { Service, PLATFORM_ID, signal, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { loadTranslations } from '@angular/localize';
 import { registerLocaleData } from '@angular/common';
 import localeEn from '@angular/common/locales/en';
 import localeEs from '@angular/common/locales/es';
@@ -39,9 +38,7 @@ registerLocaleData(localeEs, 'es');
  * This singleton is bootstrapped through an app initializer so that routing
  * and session restoration happen before the UI renders.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class AppManager {
   // Dependency injection
   private readonly authProvider = inject(AuthProvider);
@@ -62,6 +59,10 @@ export class AppManager {
   private readonly clientKey = `${environment.sessionPrefix}_cid`;
   private readonly localeKey = `${environment.sessionPrefix}_loc`;
 
+  /**
+   * Triggers a service worker update check. Sets {@link updateStatus} to `'failed'`
+   * when the service worker is not enabled (e.g. non-browser platforms, dev mode).
+   */
   public checkForUpdates(): void {
     if (!this.swUpdate.isEnabled) {
       this.updateStatus.set('failed');
@@ -71,6 +72,11 @@ export class AppManager {
     this.swUpdate.checkForUpdate();
     console.log('Check for app updates');
   }
+
+  /**
+   * Returns a stable per-device client identifier, generating and persisting
+   * one on first use.
+   */
   public getClientId(): string {
     let cid = this.storage.get(this.clientKey, 'local');
     if (!cid) {
@@ -79,9 +85,20 @@ export class AppManager {
     }
     return cid;
   }
+
+  /**
+   * Returns the locale persisted from a previous {@link setLocale} call, or
+   * `'en'` if none was stored yet.
+   */
   public getLocale(): string {
     return this.storage.get(this.localeKey, 'local') || 'en';
   }
+
+  /**
+   * Bootstraps application-wide concerns: PWA update listeners, the `notify`
+   * event bridge (ADR-009), locale resolution, and session restoration for an
+   * already authenticated user.
+   */
   public async init(): Promise<void> {
     // Show version in console
     console.log(`${versionInfo.npmPackage.name} ${versionInfo.git.raw}`);
@@ -112,12 +129,23 @@ export class AppManager {
     // Log the time taken to initialize the app
     console.log('App initialized in:', (performance.now() - this.startTime).toFixed(2), 'ms');
   }
+  /**
+   * Shows the captured "Add to Home Screen" browser prompt, if one was
+   * intercepted by {@link setUpdateListeners}.
+   */
   public install(): void {
     if (!this.installPrompt) {
       return;
     }
     this.installPrompt.prompt();
   }
+
+  /**
+   * Resolves the active locale (persisted user choice, then system locale,
+   * then the default) and persists it. Loads translations when i18n is enabled.
+   *
+   * @internal
+   */
   private async setLocale(): Promise<string> {
     const systemLocale = isPlatformBrowser(this.platformId)
       ? this.languages().find((l) => l.code === navigator.language.split('-')[0])?.code
@@ -134,6 +162,11 @@ export class AppManager {
 
     return locale;
   }
+  /**
+   * Loads the base and locale-specific translation bundles for the given locale.
+   *
+   * @internal
+   */
   private async loadTranslationsForLocale(locale: string): Promise<void> {
     // Load base translations
     try {
@@ -147,6 +180,12 @@ export class AppManager {
     // const localeTranslations = await import(`../../../../public/i18n/${locale}.js`);
     // loadTranslations(localeTranslations.default);
   }
+  /**
+   * Maps a `notify` event's {@link NotificationOptions} to the `MessageOptions`
+   * expected by `MessageService.show()`, applying styling per severity level.
+   *
+   * @internal
+   */
   private buildMessageOptions(options?: NotificationOptions): MessageOptions {
     const type = options?.type ?? 'notification';
     switch (options?.level) {
@@ -162,6 +201,12 @@ export class AppManager {
         return { type };
     }
   }
+  /**
+   * Maps a `confirm` event's {@link ConfirmOptions} to the `MessageOptions`
+   * expected by `MessageService.show()` for a modal confirmation dialog.
+   *
+   * @internal
+   */
   private buildConfirmOptions(options?: ConfirmOptions): MessageOptions {
     return {
       type: 'modal',
@@ -170,6 +215,13 @@ export class AppManager {
       actions: options?.actions as MessageOptions['actions']
     };
   }
+  /**
+   * Subscribes to service worker version events (updating {@link updateStatus}
+   * and prompting a reload once a new version is ready) and, on browser
+   * platforms, captures the `beforeinstallprompt` event for {@link install}.
+   *
+   * @internal
+   */
   private setUpdateListeners(): void {
     this.swUpdate.versionUpdates.subscribe((evt) => {
       switch (evt.type) {

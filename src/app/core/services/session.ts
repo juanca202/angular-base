@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import { Service, signal, computed, effect, inject } from '@angular/core';
 import { environment } from '@/environments/environment';
 import { CustomParams, SessionState } from '@/core/models/session-state';
 import { Settings } from '@/core/models/settings';
@@ -6,7 +6,7 @@ import { Storage } from '@factor_ec/utils';
 import { AuthProvider } from '@factor_ec/utils';
 import { lastValueFrom, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { getApiUrl } from '../utils/async-resources';
+import { getApiUrl } from '@/core/utils/async-resources';
 
 /** Storage key prefix for session data persisted in local storage */
 const STORAGE_KEY = `${environment.sessionPrefix}_sess`;
@@ -31,9 +31,7 @@ const STORAGE_KEY = `${environment.sessionPrefix}_sess`;
  *
  * @since 1.0.0
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class Session {
   // Dependency injection
   private readonly authProvider = inject(AuthProvider);
