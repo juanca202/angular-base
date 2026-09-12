@@ -1,6 +1,6 @@
 import { setupWorker } from 'msw/browser';
 
-import { handlers } from './handlers';
+import { handlers } from '@/mocks/handlers';
 
 /**
  * Worker MSW para navegador / desarrollo local (opcional; ADR-007).

@@ -1,27 +1,31 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, afterEach, afterAll, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import type { WritableSignal } from '@angular/core';
 import type { User } from '@factor_ec/utils';
-import { Session } from './session';
+import { Session } from '@/core/services/session';
 import { Storage } from '@factor_ec/utils';
-import { Settings } from '../models/settings';
-import { SessionState } from '../models/session-state';
-import { getApiUrl } from '../utils/async-resources';
+import { Settings } from '@/core/models/settings';
+import { SessionState } from '@/core/models/session-state';
+import { getApiUrl } from '@/core/utils/async-resources';
 import { AuthProvider } from '@factor_ec/utils';
 import { createMockAuthProvider } from '@/test/mocks/service-mocks';
+import { server } from '@/mocks/node';
+import { http, HttpResponse } from '@/mocks/handlers';
 
 describe('Session', () => {
   // Arrange
   let service: Session;
-  let httpMock: HttpTestingController;
   let mockStorage: {
     get: ReturnType<typeof vi.fn>;
     set: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
   let mockAuthProvider: ReturnType<typeof createMockAuthProvider>;
+
+  beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
 
   beforeEach(() => {
     // Arrange: Create mock storage service
@@ -36,19 +40,18 @@ describe('Session', () => {
       providers: [
         Session,
         provideHttpClient(),
-        provideHttpClientTesting(),
         { provide: Storage, useValue: mockStorage },
         { provide: AuthProvider, useValue: mockAuthProvider }
       ]
     });
 
     service = TestBed.inject(Session);
-    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => {
-    httpMock.verify();
-  });
+  /** Overrides the shared MSW settings handler with a fixed JSON response for this test. */
+  function mockSettingsResponse(settings: Partial<Settings>): void {
+    server.use(http.get(getApiUrl('settings'), () => HttpResponse.json(settings)));
+  }
 
   describe('initialization', () => {
     it('should initialize with empty state', () => {
@@ -90,7 +93,6 @@ describe('Session', () => {
         providers: [
           Session,
           provideHttpClient(),
-          provideHttpClientTesting(),
           { provide: Storage, useValue: mockStorage },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
@@ -112,10 +114,8 @@ describe('Session', () => {
       };
 
       // Act
-      const getSettingsPromise = service.getSettings(true);
-      const req = httpMock.expectOne(getApiUrl('settings'));
-      req.flush(settings);
-      await getSettingsPromise;
+      mockSettingsResponse(settings);
+      await service.getSettings(true);
 
       // Assert
       const currentSettings = service.settings();
@@ -135,13 +135,11 @@ describe('Session', () => {
       };
 
       // Act
-      let getSettingsPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush(firstSettings);
-      await getSettingsPromise;
+      mockSettingsResponse(firstSettings);
+      await service.getSettings(true);
 
-      getSettingsPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush(secondSettings);
-      await getSettingsPromise;
+      mockSettingsResponse(secondSettings);
+      await service.getSettings(true);
 
       // Assert: second response replaces the first (no merge)
       const currentSettings = service.settings();
@@ -153,14 +151,13 @@ describe('Session', () => {
   describe('clearSettings', () => {
     it('should clear settings from session state', async () => {
       // Arrange
-      const getSettingsPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush({
+      mockSettingsResponse({
         language: 'en',
         environment: 'dev',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
         onboarding: false
       });
-      await getSettingsPromise;
+      await service.getSettings(true);
 
       // Act
       service.clearSettings();
@@ -265,14 +262,13 @@ describe('Session', () => {
   describe('clearAll', () => {
     it('should clear all session data', async () => {
       // Arrange
-      const getSettingsPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush({
+      mockSettingsResponse({
         language: 'en',
         environment: 'dev',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
         onboarding: false
       });
-      await getSettingsPromise;
+      await service.getSettings(true);
       service.setParams({ key1: 'value1' });
 
       // Act
@@ -287,7 +283,7 @@ describe('Session', () => {
   describe('restoreFromStorage', () => {
     it('should handle corrupted storage data gracefully', () => {
       // Arrange
-      (mockStorage.get as any).mockImplementation(() => {
+      mockStorage.get.mockImplementation(() => {
         throw new Error('Corrupted data');
       });
 
@@ -297,7 +293,6 @@ describe('Session', () => {
         providers: [
           Session,
           provideHttpClient(),
-          provideHttpClientTesting(),
           { provide: Storage, useValue: mockStorage },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
@@ -339,7 +334,6 @@ describe('Session', () => {
         providers: [
           Session,
           provideHttpClient(),
-          provideHttpClientTesting(),
           { provide: Storage, useValue: mockStorage },
           { provide: AuthProvider, useValue: createMockAuthProvider() }
         ]
@@ -362,9 +356,8 @@ describe('Session', () => {
       };
 
       // Act
-      const getSettingsPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush(newSettings);
-      await getSettingsPromise;
+      mockSettingsResponse(newSettings);
+      await service.getSettings(true);
 
       // Assert
       const currentSettings = service.settings();
@@ -374,19 +367,17 @@ describe('Session', () => {
 
     it('should replace settings when getSettings returns partial', async () => {
       // Arrange
-      const getSettingsPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush({
+      mockSettingsResponse({
         language: 'en',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
         environment: 'dev',
         onboarding: false
       });
-      await getSettingsPromise;
+      await service.getSettings(true);
 
       // Act
-      const secondPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush({ language: 'es' });
-      await secondPromise;
+      mockSettingsResponse({ language: 'es' });
+      await service.getSettings(true);
 
       // Assert: second response replaces (no merge)
       const currentSettings = service.settings();
@@ -412,32 +403,33 @@ describe('Session', () => {
 
   describe('getSettings request options', () => {
     it('should include the push token header when provided', async () => {
+      // Arrange
+      let capturedPushToken: string | null = null;
+      server.use(
+        http.get(getApiUrl('settings'), ({ request }) => {
+          capturedPushToken = request.headers.get('Push-Token');
+          return HttpResponse.json({ language: 'en' });
+        })
+      );
+
       // Act
-      const getSettingsPromise = service.getSettings(true, 'push-token-123');
-      const req = httpMock.expectOne(getApiUrl('settings'));
+      await service.getSettings(true, 'push-token-123');
 
       // Assert
-      expect(req.request.headers.get('Push-Token')).toBe('push-token-123');
-      req.flush({ language: 'en' });
-      await getSettingsPromise;
+      expect(capturedPushToken).toBe('push-token-123');
     });
 
     it('should return the already-loaded local settings for an authenticated user', async () => {
       // Arrange: populate local settings first
-      let getSettingsPromise = service.getSettings(true);
-      httpMock.expectOne(getApiUrl('settings')).flush({ language: 'en', environment: 'dev' });
-      await getSettingsPromise;
+      mockSettingsResponse({ language: 'en', environment: 'dev' });
+      await service.getSettings(true);
       (mockAuthProvider.user as WritableSignal<User | null>).set({ username: 'ada', roles: [] });
 
       // Act
-      getSettingsPromise = service.getSettings();
-      const result = await getSettingsPromise;
+      const result = await service.getSettings();
 
       // Assert
       expect(result).toEqual(expect.objectContaining({ language: 'en' }));
-
-      // Cleanup: the network fetch is still triggered under the hood
-      httpMock.expectOne(getApiUrl('settings')).flush({ language: 'en' });
     });
   });
 });
