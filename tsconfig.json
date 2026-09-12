@@ -13,8 +13,11 @@
       "@/environments": ["./src/environments"],
       "@/environments/*": ["./src/environments/*"],
       "@/version-info": ["./src/version-info"],
+      "@/mocks": ["./src/mocks"],
+      "@/mocks/*": ["./src/mocks/*"],
       "@/test/*": ["./test/*"]
     },
+    "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
