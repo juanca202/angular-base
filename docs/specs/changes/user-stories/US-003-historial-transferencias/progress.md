@@ -120,6 +120,7 @@
 **Notas:**
 - IT-01 a IT-03 hechas: 13 escenarios E2E con el historial sembrado directamente en el almacenamiento privado (orden, Todos por defecto, filtros, volver con Todos, descarga con nombre original y con espacios/acentos/varios puntos, ninguna salida sin pulsar Exportar, eliminar confirmando y cancelando con comprobación del espacio liberado, eliminar la última entrada, historial vacío y ausencia de desplazamiento horizontal a 360 y 1280 px con un nombre largo). Pasan los 13 contra `ng serve` en el puerto 4300 (el 4200 lo ocupaba otro proyecto, y la config de Playwright reutiliza el servidor existente).
 - IT-02 hecha: guion manual con hoja de registro en `assets/guion-validacion-historial.md`.
+- DECISIÓN DEL USUARIO: se integra la historia sin ejecutar IT-04 (pruebas manuales con móvil); TC-007, TC-008 y la revisión de iconos quedan sin validar en un dispositivo real.
 - PENDIENTE (IT-04): ejecutar el guion en un móvil Android con Chrome (compartir y cancelar compartir, y revisar los iconos) y registrar los resultados aquí. No se puede hacer desde el agente. Mientras no se haga, la tarea no puede pasar a `Done`.
 
 **Decisiones adicionales:**
