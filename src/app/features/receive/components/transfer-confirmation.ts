@@ -1,7 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { PendingTransfer } from '@/features/receive/models/receive-state';
-import { formatSize } from '@/shared/utils/format';
+import { formatSize } from '@/shared/utils/format-size';
 
 /**
  * Notice that asks to confirm or discard a transfer after reading its name and size. It stays visible

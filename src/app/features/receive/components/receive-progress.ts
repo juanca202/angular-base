@@ -1,6 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { ReceiveProgress } from '@/features/receive/models/receive-state';
-import { formatSeconds, formatSize } from '@/shared/utils/format';
+import { formatSeconds } from '@/shared/utils/format';
+import { formatSize } from '@/shared/utils/format-size';
 
 /**
  * Information about the file being received: name, total size, estimated time left, fragments

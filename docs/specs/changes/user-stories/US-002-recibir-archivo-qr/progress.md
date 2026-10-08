@@ -169,11 +169,55 @@
 
 ### TK-006: Pantalla de resultado y previsualización segura
 
-<!-- unit:id=TK-006 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-006 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08 18:00
+**Finalizado:** 2026-10-08 18:40
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
+~ src/app/features/home/components/home-page.ts
+~ src/app/features/home/components/home-page.html
++ src/app/features/home/components/history-panel.ts
++ src/app/features/home/components/history-panel.html
+~ src/app/features/receive/components/receive-page.ts
+~ src/app/features/receive/components/receive-page.html
+~ src/app/features/receive/components/receive-page.spec.ts
+~ src/app/features/receive/components/receive-progress.ts
+~ src/app/features/receive/components/transfer-confirmation.ts
++ src/app/features/receive/components/file-preview.ts
++ src/app/features/receive/components/file-preview.spec.ts
++ src/app/features/receive/components/result-card.ts
++ src/app/features/receive/components/result-card.spec.ts
++ src/app/features/receive/services/safe-file-opener.ts
++ src/app/features/receive/services/safe-file-opener.spec.ts
+~ src/app/features/receive/services/receive-manager.spec.ts
+~ src/app/shared/utils/format.ts
+~ src/app/shared/utils/format.spec.ts
+```
 
 **Notas:**
-- Excluida de esta ejecución: depende de TK-004 y de tareas de US-003.
+- Antes de implementar se hizo un merge de `main` en la rama (`59b8f40`): US-003 ya estaba integrada, así que se reutilizan su lista de historial y su exportación en lugar de versiones provisionales.
+- Pruebas de `features` y `shared/utils`: 200 de 200 en verde; lint y typecheck sin errores; `ng build` compila.
+- Comprobación manual con un script de Playwright desechable (no se conserva; los E2E definitivos son de TK-007) y la cámara simulada de Chromium: la pantalla de lectura y la tarjeta de «incompleta» no tienen desplazamiento horizontal a 360 px ni a 1280 px. Los demás resultados (completada, datos inválidos, no reconstruible, almacenamiento lleno) no se comprobaron en navegador a esos anchos.
+- No se ejecutó axe sobre estas pantallas; queda para TK-007.
+- En esa comprobación los iconos (`ft-icon`) no se dibujaron y los botones salieron sin tema de Material; es igual en toda la aplicación (la pantalla de inicio usa los mismos), así que no se trató aquí.
+- El aviso de presupuesto del bundle inicial sube a 525,92 kB (500 kB de límite); `receive-page` es un chunk diferido, así que no es el origen, y el aviso ya venía de US-001 y US-003.
+- Se corrigió una prueba intermitente de `receive-manager.spec.ts` (TK-004): esperaba el SHA-256 por tiempo simulado, y bajo carga fallaba; ahora espera por estado.
+
+**Decisiones adicionales:**
+- Se extrae el historial de la pantalla de inicio (filtro, lista y acciones) al componente `HistoryPanel` para reutilizarlo bajo el resultado de la recepción sin duplicar su lógica; `HomePage` solo conserva los botones Enviar y Recibir y sus 15 pruebas siguen en verde sin cambios.
+- Apertura segura: solo se muestran en una pestaña nueva (con `noopener`) las imágenes ráster, el PDF y el texto plano; SVG, HTML y cualquier otro tipo se descargan, porque una URL de blob abierta como documento comparte el origen de la aplicación y ejecutaría sus scripts. La previsualización de un SVG se dibuja como `<img>`, donde nunca se ejecutan scripts.
+- «Descargar archivo» (almacenamiento lleno o fallo de guardado) usa `FileExport.download` de US-003.
+- En fase de resultado se oculta «Cancelar» y se ofrece «Volver al inicio»; la vista de cámara sigue en el DOM, oculta, para poder seguir escaneando o reintentar.
+- Si «incompleta» se declara sin haber leído ningún fragmento, la tarjeta dice que no se leyó ninguno en lugar de «0 de 0».
+- La fórmula de `formatSize` se reutiliza de `shared/utils/format-size.ts` (US-003); `format.ts` queda solo con `formatSeconds`.
+
+**Cobertura de test cases:**
+- TC-016, TC-017 y TC-024 (E2E o con navegador) se cubren con pruebas de componente y de servicio; la ejecución real de un SVG con script en el navegador queda para TK-007.
+- TC-009 a TC-012, TC-018, TC-019, TC-022 y TC-028 se cubren con pruebas de componente sobre un gestor simulado; sus E2E quedan en TK-007.
+- TC-027 (360 a 1280 px) se comprobó a mano con Playwright solo en lectura y en «incompleta»; el E2E definitivo es de TK-007.
 
 ### TK-007: Validación con móviles y escenarios E2E de la recepción
 

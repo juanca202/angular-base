@@ -72,10 +72,13 @@ describe('ReceiveManager', () => {
 
   afterEach(() => vi.useRealTimers());
 
-  /** Delivers fragments and lets the asynchronous completion settle. */
+  /**
+   * Delivers fragments and waits until the asynchronous completion (SHA-256 and saving) settles.
+   * The digest runs outside the fake clock, so it is awaited by state instead of by elapsed time.
+   */
   async function read(fragments: Uint8Array[]): Promise<void> {
     fragments.forEach((fragment) => onQr(fragment));
-    await vi.advanceTimersByTimeAsync(0);
+    await vi.waitFor(() => expect(manager.phase()).not.toBe('finishing'), { timeout: 5000 });
   }
 
   describe('starting', () => {

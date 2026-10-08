@@ -1,18 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatSeconds, formatSize } from '@/shared/utils/format';
-
-describe('formatSize', () => {
-  it.each([
-    [0, '0 B'],
-    [1023, '1023 B'],
-    [1024, '1.0 KB'],
-    [102_400, '100.0 KB'],
-    [1_258_291, '1.2 MB'],
-    [3 * 1024 ** 3, '3.0 GB'],
-  ])('formats %d bytes as %s', (bytes, expected) => {
-    expect(formatSize(bytes)).toBe(expected);
-  });
-});
+import { formatSeconds } from '@/shared/utils/format';
 
 describe('formatSeconds', () => {
   it.each([

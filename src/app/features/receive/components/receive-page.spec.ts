@@ -1,14 +1,18 @@
 import { signal, WritableSignal } from '@angular/core';
 import { provideRouter, Router } from '@angular/router';
 import { fireEvent, render, screen } from '@testing-library/angular';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CameraErrorCode } from '@/features/receive/models/camera-error';
 import {
   EMPTY_RECEIVE_PROGRESS,
   PendingTransfer,
   ReceivePhase,
   ReceiveProgress,
+  ReceiveResult,
 } from '@/features/receive/models/receive-state';
+import { StoredTransfer } from '@/core/models/stored-transfer';
+import { FileExport } from '@/core/services/file-export';
+import { TransferHistory } from '@/core/services/transfer-history';
 import { ReceivePage } from '@/features/receive/components/receive-page';
 import { ReceiveManager } from '@/features/receive/services/receive-manager';
 
@@ -16,12 +20,14 @@ interface FakeManager {
   phase: WritableSignal<ReceivePhase>;
   progress: WritableSignal<ReceiveProgress>;
   pending: WritableSignal<PendingTransfer | null>;
-  result: WritableSignal<null>;
+  result: WritableSignal<ReceiveResult | null>;
   cameraError: WritableSignal<CameraErrorCode | null>;
   start: ReturnType<typeof vi.fn>;
   confirm: ReturnType<typeof vi.fn>;
   discard: ReturnType<typeof vi.fn>;
   finishReading: ReturnType<typeof vi.fn>;
+  continueScanning: ReturnType<typeof vi.fn>;
+  retry: ReturnType<typeof vi.fn>;
   cancel: ReturnType<typeof vi.fn>;
 }
 
@@ -30,12 +36,14 @@ function createManager(): FakeManager {
     phase: signal<ReceivePhase>('reading'),
     progress: signal<ReceiveProgress>(EMPTY_RECEIVE_PROGRESS),
     pending: signal<PendingTransfer | null>(null),
-    result: signal(null),
+    result: signal<ReceiveResult | null>(null),
     cameraError: signal<CameraErrorCode | null>(null),
     start: vi.fn().mockResolvedValue(undefined),
     confirm: vi.fn().mockResolvedValue(undefined),
     discard: vi.fn(),
     finishReading: vi.fn().mockResolvedValue(undefined),
+    continueScanning: vi.fn().mockResolvedValue(undefined),
+    retry: vi.fn().mockResolvedValue(undefined),
     cancel: vi.fn(),
   };
 }
@@ -50,12 +58,35 @@ const reading: ReceiveProgress = {
 };
 
 describe('ReceivePage', () => {
+  const download = vi.fn();
+  const history = {
+    filter: signal('all'),
+    visible: signal<StoredTransfer[]>([]),
+    entries: signal<StoredTransfer[]>([]),
+    load: vi.fn().mockResolvedValue(undefined),
+    resetFilter: vi.fn(),
+    setFilter: vi.fn(),
+    remove: vi.fn(),
+  };
+
   const setup = async (manager = createManager()) => {
     const view = await render(ReceivePage, {
-      providers: [provideRouter([]), { provide: ReceiveManager, useValue: manager }],
+      providers: [
+        provideRouter([]),
+        { provide: ReceiveManager, useValue: manager },
+        { provide: TransferHistory, useValue: history },
+        { provide: FileExport, useValue: { download, isShareAvailable: () => false } },
+      ],
     });
     return { ...view, manager };
   };
+
+  beforeEach(() => {
+    download.mockReset();
+    history.load.mockClear();
+    URL.createObjectURL = vi.fn(() => 'blob:preview');
+    URL.revokeObjectURL = vi.fn();
+  });
 
   afterEach(() => vi.restoreAllMocks());
 
@@ -220,6 +251,94 @@ describe('ReceivePage', () => {
       fixture.destroy();
       // Assert
       expect(manager.cancel).toHaveBeenCalled();
+    });
+  });
+
+  describe('result', () => {
+    const file = { name: 'foto.png', type: 'image/png', size: 4, bytes: Uint8Array.of(1, 2, 3, 4) };
+    const record: StoredTransfer = {
+      id: 'r1',
+      direction: 'received',
+      name: 'foto.png',
+      type: 'image/png',
+      size: 4,
+      date: 0,
+    };
+
+    it('shows the preview of the received file with the history right below', async () => {
+      // Arrange
+      const manager = createManager();
+      manager.phase.set('result');
+      manager.result.set({ outcome: 'completed', record, file });
+      // Act
+      await setup(manager);
+      // Assert
+      expect(screen.getByRole('img', { name: 'foto.png' })).toBeTruthy();
+      const preview = screen.getByRole('button', { name: /foto\.png/ });
+      const historyTitle = screen.getByRole('heading', { name: 'Historial' });
+      expect(
+        preview.compareDocumentPosition(historyTitle) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      expect(history.load).toHaveBeenCalled();
+    });
+
+    it('hides the camera controls once there is a result', async () => {
+      // Arrange
+      const manager = createManager();
+      manager.phase.set('result');
+      manager.result.set({ outcome: 'completed', record, file });
+      // Act
+      await setup(manager);
+      // Assert
+      expect(screen.queryByRole('button', { name: 'Terminar lectura' })).toBeNull();
+      expect(screen.queryByRole('progressbar')).toBeNull();
+      expect(screen.getByRole('link', { name: 'Volver al inicio' })).toBeTruthy();
+    });
+
+    it('shows the card of an incomplete reception and keeps scanning from it', async () => {
+      // Arrange
+      const manager = createManager();
+      manager.phase.set('result');
+      manager.result.set({ outcome: 'incomplete', progress: { received: 2, total: 4 } });
+      await setup(manager);
+      // Act
+      await fireEvent.click(screen.getByRole('button', { name: 'Seguir escaneando' }));
+      // Assert
+      expect(screen.getByRole('alert').textContent).toContain('Recepción incompleta');
+      expect(manager.continueScanning).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole('heading', { name: 'Historial' })).toBeTruthy();
+    });
+
+    it.each([
+      [{ outcome: 'invalid-data' } as const, 'Datos inválidos'],
+      [{ outcome: 'unreconstructable' } as const, 'Archivo no reconstruible'],
+    ])('shows %o and retries from scratch', async (result, title) => {
+      // Arrange
+      const manager = createManager();
+      manager.phase.set('result');
+      manager.result.set(result);
+      await setup(manager);
+      // Act
+      await fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
+      // Assert
+      expect(screen.getByRole('alert').textContent).toContain(title);
+      expect(manager.retry).toHaveBeenCalledTimes(1);
+    });
+
+    it('on a full storage downloads the received file that could not be saved', async () => {
+      // Arrange
+      const manager = createManager();
+      manager.phase.set('result');
+      manager.result.set({ outcome: 'storage-full', file });
+      await setup(manager);
+      // Act
+      await fireEvent.click(screen.getByRole('button', { name: 'Descargar archivo' }));
+      // Assert
+      expect(download).toHaveBeenCalledTimes(1);
+      const downloaded = download.mock.calls[0][0] as File;
+      expect(downloaded.name).toBe('foto.png');
+      expect(downloaded.type).toBe('image/png');
+      expect(downloaded.size).toBe(4);
     });
   });
 
