@@ -44,8 +44,33 @@
 
 ### TK-002: Servicio de almacenamiento privado para la copia del archivo enviado
 
-<!-- unit:id=TK-002 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-002 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08
+**Finalizado:** 2026-10-08
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ src/app/core/models/stored-transfer.ts
++ src/app/core/services/private-storage.ts
++ src/app/core/services/private-storage.spec.ts
++ src/app/core/services/storage-quota-error.ts
+```
+
+**Notas:**
+- Las copias viven en OPFS bajo `transfers/`: un archivo `<id>` con el contenido y un `<id>.json` con el registro.
+- `save` estima la cuota antes de escribir y, si una escritura falla, elimina contenido y registro; un `QuotaExceededError` se convierte en `StorageQuotaError`.
+- `list` devuelve los registros sin ordenar; ordenar y filtrar corresponde al historial (US-003).
+
+**Decisiones adicionales:**
+- Además del plan, el servicio expone `read(id)`, que devuelve un `File` con el nombre y tipo originales, para la exportación y la previsualización.
+- `requestPersistence` no vuelve a pedir persistencia si `persisted()` ya es verdadero.
+- No se incluye eliminación: la añade la tarea de historial de US-003 si la necesita.
+
+**Cobertura de test cases:**
+- TC-014 (cuota agotada): cubierto con un doble de OPFS en unitaria, no con almacenamiento real.
+- TC-012 (copia en el historial al iniciar el envío): la parte de guardado queda cubierta aquí; el flujo completo llega con la pantalla de envío (TK-004).
 
 ### TK-003: Emisor de QR: generación, bucle y velocidad fija de 8 fps
 
