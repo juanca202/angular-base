@@ -100,11 +100,32 @@
 
 ### TK-004: Gestor de la recepción: estados, confirmación y resultados
 
-<!-- unit:id=TK-004 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-004 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08 16:25
+**Finalizado:** 2026-10-08 16:40
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ src/app/features/receive/models/receive-state.ts
++ src/app/features/receive/services/receive-manager.ts
++ src/app/features/receive/services/receive-manager.spec.ts
+```
 
 **Notas:**
-- Excluida de esta ejecución: depende de TK-001 y TK-002.
+- Pruebas del archivo: 28 de 28 en verde (49 de 49 en `features/receive`); lint y typecheck sin errores.
+- La API para la pantalla (TK-005 y TK-006) son las señales `phase`, `progress`, `pending`, `result` y `cameraError`, y los métodos `start`, `confirm`, `discard`, `finishReading`, `continueScanning`, `retry` y `cancel`.
+
+**Decisiones adicionales:**
+- Cada transferencia vista por la cámara tiene su propio `FragmentAssembler`, para que una secuencia ajena en cuadro no se mezcle con la del usuario; la primera con metadatos legibles se ofrece para confirmar, al confirmar se descartan las demás y al descartar se ofrece la siguiente.
+- Antes de confirmar se muestra el avance de la transferencia pendiente (o de la más avanzada si aún no hay metadatos) y nunca se completa ni se guarda.
+- Se añade el resultado `save-failed` (archivo verificado pero error de guardado distinto de la cuota) además de los cuatro del criterio y `storage-full`, para no dejar la pantalla sin estado si el guardado falla por otra causa; TK-006 debe mostrarlo con un mensaje genérico.
+- El tiempo restante se estima con el ritmo de fragmentos distintos recibidos desde el primero; hasta tener dos fragmentos es `null`.
+- La cámara se libera siempre antes de reconstruir y guardar, y también al terminar la lectura a mano.
+
+**Cobertura de test cases:**
+- TC-006 y TC-007 (presentación), TC-013 (cancelar en interfaz), TC-016 a TC-019 (interfaz), TC-020, TC-021, TC-029 a TC-033 (pasos de pantalla) se cubren aquí solo en la lógica del gestor; su parte visible queda en TK-005 y TK-006.
 
 ### TK-005: Pantalla de recepción: cámara, progreso y confirmación
 
