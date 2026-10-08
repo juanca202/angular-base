@@ -1,29 +1,28 @@
-# Verificaciones automatizadas — angular-base-project
+# Verificaciones automatizadas — US-001-enviar-archivo-qr
 
-**Fecha:** 2026-09-11 23:34
-**Rama:** main
-**Commit:** 130352e (working tree con cambios sin commitear)
-**Modo:** default — pruebas tomadas de la corrida del 2026-09-11 23:30 (caché fresca, mismo fingerprint)
-**Estándar de testing:** docs/standards/testing.md — sin suites configuradas adicionales (unit-testing y e2e-testing corresponden a las fijas/e2e; e2e-testing eleva E2E de condicional a bloqueante con su **DEBE**)
+**Fecha:** 2026-10-08 17:08
+**Rama:** feature/US-001-enviar-archivo-qr
+**Commit:** a551fb3
+**Modo:** default
 **Veredicto:** ✅ Aprobado
 
 ## Resumen
 
-Nada cambió en el código desde la corrida anterior (mismo fingerprint), así que unit tests, cobertura, E2E y arquitectura se tomaron de `.sdd-devkit/test-run.json` sin volver a ejecutarse. Se re-ejecutaron tipado, linter y build, que no están cubiertos por esa caché. Todo sigue en verde — cero fallos, cero omisiones. Persiste el mismo warning de presupuesto de bundle en el build (no bloqueante). Sonar sigue sin configurar (sin fila, no aplica).
+Se ejecutaron tipado, linter, validaciones de arquitectura, pruebas unitarias con cobertura, build y e2e; todos pasan. El bundle inicial supera por 5.84 kB el presupuesto de 500 kB (aviso, no error).
 
 ## Verificaciones
 
-Leyenda de estados: `✅` Aprobado · `❌` Fallido · `⏭️` Omitido · `⏸️` Pendiente · `—` No aplica · `ℹ️` Informativo.
+Leyenda de estados: `✅` Correcto · `❌` Fallo · `⏭️` Omitido · `⏸️` Pendiente · `—` No aplica · `ℹ️` Informativo.
 
-| # | Check | Comando | Categoría | Estado | Detalle | Duración |
-| - | ----- | ------- | --------- | ------ | ------- | -------- |
-| 1 | tipado | `tsc -b --noEmit` (tsconfig.app.json + tsconfig.spec.json) | Bloqueante | ✅ Aprobado | 0 errores | ~2s |
-| 2 | linter | `npm run lint` (eslint .) | Bloqueante | ✅ Aprobado | 0 errors, 0 warnings | ~2s |
-| 3 | arquitectura | `node scripts/arch/verify.mjs` | Bloqueante | ✅ Aprobado | 18 criterios, 0 violaciones (5 estándares) | caché |
-| 4 | unit tests | `npm test` (Vitest) | Bloqueante | ✅ Aprobado | 148 passed, 0 failed (17 archivos) | caché |
-| 5 | coverage | `npm test` (misma corrida, v8) | Bloqueante | ✅ Aprobado | Statements 95.23%, Branches 85.29%, Functions 92.56%, Lines 96.15% (umbral 80%) | caché |
-| 6 | build | `npm run build` (ng build) | Bloqueante | ✅ Aprobado | OK — bundle inicial 501.67 kB | 1.25s |
-| 7 | e2e | `npx playwright test` | Bloqueante (el estándar de testing lo exige con **DEBE**) | ✅ Aprobado | 1 passed | caché |
+| # | Check | Comando | Categoría | Estado | Detalle |
+| - | ----- | ------- | --------- | ------ | ------- |
+| 1 | tipado | `npx tsc --noEmit -p tsconfig.app.json` y `tsconfig.spec.json` | Bloqueante | ✅ Correcto | 0 errores |
+| 2 | linter | `npm run lint` | Bloqueante | ✅ Correcto | 0 errores |
+| 3 | arquitectura | `npm run arch` | Bloqueante | ✅ Correcto | 19 criterios, 0 violaciones |
+| 4 | unit tests | `npm test -- --watch=false` | Bloqueante | ✅ Correcto | 211 passed (26 archivos) |
+| 5 | coverage | `npm test -- --watch=false` | Bloqueante | ✅ Correcto | líneas 96.35 % (umbral 80 %) |
+| 6 | build | `npm run build` | Bloqueante | ✅ Correcto | OK; bundle inicial +5.84 kB sobre el presupuesto |
+| 7 | e2e | `npx playwright test` | Condicional | ✅ Correcto | 18 passed, 1 skipped |
 
 ### Detalle de checks fallidos
 
@@ -31,7 +30,8 @@ Sin checks fallidos.
 
 ## Próximas acciones
 
-1. El build emitió un warning informativo: el bundle inicial (501.67 kB) excede el presupuesto configurado (500.00 kB) por 1.67 kB. No bloquea el veredicto, pero conviene revisar el presupuesto en `angular.json` o recortar el bundle.
-2. Considerar configurar Sonar (`sonar-project.properties`) si se quiere análisis estático informativo en este cierre — hoy no está configurado y el check queda fuera del informe (no aplica).
+1. El e2e se ejecutó en el puerto 4300: el 4200 estaba ocupado por un servidor de otro proyecto y Playwright (`reuseExistingServer`) lo reutilizaba, lo que producía fallos ajenos al código.
+2. Revisar el aviso de presupuesto del bundle inicial (505.84 kB frente a 500 kB).
+3. Hay 1 e2e omitido (`send-offline.spec.ts:65`, recarga sin conexión tras la primera carga).
 
-<!-- quality-check:verdict=APPROVED · fingerprint=d637737e174639e1d74941145e7d89e07bfcd7e2 · generated=2026-09-12 -->
+<!-- quality-check:verdict=APPROVED · fingerprint=4d9bc4efdf5073a19e42c00424a450a0911542d6 · generated=2026-10-08 -->
