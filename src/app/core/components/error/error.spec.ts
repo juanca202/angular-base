@@ -343,27 +343,13 @@ describe('Error', () => {
       expect(renderFixture.nativeElement.querySelector('h1').textContent).toContain('Not Found');
     });
 
-    it('should render a "Logout" button for a 403 error', () => {
+    it('should render a "Go home" link and no button for a 403 error', () => {
       // Act
       const renderFixture = renderWithCode(403, vi.fn().mockResolvedValue(true));
 
       // Assert
-      const buttons = renderFixture.nativeElement.querySelectorAll('button');
-      expect(buttons.length).toBe(1);
-      expect(renderFixture.nativeElement.querySelector('a[routerLink]')).toBeNull();
-    });
-
-    it('should call authProvider.logout when the Logout button is clicked', () => {
-      // Arrange
-      const logout = vi.fn().mockResolvedValue(true);
-      const renderFixture = renderWithCode(403, logout);
-      const button: HTMLButtonElement = renderFixture.nativeElement.querySelector('button');
-
-      // Act
-      button.click();
-
-      // Assert
-      expect(logout).toHaveBeenCalled();
+      expect(renderFixture.nativeElement.querySelector('a[routerLink]')).not.toBeNull();
+      expect(renderFixture.nativeElement.querySelectorAll('button').length).toBe(0);
     });
 
     it('should render a "Reload" button for an unknown error', () => {

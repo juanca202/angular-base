@@ -44,13 +44,13 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Añadir `qrcode` como dependencia y verificar que codifica carga binaria
-- [ ] **IT-02** — Implementar el codificador de fragmento a matriz de QR con corrección M
-- [ ] **IT-03** — Implementar el manager de la secuencia: emisión secuencial a 8 fps fija, bucle continuo y cancelación que libera recursos
+- [x] **IT-01** — Añadir `qrcode` como dependencia y verificar que codifica carga binaria
+- [x] **IT-02** — Implementar el codificador de fragmento a matriz de QR con corrección M
+- [x] **IT-03** — Implementar el manager de la secuencia: emisión secuencial a 8 fps fija, bucle continuo y cancelación que libera recursos
   Mostrar «calculando…» como tiempo estimado hasta tener datos suficientes; luego número de QR × tiempo por fotograma.
-- [ ] **IT-04** — Exponer el estado de la emisión (fragmento actual, vuelta, total, tiempo estimado por vuelta) como signals
-- [ ] **IT-05** — Probar con temporizadores simulados: avance sin intervención, repetición tras tres vueltas, cancelación y estimación
-- [ ] **IT-06** — Documentar con TSDoc
+- [x] **IT-04** — Exponer el estado de la emisión (fragmento actual, vuelta, total, tiempo estimado por vuelta) como signals
+- [x] **IT-05** — Probar con temporizadores simulados: avance sin intervención, repetición tras tres vueltas, cancelación y estimación
+- [x] **IT-06** — Documentar con TSDoc
 
 ## Observaciones
 

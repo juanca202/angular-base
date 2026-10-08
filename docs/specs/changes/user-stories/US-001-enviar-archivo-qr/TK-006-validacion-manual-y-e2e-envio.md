@@ -35,9 +35,9 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Escribir los escenarios E2E del flujo de envío: selección, emisión, cancelación sin confirmación y cada mensaje de error
-- [ ] **IT-02** — Redactar el guion manual a partir del guion del spike: serie de 10 lecturas secuenciales por tamaño candidato y hoja de registro
-- [ ] **IT-03** — Ejecutar el envío de 1 MB cronometrado y la prueba en modo avión, y registrar los resultados en el `progress.md`
+- [x] **IT-01** — Escribir los escenarios E2E del flujo de envío: selección, emisión, cancelación sin confirmación y cada mensaje de error
+- [x] **IT-02** — Redactar el guion manual a partir del guion del spike: serie de 10 lecturas secuenciales por tamaño candidato y hoja de registro
+- [~] **IT-03** — Ejecutar el envío de 1 MB cronometrado y la prueba en modo avión, y registrar los resultados en el `progress.md`
   Si 1 MB no se completa en 15 minutos, dejar el resultado documentado y decidir con la historia si se ajusta el tamaño de fragmento o la velocidad.
 
 ## Observaciones
