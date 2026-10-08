@@ -6,12 +6,12 @@ import localeEs from '@angular/common/locales/es';
 import { SwUpdate } from '@angular/service-worker';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { AuthProvider, Storage } from '@factor_ec/utils';
+import { Storage } from '@factor_ec/utils';
 import { MessageService, type MessageOptions } from '@factor_ec/ui';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
-import { Session } from '@/core/services/session';
+import { AppUpdate } from '@/core/services/app-update';
 import {
   ConfirmEvent,
   ConfirmOptions,
@@ -41,11 +41,10 @@ registerLocaleData(localeEs, 'es');
 @Service()
 export class AppManager {
   // Dependency injection
-  private readonly authProvider = inject(AuthProvider);
   private readonly platformId = inject<object>(PLATFORM_ID);
-  private readonly session = inject(Session);
   private readonly snackbar = inject(MatSnackBar);
   private readonly swUpdate = inject(SwUpdate);
+  private readonly appUpdate = inject(AppUpdate);
   private readonly storage = inject(Storage);
   private readonly messageService = inject(MessageService);
 
@@ -96,8 +95,7 @@ export class AppManager {
 
   /**
    * Bootstraps application-wide concerns: PWA update listeners, the `notify`
-   * event bridge (ADR-009), locale resolution, and session restoration for an
-   * already authenticated user.
+   * event bridge (ADR-009), and locale resolution.
    */
   public async init(): Promise<void> {
     // Show version in console
@@ -121,10 +119,6 @@ export class AppManager {
     // Load the configured application language
     const locale = await this.setLocale();
     console.log('Current locale: ', locale);
-    // If authenticated, initialize with local data
-    if (this.authProvider.isLoggedIn()) {
-      this.session.getSettings();
-    }
 
     // Log the time taken to initialize the app
     console.log('App initialized in:', (performance.now() - this.startTime).toFixed(2), 'ms');
@@ -239,7 +233,7 @@ export class AppManager {
           console.log(`New app version ready for use: ${evt.latestVersion.hash}`);
           const snack = this.snackbar.open($localize`Update Available`, $localize`Reload`);
           snack.onAction().subscribe(() => {
-            window.location.reload();
+            void this.appUpdate.activate();
           });
           break;
         }

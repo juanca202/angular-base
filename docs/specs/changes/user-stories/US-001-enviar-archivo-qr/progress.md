@@ -141,8 +141,42 @@
 
 ### TK-005: PWA instalable sin red y estrategia de actualización
 
-<!-- unit:id=TK-005 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-005 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08
+**Finalizado:** 2026-10-08
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
+~ angular.json
+~ ngsw-config.json
+~ src/app/app.config.ts
+~ src/app/core/services/app-manager.ts
+~ src/app/core/services/app-manager.spec.ts
+~ src/app/core/components/error/error.ts
+~ src/app/core/components/error/error.html
+~ src/app/core/components/error/error.spec.ts
++ src/app/core/services/app-update.ts
++ src/app/core/services/app-update.spec.ts
++ e2e/send-offline.spec.ts
+```
+
+**Notas:**
+- Al ejecutar el E2E se vio que la app no arrancaba en el navegador (ya en `main`): faltaba `@angular/localize/init` como polyfill (`$localize is not defined`) y `AppManager` inyectaba `AuthProvider`, que `app.config.ts` no provee (`NG0201`). Se corrigieron ambos.
+- IT-03: sin `HttpClient`, `fetch`, `XMLHttpRequest` ni `sendBeacon` en el módulo de envío, el protocolo ni el almacenamiento; `index.html` no carga recursos externos. El E2E confirma cero peticiones durante el envío y la cancelación.
+- E2E: los dos primeros escenarios corren contra `ng serve`; el tercero (recarga sin conexión con service worker) exige la compilación de producción servida y la variable `PWA_URL`, y se omite sin ella. Pasaron los tres (el tercero contra un servidor estático con respaldo a `index.html`).
+
+**Decisiones adicionales:**
+- Se quitó `AuthProvider` de `AppManager` (y con él la carga de ajustes de `Session` al iniciar) y del componente de error, por decisión del usuario: la app no tiene inicio de sesión. En la página de error, 403 y 404 ofrecen «Go home» (antes 403 ofrecía «Logout») y `unknown` sigue ofreciendo «Reload». `Session` y `main-layout` siguen inyectando `AuthProvider`, pero nada de lo que se carga al arrancar los instancia; quedan para una limpieza aparte.
+- `AppUpdate` busca versión al volver la app a primer plano, recarga ante un service worker irrecuperable y activa la versión nueva solo cuando el usuario pulsa «Reload» en el aviso (nunca en mitad de un envío). `AppManager` delega esa acción en `AppUpdate.activate()` en lugar de recargar directamente.
+- `ngsw-config.json`: `updateMode: prefetch` en el grupo de la app, `/icons/**` precargados y `mockServiceWorker.js` excluido de la caché.
+- Los mocks `AuthProvider`/`Session` siguen declarados como proveedores en `app-manager.spec.ts` y `error.spec.ts` aunque ya no se usan; no estorban.
+- Por error se ejecutó la suite completa una vez (211 pruebas en verde) en lugar de solo los archivos afectados.
+
+**Cobertura de test cases:**
+- TC-016 (cero peticiones de red), TC-017 (envío sin conexión): cubiertos por el E2E de esta tarea.
+- TC-018 (modo avión en móvil): queda como prueba manual en TK-006.
 
 ### TK-006: Validación con móviles y escenarios E2E del envío
 
