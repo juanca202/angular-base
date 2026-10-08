@@ -1,5 +1,7 @@
 # Angular Base
 
+Aplicación web responsiva e instalable (PWA) para transferir archivos entre dispositivos mostrando una secuencia de códigos QR en uno y leyéndola con la cámara del otro, sin red ni servidor. Cada dispositivo puede actuar como emisor o receptor, verifica la integridad del archivo y guarda un historial local exportable.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.2.
 
 ## Development server
