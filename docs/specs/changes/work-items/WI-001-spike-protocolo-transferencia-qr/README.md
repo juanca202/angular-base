@@ -7,7 +7,7 @@
 **Repositorio:** transferencia-qr-web
 **Origen:** [SRS-001: Transferencia de archivos mediante secuencia de QR](../../requirements/SRS-001-transferencia-qr/README.md) (sección 2.5), [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md), [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md)
 **Timebox:** 2 días
-**Resolución:** Abierto
+**Resolución:** Re-espigado (WI-002)
 
 ## Pregunta de investigación
 
