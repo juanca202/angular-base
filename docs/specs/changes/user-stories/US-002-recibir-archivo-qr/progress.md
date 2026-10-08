@@ -2,11 +2,11 @@
 
 ## US-002-recibir-archivo-qr
 
-<!-- work:id=US-002-recibir-archivo-qr · status=In Progress -->
-**Estado:** In Progress
+<!-- work:id=US-002-recibir-archivo-qr · status=Done -->
+**Estado:** Done
 **Tipo:** historia de usuario
 **Fecha de creación:** 2026-10-08 15:35
-**Ultima actualizacion:** 2026-10-08 15:40
+**Ultima actualizacion:** 2026-10-08 18:19
 
 ## Unidades
 
