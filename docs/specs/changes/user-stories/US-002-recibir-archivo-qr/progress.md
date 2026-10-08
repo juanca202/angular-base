@@ -221,9 +221,10 @@
 
 ### TK-007: Validación con móviles y escenarios E2E de la recepción
 
-<!-- unit:id=TK-007 · status=In Progress -->
-**Estado:** In Progress
+<!-- unit:id=TK-007 · status=Done -->
+**Estado:** Done
 **Iniciado:** 2026-10-08 19:00
+**Finalizado:** 2026-10-08 20:30
 **Implementador:** juanca202 / Claude / claude-sonnet-5-5
 
 **Archivos:**
@@ -238,7 +239,8 @@
 **Notas:**
 - IT-01 a IT-03 hechas: 23 escenarios E2E (21 de flujo y 2 de recepción sin conexión) que pasan contra `ng serve` con una cámara simulada (el `BarcodeDetector` lee los fragmentos que encola la prueba; el escenario del lector de reserva dibuja QR reales en el vídeo y los lee `jsQR`). Se ejecutaron dos veces seguidas: 46 de 46 en verde. Cubren la recepción completa e idéntica byte a byte, desorden, repetidos y corruptos, no completar hasta confirmar, descartar, secuencia ajena en cuadro, incompleta con «Seguir escaneando», datos inválidos con «Reintentar», no reconstruible, cuota agotada con descarga, cancelar con cámara liberada, errores de cámara, SVG y HTML con script sin ejecutarse, mismo nombre sin sobrescribir, almacenamiento persistente, ausencia de desplazamiento horizontal a 360, 768, 1280 y 1600 px y cero peticiones sin conexión.
 - IT-04 hecha: guion manual con hoja de registro en `assets/guion-validacion-recepcion.md`.
-- PENDIENTE (IT-05): ejecutar con móviles Android reales la lectura continua en Chrome para Android, la serie de 10 lecturas de un QR de 400 B, la recepción de 1 MB cronometrada, el modo avión y el lector de reserva, y registrar los resultados aquí. No se puede hacer desde el agente: requiere dos dispositivos con cámara y un túnel HTTPS. Mientras no se haga, la tarea no puede pasar a `Done`.
+- DECISIÓN DEL USUARIO: se integra la historia sin ejecutar IT-05 (pruebas manuales con móviles); TC-001, TC-026, TC-034, TC-035 (en un navegador real), TC-036 y TC-037 quedan sin validar en un dispositivo real. La tarea se marca `Done` por esa decisión, con IT-05 sin completar.
+- PENDIENTE (IT-05): ejecutar con móviles Android reales la lectura continua en Chrome para Android, la serie de 10 lecturas de un QR de 400 B, la recepción de 1 MB cronometrada, el modo avión y el lector de reserva, y registrar los resultados aquí. No se puede hacer desde el agente: requiere dos dispositivos con cámara y un túnel HTTPS. Queda como deuda de validación.
 - Los E2E se ejecutaron con un servidor propio en el puerto 4301 y una configuración temporal de Playwright (no se conserva): `npm run e2e` reutiliza el servidor que ya haya en el puerto 4200, que en este equipo era de otro árbol de trabajo y no tenía la ruta `/recibir`. No se ha ejecutado `npm run e2e` con la configuración del repositorio.
 - Los iconos (`/images/*.svg`) se piden la primera vez que se dibujan un icono; el E2E sin conexión no cuenta esas peticiones, porque son recursos estáticos de la propia app (en producción los sirve la caché del service worker) y no peticiones de la recepción. No se verificó con el service worker de producción.
 - No se ejecutó axe sobre las pantallas de recepción y resultado: `@axe-core/playwright` no está instalado en el proyecto.
