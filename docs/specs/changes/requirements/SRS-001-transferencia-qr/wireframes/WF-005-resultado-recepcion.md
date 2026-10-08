@@ -29,7 +29,8 @@ Vista móvil (retrato, responsiva):
 
 ## Estados de la pantalla
 
-- Error (incompleta, datos inválidos, no reconstruible): tarjeta de resultado con su acción (Seguir escaneando / Reintentar) y el historial debajo; no se guarda ningún archivo — [escritorio](./WF-005-resultado-recepcion-error.svg), [móvil](./WF-005-resultado-recepcion-error-movil.svg).
+- Error (incompleta, datos inválidos, no reconstruible, almacenamiento lleno): tarjeta de resultado con su acción (Seguir escaneando / Reintentar) y el historial debajo; no se guarda ningún archivo — [escritorio](./WF-005-resultado-recepcion-error.svg), [móvil](./WF-005-resultado-recepcion-error-movil.svg).
+- Error «almacenamiento lleno» (FR-013, FR-022): tarjeta que informa que la cuota se agotó, no se guardó ni registró nada y ofrece descargar el archivo recién recibido y Reintentar.
 
 ## Historial de revisión
 
@@ -38,3 +39,4 @@ Vista móvil (retrato, responsiva):
 | 2026-10-08 | Versión inicial generada | — |
 | 2026-10-08 | La app debe ser responsiva | Añadida variante móvil `WF-005-resultado-recepcion-movil.svg`; NFR-006 |
 | 2026-10-08 | Al terminar mostrar previsualización (imagen, o icono con nombre; clic abre el archivo) y debajo el historial | SVG rehechos (éxito y error, escritorio y móvil); FR-020 nuevo |
+| 2026-10-08 | Cuota agotada al guardar una recepción completa: error con opción de descargar el archivo | Variante añadida en los SVG de error (escritorio y móvil); FR-013 y FR-022. Aprobado |

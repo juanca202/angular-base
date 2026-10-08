@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 812" font-family="sans-serif" font-size="13"><rect width="375" height="812" fill="#fafafa"/><rect width="375" height="56" fill="#e0e0e0"/>
 <text x="16" y="35" font-size="16" font-weight="bold" fill="#222">Resultado</text>
-<g stroke="#999" fill="#ececec"><rect x="16" y="76" width="343" height="110" rx="8"/><rect x="16" y="198" width="343" height="110" rx="8"/><rect x="16" y="320" width="343" height="110" rx="8"/></g>
+<g stroke="#999" fill="#ececec"><rect x="16" y="76" width="343" height="110" rx="8"/><rect x="16" y="198" width="343" height="110" rx="8"/><rect x="16" y="320" width="343" height="110" rx="8"/><rect x="16" y="442" width="343" height="130" rx="8"/></g>
 <g fill="#333"><text x="32" y="104" font-size="15" font-weight="bold">Incompleta</text><text x="32" y="126">Faltan fragmentos.</text><text x="32" y="164">Botón: Seguir escaneando</text>
 <text x="32" y="226" font-size="15" font-weight="bold">Datos inválidos</text><text x="32" y="248">Falló la integridad.</text><text x="32" y="286">Botón: Reintentar</text>
 <text x="32" y="348" font-size="15" font-weight="bold">No reconstruible</text><text x="32" y="370">No se pudo armar el archivo.</text><text x="32" y="408">Botón: Reintentar</text></g>
-<text x="16" y="462" fill="#777" font-size="12">No se guarda ningún archivo. Debajo, el historial.</text></svg>
+<g fill="#333"><text x="32" y="470" font-size="15" font-weight="bold">Almacenamiento lleno</text><text x="32" y="492">Sin espacio para guardar el archivo.</text><text x="32" y="530">Botón: Descargar archivo</text><text x="32" y="556">Botón: Reintentar</text></g>
+<text x="16" y="606" fill="#777" font-size="12">No se guarda ningún archivo. Debajo, el historial.</text></svg>
