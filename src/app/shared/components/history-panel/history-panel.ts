@@ -6,7 +6,7 @@ import { FileExport } from '@/core/services/file-export';
 import { PrivateStorage } from '@/core/services/private-storage';
 import { TransferHistory } from '@/core/services/transfer-history';
 import { confirm, notify } from '@/core/utils/notification';
-import { HistoryList } from '@/features/home/components/history-list';
+import { HistoryList } from '@/shared/components/history-list/history-list';
 
 /**
  * Historial de transferencias con filtro Todos / Recibidos / Enviados (Todos por defecto) y las

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { Icon } from '@factor_ec/ui';
-import { HistoryPanel } from '@/features/home/components/history-panel';
+import { HistoryPanel } from '@/shared/components/history-panel/history-panel';
 
 /**
  * Pantalla de inicio: botones Enviar y Recibir, y debajo el historial de transferencias.

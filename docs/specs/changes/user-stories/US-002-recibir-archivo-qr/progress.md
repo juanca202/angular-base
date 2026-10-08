@@ -206,8 +206,10 @@
 - El aviso de presupuesto del bundle inicial sube a 525,92 kB (500 kB de límite); `receive-page` es un chunk diferido, así que no es el origen, y el aviso ya venía de US-001 y US-003.
 - Se corrigió una prueba intermitente de `receive-manager.spec.ts` (TK-004): esperaba el SHA-256 por tiempo simulado, y bajo carga fallaba; ahora espera por estado.
 
+- Retrabajo de cierre (`quality-check`): la validación de arquitectura `architecture/CR-002` (`no-feature-to-feature`) falló porque `receive-page` importaba `HistoryPanel` de `features/home`. Se movieron `HistoryPanel` y `HistoryList` a `shared/components/history-panel/` y `shared/components/history-list/` y se actualizaron los imports de `home-page` y `receive-page`; sin cambios de comportamiento (376 pruebas siguen en verde).
+
 **Decisiones adicionales:**
-- Se extrae el historial de la pantalla de inicio (filtro, lista y acciones) al componente `HistoryPanel` para reutilizarlo bajo el resultado de la recepción sin duplicar su lógica; `HomePage` solo conserva los botones Enviar y Recibir y sus 15 pruebas siguen en verde sin cambios.
+- Se extrae el historial de la pantalla de inicio (filtro, lista y acciones) al componente `HistoryPanel` (primero en `features/home`, luego en `shared/components` por la regla de capas) para reutilizarlo bajo el resultado de la recepción sin duplicar su lógica; `HomePage` solo conserva los botones Enviar y Recibir y sus 15 pruebas siguen en verde sin cambios.
 - Apertura segura: solo se muestran en una pestaña nueva (con `noopener`) las imágenes ráster, el PDF y el texto plano; SVG, HTML y cualquier otro tipo se descargan, porque una URL de blob abierta como documento comparte el origen de la aplicación y ejecutaría sus scripts. La previsualización de un SVG se dibuja como `<img>`, donde nunca se ejecutan scripts.
 - «Descargar archivo» (almacenamiento lleno o fallo de guardado) usa `FileExport.download` de US-003.
 - En fase de resultado se oculta «Cancelar» y se ofrece «Volver al inicio»; la vista de cámara sigue en el DOM, oculta, para poder seguir escaneando o reintentar.

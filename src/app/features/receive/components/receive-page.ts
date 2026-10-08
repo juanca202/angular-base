@@ -2,7 +2,7 @@ import { Component, DestroyRef, afterNextRender, computed, inject, viewChild } f
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { FileExport } from '@/core/services/file-export';
-import { HistoryPanel } from '@/features/home/components/history-panel';
+import { HistoryPanel } from '@/shared/components/history-panel/history-panel';
 import { FilePreview } from '@/features/receive/components/file-preview';
 import { FailedReceiveResult, ResultCard } from '@/features/receive/components/result-card';
 import { CameraErrorCode } from '@/features/receive/models/camera-error';
