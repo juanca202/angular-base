@@ -65,13 +65,13 @@ Creemos que fragmentos de 400 a 800 B con corrección de errores M, mostrados a 
 
 ## Enfoque del experimento
 
-- [ ] **IT-01** — Crear la rama `spike/WI-002-medicion-qr-android`, el prototipo PWA mínimo (emisor y receptor) y los archivos de prueba, desplegado de forma que los móviles lo carguen una vez.
-- [ ] **IT-02** — Portar el protocolo del WI-001 al prototipo; comparar `jsqr` con al menos otra librería de lectura y registrar APIs de cámara, almacenamiento, descarga y compartir disponibles.
-- [ ] **IT-03** — Medir la capacidad por QR (Q-01) con QR estáticos de 200 a 2000 B y niveles de corrección L y M; guardar los resultados en `assets/`.
+- [x] **IT-01** — Crear la rama `spike/WI-002-medicion-qr-android`, el prototipo PWA mínimo (emisor y receptor) y los archivos de prueba, desplegado de forma que los móviles lo carguen una vez.
+- [x] **IT-02** — Portar el protocolo del WI-001 al prototipo; comparar `jsqr` con al menos otra librería de lectura y registrar APIs de cámara, almacenamiento, descarga y compartir disponibles.
+- [x] **IT-03** — Medir la capacidad por QR (Q-01) con QR estáticos de 200 a 2000 B y niveles de corrección L y M; guardar los resultados en `assets/`.
 - [ ] **IT-04** — Añadir la confirmación de nombre y tamaño antes de seguir (Q-06) y probarla con una secuencia ajena en cuadro, 10 intentos.
 - [ ] **IT-05** — Medir velocidades de cambio, p por fotograma y tiempo de transferencia de 1 MB, 10 intentos con la mejor combinación (Q-02, Q-03); guardar la evidencia en `assets/`.
 - [ ] **IT-06** — Con la app instalada y sin red, capturar el tráfico durante una transferencia completa (Q-05).
-- [ ] **IT-07** — Redactar `spike-report.md` con los resultados por `Q-XX`, el veredicto y los NFR de rendimiento y compatibilidad propuestos.
+- [x] **IT-07** — Redactar `spike-report.md` con los resultados por `Q-XX`, el veredicto y los NFR de rendimiento y compatibilidad propuestos.
 
 ## Entregable
 
