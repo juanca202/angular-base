@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" font-family="sans-serif" font-size="14">
+  <rect width="1280" height="800" fill="#fafafa"/>
+  <rect width="1280" height="64" fill="#e0e0e0"/>
+  <text x="32" y="40" font-size="20" font-weight="bold" fill="#222">Transferencia completada</text><text x="1060" y="40" fill="#555">Integridad verificada ✓</text>
+
+  <text x="32" y="98" font-weight="bold" fill="#222">Previsualización — si es imagen:</text>
+  <rect x="32" y="108" width="590" height="250" rx="8" fill="#ececec" stroke="#999"/>
+  <rect x="232" y="124" width="190" height="190" fill="#d0d0d0" stroke="#aaa"/><circle cx="270" cy="160" r="14" fill="#fff"/><path d="M232 314 L290 240 L330 286 L362 250 L422 314 Z" fill="#999"/>
+  <text x="327" y="340" text-anchor="middle" fill="#333">foto-equipo.jpg (clic: abrir)</text>
+  <text x="658" y="98" font-weight="bold" fill="#222">— si es otro archivo:</text>
+  <rect x="658" y="108" width="590" height="250" rx="8" fill="#ececec" stroke="#999"/>
+  <path d="M900 130 H960 L990 160 V290 H900 Z" fill="#fff" stroke="#888" stroke-width="3"/><path d="M960 130 V160 H990" fill="#ddd" stroke="#888" stroke-width="3"/>
+  <text x="945" y="238" text-anchor="middle" font-weight="bold" fill="#777">PDF</text>
+  <text x="953" y="324" text-anchor="middle" fill="#333">informe-q3.pdf (clic: abrir)</text>
+
+  <text x="32" y="402" font-size="18" font-weight="bold" fill="#222">Historial de transferencias</text>
+  <rect x="940" y="380" width="308" height="30" rx="4" fill="#fff" stroke="#999"/><text x="952" y="400" fill="#888">Filtro: Todos | Recibidos | Enviados</text>
+  <rect x="32" y="424" width="1216" height="36" fill="#d0d0d0"/>
+  <text x="48" y="447" font-weight="bold">Nombre</text><text x="460" y="447" font-weight="bold">Tipo</text><text x="600" y="447" font-weight="bold">Dirección</text><text x="740" y="447" font-weight="bold">Tamaño</text><text x="860" y="447" font-weight="bold">Fecha</text><text x="1040" y="447" font-weight="bold">Acciones</text>
+  <g fill="#fff" stroke="#bbb"><rect x="32" y="460" width="1216" height="44"/><rect x="32" y="504" width="1216" height="44"/><rect x="32" y="548" width="1216" height="44"/></g>
+  <g fill="#333"><text x="48" y="488">informe-q3.pdf</text><text x="460" y="488">PDF</text><text x="600" y="488">Recibido</text><text x="740" y="488">1,2 MB</text><text x="860" y="488">ahora</text>
+  <text x="48" y="532">foto-equipo.jpg</text><text x="460" y="532">JPEG</text><text x="600" y="532">Enviado</text><text x="740" y="532">860 KB</text><text x="860" y="532">2026-10-07 16:02</text>
+  <text x="48" y="576">notas.txt</text><text x="460" y="576">Texto</text><text x="600" y="576">Recibido</text><text x="740" y="576">4 KB</text><text x="860" y="576">2026-10-07 09:40</text></g>
+  <g fill="#999"><rect x="1040" y="469" width="90" height="26" rx="4"/><rect x="1140" y="469" width="90" height="26" rx="4"/><rect x="1040" y="513" width="90" height="26" rx="4"/><rect x="1140" y="513" width="90" height="26" rx="4"/><rect x="1040" y="557" width="90" height="26" rx="4"/><rect x="1140" y="557" width="90" height="26" rx="4"/></g>
+  <g fill="#fff" font-size="12"><text x="1054" y="487">Exportar</text><text x="1154" y="487">Eliminar</text><text x="1054" y="531">Exportar</text><text x="1154" y="531">Eliminar</text><text x="1054" y="575">Exportar</text><text x="1154" y="575">Eliminar</text></g>
+</svg>

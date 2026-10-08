@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" font-family="sans-serif" font-size="14">
+  <rect width="1280" height="800" fill="#fafafa"/>
+  <rect width="1280" height="64" fill="#e0e0e0"/>
+  <text x="32" y="40" font-size="20" font-weight="bold" fill="#222">Transferencia por QR</text>
+
+  <rect x="32" y="96" width="600" height="130" rx="10" fill="#888"/>
+  <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M270 190 V140 M250 158 L270 136 L290 158"/><path d="M245 176 V198 H295 V176"/></g>
+  <text x="332" y="170" font-size="24" fill="#fff" font-weight="bold">Enviar</text>
+  <rect x="648" y="96" width="600" height="130" rx="10" fill="#888"/>
+  <g fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"><rect x="880" y="140" width="60" height="44" rx="6"/><circle cx="910" cy="162" r="12"/><path d="M896 140 L902 132 H918 L924 140"/></g>
+  <text x="960" y="170" font-size="24" fill="#fff" font-weight="bold">Recibir</text>
+
+  <text x="32" y="284" font-size="18" font-weight="bold" fill="#222">Historial de transferencias</text>
+  <rect x="940" y="262" width="308" height="30" rx="4" fill="#fff" stroke="#999"/>
+  <text x="952" y="282" fill="#888">Filtro: Todos | Recibidos | Enviados</text>
+  <rect x="32" y="308" width="1216" height="36" fill="#d0d0d0"/>
+  <text x="48" y="331" font-weight="bold">Nombre</text><text x="460" y="331" font-weight="bold">Tipo</text><text x="600" y="331" font-weight="bold">Dirección</text><text x="740" y="331" font-weight="bold">Tamaño</text><text x="860" y="331" font-weight="bold">Fecha</text><text x="1040" y="331" font-weight="bold">Acciones</text>
+  <g fill="#fff" stroke="#bbb"><rect x="32" y="344" width="1216" height="44"/><rect x="32" y="388" width="1216" height="44"/><rect x="32" y="432" width="1216" height="44"/><rect x="32" y="476" width="1216" height="44"/></g>
+  <g fill="#333"><text x="48" y="372">informe-q3.pdf</text><text x="460" y="372">PDF</text><text x="600" y="372">Recibido</text><text x="740" y="372">1,2 MB</text><text x="860" y="372">2026-10-08 10:14</text>
+  <text x="48" y="416">foto-equipo.jpg</text><text x="460" y="416">JPEG</text><text x="600" y="416">Enviado</text><text x="740" y="416">860 KB</text><text x="860" y="416">2026-10-07 16:02</text>
+  <text x="48" y="460">notas.txt</text><text x="460" y="460">Texto</text><text x="600" y="460">Recibido</text><text x="740" y="460">4 KB</text><text x="860" y="460">2026-10-07 09:40</text><text x="48" y="504">(más archivos…)</text></g>
+  <g fill="#999"><rect x="1040" y="353" width="90" height="26" rx="4"/><rect x="1140" y="353" width="90" height="26" rx="4"/><rect x="1040" y="397" width="90" height="26" rx="4"/><rect x="1140" y="397" width="90" height="26" rx="4"/><rect x="1040" y="441" width="90" height="26" rx="4"/><rect x="1140" y="441" width="90" height="26" rx="4"/></g>
+  <g fill="#fff" font-size="12"><text x="1054" y="371">Exportar</text><text x="1154" y="371">Eliminar</text><text x="1054" y="415">Exportar</text><text x="1154" y="415">Eliminar</text><text x="1054" y="459">Exportar</text><text x="1154" y="459">Eliminar</text></g>
+</svg>

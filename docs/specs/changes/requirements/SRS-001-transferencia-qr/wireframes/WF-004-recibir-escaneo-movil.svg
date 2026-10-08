@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 812" font-family="sans-serif" font-size="13"><rect width="375" height="812" fill="#fafafa"/><rect width="375" height="56" fill="#e0e0e0"/>
+<text x="16" y="35" font-size="17" font-weight="bold" fill="#222">Recibiendo archivo</text><text x="290" y="35" fill="#555">✕ Cancelar</text>
+<rect x="16" y="72" width="343" height="340" rx="8" fill="#555"/><rect x="87" y="132" width="200" height="200" fill="none" stroke="#ddd" stroke-width="3" stroke-dasharray="14 9"/>
+<text x="187" y="236" text-anchor="middle" fill="#eee">Vista de cámara</text><text x="187" y="256" text-anchor="middle" fill="#ccc">Apunta al QR del emisor</text>
+<rect x="16" y="428" width="343" height="200" rx="8" fill="#fff" stroke="#bbb"/>
+<text x="32" y="456" font-weight="bold" font-size="15" fill="#222">Archivo que se recibe</text>
+<g fill="#333"><text x="32" y="484">informe-q3.pdf</text><text x="32" y="506">Tamaño total: 1,2 MB · 268 de 412 fragmentos</text><text x="32" y="528">Tiempo estimado: ~1 min 10 s</text></g>
+<rect x="32" y="548" width="311" height="18" rx="9" fill="#ddd"/><rect x="32" y="548" width="202" height="18" rx="9" fill="#888"/>
+<text x="187" y="594" text-anchor="middle" font-weight="bold" fill="#333">65 %</text><rect x="16" y="644" width="343" height="40" rx="6" fill="#666"/><text x="187" y="669" text-anchor="middle" fill="#fff">Botón: Terminar lectura</text></svg>

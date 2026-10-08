@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 812" font-family="sans-serif" font-size="13"><rect width="375" height="812" fill="#fafafa"/><rect width="375" height="56" fill="#e0e0e0"/>
+<text x="16" y="35" font-size="17" font-weight="bold" fill="#222">Transferencia por QR</text>
+<rect x="16" y="72" width="164" height="110" rx="10" fill="#888"/>
+<g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M98 126 V92 M84 104 L98 90 L112 104"/><path d="M80 116 V134 H116 V116"/></g>
+<text x="98" y="162" text-anchor="middle" font-size="16" fill="#fff" font-weight="bold">Enviar</text>
+<rect x="195" y="72" width="164" height="110" rx="10" fill="#888"/>
+<g fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"><rect x="257" y="94" width="42" height="32" rx="5"/><circle cx="278" cy="110" r="9"/></g>
+<text x="277" y="162" text-anchor="middle" font-size="16" fill="#fff" font-weight="bold">Recibir</text>
+<text x="16" y="222" font-weight="bold" font-size="15" fill="#222">Historial de transferencias</text>
+<rect x="16" y="234" width="343" height="30" rx="4" fill="#fff" stroke="#999"/><text x="28" y="254" fill="#888">Filtro: Todos | Recibidos | Enviados</text>
+<g fill="#fff" stroke="#bbb"><rect x="16" y="276" width="343" height="84" rx="6"/><rect x="16" y="368" width="343" height="84" rx="6"/><rect x="16" y="460" width="343" height="84" rx="6"/></g>
+<g fill="#333"><text x="28" y="300" font-weight="bold">informe-q3.pdf</text><text x="28" y="318" fill="#666">Recibido · 1,2 MB · 08/10</text><text x="28" y="392" font-weight="bold">foto-equipo.jpg</text><text x="28" y="410" fill="#666">Enviado · 860 KB · 07/10</text><text x="28" y="484" font-weight="bold">notas.txt</text><text x="28" y="502" fill="#666">Recibido · 4 KB · 07/10</text></g>
+<g fill="#999"><rect x="28" y="326" width="80" height="26" rx="4"/><rect x="116" y="326" width="80" height="26" rx="4"/><rect x="28" y="418" width="80" height="26" rx="4"/><rect x="116" y="418" width="80" height="26" rx="4"/><rect x="28" y="510" width="80" height="26" rx="4"/><rect x="116" y="510" width="80" height="26" rx="4"/></g>
+<g fill="#fff" font-size="11"><text x="42" y="343">Exportar</text><text x="130" y="343">Eliminar</text><text x="42" y="435">Exportar</text><text x="130" y="435">Eliminar</text><text x="42" y="527">Exportar</text><text x="130" y="527">Eliminar</text></g></svg>
