@@ -12,7 +12,7 @@ import { Component, ElementRef, viewChild } from '@angular/core';
         #video
         class="size-full object-cover"
         autoplay
-        muted
+        [muted]="true"
         playsinline
         aria-label="Vista de la cámara"
         i18n-aria-label

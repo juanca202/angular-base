@@ -221,8 +221,35 @@
 
 ### TK-007: Validación con móviles y escenarios E2E de la recepción
 
-<!-- unit:id=TK-007 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-007 · status=In Progress -->
+**Estado:** In Progress
+**Iniciado:** 2026-10-08 19:00
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ e2e/receive-flow.spec.ts
++ e2e/receive-offline.spec.ts
++ e2e/support/receive-helpers.ts
+~ src/app/features/receive/components/camera-view.ts
++ docs/specs/changes/user-stories/US-002-recibir-archivo-qr/assets/guion-validacion-recepcion.md
+```
 
 **Notas:**
-- Excluida de esta ejecución: depende de TK-005, TK-006 y de tareas de US-001.
+- IT-01 a IT-03 hechas: 23 escenarios E2E (21 de flujo y 2 de recepción sin conexión) que pasan contra `ng serve` con una cámara simulada (el `BarcodeDetector` lee los fragmentos que encola la prueba; el escenario del lector de reserva dibuja QR reales en el vídeo y los lee `jsQR`). Se ejecutaron dos veces seguidas: 46 de 46 en verde. Cubren la recepción completa e idéntica byte a byte, desorden, repetidos y corruptos, no completar hasta confirmar, descartar, secuencia ajena en cuadro, incompleta con «Seguir escaneando», datos inválidos con «Reintentar», no reconstruible, cuota agotada con descarga, cancelar con cámara liberada, errores de cámara, SVG y HTML con script sin ejecutarse, mismo nombre sin sobrescribir, almacenamiento persistente, ausencia de desplazamiento horizontal a 360, 768, 1280 y 1600 px y cero peticiones sin conexión.
+- IT-04 hecha: guion manual con hoja de registro en `assets/guion-validacion-recepcion.md`.
+- PENDIENTE (IT-05): ejecutar con móviles Android reales la lectura continua en Chrome para Android, la serie de 10 lecturas de un QR de 400 B, la recepción de 1 MB cronometrada, el modo avión y el lector de reserva, y registrar los resultados aquí. No se puede hacer desde el agente: requiere dos dispositivos con cámara y un túnel HTTPS. Mientras no se haga, la tarea no puede pasar a `Done`.
+- Los E2E se ejecutaron con un servidor propio en el puerto 4301 y una configuración temporal de Playwright (no se conserva): `npm run e2e` reutiliza el servidor que ya haya en el puerto 4200, que en este equipo era de otro árbol de trabajo y no tenía la ruta `/recibir`. No se ha ejecutado `npm run e2e` con la configuración del repositorio.
+- Los iconos (`/images/*.svg`) se piden la primera vez que se dibujan un icono; el E2E sin conexión no cuenta esas peticiones, porque son recursos estáticos de la propia app (en producción los sirve la caché del service worker) y no peticiones de la recepción. No se verificó con el service worker de producción.
+- No se ejecutó axe sobre las pantallas de recepción y resultado: `@axe-core/playwright` no está instalado en el proyecto.
+- Hallazgo corregido: con la cámara simulada, `video.play()` fallaba por la política de reproducción automática porque `muted` en la plantilla no fija la propiedad `muted` del vídeo; `CameraView` ahora usa `[muted]="true"`. Es un riesgo real también en dispositivos (p. ej. iOS).
+- Riesgo sin tratar: si `video.play()` falla por otro motivo, `QrCameraReader.start` lanza el error original (no un `CameraError`) y la pantalla lo deja sin gestionar.
+
+**Decisiones adicionales:**
+- Los E2E importan el protocolo de la aplicación (`fragmentFile`, `crc32`) para fabricar los fragmentos, de modo que prueban contra el formato real y no contra una copia.
+- Las pruebas del archivo `receive-flow.spec.ts` se agrupan por criterio; la ejecución de 1 MB en 15 minutos y la lectura con óptica real quedan solo en el guion manual.
+
+**Cobertura de test cases:**
+- TC-001, TC-034, TC-036, TC-037 y TC-026: manuales con móviles (IT-05, pendiente). TC-001 se cubre además con cámara simulada.
+- TC-035: cubierto con imágenes de QR reales y `jsQR` en cámara simulada; la prueba en un navegador real sin `BarcodeDetector` (Firefox, Safari) queda en el guion manual.
+- TC-020, TC-021, TC-024, TC-025, TC-027, TC-031 y TC-038: cubiertos por el E2E (TC-027 a 360, 768, 1280 y 1600 px).
