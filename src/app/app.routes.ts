@@ -3,6 +3,12 @@ import { Error } from '@/core/components/error/error';
 
 export const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () => import('@/features/home/components/home-page').then((m) => m.HomePage),
+    title: $localize`Inicio`,
+  },
+  {
     path: 'enviar',
     loadComponent: () => import('@/features/send/components/send-page').then((m) => m.SendPage),
     title: $localize`Enviar archivo`,

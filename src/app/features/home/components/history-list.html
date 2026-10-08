@@ -1,0 +1,44 @@
+<ul class="flex flex-col divide-y divide-gray-200 rounded-md border border-gray-200">
+  @for (entry of entries(); track entry.id) {
+    <li class="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="min-w-0">
+        <h3 class="font-medium break-all">{{ entry.name }}</h3>
+        <p class="text-sm break-words text-gray-700">
+          {{ direction(entry) }} · {{ entry.type || '—' }} · {{ size(entry) }} ·
+          {{ entry.date | date: 'medium' }}
+        </p>
+      </div>
+      <div class="flex shrink-0 flex-wrap gap-2">
+        <button
+          type="button"
+          matButton="outlined"
+          [attr.aria-label]="exportLabel(entry)"
+          (click)="exportEntry.emit(entry)"
+        >
+          <ft-icon name="download" aria-hidden="true" />
+          <span i18n>Exportar</span>
+        </button>
+        @if (shareAvailable()) {
+          <button
+            type="button"
+            matButton="outlined"
+            [attr.aria-label]="shareLabel(entry)"
+            (click)="shareEntry.emit(entry)"
+          >
+            <ft-icon name="share" aria-hidden="true" />
+            <span i18n>Compartir</span>
+          </button>
+        }
+        <button
+          type="button"
+          matButton="outlined"
+          [attr.aria-label]="removeLabel(entry)"
+          (click)="removeEntry.emit(entry)"
+        >
+          <ft-icon name="trash" aria-hidden="true" />
+          <span i18n>Eliminar</span>
+        </button>
+      </div>
+    </li>
+  }
+</ul>

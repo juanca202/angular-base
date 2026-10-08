@@ -58,3 +58,4 @@ git-version.json
 
 # Secretos locales del harness SDD Devkit
 .sdd-devkit/.env
+.sdd-devkit/quality-check-run.json
