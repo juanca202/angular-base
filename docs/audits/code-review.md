@@ -1,34 +1,38 @@
-# Code Review — Migración de fitness functions a ESLint y limpieza de compuertas de calidad
+# Code Review — US-002-recibir-archivo-qr
 
-**Fecha:** 2026-09-11 23:45
-**Rama:** main
-**Commit:** 130352e (working tree con cambios sin commitear)
-**Alcance del diff:** rama vs base, incluidos los cambios sin commitear — 28 archivos (21 modificados, 7 nuevos), +677/−418 líneas aprox.
+**Fecha:** 2026-10-08 18:13
+**Rama:** feature/US-002-recibir-archivo-qr
+**Commit:** 9fcd1a5
 **Modo:** default
-**Base del diff:** origin/main @ 130352e (mismo commit que HEAD — no hay divergencia, todo el diff es trabajo sin commitear)
-**Veredicto:** ✅ Aprobado — cero hallazgos bloqueantes; un hallazgo menor no bloqueante.
+**Diff:** main @13769f0 — 42 archivos (sin contar docs ni `package-lock.json`), +3947/−130 líneas
+**Veredicto:** ✅ Aprobado — cero hallazgos bloqueantes; seis menores y dos sugerencias.
 
 ## Resumen
 
-Se revisó la migración de varios criterios de cumplimiento (CR-004, CR-009, CR-013 a CR-016, CR-001/CR-002 de coding-style, CR-002 de frontend, CR-008 de testing) de scripts propios a reglas de ESLint, el rediseño de `scripts/arch/checks/*.mjs` para auditar configuración en vez de re-ejecutar herramientas que ya son compuertas independientes (`npm run lint`, `npm test`), la salida coloreada del runner de arquitectura, y la limpieza de ~35 usos de `any` en specs y mocks de prueba. El diseño es sólido y está verificado en profundidad (tipado, linter, arquitectura, tests, build y una comprobación empírica adicional sobre el umbral de cobertura, ver Feedback adicional). Un solo hallazgo menor, no bloqueante: un import relativo en `error.ts` que rompe la convención de path alias del resto del repo.
+Se revisó el trabajo de US-002 (recepción de un archivo escaneando una secuencia de QR) contra su base: decodificador y reensamblador del protocolo, guardado, lector de cámara, gestor de la recepción, pantallas de recepción y resultado, previsualización segura y E2E. El diseño es coherente con ADR-001 (tras mover el historial a `shared/components`) y ADR-011, y la lógica de negocio vive en el gestor y en un módulo puro, no en los componentes. No hay hallazgos que bloqueen; los menores son de robustez ante fallos poco frecuentes y de mantenibilidad.
 
 ## Intención detectada
 
-Sin `US-XXX`/`WI-XXX`/artefacto de especificación ni PR: el commit base y el `HEAD` coinciden (todo el trabajo está sin commitear sobre `main`), así que no hay rango de commits que leer. La intención se reconstruye de la conversación de la sesión: (1) migrar a ESLint los criterios de arquitectura que son expresables como reglas de lint, evitando que `npm run arch` duplique el trabajo de compuertas de calidad independientes (`npm run lint`, `npm test`) — auditando que la regla/umbral esté cableado en vez de re-ejecutar la herramienta; (2) colorear PASS/WARN/FAIL en el runner, propagando el color a través de subprocesos con pipe; (3) corregir `npm run lint` a cero errores, incluyendo un problema de configuración de TypeScript (`$localize` sin tipar globalmente tras quitar un import que, sin saberlo, sostenía esa declaración ambiental) descubierto durante la validación. Es una base más débil que un artefacto formal, pero está bien sustentada por el propio historial de la conversación y por las verificaciones ejecutadas en cada paso.
+Tomada de [US-002](../specs/changes/user-stories/US-002-recibir-archivo-qr/README.md) y sus TK-001 a TK-007: leer con la cámara, sin fotos manuales, una secuencia de QR; tolerar duplicados, desorden y lecturas corruptas; pedir confirmar nombre y tamaño antes de activar una transferencia; reconstruir y verificar con SHA-256; guardar solo si la verificación es satisfactoria; informar los cuatro resultados; permitir cancelar, seguir escaneando y reintentar; no ejecutar contenido activo; no hacer peticiones de red.
 
 ## Hallazgos
 
-Leyenda de severidad: `🔴` Crítico · `🟠` Mayor · `🟡` Menor · `💡` Sugerencia · `✅` Sin hallazgos.
+Leyenda de severidad: `🔴` Crítico · `🟠` Mayor · `🟡` Menor · `💡` Sugerencia · `✅` Limpio.
 
 ### Análisis semántico (intención)
 
-✅ Sin hallazgos. Cada pieza del diff traza a uno de los tres objetivos de la sesión; no hay scope creep. El caso más sutil —si CR-005 (cobertura) sigue verificando de verdad su propio enunciado ("cobertura ≥ 80%") tras dejar de ejecutar la suite— se investigó a fondo y se confirma correcto: ver Feedback adicional.
+✅ Limpio — la implementación resuelve el problema pedido: cada criterio que depende del código tiene su comportamiento (confirmación antes de activar y descarte que ignora fragmentos, guardado solo tras verificar, cancelar sin confirmar, previsualización sin ejecutar scripts, cero peticiones). Los criterios de rendimiento medidos con cámara real (AC-023, AC-024) no son verificables en el código y quedan para la validación manual.
 
 ### Arquitectura y diseño
 
-✅ Sin hallazgos bloqueantes. Un hallazgo menor:
-
-- 🟡 `[ISO-25010: Mantenibilidad]` Import relativo rompe la convención de path alias — **Qué:** `src/app/core/components/error/error.ts:11` importa `environment` como `'../../../../environments/environment'`; verifiqué que es el **único** caso en todo `src/app` — los otros cinco archivos que importan `environment` (`app.config.ts`, `client-interceptor.ts`, `async-resources.ts`, `app-manager.ts`, `session.ts`) usan `@/environments/environment`. **Por qué:** rompe la consistencia que el resto del repo mantiene sin excepciones, y es invisible para la regla `project-rules/require-layer-path-alias` porque `environments/` no es una de las tres capas declaradas (`core`/`shared`/`features`) que esa regla vigila — así que `npm run lint` queda en verde pese a la regresión. **Impacto:** bajo hoy (el import resuelve igual), pero si `error.ts` alguna vez se reubica, esta importación se rompe en silencio mientras el resto del repo, protegido por el alias, no se entera. **Sugerencia:** revertir a `import { environment } from '@/environments/environment';`, igual que el resto de callers. No forma parte de la migración de esta rama — no lo corrijo por mi cuenta a falta de que confirmes que quieres tocar este archivo.
+- 🟡 `[ISO-25010: Fiabilidad]` Un fallo inesperado al arrancar la cámara deja la pantalla inerte — **Qué:** si `video.play()` o cualquier paso de `QrCameraReader.start` falla con algo que no es un `CameraError`, `ReceiveManager.openCamera` lo relanza y `ReceivePage` lo descarta con `void this.start()`. **Por qué:** nada lo captura ni se muestra un mensaje. **Impacto:** el usuario ve «Esperando el primer QR…» con «Terminar lectura» deshabilitado; solo puede cancelar. La causa más probable (autoplay) ya se corrigió con `[muted]="true"`. **Sugerencia:** en `openCamera`, convertir cualquier error no tipado en un error de cámara mostrable (o un código `unknown`) en lugar de relanzarlo.
+- 🟡 `[ISO-25010: Fiabilidad]` `complete()` no cubre el fallo de `assembler.finish()` — **Qué:** si `crypto.subtle.digest` lanza, la fase queda en `finishing` para siempre. **Por qué:** solo se protege el guardado, no la reconstrucción. **Impacto:** bajo (la cámara ya exige contexto seguro, donde `crypto.subtle` existe), pero un fallo dejaría la pantalla bloqueada con los botones deshabilitados. **Sugerencia:** envolver `finish()` y resolver como `unreconstructable`.
+- 🟡 `[ISO-25010: Mantenibilidad]` Efectos secundarios dentro de un `computed` — **Qué:** `FilePreview.imageUrl` crea y revoca URLs de objeto dentro de `computed()`. **Por qué:** un `computed` debe ser puro; hoy funciona porque se lee siempre desde la plantilla. **Impacto:** si cambia cómo se consume, se podría perder una URL o crearla de más. **Sugerencia:** `effect` con `onCleanup` (o `linkedSignal`) para el ciclo de vida de la URL.
+- 🟡 `[ISO-25010: Mantenibilidad]` Método público solo por pruebas — **Qué:** `QrDecoder.grabFrame` es público únicamente para poder sustituirlo en las pruebas. **Por qué:** amplía la API del servicio. **Impacto:** menor. **Sugerencia:** extraer la captura de fotograma a un colaborador inyectable.
+- 🟡 `[ISO-25010: Mantenibilidad]` `ReceiveManager` conserva la referencia al `<video>` — **Qué:** `cancel()` no pone `this.video` a `null`. **Por qué:** mantiene vivo un nodo del DOM tras salir de la pantalla. **Impacto:** fuga menor mientras la app siga abierta. **Sugerencia:** limpiarla en `cancel()`.
+- 🟡 `[ISO-25010: Mantenibilidad]` Pruebas negativas con esperas fijas — **Qué:** varios E2E negativos usan `waitForTimeout(800–1000)`. **Por qué:** una espera fija es más lenta y puede ser frágil en CI cargado. **Impacto:** menor. **Sugerencia:** esperar a una condición observable donde exista (p. ej. un contador de lecturas consumidas del simulador).
+- 💡 `[ISO-25010: Eficiencia en el desempeño]` `jsQR` sobre fotogramas a resolución completa — **Qué:** el lector de reserva decodifica el fotograma entero cada 50 ms. **Por qué:** a 720p o más puede ocupar bastante el hilo principal y no mejora la lectura de un QR de ~300 px. **Sugerencia:** reducir el canvas de captura (p. ej. a 640 px de ancho) y medirlo con el móvil de la validación manual.
+- 💡 `[ISO-25010: Seguridad]` El nombre del archivo lo decide el emisor — **Qué:** el nombre recibido se muestra, se guarda y se exporta sin filtrar caracteres de control o de dirección de texto. **Por qué:** permite nombres engañosos (extensiones invertidas). **Impacto:** bajo; la exportación la hace el navegador y no se ejecuta nada. **Sugerencia:** valorar normalizar esos caracteres al mostrar, decisión que hoy está fijada por US-003 (exportar el nombre tal cual).
 
 ### Dimensiones no evaluadas
 
@@ -36,17 +40,17 @@ Ninguna.
 
 ### Feedback adicional
 
-- **Buen trabajo:** el patrón `requireRuleSeverity(config, ruleId, minSeverity, { contains, label })` en `scripts/arch/lib/eslint-config.mjs` es limpio y evita repetir la lógica de severidad en cada check; los cinco archivos `checks/*.mjs` lo reutilizan de forma consistente.
-- **Verificación empírica adicional (no un hallazgo, una confirmación):** el punto más delicado del diff es que `testing.mjs` (CR-005) dejó de ejecutar `ng test --coverage` y solo audita que `angular.json` declare `coverageThresholds ≥ 80`. Para confirmar que esto no abre un agujero, subí el umbral a 100% temporalmente y corrí `ng test`: **falla duro (`exit 1`) con `ERROR: Coverage for … does not meet global threshold`**. Es decir, `@angular/build:unit-test` sí hace cumplir `coverageThresholds` como gate real, no solo como reporte — exactamente la garantía que el comentario del código afirma. Esto pone a CR-005 en pie de igualdad con CR-004 (que audita que la regla ESLint esté en `error`, confiando en que `npm run lint` la aplique): en ambos casos, la compuerta de arch verifica que la *política* esté bien cableada, y una compuerta *distinta y ya existente* (`npm test` / `npm run lint`) es la que de verdad detecta la violación. No es una regresión, es el mismo patrón aplicado con consistencia.
-- **Nitpick 💡:** `eslint.config.mjs` ya tiene 12 bloques de configuración con comentarios de trazabilidad por CR/ADR — sigue siendo legible, pero si crece con más CRs podría valer la pena partirlo en módulos por dominio (`eslint/architecture.mjs`, `eslint/frontend.mjs`…) e importarlos en el archivo raíz. No urge.
-- Los reemplazos de `any` por `unknown`/tipos concretos (`ActivatedRouteSnapshot`, `VersionEvent`, `WritableSignal<boolean>`, `vi.mocked(...)`) están bien dirigidos: usan el tipo real de la librería en vez de un cast genérico, y en dos casos (`app-manager.spec.ts`) el tipado más estricto de hecho **encontró** payloads de prueba que no coincidían con la forma real de `VersionEvent` — typing real pagando su costo, no solo silenciando el linter.
+- Bien resuelto: la separación en un módulo puro (`parseFragment`, `FragmentAssembler`) probado contra el formato real de `fragmentFile`; un ensamblador por transferencia candidata, que evita mezclar una secuencia ajena con la propia; y la regla de apertura segura (solo tipos pasivos en pestaña nueva con `noopener`, el resto se descarga), que cierra el vector de scripts en SVG y HTML. Los E2E con cámara simulada y con QR reales para `jsQR` aportan evidencia que las pruebas unitarias no dan.
+- El corte de arquitectura detectado por `quality-check` (una feature importando otra) se resolvió moviendo el historial a `shared/components`; la dirección de dependencias queda según ADR-001.
 
 ## Próximas acciones
 
-1. (Opcional, no bloqueante) Revertir `src/app/core/components/error/error.ts:11` al path alias `@/environments/environment` para mantener la consistencia del resto del repo.
+1. Sin acciones bloqueantes.
+2. Valorar los hallazgos menores en una tarea de endurecimiento: errores inesperados de la cámara y de `finish()`, y el ciclo de vida de la URL de la previsualización.
+3. Medir con el móvil de la validación manual si conviene reducir la resolución de captura del lector de reserva.
 
 ## Justificaciones aceptadas
 
 Ninguna.
 
-<!-- code-review:verdict=APPROVED · mode=default · fingerprint=d637737e174639e1d74941145e7d89e07bfcd7e2 · base=130352e · generated=2026-09-12 -->
+<!-- code-review:verdict=APPROVED · mode=default · fingerprint=a6e59f7141dc3bff835e28bc11681282ac3ca0d9 · base=13769f0 · generated=2026-10-08 -->

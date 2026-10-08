@@ -1,37 +1,45 @@
-# Verificaciones automatizadas — angular-base-project
+# Verificaciones automatizadas — US-002-recibir-archivo-qr
 
-**Fecha:** 2026-09-11 23:34
-**Rama:** main
-**Commit:** 130352e (working tree con cambios sin commitear)
-**Modo:** default — pruebas tomadas de la corrida del 2026-09-11 23:30 (caché fresca, mismo fingerprint)
-**Estándar de testing:** docs/standards/testing.md — sin suites configuradas adicionales (unit-testing y e2e-testing corresponden a las fijas/e2e; e2e-testing eleva E2E de condicional a bloqueante con su **DEBE**)
+**Fecha:** 2026-10-08 18:12
+**Rama:** feature/US-002-recibir-archivo-qr
+**Commit:** 9fcd1a5
+**Modo:** default
 **Veredicto:** ✅ Aprobado
+**Estándar de testing:** [`docs/standards/testing.md`](../standards/testing.md) (unit-testing, e2e-testing, http-api-mocks-msw; sin más clases de prueba que las fijas y e2e)
 
 ## Resumen
 
-Nada cambió en el código desde la corrida anterior (mismo fingerprint), así que unit tests, cobertura, E2E y arquitectura se tomaron de `.sdd-devkit/test-run.json` sin volver a ejecutarse. Se re-ejecutaron tipado, linter y build, que no están cubiertos por esa caché. Todo sigue en verde — cero fallos, cero omisiones. Persiste el mismo warning de presupuesto de bundle en el build (no bloqueante). Sonar sigue sin configurar (sin fila, no aplica).
+Se ejecutaron tipado, linter, validaciones de arquitectura, pruebas unitarias, cobertura, build y e2e. Todo pasa. La primera corrida falló por la regla `architecture/CR-002` (una feature importaba otra); se corrigió moviendo el historial a `shared/components` y se repitió la corrida completa.
 
 ## Verificaciones
 
-Leyenda de estados: `✅` Aprobado · `❌` Fallido · `⏭️` Omitido · `⏸️` Pendiente · `—` No aplica · `ℹ️` Informativo.
+Leyenda de estados: `✅` Correcto · `❌` Falla · `⏭️` Omitido · `⏸️` Pendiente · `—` No aplica · `ℹ️` Informativo.
 
 | # | Check | Comando | Categoría | Estado | Detalle | Duración |
 | - | ----- | ------- | --------- | ------ | ------- | -------- |
-| 1 | tipado | `tsc -b --noEmit` (tsconfig.app.json + tsconfig.spec.json) | Bloqueante | ✅ Aprobado | 0 errores | ~2s |
-| 2 | linter | `npm run lint` (eslint .) | Bloqueante | ✅ Aprobado | 0 errors, 0 warnings | ~2s |
-| 3 | arquitectura | `node scripts/arch/verify.mjs` | Bloqueante | ✅ Aprobado | 18 criterios, 0 violaciones (5 estándares) | caché |
-| 4 | unit tests | `npm test` (Vitest) | Bloqueante | ✅ Aprobado | 148 passed, 0 failed (17 archivos) | caché |
-| 5 | coverage | `npm test` (misma corrida, v8) | Bloqueante | ✅ Aprobado | Statements 95.23%, Branches 85.29%, Functions 92.56%, Lines 96.15% (umbral 80%) | caché |
-| 6 | build | `npm run build` (ng build) | Bloqueante | ✅ Aprobado | OK — bundle inicial 501.67 kB | 1.25s |
-| 7 | e2e | `npx playwright test` | Bloqueante (el estándar de testing lo exige con **DEBE**) | ✅ Aprobado | 1 passed | caché |
+| 1 | tipado | `npx tsc --noEmit -p tsconfig.app.json` y `-p tsconfig.spec.json` | Bloqueante | ✅ Correcto | 0 errores | 2 s |
+| 2 | linter | `npx eslint .` | Bloqueante | ✅ Correcto | 0 errores, 0 avisos | 2 s |
+| 3 | arquitectura | `npm run arch` | Bloqueante | ✅ Correcto | 19 criterios, 0 violaciones | 2 s |
+| 4 | pruebas unitarias | `npm test -- --no-watch` | Bloqueante | ✅ Correcto | 376 pasan, 0 fallan (41 archivos) | 6 s |
+| 5 | cobertura | `npm test -- --no-watch` (umbral 80 % en `angular.json`) | Bloqueante | ✅ Correcto | sentencias 96,02 %, ramas 89,13 %, funciones 94,67 %, líneas 96,16 % | 6 s |
+| 6 | build | `npm run build` | Bloqueante | ✅ Correcto | build correcto; aviso de presupuesto del bundle inicial (525,92 kB sobre 500 kB) | 2 s |
+| 7 | e2e | `npx playwright test` (servidor propio en el puerto 4301) | Condicional | ✅ Correcto | 54 pasan, 1 omitida | 21 s |
 
 ### Detalle de checks fallidos
 
 Sin checks fallidos.
 
+Notas de la corrida:
+
+- Primera corrida: `architecture/CR-002` (`no-feature-to-feature`) falló porque `features/receive/components/receive-page.ts` importaba `features/home/components/history-panel.ts`. Corrección autorizada: `HistoryPanel` y `HistoryList` pasaron a `shared/components` (commit `9fcd1a5`); la corrida completa se repitió y quedó en verde.
+- Los e2e se ejecutaron contra `ng serve` en el puerto 4301 con una configuración temporal de Playwright (ya borrada): el puerto 4200, que usa la configuración del repositorio, lo ocupaba otro proyecto. No se ejecutó `npm run e2e` tal cual.
+- El e2e omitido es `envío sin conexión › tras la primera carga con red, la app recargada sin conexión sigue enviando`, que ya venía omitido por US-001.
+- El aviso de presupuesto del bundle inicial no bloquea (el límite de error es 1 MB) y no procede de la historia: la pantalla de recepción es un chunk diferido.
+
 ## Próximas acciones
 
-1. El build emitió un warning informativo: el bundle inicial (501.67 kB) excede el presupuesto configurado (500.00 kB) por 1.67 kB. No bloquea el veredicto, pero conviene revisar el presupuesto en `angular.json` o recortar el bundle.
-2. Considerar configurar Sonar (`sonar-project.properties`) si se quiere análisis estático informativo en este cierre — hoy no está configurado y el check queda fuera del informe (no aplica).
+1. Sin acciones bloqueantes.
+2. Revisar el presupuesto del bundle inicial (525,92 kB frente a 500 kB de aviso).
+3. Sonar no está configurado en el repositorio.
 
-<!-- quality-check:verdict=APPROVED · fingerprint=d637737e174639e1d74941145e7d89e07bfcd7e2 · generated=2026-09-12 -->
+<!-- quality-check:verdict=APPROVED · fingerprint=a6e59f7141dc3bff835e28bc11681282ac3ca0d9 · generated=2026-10-08 -->
