@@ -74,8 +74,35 @@
 
 ### TK-003: Emisor de QR: generación, bucle y velocidad fija de 8 fps
 
-<!-- unit:id=TK-003 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-003 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08
+**Finalizado:** 2026-10-08
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
+~ package.json
+~ package-lock.json
++ src/app/features/send/models/send-progress.ts
++ src/app/features/send/services/qr-encoder.ts
++ src/app/features/send/services/qr-encoder.spec.ts
++ src/app/features/send/managers/send-sequence-manager.ts
++ src/app/features/send/managers/send-sequence-manager.spec.ts
+```
+
+**Notas:**
+- Dependencias añadidas: `qrcode` (^1.5.4) y `@types/qrcode` (dev). Con corrección M, 412 B (cabecera + 400 B) dan un QR versión 15 de 77 módulos.
+- Cadencia de 8 fps (125 ms) medida contra el instante de inicio para no acumular deriva; los QR se codifican bajo demanda, no todos de antemano, para no retener miles de matrices en memoria.
+- El tiempo por vuelta se muestra como no disponible (`null`, «calculando…» en la interfaz) hasta emitir 2 QR; después es total × 125 ms.
+
+**Decisiones adicionales:**
+- El manager vive en `features/send/managers/` (no en `services/`, como decía la tarea), según la ubicación que fija el ADR-011 para los managers de feature.
+- El manager expone `currentQr` (matriz a dibujar) y `progress` (activa, índice, total, vuelta, tiempo estimado); el dibujo en canvas es de la pantalla de envío (TK-004).
+
+**Cobertura de test cases:**
+- TC-021 (corrección M y 400 B): cubierto en unitaria con el codificador real (versión/tamaño del QR); la lectura con cámara queda para TK-006.
+- TC-009 y TC-010 (velocidad automática, bucle tras tres vueltas): cubiertos en unitaria con temporizadores simulados, no con la pantalla completa.
 
 ### TK-004: Pantalla de envío: selección de archivo, emisión y estados de error
 
