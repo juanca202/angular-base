@@ -6,7 +6,7 @@
 **Estado:** In Progress
 **Tipo:** historia de usuario
 **Fecha de creación:** 2026-10-08 17:24
-**Ultima actualizacion:** 2026-10-08 17:29
+**Ultima actualizacion:** 2026-10-08 17:32
 
 ## Unidades
 
@@ -106,5 +106,28 @@
 
 ### TK-004: Validación manual y escenarios E2E del historial
 
-<!-- unit:id=TK-004 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-004 · status=In Progress -->
+**Estado:** In Progress
+**Iniciado:** 2026-10-08 17:31
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ e2e/history.spec.ts
++ docs/specs/changes/user-stories/US-003-historial-transferencias/assets/guion-validacion-historial.md
+```
+
+**Notas:**
+- IT-01 a IT-03 hechas: 13 escenarios E2E con el historial sembrado directamente en el almacenamiento privado (orden, Todos por defecto, filtros, volver con Todos, descarga con nombre original y con espacios/acentos/varios puntos, ninguna salida sin pulsar Exportar, eliminar confirmando y cancelando con comprobación del espacio liberado, eliminar la última entrada, historial vacío y ausencia de desplazamiento horizontal a 360 y 1280 px con un nombre largo). Pasan los 13 contra `ng serve` en el puerto 4300 (el 4200 lo ocupaba otro proyecto, y la config de Playwright reutiliza el servidor existente).
+- IT-02 hecha: guion manual con hoja de registro en `assets/guion-validacion-historial.md`.
+- PENDIENTE (IT-04): ejecutar el guion en un móvil Android con Chrome (compartir y cancelar compartir, y revisar los iconos) y registrar los resultados aquí. No se puede hacer desde el agente. Mientras no se haga, la tarea no puede pasar a `Done`.
+
+**Decisiones adicionales:**
+- El E2E no comprueba pixeles (Visual Test de TC-015/TC-016): la ausencia de desplazamiento horizontal se verifica midiendo `scrollWidth` frente a `clientWidth`.
+- En la interfaz, Exportar (descarga) y Compartir son dos botones; el TC-007 describe «Exportar y elegir compartir». El guion manual lo refleja.
+
+**Cobertura de test cases:**
+- TC-007 y TC-008: manuales por diseño, pendientes de ejecutar (IT-04).
+- TC-002 (orden con inserción desordenada) y TC-013 (solo almacenamiento privado, Integration) se cubren con pruebas unitarias del servicio de historial (TK-001); el E2E comprueba además que no hay peticiones externas.
+- TC-015 y TC-016 declaran también Visual Test: solo se automatizó la parte E2E (medición del desplazamiento), no una comparación visual.
+- TC-009 y TC-010 declaran también Integration: se cubren con pruebas unitarias de `FileExport` y del historial (sin una suite de integración).

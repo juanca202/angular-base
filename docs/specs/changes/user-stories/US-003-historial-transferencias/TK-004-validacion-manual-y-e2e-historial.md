@@ -33,9 +33,9 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Preparar el sembrado del historial (entradas enviadas y recibidas con fechas y tamaños conocidos) para los escenarios
-- [ ] **IT-02** — Escribir los escenarios E2E de lista, filtros, exportar por descarga, eliminar (confirmar y cancelar), estado vacío y desplazamiento horizontal a 360 px y 1280 px
-- [ ] **IT-03** — Redactar el guion manual de compartir con otras aplicaciones y de su cancelación, con hoja de registro
+- [x] **IT-01** — Preparar el sembrado del historial (entradas enviadas y recibidas con fechas y tamaños conocidos) para los escenarios
+- [x] **IT-02** — Escribir los escenarios E2E de lista, filtros, exportar por descarga, eliminar (confirmar y cancelar), estado vacío y desplazamiento horizontal a 360 px y 1280 px
+- [x] **IT-03** — Redactar el guion manual de compartir con otras aplicaciones y de su cancelación, con hoja de registro
 - [ ] **IT-04** — Ejecutar el guion en Chrome para Android y registrar los resultados en el `progress.md`
 
 ## Observaciones
