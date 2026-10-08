@@ -14,6 +14,7 @@ import { StorageQuotaError } from '@/core/services/storage-quota-error';
 import { QrCanvas } from '@/features/send/components/qr-canvas';
 import { SendSequenceManager } from '@/features/send/managers/send-sequence-manager';
 import { SendFileValidator } from '@/features/send/services/send-file-validator';
+import { formatSize } from '@/shared/utils/format-size';
 import { countFragments, fragmentFile } from '@/shared/utils/qr-protocol';
 
 /** Datos del archivo que se muestran bajo el QR. */
@@ -22,21 +23,6 @@ interface SendInfo {
   readonly type: string;
   readonly size: number;
   readonly totalQr: number;
-}
-
-/** Formatea un tamaño en bytes con la unidad más legible. */
-function formatSize(bytes: number): string {
-  if (bytes < 1024) {
-    return `${bytes} B`;
-  }
-  const units = ['KB', 'MB', 'GB'];
-  let value = bytes / 1024;
-  let unit = 0;
-  while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024;
-    unit++;
-  }
-  return `${value.toFixed(1)} ${units[unit]}`;
 }
 
 /** Formatea una duración en milisegundos como minutos y segundos. */

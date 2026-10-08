@@ -103,6 +103,17 @@ export class PrivateStorage {
   }
 
   /**
+   * Elimina una copia guardada y su registro, liberando el espacio que ocupan.
+   *
+   * No falla si el registro ya no existe.
+   *
+   * @param id - Identificador del registro.
+   */
+  public async remove(id: string): Promise<void> {
+    await this.discard(await this.directory(), id);
+  }
+
+  /**
    * Solicita al navegador almacenamiento persistente para reducir el riesgo de que borre los archivos.
    *
    * @returns `true` si el almacenamiento quedó persistente; `false` si no está disponible o se denegó.
