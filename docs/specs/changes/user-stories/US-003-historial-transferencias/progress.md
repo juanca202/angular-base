@@ -6,7 +6,7 @@
 **Estado:** In Progress
 **Tipo:** historia de usuario
 **Fecha de creación:** 2026-10-08 17:24
-**Ultima actualizacion:** 2026-10-08 17:25
+**Ultima actualizacion:** 2026-10-08 17:26
 
 ## Unidades
 
@@ -42,8 +42,27 @@
 
 ### TK-002: Servicio de exportación
 
-<!-- unit:id=TK-002 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-002 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08 17:26
+**Finalizado:** 2026-10-08 17:26
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ src/app/core/services/file-export.ts
++ src/app/core/services/file-export.spec.ts
+```
+
+**Notas:**
+- El servicio recibe un `File`; la pantalla (TK-003) lo obtiene con `PrivateStorage.read(id)`.
+- Exportar por descarga y compartir con otras apps se verifica aquí con dobles; compartir en un móvil real es manual (TK-004).
+
+**Decisiones adicionales:**
+- Saneamiento de nombres (pendiente en el TK): no se modifica ningún carácter; se exporta el nombre original tal cual. Los nombres duplicados los resuelve el navegador al descargar. El caso de nombres especiales (TC-009) no necesita ajuste.
+
+**Cobertura de test cases:**
+- TC-006, TC-007, TC-008, TC-009 y TC-014: los E2E y manuales se completan en TK-004; aquí se cubren sus reglas con pruebas unitarias del servicio.
 
 ### TK-003: Pantalla de inicio e historial
 

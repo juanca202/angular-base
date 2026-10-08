@@ -37,11 +37,11 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Implementar la exportación por descarga con el nombre original y liberar la URL de objeto al terminar
-- [ ] **IT-02** — Implementar el compartir con archivos cuando `canShare` lo admita, y tratar el cierre de la hoja sin elegir aplicación como una cancelación sin efectos
-- [ ] **IT-03** — Exponer si compartir está disponible para que la interfaz ofrezca solo las opciones posibles
-- [ ] **IT-04** — Probar con dobles: nombre original (con espacios, acentos y varios puntos), contenido idéntico, cancelación de compartir y ausencia de salida sin llamada explícita
-- [ ] **IT-05** — Documentar con TSDoc
+- [x] **IT-01** — Implementar la exportación por descarga con el nombre original y liberar la URL de objeto al terminar
+- [x] **IT-02** — Implementar el compartir con archivos cuando `canShare` lo admita, y tratar el cierre de la hoja sin elegir aplicación como una cancelación sin efectos
+- [x] **IT-03** — Exponer si compartir está disponible para que la interfaz ofrezca solo las opciones posibles
+- [x] **IT-04** — Probar con dobles: nombre original (con espacios, acentos y varios puntos), contenido idéntico, cancelación de compartir y ausencia de salida sin llamada explícita
+- [x] **IT-05** — Documentar con TSDoc
 
 ## Observaciones
 
