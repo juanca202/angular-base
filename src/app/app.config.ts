@@ -15,6 +15,7 @@ import { environment } from '@/environments/environment';
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 
 import { AppManager } from '@/core/services/app-manager';
+import { AppUpdate } from '@/core/services/app-update';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -28,6 +29,7 @@ export const appConfig: ApplicationConfig = {
       const appManager = inject(AppManager);
       await appManager.init();
     }),
+    provideAppInitializer(() => inject(AppUpdate).watch()),
     provideHttpClient(withInterceptors([clientInterceptor, languageInterceptor])),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),

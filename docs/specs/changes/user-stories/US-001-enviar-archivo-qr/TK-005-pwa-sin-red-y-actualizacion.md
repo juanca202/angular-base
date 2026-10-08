@@ -36,11 +36,11 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Revisar y ajustar `ngsw-config.json` para cachear todos los recursos de la aplicación necesarios sin conexión
-- [ ] **IT-02** — Implementar el servicio de actualización con `SwUpdate`: detectar la versión nueva y activarla con aviso al usuario
-- [ ] **IT-03** — Verificar que el código de envío no hace peticiones de red (sin telemetría ni recursos externos)
-- [ ] **IT-04** — Escribir la prueba E2E: cargar con red, pasar a modo sin conexión, enviar un archivo y comprobar que no hay peticiones durante el envío
-- [ ] **IT-05** — Probar el servicio de actualización con un `SwUpdate` simulado
+- [x] **IT-01** — Revisar y ajustar `ngsw-config.json` para cachear todos los recursos de la aplicación necesarios sin conexión
+- [x] **IT-02** — Implementar el servicio de actualización con `SwUpdate`: detectar la versión nueva y activarla con aviso al usuario
+- [x] **IT-03** — Verificar que el código de envío no hace peticiones de red (sin telemetría ni recursos externos)
+- [x] **IT-04** — Escribir la prueba E2E: cargar con red, pasar a modo sin conexión, enviar un archivo y comprobar que no hay peticiones durante el envío
+- [x] **IT-05** — Probar el servicio de actualización con un `SwUpdate` simulado
 
 ## Observaciones
 

@@ -40,9 +40,9 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Definir el modelo del registro de una transferencia almacenada
-- [ ] **IT-02** — Implementar el guardado de la copia (archivo y registro) en OPFS con el decorador `@Service`
-- [ ] **IT-03** — Detectar la cuota agotada (estimación previa y errores de escritura) y lanzar el error tipado sin dejar archivos a medias
-- [ ] **IT-04** — Exponer lectura y listado de copias para el historial y la operación de solicitar almacenamiento persistente
-- [ ] **IT-05** — Probar con un doble de OPFS: guardado correcto, cuota agotada y limpieza de la escritura incompleta
-- [ ] **IT-06** — Documentar con TSDoc
+- [x] **IT-01** — Definir el modelo del registro de una transferencia almacenada
+- [x] **IT-02** — Implementar el guardado de la copia (archivo y registro) en OPFS con el decorador `@Service`
+- [x] **IT-03** — Detectar la cuota agotada (estimación previa y errores de escritura) y lanzar el error tipado sin dejar archivos a medias
+- [x] **IT-04** — Exponer lectura y listado de copias para el historial y la operación de solicitar almacenamiento persistente
+- [x] **IT-05** — Probar con un doble de OPFS: guardado correcto, cuota agotada y limpieza de la escritura incompleta
+- [x] **IT-06** — Documentar con TSDoc

@@ -6,8 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { Icon } from '@factor_ec/ui';
 import { Error as ErrorModel, Storage } from '@factor_ec/utils';
-
-import { AuthProvider } from '@factor_ec/utils';
 import { environment } from '@/environments/environment';
 
 /**
@@ -28,7 +26,6 @@ import { environment } from '@/environments/environment';
 })
 export class Error implements OnInit {
   // Dependency injection
-  public readonly authProvider = inject(AuthProvider);
   private readonly storage = inject(Storage);
   private readonly title = inject(Title);
   private readonly route = inject(ActivatedRoute);

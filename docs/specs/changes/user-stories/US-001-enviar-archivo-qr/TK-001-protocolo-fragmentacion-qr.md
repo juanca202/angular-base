@@ -41,10 +41,10 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Definir las constantes del formato (versión, cabecera, datos por defecto de 400 B, máximo de fragmentos)
-- [ ] **IT-02** — Implementar el CRC32 con pruebas
-- [ ] **IT-03** — Implementar la fragmentación: fragmento de metadatos (nombre, tipo, tamaño, SHA-256) y fragmentos de datos con cabecera completa
+- [x] **IT-01** — Definir las constantes del formato (versión, cabecera, datos por defecto de 400 B, máximo de fragmentos)
+- [x] **IT-02** — Implementar el CRC32 con pruebas
+- [x] **IT-03** — Implementar la fragmentación: fragmento de metadatos (nombre, tipo, tamaño, SHA-256) y fragmentos de datos con cabecera completa
   Cada fragmento lleva identificador de transferencia, posición, total, versión, longitud, carga y CRC32; el identificador es aleatorio por transferencia.
-- [ ] **IT-04** — Validar el límite de fragmentos y devolver un error tipado cuando un archivo lo excede; aceptar el tamaño de datos como parámetro con 400 B por defecto
-- [ ] **IT-05** — Probar que el módulo corre sin DOM ni cámara y que recuperar nombre, tipo y hash desde los metadatos da los valores originales
-- [ ] **IT-06** — Documentar la API pública con TSDoc y exportarla desde `index.ts`
+- [x] **IT-04** — Validar el límite de fragmentos y devolver un error tipado cuando un archivo lo excede; aceptar el tamaño de datos como parámetro con 400 B por defecto
+- [x] **IT-05** — Probar que el módulo corre sin DOM ni cámara y que recuperar nombre, tipo y hash desde los metadatos da los valores originales
+- [x] **IT-06** — Documentar la API pública con TSDoc y exportarla desde `index.ts`

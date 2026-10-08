@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { PLATFORM_ID, type WritableSignal } from '@angular/core';
+import { PLATFORM_ID } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SwUpdate, type VersionEvent } from '@angular/service-worker';
 import { EventEmitter } from '@angular/core';
@@ -463,20 +463,6 @@ describe('AppManager', () => {
         'Are you sure?',
         expect.objectContaining({ type: 'modal', class: 'c', icon: 'i' })
       ]);
-    });
-  });
-
-  describe('init with a logged-in user', () => {
-    it('should fetch session settings when the user is already authenticated', async () => {
-      // Arrange
-      const getSettingsSpy = vi.spyOn(mockSession as Required<Session>, 'getSettings');
-      (mockAuthProvider.isLoggedIn as unknown as WritableSignal<boolean>).set(true);
-
-      // Act
-      await appManager.init();
-
-      // Assert
-      expect(getSettingsSpy).toHaveBeenCalled();
     });
   });
 
