@@ -46,12 +46,12 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Implementar el validador del archivo elegido: vacío, máximo de fragmentos y compatibilidad del navegador, con mensajes claros
-- [ ] **IT-02** — Implementar el componente que dibuja el QR en un canvas con el tamaño necesario
-- [ ] **IT-03** — Implementar la pantalla de envío: selector de un solo archivo, orquestación con el manager, copia en almacenamiento, información del archivo y cancelación sin confirmación
-- [ ] **IT-04** — Mostrar los mensajes de error y no iniciar la transferencia cuando falle una validación o la cuota
-- [ ] **IT-05** — Maquetar con Tailwind para 360 px a 1280 px o más sin desplazamiento horizontal, incluidos los estados de error
-- [ ] **IT-06** — Registrar la ruta `/enviar` con carga diferida y probar los estados con Testing Library
+- [x] **IT-01** — Implementar el validador del archivo elegido: vacío, máximo de fragmentos y compatibilidad del navegador, con mensajes claros
+- [x] **IT-02** — Implementar el componente que dibuja el QR en un canvas con el tamaño necesario
+- [x] **IT-03** — Implementar la pantalla de envío: selector de un solo archivo, orquestación con el manager, copia en almacenamiento, información del archivo y cancelación sin confirmación
+- [x] **IT-04** — Mostrar los mensajes de error y no iniciar la transferencia cuando falle una validación o la cuota
+- [x] **IT-05** — Maquetar con Tailwind para 360 px a 1280 px o más sin desplazamiento horizontal, incluidos los estados de error
+- [x] **IT-06** — Registrar la ruta `/enviar` con carga diferida y probar los estados con Testing Library
 
 ## Observaciones
 

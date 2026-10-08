@@ -1,0 +1,52 @@
+<section class="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-6">
+  <h1 class="text-2xl font-semibold" i18n>Enviar archivo</h1>
+
+  <input
+    #fileInput
+    type="file"
+    class="hidden"
+    aria-label="Elegir archivo"
+    i18n-aria-label
+    (change)="onFileChosen($event)"
+  />
+
+  @if (error(); as message) {
+    <p role="alert" class="rounded-md border border-red-300 bg-red-50 p-3 text-red-900">
+      {{ message }}
+    </p>
+  }
+
+  @if (sending() && info(); as file) {
+    <div class="mx-auto w-full max-w-sm">
+      <app-qr-canvas [matrix]="currentQr()" />
+    </div>
+
+    <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+      <dt class="font-medium" i18n>Nombre</dt>
+      <dd class="break-all">{{ file.name }}</dd>
+      <dt class="font-medium" i18n>Tipo</dt>
+      <dd class="break-all">{{ file.type }}</dd>
+      <dt class="font-medium" i18n>Tamaño</dt>
+      <dd>{{ fileSize() }}</dd>
+      <dt class="font-medium" i18n>Códigos QR</dt>
+      <dd>{{ file.totalQr }}</dd>
+      <dt class="font-medium" i18n>Tiempo por vuelta</dt>
+      <dd>{{ lapTime() }}</dd>
+    </dl>
+
+    <button type="button" matButton="outlined" class="self-center" (click)="cancel()" i18n>
+      Cancelar
+    </button>
+  } @else {
+    <button
+      type="button"
+      matButton="filled"
+      class="self-center"
+      [disabled]="busy()"
+      (click)="openPicker()"
+      i18n
+    >
+      Elegir archivo
+    </button>
+  }
+</section>

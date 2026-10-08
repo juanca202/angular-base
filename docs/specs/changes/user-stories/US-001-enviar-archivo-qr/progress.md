@@ -106,8 +106,38 @@
 
 ### TK-004: Pantalla de envío: selección de archivo, emisión y estados de error
 
-<!-- unit:id=TK-004 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-004 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08
+**Finalizado:** 2026-10-08
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
+~ angular.json
+~ src/app/app.routes.ts
++ src/app/features/send/components/qr-canvas.ts
++ src/app/features/send/components/qr-canvas.spec.ts
++ src/app/features/send/components/send-page.ts
++ src/app/features/send/components/send-page.html
++ src/app/features/send/components/send-page.spec.ts
++ src/app/features/send/services/send-file-validator.ts
+```
+
+**Notas:**
+- Ruta `/enviar` con carga diferida (chunk de unos 36 kB). Al entrar intenta abrir el selector; si el navegador lo bloquea por falta de gesto del usuario, queda el botón «Elegir archivo».
+- Tras cancelar, la pantalla vuelve al estado de elegir archivo: la pantalla de inicio (a donde debería volver) pertenece a US-003 y aún no existe.
+- El mensaje de cuota agotada se muestra tanto si falla la estimación previa como la escritura (ambos lanzan `StorageQuotaError`).
+
+**Decisiones adicionales:**
+- Se añadió `allowedCommonJsDependencies: ["qrcode"]` en `angular.json` para silenciar el aviso de que `qrcode` no es ESM.
+- Los textos están en español con `$localize`/`i18n`, el idioma de la especificación.
+- La tarea no pidió validador de compatibilidad más allá de OPFS y `crypto.subtle`; el chequeo de otras APIs queda para TK-005/TK-006 si hace falta.
+- El presupuesto inicial del build ya se excedía antes de esta tarea (501,74 kB frente a 500 kB); ahora son 506,49 kB por el código de enrutado y de `$localize`; sigue siendo solo un aviso.
+
+**Cobertura de test cases:**
+- TC-013, TC-014, TC-015, TC-018 y TC-024 (errores de archivo vacío, cuota, navegador y límite de fragmentos): cubiertos en unitaria con Testing Library; los E2E y el modo avión llegan con TK-006.
+- TC-020 (360–1280 px sin desplazamiento horizontal): la maquetación usa solo utilidades Tailwind responsivas; no hay prueba automática de ancho todavía, queda para el E2E de TK-006.
 
 ### TK-005: PWA instalable sin red y estrategia de actualización
 
