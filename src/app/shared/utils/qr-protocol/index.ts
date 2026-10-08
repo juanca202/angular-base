@@ -19,3 +19,14 @@ export type {
   ProtocolFile,
   QrProtocolErrorCode,
 } from '@/shared/utils/qr-protocol/fragment-file';
+export { FragmentAssembler } from '@/shared/utils/qr-protocol/fragment-assembler';
+export type { FragmentStatus } from '@/shared/utils/qr-protocol/fragment-assembler';
+export { parseFragment } from '@/shared/utils/qr-protocol/parse-fragment';
+export type { ParsedFragment } from '@/shared/utils/qr-protocol/parse-fragment';
+export type {
+  ReceivedFile,
+  ReceptionOutcome,
+  ReceptionProgress,
+  ReceptionResult,
+  TransferMetadata,
+} from '@/shared/utils/qr-protocol/reception-result';

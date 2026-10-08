@@ -41,10 +41,10 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Definir el resultado tipado de la recepción y el avance (recibidos, total)
-- [ ] **IT-02** — Implementar la decodificación de un fragmento con validación de versión, longitud y CRC32; descartar los inválidos sin lanzar errores
-- [ ] **IT-03** — Implementar el ensamblador: fijar la transferencia a partir de los metadatos, descartar fragmentos de otro identificador, aceptar desorden e ignorar repetidos
-- [ ] **IT-04** — Reconstruir el archivo al tener todos los fragmentos y verificar el SHA-256; distinguir «datos inválidos» (falla la verificación) de «no reconstruible» (metadatos inconsistentes)
-- [ ] **IT-05** — Exponer el resultado «incompleta» cuando se pide cerrar con fragmentos faltantes, conservando los válidos para seguir leyendo, y permitir reiniciar desde cero
-- [ ] **IT-06** — Probar con fragmentos corruptos, ajenos, desordenados, repetidos, hash alterado y metadatos inconsistentes; comprobar que el archivo reconstruido es idéntico byte a byte
-- [ ] **IT-07** — Documentar con TSDoc
+- [x] **IT-01** — Definir el resultado tipado de la recepción y el avance (recibidos, total)
+- [x] **IT-02** — Implementar la decodificación de un fragmento con validación de versión, longitud y CRC32; descartar los inválidos sin lanzar errores
+- [x] **IT-03** — Implementar el ensamblador: fijar la transferencia a partir de los metadatos, descartar fragmentos de otro identificador, aceptar desorden e ignorar repetidos
+- [x] **IT-04** — Reconstruir el archivo al tener todos los fragmentos y verificar el SHA-256; distinguir «datos inválidos» (falla la verificación) de «no reconstruible» (metadatos inconsistentes)
+- [x] **IT-05** — Exponer el resultado «incompleta» cuando se pide cerrar con fragmentos faltantes, conservando los válidos para seguir leyendo, y permitir reiniciar desde cero
+- [x] **IT-06** — Probar con fragmentos corruptos, ajenos, desordenados, repetidos, hash alterado y metadatos inconsistentes; comprobar que el archivo reconstruido es idéntico byte a byte
+- [x] **IT-07** — Documentar con TSDoc

@@ -12,11 +12,33 @@
 
 ### TK-001: Decodificador y reensamblador del protocolo de fragmentación
 
-<!-- unit:id=TK-001 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-001 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08 16:00
+**Finalizado:** 2026-10-08 16:10
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ src/app/shared/utils/qr-protocol/reception-result.ts
++ src/app/shared/utils/qr-protocol/parse-fragment.ts
++ src/app/shared/utils/qr-protocol/parse-fragment.spec.ts
++ src/app/shared/utils/qr-protocol/fragment-assembler.ts
++ src/app/shared/utils/qr-protocol/fragment-assembler.spec.ts
+~ src/app/shared/utils/qr-protocol/index.ts
+```
 
 **Notas:**
-- Excluida de esta ejecución: depende de TK-001 de US-001 (protocolo), aún sin implementar.
+- La rama de US-002 incorporó `feature/US-001-enviar-archivo-qr` mediante un merge (`f349803`) para disponer del protocolo y del almacenamiento privado, que aún no están en `main`; los conflictos de `package.json` y `package-lock.json` se resolvieron conservando `jsqr` y `qrcode`. Al integrar, US-001 debe entrar primero.
+- Pruebas del módulo `qr-protocol`: 38 de 38 en verde (incluye las de US-001); lint y typecheck sin errores.
+
+**Decisiones adicionales:**
+- `FragmentAssembler` fija la transferencia con el primer fragmento válido (o con el identificador del constructor) y descarta los de otra transferencia; expone `accept`, `progress`, `metadata`, `finish` y `reset` para que el gestor (TK-004) lo use por transferencia candidata.
+- «No reconstruible» cubre metadatos mal formados o cuyo tamaño no coincide con la suma de los datos; «datos inválidos» es el fallo del SHA-256 con todos los fragmentos presentes.
+- Un fragmento cuyo total difiere del ya fijado se descarta como inválido.
+
+**Cobertura de test cases:**
+- TC-002, TC-003, TC-004, TC-005, TC-010 (lógica), TC-011, TC-012 y TC-023 se cubren con pruebas unitarias del módulo; sus pasos de interfaz se cubren en TK-004 a TK-007.
 
 ### TK-002: Guardado del archivo recibido en el almacenamiento privado
 
