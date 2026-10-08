@@ -6,7 +6,7 @@
 **Estado:** In Progress
 **Tipo:** historia de usuario
 **Fecha de creación:** 2026-10-08 17:24
-**Ultima actualizacion:** 2026-10-08 17:26
+**Ultima actualizacion:** 2026-10-08 17:29
 
 ## Unidades
 
@@ -66,8 +66,43 @@
 
 ### TK-003: Pantalla de inicio e historial
 
-<!-- unit:id=TK-003 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-003 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08 17:28
+**Finalizado:** 2026-10-08 17:29
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ src/app/features/home/components/home-page.ts
++ src/app/features/home/components/home-page.html
++ src/app/features/home/components/home-page.spec.ts
++ src/app/features/home/components/history-list.ts
++ src/app/features/home/components/history-list.html
++ src/app/shared/utils/format-size.ts
++ src/app/shared/utils/format-size.spec.ts
+~ src/app/app.routes.ts
+~ src/app/core/services/file-export.ts
+~ src/app/core/services/file-export.spec.ts
+~ src/app/features/send/components/send-page.ts
+```
+
+**Notas:**
+- Los nombres de los iconos de `ft-icon` (`upload`, `camera`, `download`, `share`, `trash`) no se pudieron verificar: el sprite `images/factoricons-regular.svg` no está en el repositorio. Todas las acciones llevan texto, así que la pantalla funciona aunque algún icono no exista; confirmarlos en la validación manual (TK-004).
+- El aviso de presupuesto del bundle inicial subió de +5.84 kB a +20.83 kB tras esta tarea (home-page es un chunk diferido de 8 kB); conviene revisar qué entró en el bundle principal.
+- La ruta `/recibir` aún no existe (la registrará US-002): hoy el botón Recibir lleva a la pantalla de error 404.
+- Las pruebas de accesibilidad (AXE) y de ausencia de desplazamiento horizontal se hacen en los E2E de TK-004.
+
+**Decisiones adicionales:**
+- Se añadió `FileExport.isShareAvailable()` (TK-002) para que la pantalla decida si muestra Compartir sin tener que leer antes el archivo.
+- Exportar siempre descarga; Compartir es una acción adicional que solo aparece si el navegador la ofrece (así TC-006 y TC-007 son verificables por separado).
+- `formatSize` pasó a `shared/utils` y `send-page` lo reutiliza para no duplicarlo.
+- Con entradas pero un filtro sin resultados se muestra «No hay transferencias en este filtro»; «Aún no hay transferencias» queda para el historial realmente vacío.
+- La confirmación de eliminar usa `confirm()` del puente de notificaciones (ADR-009), con acciones Eliminar / Cancelar.
+
+**Cobertura de test cases:**
+- TC-001, TC-003, TC-004, TC-005, TC-006, TC-010, TC-012, TC-015 y TC-016 son E2E o de pantalla: aquí se cubren con pruebas de componente (Testing Library) y los E2E se escriben en TK-004.
+- TC-007 y TC-008 (compartir) son manuales por diseño.
 
 ### TK-004: Validación manual y escenarios E2E del historial
 

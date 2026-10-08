@@ -46,13 +46,13 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Registrar la ruta `/` con carga diferida
-- [ ] **IT-02** — Implementar la pantalla con los botones Enviar y Recibir con icono y la navegación a sus rutas
-- [ ] **IT-03** — Implementar la lista del historial con el filtro (Todos por defecto) y el contenido de cada fila
-- [ ] **IT-04** — Implementar el estado vacío con el mensaje «Aún no hay transferencias»
-- [ ] **IT-05** — Implementar las acciones Exportar (descarga o compartir según disponibilidad) y Eliminar con confirmación previa
-- [ ] **IT-06** — Maquetar con Tailwind para 360 px a 1280 px o más sin desplazamiento horizontal, incluidos nombres largos
-- [ ] **IT-07** — Probar con Testing Library: orden, filtros, estado vacío, confirmación de eliminar y su cancelación
+- [x] **IT-01** — Registrar la ruta `/` con carga diferida
+- [x] **IT-02** — Implementar la pantalla con los botones Enviar y Recibir con icono y la navegación a sus rutas
+- [x] **IT-03** — Implementar la lista del historial con el filtro (Todos por defecto) y el contenido de cada fila
+- [x] **IT-04** — Implementar el estado vacío con el mensaje «Aún no hay transferencias»
+- [x] **IT-05** — Implementar las acciones Exportar (descarga o compartir según disponibilidad) y Eliminar con confirmación previa
+- [x] **IT-06** — Maquetar con Tailwind para 360 px a 1280 px o más sin desplazamiento horizontal, incluidos nombres largos
+- [x] **IT-07** — Probar con Testing Library: orden, filtros, estado vacío, confirmación de eliminar y su cancelación
 
 ## Observaciones
 

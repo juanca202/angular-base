@@ -40,6 +40,16 @@ export class FileExport {
   }
 
   /**
+   * Indica si el navegador ofrece la opción de compartir archivos, para decidir si la interfaz
+   * muestra la acción. Que un archivo concreto se pueda compartir se comprueba con {@link canShare}.
+   *
+   * @returns `true` si el navegador expone `navigator.share` y `navigator.canShare`.
+   */
+  public isShareAvailable(): boolean {
+    return typeof navigator.share === 'function' && typeof navigator.canShare === 'function';
+  }
+
+  /**
    * Indica si el navegador permite compartir este archivo con otras aplicaciones, para que la
    * interfaz ofrezca solo las opciones posibles.
    *

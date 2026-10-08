@@ -47,6 +47,14 @@ describe('FileExport', () => {
   });
 
   describe('compartir', () => {
+    it('informa si el navegador ofrece compartir', () => {
+      vi.stubGlobal('navigator', { share: vi.fn(), canShare: vi.fn() });
+      expect(service.isShareAvailable()).toBe(true);
+
+      vi.stubGlobal('navigator', {});
+      expect(service.isShareAvailable()).toBe(false);
+    });
+
     it('no está disponible si el navegador no admite compartir archivos', () => {
       vi.stubGlobal('navigator', {});
 
