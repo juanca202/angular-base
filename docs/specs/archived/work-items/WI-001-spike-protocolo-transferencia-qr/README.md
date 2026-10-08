@@ -5,7 +5,7 @@
 **Tipo:** spike
 **Subtipo:** técnico
 **Repositorio:** transferencia-qr-web
-**Origen:** [SRS-001: Transferencia de archivos mediante secuencia de QR](../../requirements/SRS-001-transferencia-qr/README.md) (sección 2.5), [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md), [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md)
+**Origen:** [SRS-001: Transferencia de archivos mediante secuencia de QR](../../../changes/requirements/SRS-001-transferencia-qr/README.md) (sección 2.5), [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md), [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md)
 **Timebox:** 2 días
 **Resolución:** Re-espigado (WI-002)
 
@@ -15,7 +15,7 @@
 
 ## Contexto
 
-Las [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md) no pueden pasar a Ready, y el SRS-001 tampoco, hasta tener los NFR de rendimiento y compatibilidad, la capacidad efectiva por QR y la fórmula del tiempo estimado con su precisión aceptable. El protocolo debe seguir separado de la UI y llevar número de versión (NFR-005). El stack es Angular sobre el proyecto base angular-base.
+Las [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md) no pueden pasar a Ready, y el SRS-001 tampoco, hasta tener los NFR de rendimiento y compatibilidad, la capacidad efectiva por QR y la fórmula del tiempo estimado con su precisión aceptable. El protocolo debe seguir separado de la UI y llevar número de versión (NFR-005). El stack es Angular sobre el proyecto base angular-base.
 
 ## Hipótesis
 
@@ -58,8 +58,8 @@ Creemos que un fragmento por QR, con cabecera mínima (identificador de transfer
 
 ## Referencias
 
-- **Requerimiento:** [raw-requirement.md](../../requirements/SRS-001-transferencia-qr/references/raw-requirement.md)
-- **Diseño:** [WF-002](../../requirements/SRS-001-transferencia-qr/wireframes/WF-002-enviar-seleccion.md) y [WF-004](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) (referencia de contenido de pantalla; no se implementan).
+- **Requerimiento:** [raw-requirement.md](../../../changes/requirements/SRS-001-transferencia-qr/references/raw-requirement.md)
+- **Diseño:** [WF-002](../../../changes/requirements/SRS-001-transferencia-qr/wireframes/WF-002-enviar-seleccion.md) y [WF-004](../../../changes/requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) (referencia de contenido de pantalla; no se implementan).
 
 ## Enfoque del experimento
 

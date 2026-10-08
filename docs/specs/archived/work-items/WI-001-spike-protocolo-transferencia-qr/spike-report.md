@@ -74,8 +74,8 @@ No obligatoria con este veredicto; se dejan como punto de partida para el segund
 ## Impacto en el artefacto / próximo paso
 
 - Segundo spike más acotado (`/work-plan`, `Resolución: Re-espigado`), con móviles Android reales, sobre Q-01, Q-02, Q-05 y Q-06, y con el criterio de H-01 decidido.
-- Hasta entonces, [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md) siguen en Draft.
-- Registrar la regla de elección de transferencia (H-01) como criterio nuevo de la [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md) con `/work-define`.
+- Hasta entonces, [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md) siguen en Draft.
+- Registrar la regla de elección de transferencia (H-01) como criterio nuevo de la [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md) con `/work-define`.
 
 ## Fuentes
 

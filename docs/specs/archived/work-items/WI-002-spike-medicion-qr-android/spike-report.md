@@ -74,16 +74,16 @@ Consolidan los de este spike y los del [WI-001](../WI-001-spike-protocolo-transf
 
 | Laguna | Origen | Dónde se resuelve |
 |--------|--------|-------------------|
-| Tamaño de fragmento por defecto (400 B validado; 800 a 2000 B sin serie válida) | H-06, H-14 | TK de protocolo de [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md): prueba manual con serie de 10 intentos secuenciales |
+| Tamaño de fragmento por defecto (400 B validado; 800 a 2000 B sin serie válida) | H-06, H-14 | TK de protocolo de [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md): prueba manual con serie de 10 intentos secuenciales |
 | Regla de velocidad automática (fps) | H-08, H-14 | TK de emisión de la US-001 |
-| 1 MB en 15 minutos con hash idéntico (Q-02, Q-03) | H-14 | Criterio de aceptación de la US-001 y la [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md), verificado con transferencias reales |
+| 1 MB en 15 minutos con hash idéntico (Q-02, Q-03) | H-14 | Criterio de aceptación de la US-001 y la [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md), verificado con transferencias reales |
 | Modo sin red con la app instalada (Q-05) | H-12 | AC de funcionamiento sin conexión de la US-001 y la US-002; prueba manual en modo avión |
 | Elección de transferencia con una secuencia ajena (Q-06, H-01) | H-01, H-09 | Criterio nuevo en la US-002 (`/work-define`): mostrar nombre y tamaño y pedir confirmación; prueba con cámara |
 | Avance visible y aviso de confirmación antes de aceptar | H-09 | Criterio de la US-002 (progreso) y TK de interfaz de recepción |
 | Una lectura a la vez y estados de cámara | H-11 | TK de interfaz de recepción |
 | Corrección de errores o códigos de fuente | H-14, H-15 | Decisión del equipo antes de planificar; si se adopta, ADR con `arch-manage` y cambio del SRS-001 |
 | Compatibilidad con iOS y Firefox, y lector de reserva | H-07, H-17 | NFR de compatibilidad del SRS-001 y TK del lector con `jsQR` |
-| Persistencia del almacenamiento y cuota | H-12 | TK de almacenamiento de la [US-003](../../user-stories/US-003-historial-transferencias/README.md) y AC de errores de cuota |
+| Persistencia del almacenamiento y cuota | H-12 | TK de almacenamiento de la [US-003](../../../changes/user-stories/US-003-historial-transferencias/README.md) y AC de errores de cuota |
 | Límite de fragmentos y tamaño máximo de archivo | H-03 | TK de protocolo (validación) y criterio de aviso en la US-001 |
 | Estrategia de actualización del service worker | H-13 | TK de PWA de la US-001 y la US-002 |
 
@@ -115,7 +115,7 @@ Lo que funcionó: lectura estable de QR de 400 B, protocolo íntegro, APIs prese
 
 ## Impacto en el artefacto / próximo paso
 
-- Formalizar las historias con `/work-define`: actualizar [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md) con los criterios de este informe (tamaño de fragmento, confirmación de nombre y tamaño, criterios de verificación pendientes) y los NFR en el SRS-001.
+- Formalizar las historias con `/work-define`: actualizar [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md) con los criterios de este informe (tamaño de fragmento, confirmación de nombre y tamaño, criterios de verificación pendientes) y los NFR en el SRS-001.
 - Registrar la decisión sobre corrección de errores o códigos de fuente (ADR con `arch-manage` si se adopta).
 - `Resolución` de este WI: la fija el skill que cree el artefacto definitivo.
 

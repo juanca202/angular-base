@@ -5,9 +5,9 @@
 **Tipo:** spike
 **Subtipo:** técnico
 **Repositorio:** laboratorio-1
-**Origen:** [WI-001: Viabilidad del protocolo de transferencia por secuencia de QR](../WI-001-spike-protocolo-transferencia-qr/README.md) (veredicto no concluyente; informe en la rama `spike/WI-001-protocolo-transferencia-qr`), [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md), [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md)
+**Origen:** [WI-001: Viabilidad del protocolo de transferencia por secuencia de QR](../WI-001-spike-protocolo-transferencia-qr/README.md) (veredicto no concluyente; informe en la rama `spike/WI-001-protocolo-transferencia-qr`), [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md), [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md)
 **Timebox:** 1 día
-**Resolución:** Abierto
+**Resolución:** Replanificado (US-001, US-002)
 
 ## Pregunta de investigación
 
@@ -15,7 +15,7 @@
 
 ## Contexto
 
-El [WI-001](../WI-001-spike-protocolo-transferencia-qr/README.md) se cerró como no concluyente: validó el protocolo en Node con una cámara simulada, pero no pudo medir con cámara real. Su informe está solo en la rama `spike/WI-001-protocolo-transferencia-qr` (no en `main`); se lee con `git show spike/WI-001-protocolo-transferencia-qr:docs/specs/changes/work-items/WI-001-spike-protocolo-transferencia-qr/spike-report.md`. Dejó el hallazgo H-01: el receptor fija la primera transferencia que ve y puede completar una ajena. Mientras no haya mediciones reales, [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md) siguen en Draft.
+El [WI-001](../WI-001-spike-protocolo-transferencia-qr/README.md) se cerró como no concluyente: validó el protocolo en Node con una cámara simulada, pero no pudo medir con cámara real. Su informe está solo en la rama `spike/WI-001-protocolo-transferencia-qr` (no en `main`); se lee con `git show spike/WI-001-protocolo-transferencia-qr:docs/specs/changes/work-items/WI-001-spike-protocolo-transferencia-qr/spike-report.md`. Dejó el hallazgo H-01: el receptor fija la primera transferencia que ve y puede completar una ajena. Mientras no haya mediciones reales, [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md) siguen en Draft.
 
 ## Hipótesis
 
@@ -60,8 +60,8 @@ Creemos que fragmentos de 400 a 800 B con corrección de errores M, mostrados a 
 ## Referencias
 
 - **Spike previo:** [WI-001](../WI-001-spike-protocolo-transferencia-qr/README.md); informe en la rama `spike/WI-001-protocolo-transferencia-qr`.
-- **Requerimiento:** [raw-requirement.md](../../requirements/SRS-001-transferencia-qr/references/raw-requirement.md)
-- **Diseño:** [WF-004](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) (recepción; referencia de contenido, no se implementa).
+- **Requerimiento:** [raw-requirement.md](../../../changes/requirements/SRS-001-transferencia-qr/references/raw-requirement.md)
+- **Diseño:** [WF-004](../../../changes/requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) (recepción; referencia de contenido, no se implementa).
 
 ## Enfoque del experimento
 
