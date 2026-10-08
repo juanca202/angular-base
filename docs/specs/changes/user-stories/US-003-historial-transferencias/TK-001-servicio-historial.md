@@ -39,12 +39,12 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Definir el tipo del filtro (Todos, Recibidos, Enviados)
-- [ ] **IT-02** — Implementar el servicio de historial con el decorador `@Service`: carga de los registros del almacenamiento privado y orden del más reciente al más antiguo
-- [ ] **IT-03** — Aplicar el filtro por dirección sin alterar el orden
-- [ ] **IT-04** — Implementar la eliminación de una entrada: borra archivo y registro, y actualiza el historial
-- [ ] **IT-05** — Probar con almacenamiento simulado: orden con inserción desordenada, cada filtro, eliminación y espacio liberado, y que no haya accesos fuera del almacenamiento privado
-- [ ] **IT-06** — Documentar con TSDoc
+- [x] **IT-01** — Definir el tipo del filtro (Todos, Recibidos, Enviados)
+- [x] **IT-02** — Implementar el servicio de historial con el decorador `@Service`: carga de los registros del almacenamiento privado y orden del más reciente al más antiguo
+- [x] **IT-03** — Aplicar el filtro por dirección sin alterar el orden
+- [x] **IT-04** — Implementar la eliminación de una entrada: borra archivo y registro, y actualiza el historial
+- [x] **IT-05** — Probar con almacenamiento simulado: orden con inserción desordenada, cada filtro, eliminación y espacio liberado, y que no haya accesos fuera del almacenamiento privado
+- [x] **IT-06** — Documentar con TSDoc
 
 ## Observaciones
 

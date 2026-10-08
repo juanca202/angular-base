@@ -174,6 +174,21 @@ describe('PrivateStorage', () => {
     expect((await transfers()).files.size).toBe(0);
   });
 
+  it('elimina el archivo y su registro, y libera lo guardado', async () => {
+    const record = await service.save('sent', { name: 'a.pdf', type: '', bytes: bytes(10) });
+    const other = await service.save('received', { name: 'b.pdf', type: '', bytes: bytes(10) });
+
+    await service.remove(record.id);
+
+    expect(await service.list()).toEqual([other]);
+    expect((await transfers()).files.has(record.id)).toBe(false);
+    expect((await transfers()).files.has(record.id + '.json')).toBe(false);
+  });
+
+  it('no falla al eliminar un registro que ya no existe', async () => {
+    await expect(service.remove('inexistente')).resolves.toBeUndefined();
+  });
+
   it('solicita almacenamiento persistente', async () => {
     expect(await service.requestPersistence()).toBe(true);
     expect(navigator.storage.persist).toHaveBeenCalled();
