@@ -38,9 +38,9 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Resolver un nombre que no sobrescriba un archivo existente conservando el original para mostrarlo y exportarlo
-- [ ] **IT-02** — Guardar el archivo reconstruido y su registro como recibido usando el servicio de almacenamiento privado, con el tipo original
-- [ ] **IT-03** — Propagar el error de cuota agotada sin dejar archivo ni registro, y conservar el archivo recibido en memoria para que la pantalla pueda ofrecer su descarga
-- [ ] **IT-04** — Solicitar almacenamiento persistente tras un guardado correcto sin que su rechazo bloquee el guardado
-- [ ] **IT-05** — Probar guardado con nombre y tipo originales, mismo nombre sin sobrescribir, cuota agotada y solicitud de persistencia
-- [ ] **IT-06** — Documentar con TSDoc
+- [x] **IT-01** — Resolver un nombre que no sobrescriba un archivo existente conservando el original para mostrarlo y exportarlo
+- [x] **IT-02** — Guardar el archivo reconstruido y su registro como recibido usando el servicio de almacenamiento privado, con el tipo original
+- [x] **IT-03** — Propagar el error de cuota agotada sin dejar archivo ni registro, y conservar el archivo recibido en memoria para que la pantalla pueda ofrecer su descarga
+- [x] **IT-04** — Solicitar almacenamiento persistente tras un guardado correcto sin que su rechazo bloquee el guardado
+- [x] **IT-05** — Probar guardado con nombre y tipo originales, mismo nombre sin sobrescribir, cuota agotada y solicitud de persistencia
+- [x] **IT-06** — Documentar con TSDoc

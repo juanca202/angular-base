@@ -41,12 +41,12 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Definir el modelo de estado de la recepción (esperando, leyendo, esperando confirmación, resultado) y el avance con tiempo estimado restante
-- [ ] **IT-02** — Iniciar y detener la lectura delegando en el lector de cámara y propagando sus errores sin iniciar la recepción
-- [ ] **IT-03** — Alimentar el ensamblador con cada QR leído y actualizar el avance, también mientras se espera la confirmación
-- [ ] **IT-04** — Exponer la transferencia pendiente (nombre y tamaño) y resolver Confirmar o Descartar; no completar ni guardar nada antes de confirmar, e ignorar los fragmentos de una transferencia descartada
-- [ ] **IT-05** — Al reunir todos los fragmentos: reconstruir, verificar, liberar la cámara y solo entonces guardar y declarar «completada»; propagar el aviso de cuota agotada sin registrar
-- [ ] **IT-06** — Resolver «incompleta» al terminar la lectura, «datos inválidos» y «no reconstruible» sin guardar ni registrar
-- [ ] **IT-07** — Implementar cancelar sin confirmación (detiene, descarta parciales y libera la cámara), seguir escaneando tras «incompleta» y reintentar desde cero tras un error; sin persistir parciales
-- [ ] **IT-08** — Probar el flujo completo con dobles: confirmación y descarte, los cuatro resultados, cancelación, continuar y reintentar, y que no se guarda en los casos de error
-- [ ] **IT-09** — Documentar con TSDoc
+- [x] **IT-01** — Definir el modelo de estado de la recepción (esperando, leyendo, esperando confirmación, resultado) y el avance con tiempo estimado restante
+- [x] **IT-02** — Iniciar y detener la lectura delegando en el lector de cámara y propagando sus errores sin iniciar la recepción
+- [x] **IT-03** — Alimentar el ensamblador con cada QR leído y actualizar el avance, también mientras se espera la confirmación
+- [x] **IT-04** — Exponer la transferencia pendiente (nombre y tamaño) y resolver Confirmar o Descartar; no completar ni guardar nada antes de confirmar, e ignorar los fragmentos de una transferencia descartada
+- [x] **IT-05** — Al reunir todos los fragmentos: reconstruir, verificar, liberar la cámara y solo entonces guardar y declarar «completada»; propagar el aviso de cuota agotada sin registrar
+- [x] **IT-06** — Resolver «incompleta» al terminar la lectura, «datos inválidos» y «no reconstruible» sin guardar ni registrar
+- [x] **IT-07** — Implementar cancelar sin confirmación (detiene, descarta parciales y libera la cámara), seguir escaneando tras «incompleta» y reintentar desde cero tras un error; sin persistir parciales
+- [x] **IT-08** — Probar el flujo completo con dobles: confirmación y descarte, los cuatro resultados, cancelación, continuar y reintentar, y que no se guarda en los casos de error
+- [x] **IT-09** — Documentar con TSDoc

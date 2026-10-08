@@ -1,0 +1,78 @@
+<section class="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-6">
+  <div class="flex items-center justify-between gap-4">
+    @if (phase() === 'result') {
+      <h1 class="text-2xl font-semibold" i18n>Resultado de la recepción</h1>
+      <a routerLink="/" matButton="outlined" i18n>Volver al inicio</a>
+    } @else {
+      <h1 class="text-2xl font-semibold" i18n>Recibiendo archivo</h1>
+      <button
+        type="button"
+        matButton="outlined"
+        [disabled]="phase() === 'finishing'"
+        (click)="cancel()"
+        i18n
+      >
+        Cancelar
+      </button>
+    }
+  </div>
+
+  @if (cameraMessage(); as message) {
+    <div
+      role="alert"
+      class="flex flex-col gap-3 rounded-md border border-red-300 bg-red-50 p-3 text-red-900"
+    >
+      <p>{{ message }}</p>
+      <button
+        type="button"
+        matButton="filled"
+        class="self-start"
+        [disabled]="busy()"
+        (click)="start()"
+        i18n
+      >
+        Reintentar
+      </button>
+    </div>
+  }
+
+  <div [class.hidden]="cameraMessage() !== null || phase() === 'result'">
+    <app-camera-view />
+    <p class="mt-2 text-center" i18n>Apunta al QR del emisor</p>
+  </div>
+
+  @if (phase() === 'result') {
+    @if (completedFile(); as file) {
+      <app-file-preview [file]="file" />
+    } @else if (failure(); as failed) {
+      <app-result-card
+        [result]="failed"
+        (continueScanning)="continueScanning()"
+        (retry)="retry()"
+        (download)="downloadUnsaved()"
+      />
+    }
+    <app-history-panel />
+  } @else if (cameraMessage() === null) {
+    @if (pending(); as transfer) {
+      <app-transfer-confirmation
+        [transfer]="transfer"
+        (confirmed)="confirm()"
+        (discarded)="discard()"
+      />
+    }
+
+    <app-receive-progress [progress]="progress()" />
+
+    <button
+      type="button"
+      matButton="filled"
+      class="self-center"
+      [disabled]="phase() !== 'reading'"
+      (click)="finishReading()"
+      i18n
+    >
+      Terminar lectura
+    </button>
+  }
+</section>

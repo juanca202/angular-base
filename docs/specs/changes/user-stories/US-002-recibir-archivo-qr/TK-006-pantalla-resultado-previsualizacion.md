@@ -48,11 +48,11 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Implementar la previsualización: imagen si lo es y, en otro caso, icono con el nombre
-- [ ] **IT-02** — Implementar la apertura al hacer clic: mostrar si el tipo es visualizable y descargar si no, sin ejecutar scripts de SVG o HTML
-- [ ] **IT-03** — Mostrar el historial directamente debajo de la previsualización reutilizando la lista de historial
-- [ ] **IT-04** — Implementar la tarjeta de resultado para «incompleta», «datos inválidos» y «no reconstruible» con Seguir escaneando o Reintentar, indicando que no se guardó ni registró
-- [ ] **IT-05** — Implementar la variante «almacenamiento lleno» con descarga del archivo recién recibido y Reintentar
-- [ ] **IT-06** — Verificar la ausencia de desplazamiento horizontal de 360 px a 1280 px o más y los requisitos de accesibilidad
-- [ ] **IT-07** — Probar un SVG con script incrustado: no se ejecuta en la previsualización ni al abrir
-- [ ] **IT-08** — Probar cada estado de resultado con un gestor simulado
+- [x] **IT-01** — Implementar la previsualización: imagen si lo es y, en otro caso, icono con el nombre
+- [x] **IT-02** — Implementar la apertura al hacer clic: mostrar si el tipo es visualizable y descargar si no, sin ejecutar scripts de SVG o HTML
+- [x] **IT-03** — Mostrar el historial directamente debajo de la previsualización reutilizando la lista de historial
+- [x] **IT-04** — Implementar la tarjeta de resultado para «incompleta», «datos inválidos» y «no reconstruible» con Seguir escaneando o Reintentar, indicando que no se guardó ni registró
+- [x] **IT-05** — Implementar la variante «almacenamiento lleno» con descarga del archivo recién recibido y Reintentar
+- [x] **IT-06** — Verificar la ausencia de desplazamiento horizontal de 360 px a 1280 px o más y los requisitos de accesibilidad
+- [x] **IT-07** — Probar un SVG con script incrustado: no se ejecuta en la previsualización ni al abrir
+- [x] **IT-08** — Probar cada estado de resultado con un gestor simulado

@@ -46,10 +46,10 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Definir los errores tipados de cámara (sin cámara, permiso denegado, navegador no compatible)
-- [ ] **IT-02** — Implementar el decodificador: `BarcodeDetector` cuando está disponible y `jsQR` en caso contrario, devolviendo los bytes del QR
-- [ ] **IT-03** — Implementar la lectura continua con la cámara trasera que emite cada QR leído sin intervención del usuario
-- [ ] **IT-04** — Impedir iniciar una lectura nueva mientras otra está en curso
-- [ ] **IT-05** — Liberar la cámara al detener, cancelar o completar la lectura
-- [ ] **IT-06** — Probar con dobles de la cámara y del detector: lector nativo, lector de reserva, errores tipados, una sola lectura a la vez y liberación
-- [ ] **IT-07** — Documentar con TSDoc
+- [x] **IT-01** — Definir los errores tipados de cámara (sin cámara, permiso denegado, navegador no compatible)
+- [x] **IT-02** — Implementar el decodificador: `BarcodeDetector` cuando está disponible y `jsQR` en caso contrario, devolviendo los bytes del QR
+- [x] **IT-03** — Implementar la lectura continua con la cámara trasera que emite cada QR leído sin intervención del usuario
+- [x] **IT-04** — Impedir iniciar una lectura nueva mientras otra está en curso
+- [x] **IT-05** — Liberar la cámara al detener, cancelar o completar la lectura
+- [x] **IT-06** — Probar con dobles de la cámara y del detector: lector nativo, lector de reserva, errores tipados, una sola lectura a la vez y liberación
+- [x] **IT-07** — Documentar con TSDoc

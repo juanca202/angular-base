@@ -13,6 +13,12 @@ export const routes: Routes = [
     loadComponent: () => import('@/features/send/components/send-page').then((m) => m.SendPage),
     title: $localize`Enviar archivo`,
   },
+  {
+    path: 'recibir',
+    loadComponent: () =>
+      import('@/features/receive/components/receive-page').then((m) => m.ReceivePage),
+    title: $localize`Recibir archivo`,
+  },
   { path: 'error/:code', component: Error, title: $localize`Error` },
   { path: '**', component: Error, data: { code: 404 } },
 ];
