@@ -11,7 +11,7 @@
 
 ## Resumen ejecutivo
 
-El enfoque sirve: un móvil Android con Chrome lee QR de 400 B con corrección M a 30 cm en 10 de 10 intentos (mediana de 146 ms), `jsQR` y `BarcodeDetector` leen carga binaria, el protocolo reconstruye el archivo con hash correcto incluso con desorden, duplicados y fragmentos ajenos, y las APIs necesarias están disponibles. **No se llegó a medir una transferencia completa con cámara real, el modo sin red ni la elección entre transferencias en el móvil**, de modo que el veredicto es un juicio sobre un enfoque con riesgo residual acotado, no una confirmación de todos los umbrales. El hallazgo más importante para el diseño: con fragmentos de 400 B el objetivo de 1 MB en 15 minutos no se alcanza con el bucle secuencial salvo a más de 8 fotogramas por segundo; necesita fragmentos de 800 a 1200 B (leídos de forma estable) o un código de fuente (fountain). Recomendación: formalizar las historias con esos criterios de validación pendientes como criterios de aceptación y decidir antes de implementar el tamaño de fragmento y si se incluye corrección de errores.
+El enfoque sirve: un móvil Android con Chrome lee QR de 400 B con corrección M a 30 cm en 10 de 10 intentos (mediana de 146 ms), `jsQR` y `BarcodeDetector` leen carga binaria, el protocolo reconstruye el archivo con hash correcto incluso con desorden, duplicados y fragmentos ajenos, y las APIs necesarias están disponibles. **No se llegó a medir una transferencia completa con cámara real, el modo sin red ni la elección entre transferencias en el móvil**, de modo que el veredicto es un juicio sobre un enfoque con riesgo residual acotado, no una confirmación de todos los umbrales. El hallazgo más importante para el diseño: con fragmentos de 400 B el objetivo de 1 MB en 15 minutos no se alcanza con el bucle secuencial salvo a más de 8 fotogramas por segundo; necesita fragmentos de 800 a 1200 B (leídos de forma estable) o un código de fuente (fountain). Recomendación: formalizar las historias con esos criterios de validación pendientes como criterios de aceptación y decidir antes de implementar el tamaño de fragmento y si se incluye corrección de errores. Las lagunas que quedan abiertas se resuelven en cada tarea que las implementa (ver «Lagunas abiertas y dónde se resuelven»).
 
 ## Qué se probó
 
@@ -40,21 +40,52 @@ Prototipo PWA estático en `spike/web/` (emisor, receptor, series de capacidad, 
 
 ## Hallazgos
 
-### Tiempo de transferencia y tamaño de fragmento
+Consolidan los de este spike y los del [WI-001](../WI-001-spike-protocolo-transferencia-qr/spike-report.md). Cada uno indica dónde se resuelve en la sección «Lagunas abiertas».
 
-Con el bucle secuencial, el tiempo depende del número de fragmentos y de cuántas vueltas hagan falta. Con 400 B por fragmento, 1 MB son unos 2623 fragmentos: a 5 fps cada vuelta dura 8,7 min, y con un 90 % de lectura por vuelta se necesitan unas 4 vueltas. Con 1200 B son 875 fragmentos y unos 11 min a 5 fps. Los datos externos ([EV-02](assets/EV-02-fuentes-externas.md)) indican que los códigos de fuente eliminan la espera de la vuelta completa, pero son cifras de un solo proyecto.
+### Protocolo y fiabilidad (WI-001)
 
-### Lectura de series de capacidad
+- **H-01: el receptor puede quedarse con una transferencia ajena.** El protocolo v1 fija la primera transferencia que ve; una secuencia ajena delante termina «completada» con el archivo equivocado (1 de 10 transferencias de 1 MB). La política v2 (confirmar nombre y tamaño) lo evita en pruebas de Node y escritorio; no se probó con cámara.
+- **H-02: el protocolo reconstruye bien.** 9 de 10 transferencias de 1 MB idénticas con 30 % de pérdida, 5 % de fragmentos corruptos, duplicados y fragmentos ajenos (la décima fue H-01). Los cuatro resultados de FR-013 (completada, incompleta, datos inválidos, no reconstruible) salen correctos.
+- **H-03: coste del protocolo.** 15 B de cabecera y CRC por fragmento (3,6 % con 400 B, 1,9 % con 800 B) más un QR de metadatos. El índice de fragmento ocupa 16 bits: con 800 B el límite es de unos 52 MB.
+- **H-04: la fórmula de vueltas esperadas** (ln N / −ln(1−p) + 0,5) coincide con la simulación con un error medio de −6 %; con cámara real no se validó porque no hubo transferencias completas.
+- **H-05: la simulación de cámara no sirve para fijar capacidades.** El ruido por píxel penaliza a `jsQR` con módulos grandes; solo sirve para comparar protocolos.
 
-Con N=800 y 1200 B hay lecturas correctas con tiempos de hasta 2,5 s, pero las entradas llegaron en ráfagas de 0,15 a 0,5 s: pulsaciones rápidas lanzaron intentos solapados. Se corrigió el botón (un intento a la vez); las series de 800 B en adelante hay que repetirlas.
+### Cámara y lectores (WI-002)
 
-### Fallos de configuración
+- **H-06: capacidad por QR.** 400 B con corrección M a 30 cm: 10 de 10 (mediana de lectura 146 ms). 800 B (11 de 17 entradas, mediana 346 ms) y 1200 B (16 de 18, mediana 267 ms) son solo indicativos: las series se solaparon por pulsaciones rápidas. Máximo estable no determinado.
+- **H-07: `jsQR` y `BarcodeDetector` leen carga binaria** en Chrome 154 sobre Android 10 (51 fragmentos únicos válidos con `BarcodeDetector`, CRC correcto). `BarcodeDetector` devuelve texto y no existe en Safari ni Firefox; `jsQR` devuelve bytes y es la opción segura.
+- **H-08: velocidad de escaneo.** El móvil procesó entre 7 y 60 fotogramas por segundo según el lector y la carga; en la primera prueba detectó un QR en 77 de 158 fotogramas a 5 fps. Sin transferencia completa no se conoce la probabilidad de lectura por vuelta.
+- **H-09: el aviso de confirmación (v2) puede pasar desapercibido.** En la primera prueba el avance quedó en 0/0 porque nadie aceptó el aviso, aunque ya había 51 fragmentos recibidos. La interfaz debe mostrar el avance antes de confirmar y hacer visible el aviso.
+- **H-10: fallos de montaje, no del protocolo.** Los fallos iniciales (3 de capacidad y las pruebas de recepción sin detecciones) se debieron a que el emisor mostraba otro contenido o el QR no estaba en cuadro.
+- **H-11: intentos solapados.** Pulsaciones rápidas lanzan lecturas en paralelo sobre la misma cámara e inflan los tiempos; la interfaz definitiva debe admitir una lectura a la vez.
+- **H-12: entorno del dispositivo probado.** Android 10, Chrome 154, 720×1280 a 60 fps con enfoque continuo, zoom hasta 10× y linterna; `wakeLock`, compartir archivos, `showSaveFilePicker`, OPFS y service worker disponibles; `storage.persist` existe pero no está activo por defecto; cuota de ~10 GB.
+- **H-13: actualización del service worker.** Con la estrategia «caché primero» el móvil siguió con una versión antigua de la app tras desplegar una nueva. La implementación definitiva necesita una estrategia de actualización explícita.
 
-Las primeras pruebas (3 de capacidad y las de recepción) fallaron por el montaje (el emisor mostraba otro contenido o el QR no estaba en cuadro), no por el protocolo. Conviene que la interfaz definitiva muestre qué se ve y qué falta.
+### Tiempo de transferencia y datos externos
 
-### Lectura binaria con `BarcodeDetector`
+- **H-14: el objetivo de 1 MB en 15 minutos depende del tamaño de fragmento.** Con 400 B y 90 % de lectura por vuelta: 36,9 min a 5 fps y 23,2 min a 8 fps; con 1200 B: 11 y 6,5 min. Con el bucle secuencial solo se alcanza con fragmentos grandes o más de 8 fps.
+- **H-15: los códigos de fuente (fountain) eliminan la espera de la vuelta completa.** Fuentes externas ([EV-02](assets/EV-02-fuentes-externas.md)) declaran 128 a 190 KB/s con ellos, cifras de un solo proyecto y de baja fiabilidad. Hoy la corrección de errores está fuera de alcance en el SRS-001.
+- **H-16: capacidad teórica.** 2953 B (L) y 2331 B (M) en modo binario, coherente con lo medido por `qrcode`.
+- **H-17: compatibilidad de lector.** `BarcodeDetector` solo en Chromium; Safari (iOS incluido) lo trae desactivado y Firefox no lo soporta.
 
-`BarcodeDetector` devuelve el contenido como texto, y aun así los fragmentos binarios llegaron intactos en ese móvil (CRC válido). No se ha comprobado en otros modelos; `jsQR` devuelve bytes directamente y es la opción más segura.
+## Lagunas abiertas y dónde se resuelven
+
+**Regla:** este informe no abre más spikes. Toda laguna pendiente, y cualquier otra que aparezca al implementar, **se resuelve dentro de la tarea (`TK-XXX` o `WI-XXX`) que la implementa**, con un criterio de aceptación verificable (prueba automatizada o prueba manual con el guion de la rama) y registrando la decisión en el `progress.md` de esa tarea. Si una laguna bloquea la estimación de una historia, se escala a `/work-plan` como `WI-XXX`.
+
+| Laguna | Origen | Dónde se resuelve |
+|--------|--------|-------------------|
+| Tamaño de fragmento por defecto (400 B validado; 800 a 2000 B sin serie válida) | H-06, H-14 | TK de protocolo de [US-001](../../user-stories/US-001-enviar-archivo-qr/README.md): prueba manual con serie de 10 intentos secuenciales |
+| Regla de velocidad automática (fps) | H-08, H-14 | TK de emisión de la US-001 |
+| 1 MB en 15 minutos con hash idéntico (Q-02, Q-03) | H-14 | Criterio de aceptación de la US-001 y la [US-002](../../user-stories/US-002-recibir-archivo-qr/README.md), verificado con transferencias reales |
+| Modo sin red con la app instalada (Q-05) | H-12 | AC de funcionamiento sin conexión de la US-001 y la US-002; prueba manual en modo avión |
+| Elección de transferencia con una secuencia ajena (Q-06, H-01) | H-01, H-09 | Criterio nuevo en la US-002 (`/work-define`): mostrar nombre y tamaño y pedir confirmación; prueba con cámara |
+| Avance visible y aviso de confirmación antes de aceptar | H-09 | Criterio de la US-002 (progreso) y TK de interfaz de recepción |
+| Una lectura a la vez y estados de cámara | H-11 | TK de interfaz de recepción |
+| Corrección de errores o códigos de fuente | H-14, H-15 | Decisión del equipo antes de planificar; si se adopta, ADR con `arch-manage` y cambio del SRS-001 |
+| Compatibilidad con iOS y Firefox, y lector de reserva | H-07, H-17 | NFR de compatibilidad del SRS-001 y TK del lector con `jsQR` |
+| Persistencia del almacenamiento y cuota | H-12 | TK de almacenamiento de la [US-003](../../user-stories/US-003-historial-transferencias/README.md) y AC de errores de cuota |
+| Límite de fragmentos y tamaño máximo de archivo | H-03 | TK de protocolo (validación) y criterio de aviso en la US-001 |
+| Estrategia de actualización del service worker | H-13 | TK de PWA de la US-001 y la US-002 |
 
 ## Diagnóstico
 
