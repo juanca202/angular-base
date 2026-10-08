@@ -42,11 +42,28 @@
 
 ### TK-002: Guardado del archivo recibido en el almacenamiento privado
 
-<!-- unit:id=TK-002 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-002 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08 16:15
+**Finalizado:** 2026-10-08 16:20
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
++ src/app/features/receive/services/received-file-saver.ts
++ src/app/features/receive/services/received-file-saver.spec.ts
+```
 
 **Notas:**
-- Excluida de esta ejecución: depende de TK-002 de US-001 (almacenamiento privado), aún sin implementar.
+- Pruebas del archivo: 5 de 5 en verde; lint y typecheck sin errores.
+- La cuota agotada se propaga como `StorageQuotaError` sin registrar nada; conservar el archivo en memoria para ofrecer su descarga es responsabilidad del gestor y la pantalla (TK-004 y TK-006).
+
+**Decisiones adicionales:**
+- No se renombra el archivo para evitar sobrescrituras: `PrivateStorage` guarda cada copia con un identificador propio, así que un archivo con el mismo nombre convive con el existente como un registro distinto y conserva su nombre original para mostrarlo y exportarlo.
+- La solicitud de almacenamiento persistente es de mejor esfuerzo: se hace tras guardar, no se ejecuta si el guardado falla y su rechazo no afecta al resultado.
+
+**Cobertura de test cases:**
+- TC-014, TC-015, TC-022 y TC-038 se cubren con pruebas unitarias sobre un doble de `PrivateStorage`; la prueba de integración con el OPFS real queda en las pruebas de `PrivateStorage` (US-001) y en TK-007.
 
 ### TK-003: Lector de QR con cámara: lectura continua y lector de reserva
 
