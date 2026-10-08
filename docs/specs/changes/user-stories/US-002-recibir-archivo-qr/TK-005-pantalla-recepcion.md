@@ -44,11 +44,11 @@ laboratorio-1/
 
 ## Plan de implementación
 
-- [ ] **IT-01** — Crear la ruta `/recibir` con carga diferida y la pantalla, que inicia la recepción al entrar y la detiene al salir
-- [ ] **IT-02** — Implementar la vista de cámara con marco de lectura
-- [ ] **IT-03** — Implementar el bloque de progreso (nombre, tamaño, tiempo restante, fragmentos y barra con porcentaje) con la variante mínima en móvil
-- [ ] **IT-04** — Implementar el aviso de confirmación siempre visible mientras haya una transferencia pendiente, con el avance actualizándose
-- [ ] **IT-05** — Implementar «Terminar lectura» y «Cancelar» sin confirmación, y deshabilitar el inicio de una lectura nueva mientras hay una en curso
-- [ ] **IT-06** — Mostrar los estados de sin permiso, sin cámara y navegador no compatible con mensaje claro y botón de reintento
-- [ ] **IT-07** — Verificar la ausencia de desplazamiento horizontal de 360 px a 1280 px o más y los requisitos de accesibilidad
-- [ ] **IT-08** — Probar los estados de la pantalla con un gestor simulado
+- [x] **IT-01** — Crear la ruta `/recibir` con carga diferida y la pantalla, que inicia la recepción al entrar y la detiene al salir
+- [x] **IT-02** — Implementar la vista de cámara con marco de lectura
+- [x] **IT-03** — Implementar el bloque de progreso (nombre, tamaño, tiempo restante, fragmentos y barra con porcentaje) con la variante mínima en móvil
+- [x] **IT-04** — Implementar el aviso de confirmación siempre visible mientras haya una transferencia pendiente, con el avance actualizándose
+- [x] **IT-05** — Implementar «Terminar lectura» y «Cancelar» sin confirmación, y deshabilitar el inicio de una lectura nueva mientras hay una en curso
+- [x] **IT-06** — Mostrar los estados de sin permiso, sin cámara y navegador no compatible con mensaje claro y botón de reintento
+- [x] **IT-07** — Verificar la ausencia de desplazamiento horizontal de 360 px a 1280 px o más y los requisitos de accesibilidad
+- [x] **IT-08** — Probar los estados de la pantalla con un gestor simulado

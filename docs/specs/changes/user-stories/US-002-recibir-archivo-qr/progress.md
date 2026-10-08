@@ -129,11 +129,43 @@
 
 ### TK-005: Pantalla de recepción: cámara, progreso y confirmación
 
-<!-- unit:id=TK-005 · status=Pending -->
-**Estado:** Pending
+<!-- unit:id=TK-005 · status=Done -->
+**Estado:** Done
+**Iniciado:** 2026-10-08 16:45
+**Finalizado:** 2026-10-08 17:05
+**Implementador:** juanca202 / Claude / claude-sonnet-5-5
+
+**Archivos:**
+```
+~ angular.json
+~ src/app/app.routes.ts
++ src/app/shared/utils/format.ts
++ src/app/shared/utils/format.spec.ts
++ src/app/features/receive/components/receive-page.ts
++ src/app/features/receive/components/receive-page.html
++ src/app/features/receive/components/receive-page.spec.ts
++ src/app/features/receive/components/camera-view.ts
++ src/app/features/receive/components/receive-progress.ts
++ src/app/features/receive/components/transfer-confirmation.ts
+```
 
 **Notas:**
-- Excluida de esta ejecución: depende de TK-004.
+- Pruebas de los archivos afectados: 18 de 18 en verde (pantalla) y las de `format`; lint y typecheck sin errores; `ng build` compila con la ruta `/recibir` en un chunk diferido.
+- El resultado de la recepción (fase `result`) aún no tiene vista: se añade en TK-006, sobre esta misma pantalla.
+- «Cancelar» navega a `/`, que existirá cuando se implemente la pantalla de inicio de US-003; hasta entonces cae en la página de error 404.
+- El aviso de presupuesto del bundle inicial (513,98 kB sobre 500 kB) no viene de esta unidad: `receive-page` es un chunk diferido. No se ha comprobado qué lo hace crecer respecto a la medición de TK-003 (501,71 kB); el cambio entre ambas mediciones incluye el merge de US-001.
+- No se ha comprobado la regla de axe `video-caption` sobre el `<video>` de la cámara (está `muted`); queda para los E2E de TK-007.
+
+**Decisiones adicionales:**
+- La barra de progreso es un `<progress>` nativo (accesible y sin estilos en línea) en lugar de una barra con ancho calculado.
+- Los formateadores de tamaño y duración se extraen a `shared/utils/format.ts`; `send-page` mantiene sus copias locales para no tocar la unidad de US-001 (consolidar queda como mejora pendiente).
+- La vista de cámara permanece en el DOM, oculta, cuando hay un error de cámara, para que «Reintentar» pueda volver a asociar el flujo al mismo `<video>`.
+- Se añade `jsqr` a `allowedCommonJsDependencies` de `angular.json`, igual que `qrcode` en US-001, para silenciar el aviso de módulo no ESM.
+
+**Cobertura de test cases:**
+- TC-006 y TC-007: la presentación se prueba con pruebas de componente sobre un gestor simulado (no E2E); el ancho de 360 px a 1280 px de AC-017 no se puede comprobar en el entorno de pruebas unitarias y queda para TK-007.
+- TC-020 y TC-021 (E2E) se cubren aquí solo con pruebas de componente por código de error de cámara; los E2E quedan en TK-007.
+- TC-029, TC-032 y TC-033 se cubren con pruebas de componente; la parte con cámara real queda en TK-007.
 
 ### TK-006: Pantalla de resultado y previsualización segura
 
