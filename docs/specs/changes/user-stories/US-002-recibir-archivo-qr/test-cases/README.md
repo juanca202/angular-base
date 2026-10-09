@@ -36,7 +36,10 @@
 | [TC-032](./TC-032-avance-y-aviso-visibles-antes-de-confirmar-happy.md) | Happy Path | E2E | Ready | Media | AC-020 |
 | [TC-033](./TC-033-no-inicia-lectura-mientras-hay-otra-error.md) | Error | Unit, E2E | Ready | Media | AC-021 |
 | [TC-034](./TC-034-funciona-en-chrome-android-happy.md) | Happy Path | Manual | Ready | Alta | AC-022 |
-| [TC-035](./TC-035-lector-de-reserva-sin-barcodedetector-error.md) | Error | Integration | Ready | Media | AC-022 |
+| [TC-035](./TC-035-lectura-con-zxing-sin-barcodedetector-error.md) | Error | Integration | Ready | Media | AC-022 |
 | [TC-036](./TC-036-lectura-400b-m-30cm-9-de-10-happy.md) | Happy Path | Manual | Ready | Alta | AC-023 |
 | [TC-037](./TC-037-recepcion-1mb-en-15-minutos-happy.md) | Happy Path | Manual | Ready | Media | AC-024 |
 | [TC-038](./TC-038-solicita-almacenamiento-persistente-happy.md) | Happy Path | Integration | Ready | Baja | AC-025 |
+| [TC-039](./TC-039-recuadro-solo-sobre-el-qr-detectado-happy.md) | Happy Path | Unit, Manual | Ready | Media | AC-026 |
+| [TC-040](./TC-040-recuadro-se-mantiene-un-momento-y-se-borra-limite.md) | Límite | Unit | Ready | Baja | AC-026 |
+| [TC-041](./TC-041-lector-wasm-sin-conexion-happy.md) | Happy Path | E2E | Ready | Alta | AC-027 |

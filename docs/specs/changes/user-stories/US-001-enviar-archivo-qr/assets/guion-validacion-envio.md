@@ -14,12 +14,12 @@ Casos de prueba que cubre: [TC-018](../test-cases/TC-018-envio-modo-avion-movil-
 
 ## 1. Serie de lecturas por tamaño de fragmento (TC-022)
 
-Objetivo: decidir si un tamaño de fragmento mayor que 400 B puede adoptarse por defecto (criterio: 9 aciertos o más de 10 lecturas secuenciales a unos 30 cm con corrección M).
+Objetivo: confirmar que el tamaño de fragmento por defecto de 1600 B se lee de forma fiable, o decidir a qué tamaño menor reducirlo (criterio: 9 aciertos o más de 10 lecturas secuenciales a unos 30 cm con corrección M).
 
 1. En el emisor, muestra un QR **estático** del tamaño candidato (con corrección M).
 2. En el receptor, realiza **10 intentos de lectura secuenciales** (apunta, pulsa, espera hasta 3 s).
-3. Anota los aciertos. Repite para cada tamaño candidato (por ejemplo 400, 800 y 1200 B).
-4. Un tamaño distinto de 400 B solo se adopta con **≥ 9 de 10**; si no, se mantiene 400 B.
+3. Anota los aciertos. Repite para cada tamaño candidato (por ejemplo 400, 800, 1200 y 1600 B).
+4. El tamaño por defecto (1600 B) solo se mantiene con **≥ 9 de 10**; si no, se reduce al mayor tamaño que sí lo cumpla (800 o 400 B).
 
 ## 2. Envío de 1 MB cronometrado (TC-023)
 
@@ -43,5 +43,6 @@ Objetivo: decidir si un tamaño de fragmento mayor que 400 B puede adoptarse por
 |       | TC-022 · 400 B |  |  |  /10 |  |
 |       | TC-022 · 800 B |  |  |  /10 |  |
 |       | TC-022 · 1200 B |  |  |  /10 |  |
+|       | TC-022 · 1600 B (por defecto) |  |  |  /10 |  |
 |       | TC-023 · 1 MB (intento 1) |  |  |  min  s · hash ✔/✘ |  |
 |       | TC-018 · modo avión |  |  | Abre ✔/✘ · Emite ✔/✘ · Peticiones: |  |

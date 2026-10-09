@@ -3,7 +3,7 @@
 <!-- us:status=Ready -->
 **Estado:** Ready
 **Fecha de creación:** 2026-10-08
-**Última actualización:** 2026-10-08
+**Última actualización:** 2026-10-09
 **Repositorios:** laboratorio-1
 **INVEST:** 🟢 4 · 🟡 2 / 6
 **DoR:** 🟢 6 / 6
@@ -18,7 +18,7 @@
 
 ## Contexto
 
-Consume el protocolo definido en la [US-001](../US-001-enviar-archivo-qr/README.md). La lectura es continua (sin fotos manuales) y tolera duplicados, desorden y lecturas corruptas. Los fragmentos parciales viven solo en memoria mientras la pantalla de recepción está abierta. El texto exacto de los mensajes de error se define en la implementación. El spike [WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/README.md) (viable con trabajo) validó la lectura con cámara real en Chrome para Android con `jsQR` y `BarcodeDetector`.
+Consume el protocolo definido en la [US-001](../US-001-enviar-archivo-qr/README.md). La lectura es continua (sin fotos manuales) y tolera duplicados, desorden y lecturas corruptas. Los fragmentos parciales viven solo en memoria mientras la pantalla de recepción está abierta. El texto exacto de los mensajes de error se define en la implementación. El spike [WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/README.md) (viable con trabajo) validó la lectura con cámara real en Chrome para Android con `jsQR` y `BarcodeDetector`; desde el 2026-10-09 la lectura se hace **solo con `zxing-wasm`** (ver AC-022).
 
 ## Fuera de alcance
 
@@ -75,14 +75,18 @@ Consume el protocolo definido en la [US-001](../US-001-enviar-archivo-qr/README.
   Casos de prueba: [TC-032](./test-cases/TC-032-avance-y-aviso-visibles-antes-de-confirmar-happy.md)
 - **AC-021 (Usabilidad):** El receptor NO DEBE iniciar una lectura nueva mientras otra está en curso.
   Casos de prueba: [TC-033](./test-cases/TC-033-no-inicia-lectura-mientras-hay-otra-error.md)
-- **AC-022 (Compatibilidad):** El receptor DEBE funcionar en Chrome para Android (probado en Chrome 154 sobre Android 10); en navegadores sin `BarcodeDetector` DEBE leer con un lector en JavaScript.
-  Casos de prueba: [TC-034](./test-cases/TC-034-funciona-en-chrome-android-happy.md) · [TC-035](./test-cases/TC-035-lector-de-reserva-sin-barcodedetector-error.md)
+- **AC-022 (Compatibilidad):** El receptor DEBE funcionar en Chrome para Android (probado en Chrome 154 sobre Android 10); DEBE leer los QR siempre con `zxing-wasm`, sin depender de `BarcodeDetector` ni de `jsQR` ni de ningún servicio del dispositivo.
+  Casos de prueba: [TC-034](./test-cases/TC-034-funciona-en-chrome-android-happy.md) · [TC-035](./test-cases/TC-035-lectura-con-zxing-sin-barcodedetector-error.md)
 - **AC-023 (Eficiencia de rendimiento):** El receptor DEBE leer un QR de 400 B con corrección M a unos 30 cm en al menos 9 de 10 intentos secuenciales.
   Casos de prueba: [TC-036](./test-cases/TC-036-lectura-400b-m-30cm-9-de-10-happy.md)
 - **AC-024 (Eficiencia de rendimiento):** El receptor DEBERÍA completar una transferencia de 1 MB en 15 minutos o menos; este objetivo no está validado con cámara y se verifica con transferencias reales.
   Casos de prueba: [TC-037](./test-cases/TC-037-recepcion-1mb-en-15-minutos-happy.md)
 - **AC-025 (Fiabilidad):** El sistema DEBERÍA solicitar almacenamiento persistente al guardar un archivo recibido para reducir el riesgo de que el navegador lo borre.
   Casos de prueba: [TC-038](./test-cases/TC-038-solicita-almacenamiento-persistente-happy.md)
+- **AC-026 (Salidas del sistema):** Sobre la imagen de la cámara, el receptor DEBE dibujar un recuadro alrededor del QR solo mientras lo detecta, alineado con su posición en la imagen mostrada, sin ningún recuadro fijo cuando no hay QR; ante un cuadro en el que no se lee el QR, el recuadro DEBERÍA mantenerse unos 0,4 s y DEBE desaparecer al detener la lectura (SRS-001 FR-036).
+  Casos de prueba: [TC-039](./test-cases/TC-039-recuadro-solo-sobre-el-qr-detectado-happy.md) · [TC-040](./test-cases/TC-040-recuadro-se-mantiene-un-momento-y-se-borra-limite.md)
+- **AC-027 (Fiabilidad):** El lector de QR (módulo WebAssembly de `zxing-wasm`) DEBE servirse con la aplicación y quedar precacheado por el service worker, de modo que la recepción funcione sin conexión y sin peticiones de red, y DEBE cargarse al empezar la recepción, antes del primer cuadro (SRS-001 NFR-013).
+  Casos de prueba: [TC-041](./test-cases/TC-041-lector-wasm-sin-conexion-happy.md)
 
 ## Referencias
 
@@ -97,9 +101,10 @@ Consume el protocolo definido en la [US-001](../US-001-enviar-archivo-qr/README.
 - Spike completado: [WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md) (⚠️ viable con trabajo) y [WI-001](../../../archived/work-items/WI-001-spike-protocolo-transferencia-qr/spike-report.md) (no concluyente). Sus hallazgos están consolidados en el informe del WI-002.
 - Decisiones tomadas (2026-10-08): fragmento por defecto de 400 B con corrección M; corrección de errores y códigos de fuente (fountain) **diferidos**; elección de transferencia con confirmación de nombre y tamaño (H-01, AC-019).
 - Riesgo asumido: 1 MB en 15 minutos (AC-024) depende del tamaño de fragmento y de la velocidad del emisor ([US-001](../US-001-enviar-archivo-qr/README.md), AC-017); por eso es DEBERÍA y se verifica con transferencias reales.
-- Lagunas que **se resuelven en las tareas** (no bloquean la historia; cada una con criterio verificable y su decisión en el `progress.md` de la tarea): funcionamiento sin red con la app instalada, lector de reserva para navegadores sin `BarcodeDetector`, compatibilidad con iOS y Firefox, estrategia de actualización del service worker y persistencia del almacenamiento. Detalle en la tabla «Lagunas abiertas» del [informe](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md).
+- Lagunas que **se resuelven en las tareas** (no bloquean la historia; cada una con criterio verificable y su decisión en el `progress.md` de la tarea): funcionamiento sin red con la app instalada, compatibilidad con iOS y Firefox, estrategia de actualización del service worker y persistencia del almacenamiento. Detalle en la tabla «Lagunas abiertas» del [informe](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md).
+- Decisiones del 2026-10-09 ([insumo 04 del SRS-001](../../requirements/SRS-001-transferencia-qr/references/raw-requirement-04-decisiones-lectura-zxing.md)): la lectura de QR se hace **solo con `zxing-wasm`** (`BarcodeDetector` y `jsQR` descartados; `BarcodeDetector` falla siempre en el móvil de pruebas), el receptor lee **un QR por cuadro** (FR-035 retirado), se dibuja un recuadro sobre el QR detectado (AC-026) y el lector funciona sin conexión (AC-027). Los criterios AC-019 y AC-020 (confirmar nombre y tamaño) quedan pendientes de revisar: el SRS-001 los dejó sin confirmación el 2026-10-08 (FR-023).
 - Los NFR de rendimiento y compatibilidad propuestos por el spike se incorporan al SRS-001 con `/requirement-refine` (este skill no edita el SRS).
-- Cobertura del SRS: FR-007 a FR-015, FR-020, FR-021, FR-022 (recepción), FR-014 (receptor), NFR-001 a NFR-003, NFR-006, NFR-007, BR-02, BR-03.
+- Cobertura del SRS: FR-007 a FR-015, FR-020, FR-021, FR-022 (recepción), FR-014 (receptor), FR-036, NFR-001 a NFR-003, NFR-006, NFR-007, NFR-012, NFR-013, BR-02, BR-03.
 
 ---
 

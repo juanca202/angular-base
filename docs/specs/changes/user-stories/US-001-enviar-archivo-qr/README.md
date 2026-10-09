@@ -3,7 +3,7 @@
 <!-- us:status=Ready -->
 **Estado:** Ready
 **Fecha de creación:** 2026-10-08
-**Última actualización:** 2026-10-08
+**Última actualización:** 2026-10-09
 **Repositorios:** laboratorio-1
 **INVEST:** 🟢 5 · 🟡 1 / 6
 **DoR:** 🟢 6 / 6
@@ -62,8 +62,8 @@ El emisor y el receptor son modos de una misma aplicación web instalable (PWA).
   Casos de prueba: [TC-019](./test-cases/TC-019-protocolo-sin-interfaz-con-version-happy.md)
 - **AC-015 (Usabilidad):** La pantalla de envío y sus estados de error DEBEN ser operables, sin desplazamiento horizontal, desde 360 px hasta 1280 px o más de ancho.
   Casos de prueba: [TC-020](./test-cases/TC-020-envio-operable-360-a-1280-limite.md)
-- **AC-016 (Procesamiento de datos):** El sistema DEBE usar por defecto fragmentos de 400 B de datos por QR con nivel de corrección M; un tamaño mayor NO DEBE adoptarse por defecto sin una serie validada de 10 lecturas secuenciales a unos 30 cm con al menos 9 aciertos.
-  Casos de prueba: [TC-021](./test-cases/TC-021-fragmento-por-defecto-400b-m-happy.md) · [TC-022](./test-cases/TC-022-serie-10-lecturas-para-tamano-mayor-limite.md)
+- **AC-016 (Procesamiento de datos):** El sistema DEBE usar por defecto fragmentos de 1600 B de datos por QR con nivel de corrección M y una velocidad de 8 QR por segundo (decisión del usuario, SRS-001 FR-003, FR-031 y FR-032; el spike solo validó 400 B); el tamaño por defecto DEBE confirmarse con una serie de 10 lecturas secuenciales a unos 30 cm con al menos 9 aciertos y, si no se alcanza, DEBE reducirse.
+  Casos de prueba: [TC-021](./test-cases/TC-021-fragmento-por-defecto-1600b-m-happy.md) · [TC-022](./test-cases/TC-022-serie-10-lecturas-para-tamano-mayor-limite.md)
 - **AC-017 (Eficiencia de rendimiento):** El sistema DEBERÍA permitir transferir un archivo de 1 MB en 15 minutos o menos; este objetivo no está validado con cámara y se verifica con transferencias reales.
   Casos de prueba: [TC-023](./test-cases/TC-023-1mb-en-15-minutos-happy.md)
 - **AC-018 (Salidas del sistema):** El sistema DEBE informar con un mensaje claro y NO DEBE iniciar la transferencia cuando el archivo requiera más fragmentos de los que admite el protocolo.
@@ -81,10 +81,11 @@ El emisor y el receptor son modos de una misma aplicación web instalable (PWA).
 ## Observaciones
 
 - Spike completado: [WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md) (⚠️ viable con trabajo) y [WI-001](../../../archived/work-items/WI-001-spike-protocolo-transferencia-qr/spike-report.md) (no concluyente). Sus hallazgos están consolidados en el informe del WI-002.
-- Decisiones tomadas (2026-10-08): fragmento por defecto de 400 B con corrección M (validado: 10 de 10 lecturas); corrección de errores y códigos de fuente (fountain) **diferidos** (fuera de alcance, como en el SRS-001).
+- Decisiones tomadas (2026-10-08): fragmento de 400 B con corrección M (validado en el spike: 10 de 10 lecturas; **desde el 2026-10-09 el valor por defecto es 1600 B**, ver abajo); corrección de errores y códigos de fuente (fountain) **diferidos** (fuera de alcance, como en el SRS-001).
 - Riesgo asumido: con fragmentos de 400 B y el bucle secuencial, 1 MB en 15 minutos (AC-017) no se alcanza a 5 fps según el modelo (36,9 min con 90 % de lectura por vuelta); exige más de 8 fps o un tamaño de fragmento mayor validado. Por eso AC-017 es DEBERÍA y se verifica con transferencias reales.
 - Lagunas que **se resuelven en las tareas** (no bloquean la historia; cada una con criterio verificable y su decisión en el `progress.md` de la tarea): regla de velocidad automática, funcionamiento sin red con la app instalada, límite de fragmentos (AC-018) y estrategia de actualización del service worker. Detalle en la tabla «Lagunas abiertas» del [informe](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md).
 - Los NFR de rendimiento y compatibilidad propuestos por el spike se incorporan al SRS-001 con `/requirement-refine` (este skill no edita el SRS).
+- Decisiones del 2026-10-09 ([insumo 04 del SRS-001](../../requirements/SRS-001-transferencia-qr/references/raw-requirement-04-decisiones-lectura-zxing.md)): densidad por defecto de **1600 B** por QR (selector de 200 a 1600 B) y velocidad por defecto de 8 QR por segundo; **un solo QR en pantalla** (FR-035, dos QR a la vez, retirado). Pendiente de validar con cámara real la tasa de lectura de QR de 1600 B (149 módulos por lado).
 - Cobertura del SRS: FR-001 a FR-006, FR-014 (emisor), FR-017, FR-018, FR-022 (emisor), NFR-001, NFR-002, NFR-005, NFR-006 y BR-01.
 
 ---

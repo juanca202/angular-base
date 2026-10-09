@@ -22,7 +22,7 @@
 | [TC-018](./TC-018-envio-modo-avion-movil-happy.md) | Happy Path | Manual | Ready | Media | AC-013 |
 | [TC-019](./TC-019-protocolo-sin-interfaz-con-version-happy.md) | Happy Path | Unit | Ready | Alta | AC-014 |
 | [TC-020](./TC-020-envio-operable-360-a-1280-limite.md) | Límite | E2E, Visual Test | Ready | Media | AC-015 |
-| [TC-021](./TC-021-fragmento-por-defecto-400b-m-happy.md) | Happy Path | Unit | Ready | Alta | AC-016 |
+| [TC-021](./TC-021-fragmento-por-defecto-1600b-m-happy.md) | Happy Path | Unit | Ready | Alta | AC-016 |
 | [TC-022](./TC-022-serie-10-lecturas-para-tamano-mayor-limite.md) | Límite | Manual | Ready | Media | AC-016 |
 | [TC-023](./TC-023-1mb-en-15-minutos-happy.md) | Happy Path | Manual | Ready | Media | AC-017 |
 | [TC-024](./TC-024-archivo-excede-maximo-de-fragmentos-limite.md) | Límite | Unit, E2E | Ready | Media | AC-018 |
