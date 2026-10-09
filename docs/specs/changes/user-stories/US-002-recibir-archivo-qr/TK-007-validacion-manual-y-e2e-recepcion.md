@@ -8,7 +8,7 @@
 
 ## Descripción
 
-Cerrar la verificación de la recepción con lo que la automatización unitaria no cubre: escenarios E2E de Playwright del flujo de recepción (permiso denegado, cámara simulada con una secuencia de QR, confirmación y descarte, cuatro resultados, cancelación), la comprobación de cero peticiones de red y de funcionamiento sin conexión durante la recepción, la ausencia de desplazamiento horizontal de 360 px a 1280 px, y un guion de pruebas manuales con móviles Android para la lectura de QR de 400 B a unos 30 cm (9 de 10), la recepción de 1 MB cronometrada (objetivo de 15 minutos), el modo avión y el lector de reserva, con registro de resultados en el `progress.md` de la tarea.
+Cerrar la verificación de la recepción con lo que la automatización unitaria no cubre: escenarios E2E de Playwright del flujo de recepción (permiso denegado, cámara simulada con una secuencia de QR, confirmación y descarte, cuatro resultados, cancelación), la comprobación de cero peticiones de red y de funcionamiento sin conexión durante la recepción, la ausencia de desplazamiento horizontal de 360 px a 1280 px, y un guion de pruebas manuales con móviles Android para la lectura de QR de 400 B a unos 30 cm (9 de 10), la recepción de 1 MB cronometrada (objetivo de 15 minutos), el modo avión y el recuadro sobre el QR detectado, con registro de resultados en el `progress.md` de la tarea.
 
 ## Dependencias
 
@@ -41,7 +41,7 @@ laboratorio-1/
 - [x] **IT-01** — Escribir los escenarios E2E del flujo de recepción con cámara simulada: confirmación y descarte, completada, incompleta, datos inválidos, no reconstruible, cancelación y errores de cámara
 - [x] **IT-02** — Escribir los escenarios E2E de cero peticiones de red y de recepción sin conexión tras la primera carga
 - [x] **IT-03** — Escribir la comprobación de ausencia de desplazamiento horizontal de 360 px a 1280 px en recepción y resultado
-- [x] **IT-04** — Redactar el guion manual a partir del guion del spike: serie de 10 lecturas de QR de 400 B a 30 cm, recepción de 1 MB cronometrada, modo avión, lector de reserva y hoja de registro
+- [x] **IT-04** — Redactar el guion manual a partir del guion del spike: serie de 10 lecturas de QR de 400 B a 30 cm, recepción de 1 MB cronometrada, modo avión, recuadro sobre el QR y hoja de registro
 - [ ] **IT-05** — Ejecutar las pruebas manuales con un móvil Android y registrar los resultados en el `progress.md`
   Si 1 MB no se completa en 15 minutos, dejar el resultado documentado y decidir con la historia si se ajusta el tamaño de fragmento o la velocidad.
 

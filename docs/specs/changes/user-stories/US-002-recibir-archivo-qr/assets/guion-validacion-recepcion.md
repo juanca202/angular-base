@@ -2,7 +2,7 @@
 
 Pruebas con dispositivos reales que la automatización no cubre. Las ejecuta una persona; los resultados se anotan en la hoja de registro del final y se trasladan al `progress.md` de [TK-007](../TK-007-validacion-manual-y-e2e-recepcion.md).
 
-Casos de prueba que cubre: [TC-001](../test-cases/TC-001-recibir-lee-qr-sin-fotos-happy.md) y [TC-034](../test-cases/TC-034-funciona-en-chrome-android-happy.md) (lectura continua en Chrome para Android), [TC-035](../test-cases/TC-035-lector-de-reserva-sin-barcodedetector-error.md) (lector de reserva en un navegador sin `BarcodeDetector`), [TC-036](../test-cases/TC-036-lectura-400b-m-30cm-9-de-10-happy.md) (9 de 10 lecturas), [TC-037](../test-cases/TC-037-recepcion-1mb-en-15-minutos-happy.md) (1 MB en 15 minutos) y [TC-026](../test-cases/TC-026-recepcion-modo-avion-movil-happy.md) (modo avión). Lo demás de la recepción (confirmación, resultados, cancelar, guardado, previsualización segura, cero peticiones y ancho de pantalla) lo cubren los E2E de [`e2e/receive-flow.spec.ts`](../../../../../../e2e/receive-flow.spec.ts) y [`e2e/receive-offline.spec.ts`](../../../../../../e2e/receive-offline.spec.ts) con una cámara simulada.
+Casos de prueba que cubre: [TC-001](../test-cases/TC-001-recibir-lee-qr-sin-fotos-happy.md) y [TC-034](../test-cases/TC-034-funciona-en-chrome-android-happy.md) (lectura continua en Chrome para Android), [TC-035](../test-cases/TC-035-lectura-con-zxing-sin-barcodedetector-error.md) (lectura solo con ZXing, sin `BarcodeDetector`), [TC-039](../test-cases/TC-039-recuadro-solo-sobre-el-qr-detectado-happy.md) (recuadro sobre el QR detectado), [TC-036](../test-cases/TC-036-lectura-400b-m-30cm-9-de-10-happy.md) (9 de 10 lecturas), [TC-037](../test-cases/TC-037-recepcion-1mb-en-15-minutos-happy.md) (1 MB en 15 minutos) y [TC-026](../test-cases/TC-026-recepcion-modo-avion-movil-happy.md) (modo avión). Lo demás de la recepción (confirmación, resultados, cancelar, guardado, previsualización segura, cero peticiones y ancho de pantalla) lo cubren los E2E de [`e2e/receive-flow.spec.ts`](../../../../../../e2e/receive-flow.spec.ts) y [`e2e/receive-offline.spec.ts`](../../../../../../e2e/receive-offline.spec.ts) con una cámara simulada.
 
 > Los E2E simulan la cámara: no prueban la óptica, el enfoque, el brillo ni el rendimiento reales. Eso es lo que verifica este guion. En esta versión el **emisor es la aplicación** (`/enviar`, US-001), así que ambos extremos usan la misma app.
 
@@ -45,13 +45,14 @@ Criterio: 9 aciertos o más de 10 lecturas secuenciales a unos 30 cm con correcc
 3. Recibe `prueba-100KB.bin` desde el emisor: debe completarse y guardarse.
 4. Con el móvil por USB, `chrome://inspect` → pestaña Network: debe haber **0 peticiones** durante la recepción (los iconos pueden salir de la caché de la aplicación).
 
-## 5. Lector de reserva en un navegador sin BarcodeDetector (TC-035)
+## 5. Lectura con ZXing y recuadro sobre el QR (TC-035, TC-039)
 
-El E2E de la reserva usa imágenes de QR reales en una cámara simulada; aquí se comprueba con una cámara de verdad.
+El lector es siempre `zxing-wasm`: no hay lector de reserva ni `BarcodeDetector`.
 
-1. Receptor: abre `/recibir` en un navegador sin `BarcodeDetector` (Firefox para Android o Safari en iOS; compatibilidad **sin probar** hasta ahora).
+1. Receptor: abre `/recibir?debug` en Chrome para Android y anota el panel (cuadros por segundo, ms por cuadro, QR vistos y leídos).
 2. Emisor: `/enviar` → `prueba-100KB.bin`.
-3. Anota si se lee la secuencia, cuánto tarda y si se completa con hash idéntico.
+3. Comprueba que el recuadro aparece **solo sobre el QR** mientras se detecta, que no hay ningún marco fijo cuando no hay QR, que no parpadea si se pierde un cuadro suelto y que desaparece al quitar el QR.
+4. Anota si se completa la recepción con hash idéntico y cuánto tarda.
 
 ## Hoja de registro
 
@@ -61,4 +62,5 @@ El E2E de la reserva usa imágenes de QR reales en una cámara simulada; aquí s
 |       | TC-036 · QR de 400 B, M, 30 cm |  |  |  /10 |  |
 |       | TC-037 · 1 MB (intento 1) |  |  |  min  s · hash ✔/✘ |  |
 |       | TC-026 · modo avión |  |  | Abre ✔/✘ · Recibe ✔/✘ · Peticiones: |  |
-|       | TC-035 · lector de reserva |  |  | Lee ✔/✘ · Tiempo: |  |
+|       | TC-035 · lectura con ZXing |  |  | Lee ✔/✘ · Cuadros/s: · ms/cuadro: · Tiempo: |  |
+|       | TC-039 · recuadro sobre el QR |  |  | Solo con QR ✔/✘ · Sin parpadeo ✔/✘ · Se borra al quitar ✔/✘ |  |

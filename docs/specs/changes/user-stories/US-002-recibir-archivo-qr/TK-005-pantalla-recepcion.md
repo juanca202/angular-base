@@ -37,7 +37,7 @@ laboratorio-1/
         ├── + receive-page.ts                       # pantalla de recepción y estados
         ├── + receive-page.html
         ├── + receive-page.spec.ts
-        ├── + camera-view.ts                        # vídeo de la cámara con marco de lectura
+        ├── + camera-view.ts                        # vídeo de la cámara con recuadro sobre el QR detectado
         ├── + receive-progress.ts                   # nombre, tamaño, tiempo, fragmentos y barra
         └── + transfer-confirmation.ts              # aviso Confirmar / Descartar
 ```
@@ -45,7 +45,7 @@ laboratorio-1/
 ## Plan de implementación
 
 - [x] **IT-01** — Crear la ruta `/recibir` con carga diferida y la pantalla, que inicia la recepción al entrar y la detiene al salir
-- [x] **IT-02** — Implementar la vista de cámara con marco de lectura
+- [x] **IT-02** — Implementar la vista de cámara con un recuadro sobre el QR solo mientras se detecta (FR-036), sin marco fijo
 - [x] **IT-03** — Implementar el bloque de progreso (nombre, tamaño, tiempo restante, fragmentos y barra con porcentaje) con la variante mínima en móvil
 - [x] **IT-04** — Implementar el aviso de confirmación siempre visible mientras haya una transferencia pendiente, con el avance actualizándose
 - [x] **IT-05** — Implementar «Terminar lectura» y «Cancelar» sin confirmación, y deshabilitar el inicio de una lectura nueva mientras hay una en curso

@@ -17,32 +17,6 @@ export interface QrRegion {
 /** A camera frame in any of the forms the reading accepts. */
 export type QrSource = CanvasImageSource & { readonly width: number; readonly height: number };
 
-/** Margin added around the box of a detected QR, as a fraction of its size, so no module is cut. */
-const REGION_MARGIN = 0.25;
-
-/**
- * Area of a frame around a QR box, with a margin so no module is cut, kept inside the frame.
- *
- * @param box - Where the native detector found the QR.
- * @param frame - Size of the frame.
- * @returns The area to read, or `null` when the box is empty.
- */
-export function regionAround(
-  box: QrRegion | undefined,
-  frame: { width: number; height: number },
-): QrRegion | null {
-  if (!box || box.width <= 0 || box.height <= 0) {
-    return null;
-  }
-  const marginX = box.width * REGION_MARGIN;
-  const marginY = box.height * REGION_MARGIN;
-  const x = Math.max(0, Math.floor(box.x - marginX));
-  const y = Math.max(0, Math.floor(box.y - marginY));
-  const right = Math.min(frame.width, Math.ceil(box.x + box.width + marginX));
-  const bottom = Math.min(frame.height, Math.ceil(box.y + box.height + marginY));
-  return right > x && bottom > y ? { x, y, width: right - x, height: bottom - y } : null;
-}
-
 /** Folder, under the app root, where the build copies the ZXing `.wasm` file (see `angular.json`). */
 const WASM_FOLDER = 'zxing/';
 
@@ -69,26 +43,23 @@ const READER_OPTIONS: ReaderOptions = {
   tryInvert: false,
 };
 
-/** The rectangle that contains the corners of a QR, moved by the origin of the area it was read from. */
-function boxOf(position: Position, offsetX: number, offsetY: number): QrRegion {
+/** The rectangle that contains the corners of a QR. */
+function boxOf(position: Position): QrRegion {
   const corners = [position.topLeft, position.topRight, position.bottomRight, position.bottomLeft];
   const left = Math.min(...corners.map((c) => c.x));
   const top = Math.min(...corners.map((c) => c.y));
   return {
-    x: Math.round(offsetX + left),
-    y: Math.round(offsetY + top),
+    x: Math.round(left),
+    y: Math.round(top),
     width: Math.round(Math.max(...corners.map((c) => c.x)) - left),
     height: Math.round(Math.max(...corners.map((c) => c.y)) - top),
   };
 }
 
 /**
- * Reads the bytes of the QR code in a camera frame with ZXing (WebAssembly). It has no dependency on Angular or on
- * the page, so the same code runs in a Web Worker (off the main thread) or, where workers are
- * unavailable, in the page itself.
- *
- * When the native detector located the QR, only the area around it is read; if that gives nothing, or
- * no area is known, the whole frame is read.
+ * Reads the bytes of the QR code in a camera frame with ZXing (WebAssembly). It has no dependency on
+ * Angular or on the page, so the same code runs in a Web Worker (off the main thread) or, where workers
+ * are unavailable, in the page itself.
  */
 export class QrFrameReader {
   private canvas: OffscreenCanvas | null = null;
@@ -119,41 +90,27 @@ export class QrFrameReader {
   }
 
   /**
-   * Reads the QR of a frame: from the area where the detector located it and, if that gives nothing
-   * (or no area is known), from the whole frame.
+   * Reads the QR of a frame.
    *
    * @param bitmap - The camera frame. The caller releases it.
-   * @param regions - Areas around the QR, when the detector located it; only the first is used. Empty reads the whole frame.
    * @returns The payload bytes of the QR read (at most one); empty when it could not be read.
    */
-  public async read(bitmap: QrSource, regions: readonly QrRegion[]): Promise<Uint8Array[]> {
+  public async read(bitmap: QrSource): Promise<Uint8Array[]> {
     this.boxes = [];
-    const bytes =
-      (regions.length > 0 ? await this.readRegion(bitmap, regions[0]) : null) ??
-      (await this.readWhole(bitmap));
-    return bytes ? [bytes] : [];
-  }
-
-  private async readRegion(bitmap: QrSource, region: QrRegion): Promise<Uint8Array | null> {
-    const pixels = this.pixelsOf(bitmap, region);
+    const pixels = this.pixelsOf(bitmap);
     if (!pixels) {
-      return null;
+      return [];
     }
     const [code] = await readBarcodes(pixels, READER_OPTIONS);
     if (!code?.isValid) {
-      return null;
+      return [];
     }
-    this.boxes.push(boxOf(code.position, region.x, region.y));
-    return Uint8Array.from(code.bytes);
+    this.boxes.push(boxOf(code.position));
+    return [Uint8Array.from(code.bytes)];
   }
 
-  /** Reads the QR from the whole frame. */
-  private readWhole(bitmap: QrSource): Promise<Uint8Array | null> {
-    return this.readRegion(bitmap, { x: 0, y: 0, width: bitmap.width, height: bitmap.height });
-  }
-
-  private pixelsOf(bitmap: QrSource, region: QrRegion): ImageData | null {
-    const { x, y, width, height } = region;
+  private pixelsOf(bitmap: QrSource): ImageData | null {
+    const { width, height } = bitmap;
     if (width <= 0 || height <= 0) {
       return null;
     }
@@ -166,7 +123,7 @@ export class QrFrameReader {
     if (!context) {
       return null;
     }
-    context.drawImage(bitmap, x, y, width, height, 0, 0, width, height);
+    context.drawImage(bitmap, 0, 0, width, height);
     return context.getImageData(0, 0, width, height);
   }
 }

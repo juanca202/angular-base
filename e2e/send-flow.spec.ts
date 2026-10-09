@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { writeFileSync } from 'node:fs';
+import { closeSync, ftruncateSync, openSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 
 /**
@@ -57,7 +57,7 @@ test.describe('envío: flujo completo', () => {
     await expect(page.getByText('prueba-100KB.bin')).toBeVisible();
     await expect(page.getByText('application/octet-stream')).toBeVisible();
     await expect(page.getByText('100.0 KB')).toBeVisible();
-    await expect(page.getByText('129', { exact: true })).toBeVisible();
+    await expect(page.getByText('65', { exact: true })).toBeVisible();
     await expect(page.getByRole('progressbar')).toHaveCount(0);
   });
 
@@ -87,8 +87,8 @@ test.describe('envío: flujo completo', () => {
   test('el primer toque inicia la secuencia, reteniendo el primer QR, y se repite en bucle', async ({
     page,
   }) => {
-    // 1 KB = 3 QR: una vuelta dura 0,375 s, así que en 2,5 s se completan varias vueltas.
-    await choose(page, [fileOf('pequeno.bin', 1_000, true)]);
+    // 5 KB = 4 QR con 1600 B por QR: una vuelta dura 0,5 s, así que en pocos segundos se completan varias vueltas.
+    await choose(page, [fileOf('pequeno.bin', 5_000, true)]);
     await expect(qr(page)).toBeVisible();
     const first = await frame(page);
 
@@ -143,8 +143,8 @@ test.describe('envío: flujo completo', () => {
   });
 
   test('el selector de velocidad cambia el ritmo de la secuencia', async ({ page }) => {
-    // 3 QR al azar: a 4 QR/s una vuelta dura 0,75 s; a 12 QR/s, 0,25 s.
-    await choose(page, [fileOf('veloz.bin', 1_000, true)]);
+    // 4 QR al azar: a 4 QR/s una vuelta dura 1 s; a 12 QR/s, 0,33 s.
+    await choose(page, [fileOf('veloz.bin', 5_000, true)]);
     await expect(qr(page)).toBeVisible();
     const selector = page.getByRole('combobox', { name: 'Velocidad' });
     await expect(selector).toHaveValue('8');
@@ -173,14 +173,14 @@ test.describe('envío: flujo completo', () => {
     await expect(qr(page)).toBeVisible();
     const slider = page.getByRole('slider', { name: 'Posición en la secuencia de QR' });
     const density = page.getByRole('combobox', { name: 'Densidad' });
-    await expect(density).toHaveValue('800');
+    await expect(density).toHaveValue('1600');
     const before = Number(await slider.getAttribute('aria-valuemax'));
     await page.getByRole('button', { name: /Iniciar o reiniciar la vuelta/ }).click();
 
-    await density.selectOption('400');
+    await density.selectOption('800');
 
     // Con la mitad de bytes por QR hacen falta casi el doble de QR, y se espera de nuevo el toque.
-    await expect(density).toHaveValue('400');
+    await expect(density).toHaveValue('800');
     await expect
       .poll(async () => Number(await slider.getAttribute('aria-valuemax')))
       .toBeGreaterThan(before * 1.7);
@@ -260,9 +260,12 @@ test.describe('envío: errores', () => {
   test('un archivo que excede el máximo de fragmentos se rechaza con un mensaje', async ({
     page,
   }) => {
-    // Playwright no admite buffers de más de 50 MB: el archivo se entrega por ruta.
+    // Playwright no admite buffers de más de 50 MB: el archivo se entrega por ruta, y es disperso
+    // (no ocupa disco) con más bytes de los que caben en el máximo de fragmentos (65535 × 1600 B).
     const huge = test.info().outputPath('enorme.bin');
-    writeFileSync(huge, Buffer.alloc(53_000_000, 7));
+    const descriptor = openSync(huge, 'w');
+    ftruncateSync(descriptor, 110_000_000);
+    closeSync(descriptor);
     await choose(page, [huge]);
 
     await expect(alert(page)).toContainText('demasiado grande');

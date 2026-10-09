@@ -55,4 +55,4 @@ laboratorio-1/
 ## Observaciones
 
 - La velocidad de 8 fps está decidida pero no validada con cámara: queda cubierta por la tarea de validación manual (TK-006).
-- El criterio de la historia que fija el tiempo de 1 MB es un objetivo DEBERÍA; con 400 B por fragmento y 8 fps el modelo del spike da unos 23 minutos con un 90 % de lectura por vuelta.
+- El criterio de la historia que fija el tiempo de 1 MB es un objetivo DEBERÍA; con 400 B por fragmento y 8 fps el modelo del spike da unos 23 minutos con un 90 % de lectura por vuelta (con 1600 B por defecto, el valor actual, el número de QR se reduce a la cuarta parte).

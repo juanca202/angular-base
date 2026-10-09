@@ -2,21 +2,16 @@ import type { Page } from '@playwright/test';
 import { create } from 'qrcode';
 import { crc32, fragmentFile } from '../../src/app/shared/utils/qr-protocol';
 
-/** How the simulated browser offers the camera and the QR reader. */
+/** How the simulated browser offers the camera. */
 export type CameraMode =
-  /** Camera works and `BarcodeDetector` reads the QR queued by the test (no image needed; no worker). */
-  | 'detector'
-  /** Camera works, `BarcodeDetector` is missing and QR images are drawn in the video for `jsQR`. */
-  | 'fallback'
+  /** The camera works and shows the QR images the test draws; ZXing reads them in the worker. */
+  | 'working'
   /** The user denies the camera permission. */
   | 'denied'
   /** The device has no camera. */
   | 'no-camera'
   /** The browser has no camera API at all. */
   | 'unsupported';
-
-/** Bytes as the text `BarcodeDetector` returns: one char per byte (latin1). */
-export const latin1 = (bytes: Uint8Array): string => String.fromCharCode(...bytes);
 
 /** Deterministic file content of `size` bytes. */
 export const sampleBytes = (size: number): Uint8Array<ArrayBuffer> =>
@@ -54,131 +49,126 @@ export function corrupt(fragment: Uint8Array): Uint8Array {
 }
 
 /**
- * Replaces the camera and the QR reader before the application loads. Exposes `window.__camera` with
- * how many times the camera was opened and how many of its tracks were stopped.
+ * Replaces the camera before the application loads. Exposes `window.__camera` with how many times the
+ * camera was opened and how many of its tracks were stopped, and counts in `window.__reads` how many
+ * times the reading worker answered with the QR the test is showing (see {@link showQr}).
  */
-export async function installFakeCamera(page: Page, mode: CameraMode = 'detector'): Promise<void> {
+export async function installFakeCamera(page: Page, mode: CameraMode = 'working'): Promise<void> {
   await page.addInitScript((cameraMode) => {
     const w = window as unknown as Record<string, unknown>;
     const camera = { opened: 0, stopped: 0 };
-    const queue: string[] = [];
     w['__camera'] = camera;
-    w['__queue'] = queue;
+    w['__reads'] = 0;
+    w['__expected'] = null;
+
+    // Counts the answers of the reading worker that carry the QR the test is showing.
+    const NativeWorker = window.Worker;
+    if (NativeWorker) {
+      w['Worker'] = class extends NativeWorker {
+        constructor(...args: ConstructorParameters<typeof Worker>) {
+          super(...args);
+          this.addEventListener('message', (event: MessageEvent) => {
+            const bytes = event.data?.bytes?.[0] as Uint8Array | undefined;
+            const expected = w['__expected'] as number[] | null;
+            if (
+              bytes &&
+              expected &&
+              bytes.length === expected.length &&
+              expected.every((value, index) => bytes[index] === value)
+            ) {
+              w['__reads'] = (w['__reads'] as number) + 1;
+            }
+          });
+        }
+      };
+    }
 
     if (cameraMode === 'unsupported') {
       Object.defineProperty(navigator, 'mediaDevices', { value: undefined, configurable: true });
-    } else {
-      // A camera view twice as wide as tall, so two QR codes fit side by side like on a sender screen.
-      const canvas = document.createElement('canvas');
-      canvas.width = 960;
-      canvas.height = 480;
-      const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+      return;
+    }
+    // A square camera view, large enough for the densest QR the sender can show.
+    const canvas = document.createElement('canvas');
+    canvas.width = 960;
+    canvas.height = 960;
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, 960, 960);
+    w['__showQr'] = (size: number, modules: number[]) => {
       context.fillStyle = '#fff';
-      context.fillRect(0, 0, 960, 480);
-      // Draws the modules of a QR matrix inside the 480 px slot that starts at `left`.
-      const drawQr = (left: number, size: number, modules: number[]) => {
-        const margin = 4;
-        const cell = Math.floor(480 / (size + margin * 2));
-        const origin = left + Math.floor((480 - cell * size) / 2);
-        const top = Math.floor((480 - cell * size) / 2);
-        for (let y = 0; y < size; y++) {
-          for (let x = 0; x < size; x++) {
-            if (modules[y * size + x]) {
-              context.fillRect(origin + x * cell, top + y * cell, cell, cell);
-            }
+      context.fillRect(0, 0, 960, 960);
+      context.fillStyle = '#000';
+      const margin = 4;
+      const cell = Math.floor(960 / (size + margin * 2));
+      const origin = Math.floor((960 - cell * size) / 2);
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          if (modules[y * size + x]) {
+            context.fillRect(origin + x * cell, origin + y * cell, cell, cell);
           }
         }
-      };
-      // Shows one QR in the middle of the view, or two side by side when a second one is given.
-      w['__showQr'] = (
-        size: number,
-        modules: number[],
-        second?: { size: number; modules: number[] },
-      ) => {
-        context.fillStyle = '#fff';
-        context.fillRect(0, 0, 960, 480);
-        context.fillStyle = '#000';
-        if (second) {
-          drawQr(0, size, modules);
-          drawQr(480, second.size, second.modules);
-        } else {
-          drawQr(240, size, modules);
-        }
-      };
-      // A pixel in the corner changes on every tick, so the canvas keeps producing video frames.
-      let tick = 0;
-      setInterval(() => {
-        const previous = context.fillStyle;
-        context.fillStyle = `rgb(${200 + (tick++ % 50)},255,255)`;
-        context.fillRect(0, 0, 1, 1);
-        context.fillStyle = previous;
-      }, 50);
+      }
+    };
+    // A pixel in the corner changes on every tick, so the canvas keeps producing video frames.
+    let tick = 0;
+    setInterval(() => {
+      const previous = context.fillStyle;
+      context.fillStyle = `rgb(${200 + (tick++ % 50)},255,255)`;
+      context.fillRect(0, 0, 1, 1);
+      context.fillStyle = previous;
+    }, 50);
 
-      const mediaDevices = navigator.mediaDevices;
-      mediaDevices.getUserMedia = async () => {
-        if (cameraMode === 'denied') {
-          throw new DOMException('denied', 'NotAllowedError');
-        }
-        if (cameraMode === 'no-camera') {
-          throw new DOMException('none', 'NotFoundError');
-        }
-        camera.opened++;
-        const stream = canvas.captureStream(15);
-        stream.getTracks().forEach((track) => {
-          const stop = track.stop.bind(track);
-          track.stop = () => {
-            camera.stopped++;
-            stop();
-          };
-        });
-        return stream;
-      };
-    }
-
-    if (cameraMode === 'fallback') {
-      Object.defineProperty(window, 'BarcodeDetector', { value: undefined, configurable: true });
-    } else {
-      // The simulated detector lives in the page, which a Web Worker cannot see: without workers the
-      // app reads the frames in the page with the same code. The `fallback` mode, with real QR
-      // images, goes through the worker.
-      Object.defineProperty(window, 'Worker', { value: undefined, configurable: true });
-      w['BarcodeDetector'] = class {
-        public async detect(): Promise<{ rawValue: string }[]> {
-          const next = queue.shift();
-          return next === undefined ? [] : [{ rawValue: next }];
-        }
-      };
-    }
+    navigator.mediaDevices.getUserMedia = async () => {
+      if (cameraMode === 'denied') {
+        throw new DOMException('denied', 'NotAllowedError');
+      }
+      if (cameraMode === 'no-camera') {
+        throw new DOMException('none', 'NotFoundError');
+      }
+      camera.opened++;
+      const stream = canvas.captureStream(15);
+      stream.getTracks().forEach((track) => {
+        const stop = track.stop.bind(track);
+        track.stop = () => {
+          camera.stopped++;
+          stop();
+        };
+      });
+      return stream;
+    };
   }, mode);
 }
 
-/** Queues QR payloads for the simulated `BarcodeDetector`, in order, one per reading. */
+/**
+ * Shows each fragment as a real QR image in the simulated camera, in order, and waits until the app
+ * has read it before showing the next one.
+ */
 export async function feed(page: Page, fragments: Uint8Array[]): Promise<void> {
-  await page.evaluate(
-    (items) => (window as unknown as { __queue: string[] }).__queue.push(...items),
-    fragments.map(latin1),
-  );
+  for (const fragment of fragments) {
+    await showQr(page, fragment);
+  }
 }
 
-/**
- * Shows a fragment as a real QR image in the simulated camera (for the `jsQR` fallback), and a second
- * one beside it when given, as the sender does with two QR codes at once.
- */
-export async function showQr(page: Page, fragment: Uint8Array, second?: Uint8Array): Promise<void> {
-  const matrix = (bytes: Uint8Array) => {
-    const qr = create([{ data: bytes, mode: 'byte' }], { errorCorrectionLevel: 'M' });
-    return { size: qr.modules.size, modules: Array.from(qr.modules.data) };
-  };
-  const first = matrix(fragment);
-  const other = second ? matrix(second) : undefined;
-  await page.evaluate(
-    ({ size, modules, other }) =>
-      (
-        window as unknown as {
-          __showQr: (s: number, m: number[], second?: { size: number; modules: number[] }) => void;
-        }
-      ).__showQr(size, modules, other),
-    { ...first, other },
+/** Shows a fragment as a real QR image in the simulated camera and waits until the app reads it. */
+export async function showQr(page: Page, fragment: Uint8Array): Promise<void> {
+  const qr = create([{ data: fragment, mode: 'byte' }], { errorCorrectionLevel: 'M' });
+  const reads = await page.evaluate(
+    ({ size, modules, expected }) => {
+      const w = window as unknown as {
+        __reads: number;
+        __expected: number[] | null;
+        __showQr: (size: number, modules: number[]) => void;
+      };
+      w.__expected = expected;
+      w.__showQr(size, modules);
+      return w.__reads;
+    },
+    { size: qr.modules.size, modules: Array.from(qr.modules.data), expected: Array.from(fragment) },
+  );
+  await page.waitForFunction(
+    (before) => (window as unknown as { __reads: number }).__reads > before,
+    reads,
+    { timeout: 10_000 },
   );
 }
 

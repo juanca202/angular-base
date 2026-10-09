@@ -14,7 +14,7 @@ export const HEADER_SIZE = 12;
 export const CRC_SIZE = 4;
 
 /** Bytes de datos del archivo por fragmento si no se indica otro valor. */
-export const DEFAULT_DATA_SIZE = 800;
+export const DEFAULT_DATA_SIZE = 1600;
 
 /** Máximo de fragmentos por transferencia (metadatos incluidos); la posición y el total son de 16 bits. */
 export const MAX_FRAGMENTS = 0xffff;

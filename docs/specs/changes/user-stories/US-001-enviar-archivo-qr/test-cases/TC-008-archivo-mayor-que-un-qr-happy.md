@@ -24,7 +24,7 @@
 
 | # | Actor | Acción | Resultado esperado del paso |
 |---|-------|--------|-----------------------------|
-| 1 | Sistema | Fragmentar prueba-100KB.bin con fragmentos de 400 B | Se generan más de 250 fragmentos |
+| 1 | Sistema | Fragmentar prueba-100KB.bin con fragmentos de 1600 B (el tamaño por defecto) | Se generan más de 60 fragmentos |
 | 2 | Sistema | Reensamblarlos en el receptor | El archivo resultante es idéntico al original |
 
 ## Resultado esperado final
