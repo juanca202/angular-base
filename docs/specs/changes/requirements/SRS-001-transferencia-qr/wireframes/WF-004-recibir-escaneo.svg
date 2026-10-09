@@ -5,13 +5,12 @@
   <rect x="340" y="88" width="600" height="400" rx="8" fill="#555"/>
   <rect x="540" y="148" width="200" height="200" fill="none" stroke="#ddd" stroke-width="4" stroke-dasharray="18 10"/>
   <text x="640" y="256" text-anchor="middle" fill="#eee">Vista de cámara</text><text x="640" y="280" text-anchor="middle" fill="#ccc">Apunta al QR del emisor</text>
-  <rect x="360" y="404" width="560" height="68" rx="6" fill="#fff" stroke="#222" stroke-width="2"/>
-  <text x="376" y="428" font-weight="bold" fill="#222">Aviso: ¿Recibir «informe-q3.pdf» (1,2 MB)?</text><text x="376" y="452" fill="#555">Hasta confirmar no se guarda nada; los fragmentos leídos siguen contando.</text>
-  <rect x="740" y="436" width="84" height="28" rx="4" fill="#666"/><text x="782" y="455" text-anchor="middle" fill="#fff">Confirmar</text><rect x="832" y="436" width="78" height="28" rx="4" fill="#ddd" stroke="#888"/><text x="871" y="455" text-anchor="middle" fill="#333">Descartar</text>
   <rect x="340" y="516" width="600" height="212" rx="8" fill="#fff" stroke="#bbb"/>
   <text x="364" y="548" font-size="16" font-weight="bold" fill="#222">Archivo que se recibe</text>
-  <g fill="#333"><text x="364" y="578">Nombre: informe-q3.pdf</text><text x="364" y="602">Tamaño total: 1,2 MB</text><text x="640" y="578">Tiempo estimado restante: ~1 min 10 s</text><text x="640" y="602">Fragmentos: 268 de 412</text></g>
-  <rect x="364" y="634" width="552" height="22" rx="11" fill="#ddd"/><rect x="364" y="634" width="359" height="22" rx="11" fill="#888"/>
-  <text x="640" y="676" text-anchor="middle" font-weight="bold" fill="#333">65 %</text>
+  <text x="364" y="578" fill="#333">Nombre: informe-q3.pdf</text>
+  <g fill="#333"><text x="364" y="614">1,2 MB</text><text x="640" y="614" text-anchor="middle">~1 min 10 s</text><text x="916" y="614" text-anchor="end" font-weight="bold">65 %</text></g>
+  <rect x="364" y="634" width="552" height="22" rx="3" fill="#ddd"/>
+  <g fill="#15803d"><rect x="364" y="634" width="330" height="22"/><rect x="706" y="634" width="40" height="22"/></g>
+  <text x="364" y="684" font-size="12" fill="#555">268 de 412 fragmentos · Verde: QR recibidos · Gris: faltan (buscar ese tramo en el emisor)</text>
   <rect x="340" y="744" width="200" height="40" rx="6" fill="#666"/><text x="440" y="769" text-anchor="middle" fill="#fff">Botón: Terminar lectura</text>
 </svg>
