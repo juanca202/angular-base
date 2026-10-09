@@ -24,6 +24,8 @@ export interface ReceiveDiagnosticsSnapshot {
   readonly reader: 'worker' | 'page' | null;
   /** Whether the browser offers the native QR detector. `null` before the first frame. */
   readonly nativeDetector: boolean | null;
+  /** What the browser answered when asked which formats its detector reads, or why it could not. */
+  readonly formats: string | null;
 }
 
 const EMPTY: ReceiveDiagnosticsSnapshot = {
@@ -38,6 +40,7 @@ const EMPTY: ReceiveDiagnosticsSnapshot = {
   averageMs: null,
   reader: null,
   nativeDetector: null,
+  formats: null,
 };
 
 /**
@@ -99,6 +102,15 @@ export class ReceiveDiagnostics {
    */
   public mode(reader: 'worker' | 'page', nativeDetector: boolean): void {
     this._state.update((s) => ({ ...s, reader, nativeDetector }));
+  }
+
+  /**
+   * Records what the browser answered about the formats its native detector reads.
+   *
+   * @param formats - The formats listed, or the reason it could not list them.
+   */
+  public detectorFormats(formats: string): void {
+    this._state.update((s) => ({ ...s, formats }));
   }
 
   /** Decoding a frame threw; the frame is skipped but the cause is kept. */

@@ -21,6 +21,15 @@ import { ReceiveProgressInfo } from '@/features/receive/components/receive-progr
 import { ReceiveDiagnostics } from '@/features/receive/services/receive-diagnostics';
 import { ReceiveManager } from '@/features/receive/services/receive-manager';
 
+/** Short description of the browser from its user agent: its name and version, and the device if it is shown. */
+function describeBrowser(userAgent: string): string {
+  const browser = /(Chrome|Chromium|Edg|Firefox|Version)\/([\d.]+)/.exec(userAgent);
+  const device = /Android [\d.]+; ([^)]+)\)/.exec(userAgent);
+  return [browser ? `${browser[1]} ${browser[2]}` : userAgent, device?.[1]]
+    .filter(Boolean)
+    .join(' · ');
+}
+
 /** Message shown for each reason why the camera cannot be used. */
 const CAMERA_MESSAGES: Record<CameraErrorCode, string> = {
   'permission-denied': $localize`Necesitamos permiso para usar la cámara. Concédelo en el navegador y pulsa «Reintentar».`,
@@ -64,6 +73,8 @@ export class ReceivePage {
   /** Reading counters, shown only when the page is opened with `?debug`. */
   protected readonly debug = inject(ActivatedRoute).snapshot.queryParamMap.has('debug');
   protected readonly stats = this.diagnostics.state;
+  /** Browser and device as the page sees them (for `?debug`): Chrome version and the Android model. */
+  protected readonly browser = describeBrowser(navigator.userAgent);
   protected readonly nativeDetectorLabel = computed(() => {
     const available = this.stats().nativeDetector;
     return available === null ? '-' : available ? 'sí' : 'no';

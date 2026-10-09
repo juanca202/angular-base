@@ -228,6 +228,64 @@ describe('QrDecoder', () => {
       expect(diagnostics()).toMatchObject({ nativeDetector: false, lastError: null, read: 2 });
     });
 
+    it('records the formats the browser says its detector reads', async () => {
+      vi.stubGlobal(
+        'BarcodeDetector',
+        class {
+          public static getSupportedFormats = vi.fn().mockResolvedValue(['qr_code', 'ean_13']);
+          public detect = vi.fn().mockResolvedValue([]);
+        },
+      );
+      readPixels(null);
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(diagnostics().formats).toBe('qr_code, ean_13');
+    });
+
+    it('records that the browser lists no formats at all', async () => {
+      vi.stubGlobal(
+        'BarcodeDetector',
+        class {
+          public static getSupportedFormats = vi.fn().mockResolvedValue([]);
+          public detect = vi.fn();
+        },
+      );
+      readPixels(Uint8Array.of(1));
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(diagnostics().formats).toBe('ninguno');
+    });
+
+    it('records why the browser could not list the formats', async () => {
+      vi.stubGlobal(
+        'BarcodeDetector',
+        class {
+          public static getSupportedFormats = vi
+            .fn()
+            .mockRejectedValue(
+              Object.assign(new Error('sin servicio'), { name: 'NotSupportedError' }),
+            );
+          public detect = vi.fn().mockResolvedValue([]);
+        },
+      );
+      readPixels(null);
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(diagnostics().formats).toBe('error NotSupportedError: sin servicio');
+    });
+
+    it('records that the browser has no way to list the formats', async () => {
+      stubDetector([]);
+      readPixels(null);
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(diagnostics().formats).toBe('no lo informa');
+    });
+
     it('reads the whole frame and records the cause when the detector throws', async () => {
       stubDetector(Object.assign(new Error('invalid state'), { name: 'InvalidStateError' }));
       const read = readPixels(Uint8Array.of(9, 8));
