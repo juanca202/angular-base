@@ -172,7 +172,7 @@ describe('fragmentFile', () => {
     expect(hex(decodeMetadata(decode(metadata).payload).sha256)).toBe(hex(expected));
   });
 
-  it('should use 800 B data fragments by default and rebuild the file from many fragments', async () => {
+  it('should use 1600 B data fragments by default and rebuild the file from many fragments', async () => {
     // Arrange
     const bytes = deterministicBytes(102_400);
 
@@ -181,10 +181,10 @@ describe('fragmentFile', () => {
     const data = fragments.map(decode).filter((f) => f.kind === FRAGMENT_KIND_DATA);
 
     // Assert
-    expect(DEFAULT_DATA_SIZE).toBe(800);
-    expect(data.length).toBe(128);
-    expect(data.slice(0, -1).every((f) => f.payload.length === 800)).toBe(true);
-    expect(fragments[1].length).toBe(HEADER_SIZE + 800 + CRC_SIZE);
+    expect(DEFAULT_DATA_SIZE).toBe(1600);
+    expect(data.length).toBe(64);
+    expect(data.slice(0, -1).every((f) => f.payload.length === 1600)).toBe(true);
+    expect(fragments[1].length).toBe(HEADER_SIZE + 1600 + CRC_SIZE);
     expect(reassemble(fragments)).toEqual(bytes);
   });
 
@@ -360,7 +360,7 @@ describe('fragmentFile with compression', () => {
 describe('countFragments', () => {
   it('should count the metadata fragment plus the data fragments', () => {
     // Arrange
-    const size = 1000;
+    const size = 3000;
 
     // Act
     const result = countFragments(size);

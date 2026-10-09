@@ -4,7 +4,7 @@ import { Service, signal } from '@angular/core';
 export interface ReceiveDiagnosticsSnapshot {
   /** Frames from the camera handed to the decoder. */
   readonly frames: number;
-  /** Frames where a QR was spotted (by the native detector or by ZXing). */
+  /** Frames where a QR was read. */
   readonly detected: number;
   /** Frames where the QR bytes could be read. */
   readonly read: number;
@@ -22,10 +22,6 @@ export interface ReceiveDiagnosticsSnapshot {
   readonly averageMs: number | null;
   /** Where the frames are read: in a Web Worker or in the page. `null` before the first frame. */
   readonly reader: 'worker' | 'page' | null;
-  /** Whether the browser offers the native QR detector. `null` before the first frame. */
-  readonly nativeDetector: boolean | null;
-  /** What the browser answered when asked which formats its detector reads, or why it could not. */
-  readonly formats: string | null;
 }
 
 const EMPTY: ReceiveDiagnosticsSnapshot = {
@@ -39,8 +35,6 @@ const EMPTY: ReceiveDiagnosticsSnapshot = {
   fps: null,
   averageMs: null,
   reader: null,
-  nativeDetector: null,
-  formats: null,
 };
 
 /**
@@ -98,19 +92,9 @@ export class ReceiveDiagnostics {
    * Records how the frames are being read.
    *
    * @param reader - Where the reading runs.
-   * @param nativeDetector - Whether the native QR detector is available.
    */
-  public mode(reader: 'worker' | 'page', nativeDetector: boolean): void {
-    this._state.update((s) => ({ ...s, reader, nativeDetector }));
-  }
-
-  /**
-   * Records what the browser answered about the formats its native detector reads.
-   *
-   * @param formats - The formats listed, or the reason it could not list them.
-   */
-  public detectorFormats(formats: string): void {
-    this._state.update((s) => ({ ...s, formats }));
+  public mode(reader: 'worker' | 'page'): void {
+    this._state.update((s) => ({ ...s, reader }));
   }
 
   /** Decoding a frame threw; the frame is skipped but the cause is kept. */

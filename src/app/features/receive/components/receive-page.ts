@@ -75,10 +75,6 @@ export class ReceivePage {
   protected readonly stats = this.diagnostics.state;
   /** Browser and device as the page sees them (for `?debug`): Chrome version and the Android model. */
   protected readonly browser = describeBrowser(navigator.userAgent);
-  protected readonly nativeDetectorLabel = computed(() => {
-    const available = this.stats().nativeDetector;
-    return available === null ? '-' : available ? 'sí' : 'no';
-  });
   protected readonly phase = this.manager.phase;
   protected readonly progress = this.manager.progress;
   protected readonly result = this.manager.result;

@@ -97,8 +97,8 @@ describe('SendPage', () => {
     expect(screen.getByText('prueba.bin')).toBeTruthy();
     expect(screen.getByText('application/octet-stream')).toBeTruthy();
     expect(screen.getByText('100.0 KB')).toBeTruthy();
-    expect(screen.getByText('129')).toBeTruthy();
-    expect(screen.getByText('16 s')).toBeTruthy();
+    expect(screen.getByText('65')).toBeTruthy();
+    expect(screen.getByText('8 s')).toBeTruthy();
     expect(screen.getByText(/tócalo para iniciar/)).toBeTruthy();
     expect(screen.queryByRole('progressbar')).toBeNull();
     expect(save).toHaveBeenCalledWith('sent', expect.objectContaining({ name: 'prueba.bin' }));
@@ -113,7 +113,7 @@ describe('SendPage', () => {
     expect(screen.getByText('100.0 KB')).toBeTruthy();
     expect(screen.getByText('Se transmite')).toBeTruthy();
     expect(screen.getByText(/\(comprimido\)/)).toBeTruthy();
-    expect(screen.queryByText('129')).toBeNull();
+    expect(screen.queryByText('65')).toBeNull();
   });
 
   it('no muestra «Se transmite» cuando el archivo no se comprime', async () => {
@@ -197,7 +197,7 @@ describe('SendPage', () => {
 
       await screen.findByRole('img', { name: 'Código QR del archivo' });
       expect((screen.getByRole('combobox', { name: 'Densidad' }) as HTMLSelectElement).value).toBe(
-        '800',
+        '1600',
       );
       expect((screen.getByRole('combobox', { name: 'Velocidad' }) as HTMLSelectElement).value).toBe(
         '8',
@@ -210,12 +210,12 @@ describe('SendPage', () => {
     const randomFile = (name = 'prueba.bin', size = 102_400) =>
       fileOf(name, size, 'application/octet-stream', true);
 
-    it('ofrece 200, 400, 800, 1200 y 1600 B por QR, con 800 por defecto', async () => {
+    it('ofrece 200, 400, 800, 1200 y 1600 B por QR, con 1600 por defecto', async () => {
       const { input } = await setup();
       await choose(input, [randomFile()]);
       await screen.findByRole('img', { name: 'Código QR del archivo' });
 
-      expect(densityOf().value).toBe('800');
+      expect(densityOf().value).toBe('1600');
       expect(
         screen.getAllByRole('option', { name: /B por QR$/ }).map((o) => o.textContent?.trim()),
       ).toEqual(['200 B por QR', '400 B por QR', '800 B por QR', '1200 B por QR', '1600 B por QR']);
@@ -226,7 +226,7 @@ describe('SendPage', () => {
       await choose(input, [randomFile()]);
       await screen.findByRole('img', { name: 'Código QR del archivo' });
       await fireEvent.click(screen.getByRole('button', { name: /Iniciar o reiniciar la vuelta/ }));
-      expect(screen.getByText('129')).toBeTruthy();
+      expect(screen.getByText('65')).toBeTruthy();
 
       await fireEvent.change(densityOf(), { target: { value: '400' } });
 
@@ -271,7 +271,7 @@ describe('SendPage', () => {
       await fireEvent.change(densityOf(), { target: { value: '200' } });
 
       expect((await screen.findByRole('alert')).textContent).toContain('demasiado largo');
-      expect(densityOf().value).toBe('800');
+      expect(densityOf().value).toBe('1600');
       expect(screen.getByRole('img', { name: 'Código QR del archivo' })).toBeTruthy();
     });
 
@@ -283,7 +283,7 @@ describe('SendPage', () => {
       await fireEvent.change(densityOf(), { target: { value: '200' } });
 
       expect((await screen.findByRole('alert')).textContent).toContain('demasiado grande');
-      expect(densityOf().value).toBe('800');
+      expect(densityOf().value).toBe('1600');
     });
   });
 
@@ -330,11 +330,11 @@ describe('SendPage', () => {
     await choose(input, [fileOf('prueba.bin', 102_400, 'application/octet-stream', true)]);
     const selector = await screen.findByRole('combobox', { name: 'Velocidad' });
     expect((selector as HTMLSelectElement).value).toBe('8');
-    expect(screen.getByText('16 s')).toBeTruthy();
+    expect(screen.getByText('8 s')).toBeTruthy();
 
     await fireEvent.change(selector, { target: { value: '4' } });
 
-    expect(screen.getByText('32 s')).toBeTruthy();
+    expect(screen.getByText('16 s')).toBeTruthy();
     expect(screen.getByRole('option', { name: '12 QR por segundo' })).toBeTruthy();
   });
 
@@ -376,7 +376,7 @@ describe('SendPage', () => {
   it('rechaza un archivo que excede el máximo de fragmentos', async () => {
     const { input } = await setup();
 
-    await choose(input, [fileOf('enorme.bin', 60_000_000)]);
+    await choose(input, [fileOf('enorme.bin', 120_000_000)]);
 
     expect((await screen.findByRole('alert')).textContent).toContain('demasiado grande');
     expect(save).not.toHaveBeenCalled();

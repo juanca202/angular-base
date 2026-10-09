@@ -47,8 +47,7 @@
       {{ stats().read }} ({{ stats().lastLength ?? '-' }} B) · fragmentos válidos
       {{ stats().valid }} · vídeo {{ stats().videoSize ?? '-' }} ·
       {{ stats().fps ?? '-' }} cuadros/s · {{ stats().averageMs ?? '-' }} ms/cuadro · lector
-      {{ stats().reader ?? '-' }} · detector nativo {{ nativeDetectorLabel() }} · formatos
-      {{ stats().formats ?? '-' }} · navegador {{ browser }} · error
+      {{ stats().reader ?? '-' }} · navegador {{ browser }} · error
       {{ stats().lastError ?? '-' }}
     </p>
   }

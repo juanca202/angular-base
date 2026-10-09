@@ -22,11 +22,11 @@ describe('SendPreferences', () => {
   };
 
   describe('sin nada guardado', () => {
-    it('da la velocidad (8 QR/s) y la densidad (800 B) por defecto', () => {
+    it('da la velocidad (8 QR/s) y la densidad (1600 B) por defecto', () => {
       const preferences = create(memoryStorage());
 
       expect(preferences.speed()).toBe(8);
-      expect(preferences.density()).toBe(800);
+      expect(preferences.density()).toBe(1600);
     });
   });
 
@@ -48,7 +48,7 @@ describe('SendPreferences', () => {
     it.each(['300', '0', '99999', 'abc', ''])(
       'ignora una densidad guardada que no es una opción vigente (%j)',
       (stored) => {
-        expect(create(memoryStorage({ [DENSITY_KEY]: stored })).density()).toBe(800);
+        expect(create(memoryStorage({ [DENSITY_KEY]: stored })).density()).toBe(1600);
       },
     );
   });
@@ -83,7 +83,7 @@ describe('SendPreferences', () => {
       const preferences = create(undefined);
 
       expect(preferences.speed()).toBe(8);
-      expect(preferences.density()).toBe(800);
+      expect(preferences.density()).toBe(1600);
       expect(() => preferences.saveSpeed(4)).not.toThrow();
     });
 
@@ -99,7 +99,7 @@ describe('SendPreferences', () => {
       const preferences = create(broken);
 
       expect(preferences.speed()).toBe(8);
-      expect(preferences.density()).toBe(800);
+      expect(preferences.density()).toBe(1600);
       expect(() => preferences.saveSpeed(4)).not.toThrow();
       expect(() => preferences.saveDensity(400)).not.toThrow();
     });

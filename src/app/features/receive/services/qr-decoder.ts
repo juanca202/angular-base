@@ -1,76 +1,45 @@
 import { Service, inject, signal } from '@angular/core';
 import { ReceiveDiagnostics } from '@/features/receive/services/receive-diagnostics';
-import {
-  QrFrameReader,
-  QrRegion,
-  QrSource,
-  regionAround,
-} from '@/features/receive/services/qr-frame-reader';
+import { QrFrameReader, QrRegion, QrSource } from '@/features/receive/services/qr-frame-reader';
 import type { QrWorkerRequest, QrWorkerResponse } from '@/features/receive/services/qr.worker';
 
-/** A QR spotted by the native detector, with where it is in the frame. */
-interface QrDetection {
-  rawValue: string;
-  boundingBox?: QrRegion;
-}
-
-/** Where the QR codes seen in the last frame are: their boxes and the size of the frame they refer to. */
+/** Where the QR seen in the last frame is: its box and the size of the frame it refers to. */
 export interface QrLocation {
   readonly boxes: readonly QrRegion[];
   readonly width: number;
   readonly height: number;
 }
 
-/** Minimal `BarcodeDetector` shape used here (the API is not yet in the TypeScript DOM lib). */
-interface QrDetector {
-  detect(source: QrSource): Promise<QrDetection[]>;
-}
-
-type QrDetectorConstructor = (new (options: { formats: string[] }) => QrDetector) & {
-  getSupportedFormats?: () => Promise<string[]>;
-};
-
 /** Milliseconds the frame stays on screen after the last frame that located a QR, so it does not flicker. */
 const LOCATION_HOLD_MS = 400;
-
-/** Consecutive failures of the native detector after which it is no longer used. */
-const DETECTOR_MAX_FAILURES = 3;
 
 /** Longest side, in pixels, of the frame drawn on the canvas when a bitmap cannot be captured. */
 const CANVAS_MAX_SIDE = 1280;
 
 /** What reading one frame found. */
 interface FrameReading {
-  /** How many QR codes were spotted in the frame (by the native detector or by ZXing). */
-  readonly detected: number;
-  /** The payload of every QR read; empty when none could be read. */
+  /** The payload of the QR read; empty when none could be read. */
   readonly bytes: readonly Uint8Array[];
-  /** Why the native detector or the reading failed on this frame, if it did. */
+  /** Why the reading failed on this frame, if it did. */
   readonly error: string | null;
 }
 
 /**
  * Reads the bytes of a QR code from a video element.
  *
- * Each camera frame is captured as an `ImageBitmap`. The native `BarcodeDetector` (when the browser
- * has it) runs in the page, where the browser does the work off the main thread, to spot the QR and
- * say where it is; its text is not used for the bytes because it is empty or altered for binary data.
- * The bytes are read with `ZXing` from the area around the QR, in a Web Worker so the page stays free,
- * or in the page itself where workers are not available.
+ * Each camera frame is captured as an `ImageBitmap` and read with ZXing (WebAssembly), the only
+ * reader: in a Web Worker so the page stays free, or in the page itself where workers are not
+ * available. ZXing also says where the QR is, so the screen can draw a frame over it.
  */
 @Service()
 export class QrDecoder {
   private readonly diagnostics = inject(ReceiveDiagnostics);
   private readonly localReader = new QrFrameReader();
 
-  private detector: QrDetector | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private readonly _location = signal<QrLocation | null>(null);
   private lastLocatedAt = Number.NEGATIVE_INFINITY;
-  private nativeUnusable = false;
-  private formatsChecked = false;
   private bitmapsFail = false;
-  private detectorFailures = 0;
   private worker: Worker | null | undefined;
   private nextId = 0;
   private pending: {
@@ -80,8 +49,8 @@ export class QrDecoder {
   } | null = null;
 
   /**
-   * Where the QR codes of the last frame are, for drawing a frame over them, or `null` when none was
-   * located. Only the native detector says where a QR is, so without it this stays `null`.
+   * Where the QR of the last frame is, for drawing a frame over it, or `null` when none was located.
+   * It outlives a missed frame for a moment, so the frame does not blink.
    */
   public readonly location = this._location.asReadonly();
 
@@ -106,8 +75,7 @@ export class QrDecoder {
    * Decodes the QR visible in the current video frame.
    *
    * @param video - Video element showing the camera stream.
-   * @returns The payload bytes of every QR read in the frame (the sender may show two at once); empty
-   * when none is found.
+   * @returns The payload bytes of the QR read in the frame; empty when none is found.
    */
   public async decode(video: HTMLVideoElement): Promise<readonly Uint8Array[]> {
     this.diagnostics.frame(video);
@@ -121,8 +89,8 @@ export class QrDecoder {
       if (reading.error) {
         this.diagnostics.failed(reading.error);
       }
-      if (reading.detected > 0) {
-        this.diagnostics.detected(reading.detected);
+      if (reading.bytes.length > 0) {
+        this.diagnostics.detected(reading.bytes.length);
       }
       reading.bytes.forEach((bytes) => this.diagnostics.read(bytes.length));
       return reading.bytes;
@@ -140,118 +108,38 @@ export class QrDecoder {
     const frame: QrSource = bitmap ?? this.drawFrame(video);
     let released = false;
     try {
-      // A detector that keeps failing (for example its service is unavailable) is left alone: every
-      // failed attempt costs time, and ZXing reads the frame without it.
-      const available = (globalThis as { BarcodeDetector?: QrDetectorConstructor }).BarcodeDetector;
-      if (available && !this.formatsChecked) {
-        await this.checkFormats(available);
-      }
-      const detectorConstructor =
-        this.nativeUnusable || this.detectorFailures >= DETECTOR_MAX_FAILURES
-          ? undefined
-          : available;
       const worker = bitmap ? this.getWorker() : null;
-      this.diagnostics.mode(worker ? 'worker' : 'page', detectorConstructor !== undefined);
+      this.diagnostics.mode(worker ? 'worker' : 'page');
 
-      let hints: QrDetection[] = [];
-      let detected: QrLocation | null = null;
-      let error: string | null = null;
-      if (detectorConstructor) {
-        try {
-          this.detector ??= new detectorConstructor({ formats: ['qr_code'] });
-          const codes = await this.detector.detect(frame);
-          this.detectorFailures = 0;
-          if (codes.length === 0) {
-            this.updateLocation(null);
-            return { detected: 0, bytes: [], error };
-          }
-          hints = codes.slice(0, 1);
-          detected = this.locate(hints, video);
-        } catch (failure) {
-          if (failure instanceof Error && failure.name === 'NotSupportedError') {
-            // The device has no detection service (for example, no Google Play services): it will
-            // not appear later, so the detector is dropped for good and ZXing reads the frames.
-            this.nativeUnusable = true;
-          } else {
-            // The detector is unusable on this frame: keep the cause and read it with ZXing alone.
-            this.detectorFailures++;
-            error =
-              failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
-          }
-        }
-      }
-
-      const regions = hints
-        .map((hint) => regionAround(hint.boundingBox, frame))
-        .filter((region): region is QrRegion => region !== null);
       let bytes: readonly Uint8Array[];
-      let readBoxes: readonly QrRegion[];
+      let boxes: readonly QrRegion[];
+      let error: string | null = null;
       if (worker && bitmap) {
         // The bitmap is transferred: the worker owns it and releases it after reading.
         released = true;
-        const response = await this.ask(worker, bitmap, regions);
+        const response = await this.ask(worker, bitmap);
         bytes = response.bytes;
-        readBoxes = response.boxes;
-        error ??= response.error;
+        boxes = response.boxes;
+        error = response.error;
       } else {
-        bytes = await this.localReader.read(frame, regions);
-        readBoxes = this.localReader.lastBoxes;
+        bytes = await this.localReader.read(frame);
+        boxes = this.localReader.lastBoxes;
       }
-      // Where ZXing found the codes serves when the native detector gave no boxes (or is not there).
       this.updateLocation(
-        detected ??
-          (readBoxes.length > 0
-            ? {
-                boxes: readBoxes.map(({ x, y, width, height }) => ({ x, y, width, height })),
-                width: video.videoWidth,
-                height: video.videoHeight,
-              }
-            : null),
+        boxes.length > 0
+          ? {
+              boxes: boxes.map(({ x, y, width, height }) => ({ x, y, width, height })),
+              width: video.videoWidth,
+              height: video.videoHeight,
+            }
+          : null,
       );
-      if (bytes.length === 0) {
-        // Only if ZXing cannot read any is the detector text taken as latin1, one char per byte.
-        bytes = hints
-          .map((hint) => hint.rawValue)
-          .filter((raw) => raw !== '')
-          .map((raw) => Uint8Array.from(raw, (char) => char.charCodeAt(0) & 0xff));
-      }
-      return { detected: Math.max(hints.length, bytes.length), bytes, error };
+      return { bytes, error };
     } finally {
       if (!released) {
         bitmap?.close();
       }
     }
-  }
-
-  /**
-   * Asks the browser once which formats its detector can read: a browser that offers the API but not
-   * QR codes (or whose detection service is missing) would only fail on every frame.
-   */
-  private async checkFormats(detectorConstructor: QrDetectorConstructor): Promise<void> {
-    this.formatsChecked = true;
-    try {
-      const formats = await detectorConstructor.getSupportedFormats?.();
-      this.diagnostics.detectorFormats(
-        formats === undefined ? 'no lo informa' : formats.join(', ') || 'ninguno',
-      );
-      if (formats && !formats.includes('qr_code')) {
-        this.nativeUnusable = true;
-      }
-    } catch (failure) {
-      // Not knowing the formats is not a reason to give up the detector: the first frame decides.
-      this.diagnostics.detectorFormats(
-        failure instanceof Error ? `error ${failure.name}: ${failure.message}` : String(failure),
-      );
-    }
-  }
-
-  /** Where the detector found the QR (when it came with a box), for the view to draw. */
-  private locate(hints: readonly QrDetection[], video: HTMLVideoElement): QrLocation | null {
-    const boxes = hints
-      .map((hint) => hint.boundingBox)
-      .filter((box): box is QrRegion => box !== undefined)
-      .map(({ x, y, width, height }) => ({ x, y, width, height }));
-    return boxes.length > 0 ? { boxes, width: video.videoWidth, height: video.videoHeight } : null;
   }
 
   /**
@@ -298,11 +186,11 @@ export class QrDecoder {
     return this.canvas;
   }
 
-  private ask(worker: Worker, bitmap: ImageBitmap, regions: readonly QrRegion[]) {
+  private ask(worker: Worker, bitmap: ImageBitmap) {
     return new Promise<QrWorkerResponse>((resolve, reject) => {
       const id = this.nextId++;
       this.pending = { id, resolve, reject };
-      const request: QrWorkerRequest = { id, bitmap, regions };
+      const request: QrWorkerRequest = { id, bitmap };
       worker.postMessage(request, [bitmap]);
     });
   }

@@ -2,14 +2,13 @@ import { readFileSync } from 'node:fs';
 import { create } from 'qrcode';
 import type { ZXingModuleOverrides } from 'zxing-wasm/reader';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { QrFrameReader, regionAround } from '@/features/receive/services/qr-frame-reader';
+import { QrFrameReader } from '@/features/receive/services/qr-frame-reader';
 
 /** Side of one QR in the test picture, in pixels. */
 const SIDE = 150;
 /** Gap between the two QR codes of the wide picture. */
 const GAP = 30;
 const PAYLOAD = Uint8Array.from({ length: 40 }, (_, i) => (i * 37 + 11) & 0xff);
-const OTHER = Uint8Array.from({ length: 40 }, (_, i) => (i * 53 + 5) & 0xff);
 
 /** A real, readable QR as RGBA pixels, SIDE × SIDE. */
 function qrPixels(payload: Uint8Array): Uint8ClampedArray {
@@ -113,40 +112,18 @@ describe('QrFrameReader', () => {
     await expect(new QrFrameReader(TEST_WASM).warmUp()).resolves.toBeUndefined();
   });
 
-  it('reads the QR in the whole frame when no area is given', async () => {
-    const found = await new QrFrameReader(TEST_WASM).read(bitmap(), []);
+  it('reads the QR of the frame', async () => {
+    const found = await new QrFrameReader(TEST_WASM).read(bitmap());
 
     expect(found).toEqual([PAYLOAD]);
     expect(getImageData).toHaveBeenCalledTimes(1);
-  });
-
-  it('reads only the given area when it holds the QR, not the whole frame', async () => {
-    show(OTHER, PAYLOAD);
-
-    const found = await new QrFrameReader(TEST_WASM).read(bitmap(), [
-      { x: SIDE + GAP, y: 0, width: SIDE, height: SIDE },
-    ]);
-
-    expect(found).toEqual([PAYLOAD]);
-    expect(getImageData).toHaveBeenCalledTimes(1);
-    expect(drawImage).toHaveBeenCalledWith(
-      expect.anything(),
-      SIDE + GAP,
-      0,
-      SIDE,
-      SIDE,
-      0,
-      0,
-      SIDE,
-      SIDE,
-    );
   });
 
   describe('where the QR was read', () => {
     it('gives the box of a QR read from the whole frame', async () => {
       const reader = new QrFrameReader(TEST_WASM);
 
-      await reader.read(bitmap(), []);
+      await reader.read(bitmap());
 
       expect(reader.lastBoxes).toHaveLength(1);
       const [box] = reader.lastBoxes;
@@ -158,28 +135,16 @@ describe('QrFrameReader', () => {
       expect(box.height).toBeGreaterThan(SIDE / 2);
     });
 
-    it('gives a box in frame coordinates for a QR read from a given area', async () => {
-      show(OTHER, PAYLOAD);
-      const reader = new QrFrameReader(TEST_WASM);
-
-      await reader.read(bitmap(), [{ x: SIDE + GAP, y: 0, width: SIDE, height: SIDE }]);
-
-      expect(reader.lastBoxes).toHaveLength(1);
-      const [box] = reader.lastBoxes;
-      expect(box.x).toBeGreaterThanOrEqual(SIDE + GAP);
-      expect(box.x + box.width).toBeLessThanOrEqual(2 * SIDE + GAP);
-    });
-
     it('forgets the boxes of the previous frame', async () => {
       const reader = new QrFrameReader(TEST_WASM);
-      await reader.read(bitmap(), []);
+      await reader.read(bitmap());
 
       current = {
         data: new Uint8ClampedArray(SIDE * SIDE * 4).fill(255),
         width: SIDE,
         height: SIDE,
       };
-      await reader.read(bitmap(), []);
+      await reader.read(bitmap());
 
       expect(reader.lastBoxes).toEqual([]);
     });
@@ -192,7 +157,7 @@ describe('QrFrameReader', () => {
       height: SIDE,
     };
 
-    expect(await new QrFrameReader(TEST_WASM).read(bitmap(), [])).toEqual([]);
+    expect(await new QrFrameReader(TEST_WASM).read(bitmap())).toEqual([]);
   });
 
   it('returns nothing without reading pixels when there is no 2d context', async () => {
@@ -207,33 +172,6 @@ describe('QrFrameReader', () => {
       },
     );
 
-    expect(await new QrFrameReader(TEST_WASM).read(bitmap(), [])).toEqual([]);
-  });
-});
-
-describe('regionAround', () => {
-  const frame = { width: 400, height: 400 };
-
-  it('adds a 25 % margin on each side', async () => {
-    expect(regionAround({ x: 100, y: 100, width: 100, height: 100 }, frame)).toEqual({
-      x: 75,
-      y: 75,
-      width: 150,
-      height: 150,
-    });
-  });
-
-  it('keeps the area inside the frame when the QR is at its edge', async () => {
-    expect(regionAround({ x: 0, y: 300, width: 100, height: 100 }, frame)).toEqual({
-      x: 0,
-      y: 275,
-      width: 125,
-      height: 125,
-    });
-  });
-
-  it('gives no area when there is no box or it is empty', async () => {
-    expect(regionAround(undefined, frame)).toBeNull();
-    expect(regionAround({ x: 10, y: 10, width: 0, height: 20 }, frame)).toBeNull();
+    expect(await new QrFrameReader(TEST_WASM).read(bitmap())).toEqual([]);
   });
 });

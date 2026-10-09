@@ -4,7 +4,6 @@ import {
   feed,
   installFakeCamera,
   sampleBytes,
-  showQr,
   storedBytes,
   storedFiles,
   transfer,
@@ -21,7 +20,7 @@ const finish = (page: Page) => page.getByRole('button', { name: 'Terminar lectur
 /** Opens the reception screen with the simulated camera and waits until it is reading. */
 async function open(
   page: Page,
-  mode: CameraMode = 'detector',
+  mode: CameraMode = 'working',
   size?: { width: number; height: number },
 ) {
   if (size) {
@@ -29,7 +28,7 @@ async function open(
   }
   await installFakeCamera(page, mode);
   await page.goto('/recibir');
-  if (mode === 'detector' || mode === 'fallback') {
+  if (mode === 'working') {
     await expect(finish(page)).toBeEnabled();
   }
 }
@@ -338,34 +337,14 @@ test.describe('recepción: seguridad de la previsualización', () => {
   }
 });
 
-test.describe('recepción: lector de reserva con imágenes de QR reales', () => {
-  test('sin BarcodeDetector lee los QR de la cámara con jsQR y recibe el archivo idéntico', async ({
-    page,
-  }) => {
-    test.setTimeout(90_000);
+test.describe('recepción: lectura con ZXing en el worker', () => {
+  test('lee los QR de la cámara en el worker y recibe el archivo idéntico', async ({ page }) => {
     const bytes = sampleBytes(700);
     const fragments = await transfer('real.bin', 'application/octet-stream', bytes);
-    await open(page, 'fallback');
+    await open(page);
 
-    let running = true;
-    const loop = (async () => {
-      while (running) {
-        for (const fragment of fragments) {
-          if (!running) {
-            return;
-          }
-          await showQr(page, fragment);
-          await page.waitForTimeout(350);
-        }
-      }
-    })();
+    await receive(page, fragments);
 
-    try {
-      await expect(resultTitle(page)).toBeVisible({ timeout: 45_000 });
-    } finally {
-      running = false;
-      await loop;
-    }
     expect(await storedBytes(page, 'real.bin')).toEqual(Array.from(bytes));
     // The frames were read by the Web Worker, not by the page.
     expect(page.workers().length).toBeGreaterThan(0);
@@ -379,14 +358,14 @@ test.describe('recepción: sin desplazamiento horizontal', () => {
         page.evaluate(
           () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
         );
-      await open(page, 'detector', { width, height: 900 });
+      await open(page, 'working', { width, height: 900 });
       expect(await overflow()).toBeLessThanOrEqual(0);
 
       await feed(
         page,
         (await transfer('muy-largo-nombre-de-archivo-de-prueba.bin', '', sampleBytes(1000))).slice(
           0,
-          3,
+          2,
         ),
       );
       expect(await overflow()).toBeLessThanOrEqual(0);

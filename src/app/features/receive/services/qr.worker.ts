@@ -5,8 +5,6 @@ import { QrFrameReader, QrRegion } from '@/features/receive/services/qr-frame-re
 export interface QrWorkerRequest {
   readonly id: number;
   readonly bitmap: ImageBitmap;
-  /** Areas where the page located a QR; empty to search the whole frame. */
-  readonly regions: readonly QrRegion[];
 }
 
 /** Answer to a request, with the id of the request it belongs to. */
@@ -27,7 +25,7 @@ void reader.warmUp().catch(() => undefined);
 addEventListener('message', async ({ data }: MessageEvent<QrWorkerRequest>) => {
   let response: QrWorkerResponse;
   try {
-    const bytes = await reader.read(data.bitmap, data.regions);
+    const bytes = await reader.read(data.bitmap);
     response = { id: data.id, bytes, boxes: reader.lastBoxes, error: null };
   } catch (failure) {
     const error =
