@@ -220,11 +220,17 @@ export class QrDecoder {
     this.formatsChecked = true;
     try {
       const formats = await detectorConstructor.getSupportedFormats?.();
+      this.diagnostics.detectorFormats(
+        formats === undefined ? 'no lo informa' : formats.join(', ') || 'ninguno',
+      );
       if (formats && !formats.includes('qr_code')) {
         this.nativeUnusable = true;
       }
-    } catch {
+    } catch (failure) {
       // Not knowing the formats is not a reason to give up the detector: the first frame decides.
+      this.diagnostics.detectorFormats(
+        failure instanceof Error ? `error ${failure.name}: ${failure.message}` : String(failure),
+      );
     }
   }
 
