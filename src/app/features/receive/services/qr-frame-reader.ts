@@ -37,6 +37,32 @@ export function regionAround(
   return right > x && bottom > y ? { x, y, width: right - x, height: bottom - y } : null;
 }
 
+/** The corners jsQR reports for a QR it read. */
+interface QrCorners {
+  topLeftCorner: { x: number; y: number };
+  topRightCorner: { x: number; y: number };
+  bottomRightCorner: { x: number; y: number };
+  bottomLeftCorner: { x: number; y: number };
+}
+
+/** The rectangle that contains the corners of a QR, moved by the origin of the area it was read from. */
+function boxOf(location: QrCorners, offsetX: number, offsetY: number): QrRegion {
+  const corners = [
+    location.topLeftCorner,
+    location.topRightCorner,
+    location.bottomRightCorner,
+    location.bottomLeftCorner,
+  ];
+  const left = Math.min(...corners.map((c) => c.x));
+  const top = Math.min(...corners.map((c) => c.y));
+  return {
+    x: Math.round(offsetX + left),
+    y: Math.round(offsetY + top),
+    width: Math.round(Math.max(...corners.map((c) => c.x)) - left),
+    height: Math.round(Math.max(...corners.map((c) => c.y)) - top),
+  };
+}
+
 /** Most QR codes read from one frame (the sender shows at most two). */
 export const MAX_CODES_PER_FRAME = 4;
 
@@ -69,6 +95,15 @@ const MASK_MARGIN = 6;
  */
 export class QrFrameReader {
   private canvas: OffscreenCanvas | null = null;
+  private boxes: QrRegion[] = [];
+
+  /**
+   * Where, in frame pixels, each QR read by the last {@link read} was (in no particular order), so the
+   * screen can draw a frame over it. Empty when nothing was read.
+   */
+  public get lastBoxes(): readonly QrRegion[] {
+    return this.boxes;
+  }
 
   /**
    * Reads the QR codes of a frame: one per area where the detector located a QR and, if none of those
@@ -80,6 +115,7 @@ export class QrFrameReader {
    * @returns The payload bytes of every QR read, in no particular order; empty when none could be read.
    */
   public read(bitmap: QrSource, regions: readonly QrRegion[]): Uint8Array[] {
+    this.boxes = [];
     const found = regions
       .map((region) => this.readRegion(bitmap, region))
       .filter((bytes): bytes is Uint8Array => bytes !== null);
@@ -99,7 +135,11 @@ export class QrFrameReader {
     const code = jsQR(pixels.data, pixels.width, pixels.height, {
       inversionAttempts: 'dontInvert',
     });
-    return code ? Uint8Array.from(code.binaryData) : null;
+    if (!code) {
+      return null;
+    }
+    this.boxes.push(boxOf(code.location, region.x, region.y));
+    return Uint8Array.from(code.binaryData);
   }
 
   /**
@@ -122,6 +162,7 @@ export class QrFrameReader {
         break;
       }
       found.push(Uint8Array.from(code.binaryData));
+      this.boxes.push(boxOf(code.location, 0, 0));
       this.mask(pixels, [
         code.location.topLeftCorner,
         code.location.topRightCorner,
