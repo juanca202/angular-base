@@ -3,7 +3,7 @@
   <rect width="1280" height="64" fill="#e0e0e0"/>
   <text x="32" y="40" font-size="20" font-weight="bold" fill="#222">Recibiendo archivo</text><text x="1130" y="40" fill="#555">Botón: ✕ Cancelar</text>
   <rect x="340" y="88" width="600" height="400" rx="8" fill="#555"/>
-  <rect x="540" y="148" width="200" height="200" fill="none" stroke="#ddd" stroke-width="4" stroke-dasharray="18 10"/>
+  <rect x="758" y="318" width="104" height="104" fill="#999"/><rect x="750" y="310" width="120" height="120" rx="10" fill="none" stroke="#fff" stroke-width="5"/><text x="640" y="462" text-anchor="middle" fill="#ddd" font-size="13">Recuadro sobre el QR, solo mientras se detecta</text>
   <text x="640" y="256" text-anchor="middle" fill="#eee">Vista de cámara</text><text x="640" y="280" text-anchor="middle" fill="#ccc">Apunta al QR del emisor</text>
   <rect x="340" y="516" width="600" height="212" rx="8" fill="#fff" stroke="#bbb"/>
   <text x="364" y="548" font-size="16" font-weight="bold" fill="#222">Archivo que se recibe</text>

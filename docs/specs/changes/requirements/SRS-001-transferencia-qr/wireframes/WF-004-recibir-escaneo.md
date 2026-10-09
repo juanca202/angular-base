@@ -9,7 +9,7 @@
 
 Espacio para escanear los QR con la cámara y, debajo, la información del archivo (tamaño total, tiempo estimado) con una barra de progreso y su porcentaje.
 
-**Requisitos relacionados:** FR-007, FR-008, FR-009, FR-010, FR-011, FR-013, FR-014, FR-022, FR-023, FR-027, FR-029
+**Requisitos relacionados:** FR-007, FR-008, FR-009, FR-010, FR-011, FR-013, FR-014, FR-022, FR-023, FR-027, FR-029, FR-036
 
 ## Estructura
 
@@ -23,7 +23,7 @@ Vista móvil (retrato, responsiva):
 
 ## Componentes clave
 
-- Vista de cámara con marco de lectura.
+- Vista de cámara sin marco fijo (FR-036): el recuadro aparece sobre el QR solo mientras la cámara lo detecta, alineado con su posición, se mantiene unos 0,4 s si un cuadro falla y desaparece al detener la lectura.
 - Información: nombre, tamaño total, tiempo estimado restante, fragmentos recibidos de total.
 - Barra de progreso con porcentaje recibido.
 - Botón Terminar lectura: el usuario da por terminada la lectura; si faltan fragmentos, el resultado es «incompleta» (WF-005).
@@ -50,4 +50,5 @@ Vista móvil (retrato, responsiva):
 | 2026-10-08 | Spike WI-002 (H-01, H-09): confirmar nombre y tamaño antes de activar la transferencia y hacer visible el aviso | Aviso añadido en SVG de escritorio y móvil; FR-023. Aprobado |
 | 2026-10-08 | El aviso de confirmación no es necesario (pruebas con dispositivos) | Aviso, «Confirmar» y «Descartar» quitados de los SVG de escritorio y móvil; FR-023 reescrito. Aprobado |
 | 2026-10-08 | Barra con los fragmentos recibidos para saber dónde buscar | Barra añadida en SVG de escritorio y móvil; FR-029 |
+| 2026-10-09 | Dibujar un recuadro sobre el QR solo cuando se detecta, en lugar de un marco siempre visible | Marco punteado fijo quitado de los SVG de escritorio y móvil y sustituido por el recuadro sobre un QR de ejemplo; FR-036 |
 | 2026-10-09 | Quitar la primera barra de progreso y dejar solo la de fragmentos, con peso, tiempo y porcentaje arriba en una fila repartida | SVG de escritorio y móvil rehechos; FR-011 |
