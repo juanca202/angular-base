@@ -1,4 +1,4 @@
-<section class="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-6">
+<section class="mx-auto flex w-full max-w-[360px] md:max-w-[800px] flex-col gap-6 px-4 py-6">
   <h1 class="text-2xl font-semibold" i18n>Enviar archivo</h1>
 
   <input
@@ -17,9 +17,103 @@
   }
 
   @if (sending() && info(); as file) {
-    <div class="mx-auto w-full max-w-sm">
-      <app-qr-canvas [matrix]="currentQr()" />
+    <button
+      type="button"
+      class="mx-auto block w-full"
+      [class]="qrWidth()"
+      aria-label="Iniciar o reiniciar la vuelta desde el primer QR"
+      i18n-aria-label
+      (click)="restartLap()"
+    >
+      <div class="gap-4 flex flex-col md:grid grid-cols-2">
+        <app-qr-canvas [matrix]="currentQr()" />
+        @if (currentSecondQr(); as second) {
+          <app-qr-canvas [matrix]="second" />
+        }
+      </div>
+    </button>
+    <div class="mx-auto flex w-full flex-col gap-1" [class]="qrWidth()">
+      <app-fragment-bar
+        [total]="progress().total"
+        [current]="progress().index"
+        [secondary]="progress().secondIndex"
+        [interactive]="true"
+        (seek)="seek($event)"
+      />
+      @if (progress().secondIndex !== null) {
+        <p class="text-center text-sm tabular-nums" i18n>
+          QR {{ progress().index + 1 }} y {{ progress().secondIndex! + 1 }} de
+          {{ progress().total }}
+        </p>
+        <p class="text-center text-sm" i18n>
+          El segundo QR (marca naranja) recorre la secuencia desde el final: cada fragmento se
+          muestra dos veces por recorrido. Acerca la cámara para que vea los dos.
+        </p>
+      } @else {
+        <p class="text-center text-sm tabular-nums" i18n>
+          QR {{ progress().index + 1 }} de {{ progress().total }}
+        </p>
+      }
     </div>
+    <p class="text-center text-sm">
+      @if (waiting()) {
+        <ng-container i18n>
+          Apunta la cámara del otro dispositivo al QR y tócalo para iniciar, o elige en la barra
+          desde qué QR empezar: se detiene unos segundos en él.
+        </ng-container>
+      } @else {
+        <ng-container i18n>
+          Toca el QR para reiniciar la vuelta, o toca o arrastra la barra para continuar desde otro
+          QR: se detiene unos segundos en él.
+        </ng-container>
+      }
+    </p>
+
+    <div class="mx-auto flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+      <label for="density" class="font-medium" i18n>Densidad</label>
+      <select
+        id="density"
+        class="rounded border border-gray-400 bg-white px-2 py-1"
+        [disabled]="busy()"
+        (change)="changeDensity($event)"
+      >
+        @for (option of densities; track option) {
+          <option [value]="option" [selected]="option === dataSize()" i18n>
+            {{ option }} B por QR
+          </option>
+        }
+      </select>
+      <label for="qr-count" class="font-medium" i18n>QR a la vez</label>
+      <select
+        id="qr-count"
+        class="rounded border border-gray-400 bg-white px-2 py-1"
+        [value]="qrCount()"
+        (change)="changeQrCount($event)"
+      >
+        @for (option of qrCounts; track option) {
+          <option [value]="option" [selected]="option === qrCount()" i18n>
+            {{ option === 1 ? '1 QR' : option + ' QR (principio y final)' }}
+          </option>
+        }
+      </select>
+      <label for="speed" class="font-medium" i18n>Velocidad</label>
+      <select
+        id="speed"
+        class="rounded border border-gray-400 bg-white px-2 py-1"
+        [value]="speed()"
+        (change)="changeSpeed($event)"
+      >
+        @for (option of speeds; track option) {
+          <option [value]="option" [selected]="option === speed()" i18n>
+            {{ option }} QR por segundo
+          </option>
+        }
+      </select>
+    </div>
+    <p class="text-center text-sm" i18n>
+      Más bytes por QR son menos QR, pero más densos y difíciles de leer. Cambiar la densidad
+      reinicia la transferencia: el receptor debe empezar de nuevo.
+    </p>
 
     <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
       <dt class="font-medium" i18n>Nombre</dt>
@@ -28,6 +122,10 @@
       <dd class="break-all">{{ file.type }}</dd>
       <dt class="font-medium" i18n>Tamaño</dt>
       <dd>{{ fileSize() }}</dd>
+      @if (compressed()) {
+        <dt class="font-medium" i18n>Se transmite</dt>
+        <dd i18n>{{ transferSize() }} (comprimido)</dd>
+      }
       <dt class="font-medium" i18n>Códigos QR</dt>
       <dd>{{ file.totalQr }}</dd>
       <dt class="font-medium" i18n>Tiempo por vuelta</dt>

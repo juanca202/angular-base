@@ -1,5 +1,5 @@
 import { Service } from '@angular/core';
-import { QrProtocolError, countFragments } from '@/shared/utils/qr-protocol';
+import { DEFAULT_DATA_SIZE, QrProtocolError, countFragments } from '@/shared/utils/qr-protocol';
 
 /** Motivos por los que no se puede iniciar un envío. */
 export type SendRejection = 'unsupported-browser' | 'empty-file' | 'too-many-fragments';
@@ -33,9 +33,10 @@ export class SendFileValidator {
    * Valida el archivo elegido antes de leerlo.
    *
    * @param fileSize - Tamaño del archivo en bytes.
+   * @param dataSize - Bytes de archivo por fragmento con los que se enviará.
    * @returns `{ ok: true }` o el motivo del rechazo con su mensaje.
    */
-  public validate(fileSize: number): SendValidation {
+  public validate(fileSize: number, dataSize: number = DEFAULT_DATA_SIZE): SendValidation {
     if (!this.isSupported()) {
       return {
         ok: false,
@@ -51,7 +52,7 @@ export class SendFileValidator {
       };
     }
     try {
-      countFragments(fileSize);
+      countFragments(fileSize, dataSize);
     } catch (error) {
       if (error instanceof QrProtocolError && error.code === 'too-many-fragments') {
         return {
