@@ -1,7 +1,10 @@
+import { deflate, isCompressionSupported } from '@/shared/utils/qr-protocol/compression';
 import { crc32 } from '@/shared/utils/qr-protocol/crc32';
 import {
   CRC_SIZE,
   DEFAULT_DATA_SIZE,
+  ENCODING_DEFLATE,
+  ENCODING_NONE,
   FRAGMENT_KIND_DATA,
   FRAGMENT_KIND_METADATA,
   HEADER_SIZE,
@@ -38,6 +41,11 @@ export interface ProtocolFile {
 export interface FragmentOptions {
   /** Bytes de archivo por fragmento de datos. Por defecto {@link DEFAULT_DATA_SIZE}. */
   dataSize?: number;
+  /**
+   * Si se intenta comprimir el archivo para transmitir menos QR. Se transmite comprimido solo cuando
+   * eso lo hace más pequeño y el entorno lo permite. Por defecto `true`.
+   */
+  compress?: boolean;
 }
 
 function assertDataSize(dataSize: number): void {
@@ -50,8 +58,9 @@ function assertDataSize(dataSize: number): void {
 }
 
 /**
- * Calcula cuántos fragmentos (metadatos incluidos) requiere un archivo, sin leerlo.
- * Permite validar el límite con solo el tamaño, antes de cargar el contenido.
+ * Calcula cuántos fragmentos (metadatos incluidos) requiere un archivo como máximo, sin leerlo.
+ * Permite validar el límite con solo el tamaño, antes de cargar el contenido. Es una cota: el primer
+ * fragmento también lleva datos, de modo que la fragmentación real puede necesitar uno menos.
  *
  * @param fileSize - Tamaño del archivo en bytes.
  * @param dataSize - Bytes de archivo por fragmento de datos.
@@ -93,27 +102,38 @@ function encodeFragment(
   return fragment;
 }
 
-/** Carga del fragmento de metadatos: SHA-256 | tamaño(4) | long. nombre(2) | long. tipo(2) | nombre | tipo. */
-function encodeMetadata(file: ProtocolFile, sha256: Uint8Array): Uint8Array {
+/**
+ * Carga del fragmento de metadatos: SHA-256 del archivo original | tamaño original(4) | tamaño
+ * transmitido(4) | codificación(1) | long. nombre(2) | long. tipo(2) | nombre | tipo.
+ */
+function encodeMetadata(
+  file: ProtocolFile,
+  sha256: Uint8Array,
+  transferSize: number,
+  encoding: number,
+): Uint8Array {
   const encoder = new TextEncoder();
   const name = encoder.encode(file.name);
   const type = encoder.encode(file.type);
-  const payload = new Uint8Array(SHA256_SIZE + 8 + name.length + type.length);
+  const payload = new Uint8Array(SHA256_SIZE + 13 + name.length + type.length);
   const view = new DataView(payload.buffer);
   payload.set(sha256, 0);
   view.setUint32(SHA256_SIZE, file.bytes.length);
-  view.setUint16(SHA256_SIZE + 4, name.length);
-  view.setUint16(SHA256_SIZE + 6, type.length);
-  payload.set(name, SHA256_SIZE + 8);
-  payload.set(type, SHA256_SIZE + 8 + name.length);
+  view.setUint32(SHA256_SIZE + 4, transferSize);
+  view.setUint8(SHA256_SIZE + 8, encoding);
+  view.setUint16(SHA256_SIZE + 9, name.length);
+  view.setUint16(SHA256_SIZE + 11, type.length);
+  payload.set(name, SHA256_SIZE + 13);
+  payload.set(type, SHA256_SIZE + 13 + name.length);
   return payload;
 }
 
 /**
  * Convierte un archivo en la lista ordenada de fragmentos que se emitirán como QR.
  *
- * La posición 0 es el fragmento de metadatos (SHA-256 del archivo completo, tamaño, nombre y tipo);
- * las posiciones 1..n llevan los datos. Cada fragmento es binario: versión, tipo, identificador de
+ * La posición 0 es el fragmento de metadatos (SHA-256 del archivo completo, tamaños, codificación,
+ * nombre y tipo) y, a continuación, los primeros datos hasta llenar el fragmento; las posiciones 1..n
+ * llevan el resto de los datos, comprimidos con deflate cuando eso reduce el tamaño. Cada fragmento es binario: versión, tipo, identificador de
  * transferencia aleatorio, posición, total, longitud, carga y CRC32 de todo lo anterior.
  *
  * @param file - Archivo ya leído en memoria.
@@ -127,10 +147,20 @@ export async function fragmentFile(
   options: FragmentOptions = {},
 ): Promise<Uint8Array[]> {
   const dataSize = options.dataSize ?? DEFAULT_DATA_SIZE;
-  const total = countFragments(file.bytes.length, dataSize);
+  assertDataSize(dataSize);
 
   const sha256 = new Uint8Array(await crypto.subtle.digest('SHA-256', file.bytes));
-  const metadata = encodeMetadata(file, sha256);
+  let transfer: Uint8Array<ArrayBuffer> = file.bytes;
+  let encoding = ENCODING_NONE;
+  if ((options.compress ?? true) && file.bytes.length > 0 && isCompressionSupported()) {
+    const compressed = await deflate(file.bytes);
+    if (compressed.length < file.bytes.length) {
+      transfer = compressed;
+      encoding = ENCODING_DEFLATE;
+    }
+  }
+  countFragments(transfer.length, dataSize); // cota: rechaza pronto lo que no cabe en el protocolo
+  const metadata = encodeMetadata(file, sha256, transfer.length, encoding);
   if (metadata.length > dataSize) {
     throw new QrProtocolError(
       'metadata-too-large',
@@ -138,11 +168,18 @@ export async function fragmentFile(
     );
   }
 
+  // El primer QR no se desperdicia: tras los metadatos lleva los primeros datos hasta llenarse.
+  const firstData = transfer.subarray(0, dataSize - metadata.length);
+  const total = countFragments(transfer.length - firstData.length, dataSize);
+  const first = new Uint8Array(metadata.length + firstData.length);
+  first.set(metadata);
+  first.set(firstData, metadata.length);
+
   const transferId = crypto.getRandomValues(new Uint32Array(1))[0];
-  const fragments = [encodeFragment(FRAGMENT_KIND_METADATA, transferId, 0, total, metadata)];
+  const fragments = [encodeFragment(FRAGMENT_KIND_METADATA, transferId, 0, total, first)];
   for (let index = 1; index < total; index++) {
-    const start = (index - 1) * dataSize;
-    const chunk = file.bytes.subarray(start, start + dataSize);
+    const start = firstData.length + (index - 1) * dataSize;
+    const chunk = transfer.subarray(start, start + dataSize);
     fragments.push(encodeFragment(FRAGMENT_KIND_DATA, transferId, index, total, chunk));
   }
   return fragments;

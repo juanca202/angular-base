@@ -3,15 +3,18 @@ import { fragmentFile } from '@/shared/utils/qr-protocol/fragment-file';
 import { parseFragment } from '@/shared/utils/qr-protocol/parse-fragment';
 import { FRAGMENT_KIND_DATA, FRAGMENT_KIND_METADATA } from '@/shared/utils/qr-protocol/constants';
 
-async function sampleFragments(size = 1000): Promise<Uint8Array[]> {
+async function sampleFragments(size = 1200): Promise<Uint8Array[]> {
   const bytes = Uint8Array.from({ length: size }, (_, i) => i % 251);
-  return fragmentFile({ name: 'a.bin', type: 'application/octet-stream', bytes });
+  return fragmentFile(
+    { name: 'a.bin', type: 'application/octet-stream', bytes },
+    { dataSize: 400, compress: false },
+  );
 }
 
 describe('parseFragment', () => {
   it('decodes the metadata and data fragments produced by fragmentFile', async () => {
     // Arrange
-    const fragments = await sampleFragments(1000);
+    const fragments = await sampleFragments(1200);
     // Act
     const metadata = parseFragment(fragments[0]);
     const data = parseFragment(fragments[1]);

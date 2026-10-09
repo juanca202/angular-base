@@ -2,6 +2,8 @@ export { crc32 } from '@/shared/utils/qr-protocol/crc32';
 export {
   CRC_SIZE,
   DEFAULT_DATA_SIZE,
+  ENCODING_DEFLATE,
+  ENCODING_NONE,
   FRAGMENT_KIND_DATA,
   FRAGMENT_KIND_METADATA,
   HEADER_SIZE,

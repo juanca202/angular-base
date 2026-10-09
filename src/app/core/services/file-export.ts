@@ -1,5 +1,8 @@
 import { Service } from '@angular/core';
 
+/** Tiempo que la URL de objeto sigue vigente para que el navegador inicie la descarga. */
+const URL_LIFETIME_MS = 60_000;
+
 /**
  * Servicio global que exporta un archivo del historial con su nombre original, por descarga o
  * compartiéndolo con otras aplicaciones del dispositivo.
@@ -23,19 +26,24 @@ import { Service } from '@angular/core';
 @Service()
 export class FileExport {
   /**
-   * Descarga el archivo con su nombre original y libera la URL de objeto al terminar.
+   * Descarga el archivo con su nombre original. La URL de objeto se libera tras un plazo, no al
+   * instante: los navegadores móviles inician la descarga de forma asíncrona y fallan si la URL ya
+   * fue revocada.
    *
    * @param file - Archivo a descargar.
    */
   public download(file: File): void {
     const url = URL.createObjectURL(file);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = file.name;
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
     try {
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = file.name;
       anchor.click();
     } finally {
-      URL.revokeObjectURL(url);
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), URL_LIFETIME_MS);
     }
   }
 

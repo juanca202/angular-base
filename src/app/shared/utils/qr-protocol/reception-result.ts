@@ -11,7 +11,10 @@ export interface ReceptionProgress {
 export interface TransferMetadata {
   readonly name: string;
   readonly type: string;
+  /** Size of the original file, in bytes. */
   readonly size: number;
+  /** Bytes actually sent over the QR codes: smaller than `size` when the file travels compressed. */
+  readonly transferSize?: number;
 }
 
 /** File rebuilt from a verified transfer. */

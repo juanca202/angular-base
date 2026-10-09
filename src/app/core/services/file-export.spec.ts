@@ -39,10 +39,17 @@ describe('FileExport', () => {
       expect(click).toHaveBeenCalledTimes(1);
     });
 
-    it('libera la URL de objeto al terminar', () => {
-      service.download(file());
+    it('libera la URL de objeto tras un plazo, no al instante', () => {
+      vi.useFakeTimers();
+      try {
+        service.download(file());
 
-      expect(revokeUrl).toHaveBeenCalledWith('blob:fake');
+        expect(revokeUrl).not.toHaveBeenCalled();
+        vi.advanceTimersByTime(60_000);
+        expect(revokeUrl).toHaveBeenCalledWith('blob:fake');
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 

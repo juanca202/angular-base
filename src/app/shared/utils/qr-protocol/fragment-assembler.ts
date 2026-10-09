@@ -1,4 +1,10 @@
-import { FRAGMENT_KIND_METADATA, SHA256_SIZE } from '@/shared/utils/qr-protocol/constants';
+import { inflate } from '@/shared/utils/qr-protocol/compression';
+import {
+  ENCODING_DEFLATE,
+  ENCODING_NONE,
+  FRAGMENT_KIND_METADATA,
+  SHA256_SIZE,
+} from '@/shared/utils/qr-protocol/constants';
 import { ParsedFragment, parseFragment } from '@/shared/utils/qr-protocol/parse-fragment';
 import {
   ReceptionProgress,
@@ -6,14 +12,21 @@ import {
   TransferMetadata,
 } from '@/shared/utils/qr-protocol/reception-result';
 
-/** Size of the fixed part of the metadata payload: SHA-256, file size, name length and type length. */
-const METADATA_FIXED_SIZE = SHA256_SIZE + 8;
+/**
+ * Size of the fixed part of the metadata payload: SHA-256, file size, transferred size, encoding, name
+ * length and type length.
+ */
+const METADATA_FIXED_SIZE = SHA256_SIZE + 13;
 
 /** What happened to a fragment handed to {@link FragmentAssembler.accept}. */
 export type FragmentStatus = 'accepted' | 'duplicate' | 'invalid' | 'other-transfer';
 
 interface DecodedMetadata extends TransferMetadata {
   readonly sha256: Uint8Array;
+  readonly transferSize: number;
+  readonly encoding: number;
+  /** Primeros bytes del contenido transmitido, que viajan en el propio fragmento de metadatos. */
+  readonly data: Uint8Array;
 }
 
 function decodeMetadata(payload: Uint8Array): DecodedMetadata | null {
@@ -22,9 +35,12 @@ function decodeMetadata(payload: Uint8Array): DecodedMetadata | null {
   }
   const view = new DataView(payload.buffer, payload.byteOffset, payload.byteLength);
   const size = view.getUint32(SHA256_SIZE);
-  const nameLength = view.getUint16(SHA256_SIZE + 4);
-  const typeLength = view.getUint16(SHA256_SIZE + 6);
-  if (payload.length !== METADATA_FIXED_SIZE + nameLength + typeLength) {
+  const transferSize = view.getUint32(SHA256_SIZE + 4);
+  const encoding = view.getUint8(SHA256_SIZE + 8);
+  const nameLength = view.getUint16(SHA256_SIZE + 9);
+  const typeLength = view.getUint16(SHA256_SIZE + 11);
+  const dataStart = METADATA_FIXED_SIZE + nameLength + typeLength;
+  if (payload.length < dataStart || (encoding !== ENCODING_NONE && encoding !== ENCODING_DEFLATE)) {
     return null;
   }
   try {
@@ -32,8 +48,16 @@ function decodeMetadata(payload: Uint8Array): DecodedMetadata | null {
     const name = decoder.decode(
       payload.subarray(METADATA_FIXED_SIZE, METADATA_FIXED_SIZE + nameLength),
     );
-    const type = decoder.decode(payload.subarray(METADATA_FIXED_SIZE + nameLength));
-    return { name, type, size, sha256: payload.slice(0, SHA256_SIZE) };
+    const type = decoder.decode(payload.subarray(METADATA_FIXED_SIZE + nameLength, dataStart));
+    return {
+      name,
+      type,
+      size,
+      transferSize,
+      encoding,
+      sha256: payload.slice(0, SHA256_SIZE),
+      data: payload.slice(dataStart),
+    };
   } catch {
     return null;
   }
@@ -77,10 +101,22 @@ export class FragmentAssembler {
     return { received: this.fragments.size, total: this.total };
   }
 
+  /** Positions (from 0) of the fragments received so far; position 0 is the metadata fragment. */
+  public get receivedIndices(): ReadonlySet<number> {
+    return new Set(this.fragments.keys());
+  }
+
   /** Name, type and size of the file, or `null` until a well-formed metadata fragment is read. */
   public get metadata(): TransferMetadata | null {
     const decoded = this.metadataFragment ? decodeMetadata(this.metadataFragment) : null;
-    return decoded ? { name: decoded.name, type: decoded.type, size: decoded.size } : null;
+    return decoded
+      ? {
+          name: decoded.name,
+          type: decoded.type,
+          size: decoded.size,
+          transferSize: decoded.transferSize,
+        }
+      : null;
   }
 
   /**
@@ -107,19 +143,30 @@ export class FragmentAssembler {
     if (!metadata) {
       return { outcome: 'unreconstructable' };
     }
-    const chunks = Array.from(
-      { length: this.total - 1 },
-      (_, i) => this.fragments.get(i + 1) as Uint8Array,
-    );
-    const length = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
-    if (length !== metadata.size) {
+    const chunks = [
+      metadata.data,
+      ...Array.from({ length: this.total - 1 }, (_, i) => this.fragments.get(i + 1) as Uint8Array),
+    ];
+    const transferred = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+    if (transferred !== metadata.transferSize) {
       return { outcome: 'unreconstructable' };
     }
-    const bytes = new Uint8Array(length);
+    let bytes = new Uint8Array(transferred);
     let offset = 0;
     for (const chunk of chunks) {
       bytes.set(chunk, offset);
       offset += chunk.length;
+    }
+    if (metadata.encoding === ENCODING_DEFLATE) {
+      try {
+        bytes = await inflate(bytes, metadata.size);
+      } catch {
+        return { outcome: 'unreconstructable' };
+      }
+    }
+    const length = bytes.length;
+    if (length !== metadata.size) {
+      return { outcome: 'unreconstructable' };
     }
     const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
     if (digest.some((value, i) => value !== metadata.sha256[i])) {
