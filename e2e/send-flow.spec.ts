@@ -205,47 +205,6 @@ test.describe('envío: flujo completo', () => {
     expect(Number(await slider.getAttribute('aria-valuemax'))).toBeGreaterThan(40);
   });
 
-  test('con dos QR a la vez el segundo recorre la secuencia desde el final', async ({ page }) => {
-    await choose(page, [fileOf('doble.bin', 20_000, true)]);
-    await expect(qr(page)).toBeVisible();
-    const slider = page.getByRole('slider', { name: 'Posición en la secuencia de QR' });
-    const total = Number(await slider.getAttribute('aria-valuemax'));
-    const lapSingle = await page
-      .getByText(/^\d+ s$|^\d+ min \d+ s$/)
-      .first()
-      .innerText();
-    await expect(page.getByRole('img', { name: 'Segundo código QR del archivo' })).toHaveCount(0);
-
-    await page.getByRole('combobox', { name: 'QR a la vez' }).selectOption('2');
-
-    await expect(page.getByRole('img', { name: 'Segundo código QR del archivo' })).toBeVisible();
-    await expect(qr(page)).toBeVisible();
-    // Primer QR: 1; segundo: el último (marcas en los extremos de la barra).
-    await expect(page.getByText(`QR 1 y ${total} de ${total}`, { exact: true })).toBeVisible();
-    // El tiempo por vuelta pasa a la mitad.
-    expect(
-      await page
-        .getByText(/^\d+ s$|^\d+ min \d+ s$/)
-        .first()
-        .innerText(),
-    ).not.toBe(lapSingle);
-    await page.getByRole('button', { name: /Iniciar o reiniciar la vuelta/ }).click();
-    // Tras pulsar, el texto cambia con la secuencia: se comprueba su forma, tolerando espacios.
-    await expect(page.getByText(new RegExp(`^\\s*QR \\d+ y \\d+ de ${total}\\s*$`))).toBeVisible();
-  });
-
-  test('recuerda si se muestran dos QR al recargar la página', async ({ page }) => {
-    await choose(page, [fileOf('doble.bin', 20_000, true)]);
-    await page.getByRole('combobox', { name: 'QR a la vez' }).selectOption('2');
-    await expect(page.getByRole('img', { name: 'Segundo código QR del archivo' })).toBeVisible();
-
-    await page.reload();
-    await choose(page, [fileOf('doble.bin', 20_000, true)]);
-
-    await expect(page.getByRole('combobox', { name: 'QR a la vez' })).toHaveValue('2');
-    await expect(page.getByRole('img', { name: 'Segundo código QR del archivo' })).toBeVisible();
-  });
-
   test('guarda una copia en el almacenamiento privado al iniciar el envío', async ({ page }) => {
     await choose(page, [fileOf('copia.bin', 5_000)]);
     await expect(qr(page)).toBeVisible();

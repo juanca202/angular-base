@@ -372,42 +372,6 @@ test.describe('recepción: lector de reserva con imágenes de QR reales', () => 
   });
 });
 
-test.describe('recepción: dos QR en el mismo cuadro', () => {
-  test('lee un QR secuencial y otro inverso a la vez y recibe el archivo idéntico', async ({
-    page,
-  }) => {
-    test.setTimeout(90_000);
-    const bytes = sampleBytes(2400);
-    const fragments = await transfer('doble.bin', 'application/octet-stream', bytes);
-    await open(page, 'fallback');
-
-    // Como el emisor con dos QR: el primero avanza y el segundo recorre desde el final, de modo que
-    // ceil(N / 2) pasos bastan para ver todos los fragmentos.
-    const steps = Math.ceil(fragments.length / 2);
-    let running = true;
-    const loop = (async () => {
-      while (running) {
-        for (let step = 0; step < steps; step++) {
-          if (!running) {
-            return;
-          }
-          await showQr(page, fragments[step], fragments[fragments.length - 1 - step]);
-          await page.waitForTimeout(450);
-        }
-      }
-    })();
-
-    try {
-      await expect(resultTitle(page)).toBeVisible({ timeout: 45_000 });
-    } finally {
-      running = false;
-      await loop;
-    }
-    expect(await storedBytes(page, 'doble.bin')).toEqual(Array.from(bytes));
-    expect(page.workers().length).toBeGreaterThan(0);
-  });
-});
-
 test.describe('recepción: sin desplazamiento horizontal', () => {
   for (const width of [360, 768, 1280, 1600]) {
     test(`pantalla de lectura, aviso y resultados a ${width}px`, async ({ page }) => {

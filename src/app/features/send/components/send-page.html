@@ -20,40 +20,23 @@
     <button
       type="button"
       class="mx-auto block w-full"
-      [class]="qrWidth()"
+      class="max-w-[min(40rem,70vh)]"
       aria-label="Iniciar o reiniciar la vuelta desde el primer QR"
       i18n-aria-label
       (click)="restartLap()"
     >
-      <div class="gap-4 flex flex-col md:grid grid-cols-2">
-        <app-qr-canvas [matrix]="currentQr()" />
-        @if (currentSecondQr(); as second) {
-          <app-qr-canvas [matrix]="second" />
-        }
-      </div>
+      <app-qr-canvas [matrix]="currentQr()" />
     </button>
-    <div class="mx-auto flex w-full flex-col gap-1" [class]="qrWidth()">
+    <div class="mx-auto flex w-full flex-col gap-1" class="max-w-[min(40rem,70vh)]">
       <app-fragment-bar
         [total]="progress().total"
         [current]="progress().index"
-        [secondary]="progress().secondIndex"
         [interactive]="true"
         (seek)="seek($event)"
       />
-      @if (progress().secondIndex !== null) {
-        <p class="text-center text-sm tabular-nums" i18n>
-          QR {{ progress().index + 1 }} y {{ progress().secondIndex! + 1 }} de
-          {{ progress().total }}
-        </p>
-        <p class="text-center text-sm" i18n>
-          El segundo QR (marca naranja) recorre la secuencia desde el final: cada fragmento se
-          muestra dos veces por recorrido. Acerca la cámara para que vea los dos.
-        </p>
-      } @else {
-        <p class="text-center text-sm tabular-nums" i18n>
-          QR {{ progress().index + 1 }} de {{ progress().total }}
-        </p>
-      }
+      <p class="text-center text-sm tabular-nums" i18n>
+        QR {{ progress().index + 1 }} de {{ progress().total }}
+      </p>
     </div>
     <p class="text-center text-sm">
       @if (waiting()) {
@@ -80,19 +63,6 @@
         @for (option of densities; track option) {
           <option [value]="option" [selected]="option === dataSize()" i18n>
             {{ option }} B por QR
-          </option>
-        }
-      </select>
-      <label for="qr-count" class="font-medium" i18n>QR a la vez</label>
-      <select
-        id="qr-count"
-        class="rounded border border-gray-400 bg-white px-2 py-1"
-        [value]="qrCount()"
-        (change)="changeQrCount($event)"
-      >
-        @for (option of qrCounts; track option) {
-          <option [value]="option" [selected]="option === qrCount()" i18n>
-            {{ option === 1 ? '1 QR' : option + ' QR (principio y final)' }}
           </option>
         }
       </select>

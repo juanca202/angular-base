@@ -56,13 +56,6 @@ const PAGE_STEP = 10;
           aria-hidden="true"
         ></canvas>
       }
-      @if (secondaryPercent() !== null) {
-        <div
-          class="pointer-events-none absolute inset-y-0 w-1 -translate-x-1/2 bg-orange-600 shadow-[0_0_0_1px_white]"
-          [style.left.%]="secondaryPercent()"
-          aria-hidden="true"
-        ></div>
-      }
       @if (markerPercent() !== null) {
         <div
           class="pointer-events-none absolute inset-y-0 w-1 -translate-x-1/2 bg-blue-700 shadow-[0_0_0_1px_white]"
@@ -79,11 +72,6 @@ export class FragmentBar {
   public readonly total = input.required<number>();
   /** Position (from 0) of the fragment the marker points at, or `null` for no marker. */
   public readonly current = input<number | null>(null);
-  /**
-   * Position (from 0) of the fragment a second marker points at (orange), or `null` for none: the sender
-   * uses it for the second QR, which walks the sequence backwards.
-   */
-  public readonly secondary = input<number | null>(null);
   /** Positions of the fragments already received, painted green, or `null` to paint none. */
   public readonly received = input<ReadonlySet<number> | null>(null);
   /** Whether the bar can be pressed, dragged or driven with the keyboard to choose a fragment. */
@@ -100,11 +88,6 @@ export class FragmentBar {
     const shown = this.shown();
     const total = this.total();
     return shown === null || total <= 0 ? null : ((shown + 0.5) / total) * 100;
-  });
-  protected readonly secondaryPercent = computed(() => {
-    const second = this.secondary();
-    const total = this.total();
-    return second === null || total <= 0 ? null : ((second + 0.5) / total) * 100;
   });
   protected readonly valueText = computed(
     () => $localize`QR ${(this.shown() ?? 0) + 1}:position: de ${this.total()}:total:`,
