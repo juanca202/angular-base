@@ -5,13 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CameraErrorCode } from '@/features/receive/models/camera-error';
 import {
   EMPTY_RECEIVE_PROGRESS,
-  PendingTransfer,
   ReceivePhase,
   ReceiveProgress,
   ReceiveResult,
 } from '@/features/receive/models/receive-state';
 import { StoredTransfer } from '@/core/models/stored-transfer';
 import { FileExport } from '@/core/services/file-export';
+import { ScreenWakeLock } from '@/core/services/screen-wake-lock';
 import { TransferHistory } from '@/core/services/transfer-history';
 import { ReceivePage } from '@/features/receive/components/receive-page';
 import { ReceiveManager } from '@/features/receive/services/receive-manager';
@@ -19,12 +19,9 @@ import { ReceiveManager } from '@/features/receive/services/receive-manager';
 interface FakeManager {
   phase: WritableSignal<ReceivePhase>;
   progress: WritableSignal<ReceiveProgress>;
-  pending: WritableSignal<PendingTransfer | null>;
   result: WritableSignal<ReceiveResult | null>;
   cameraError: WritableSignal<CameraErrorCode | null>;
   start: ReturnType<typeof vi.fn>;
-  confirm: ReturnType<typeof vi.fn>;
-  discard: ReturnType<typeof vi.fn>;
   finishReading: ReturnType<typeof vi.fn>;
   continueScanning: ReturnType<typeof vi.fn>;
   retry: ReturnType<typeof vi.fn>;
@@ -35,12 +32,9 @@ function createManager(): FakeManager {
   return {
     phase: signal<ReceivePhase>('reading'),
     progress: signal<ReceiveProgress>(EMPTY_RECEIVE_PROGRESS),
-    pending: signal<PendingTransfer | null>(null),
     result: signal<ReceiveResult | null>(null),
     cameraError: signal<CameraErrorCode | null>(null),
     start: vi.fn().mockResolvedValue(undefined),
-    confirm: vi.fn().mockResolvedValue(undefined),
-    discard: vi.fn(),
     finishReading: vi.fn().mockResolvedValue(undefined),
     continueScanning: vi.fn().mockResolvedValue(undefined),
     retry: vi.fn().mockResolvedValue(undefined),
@@ -53,6 +47,7 @@ const reading: ReceiveProgress = {
   size: 1_258_291,
   received: 268,
   total: 412,
+  fragments: new Set<number>(),
   percent: 65,
   remainingSeconds: 70,
 };
@@ -69,6 +64,8 @@ describe('ReceivePage', () => {
     remove: vi.fn(),
   };
 
+  const wakeLock = { acquire: vi.fn(async () => undefined), release: vi.fn(async () => undefined) };
+
   const setup = async (manager = createManager()) => {
     const view = await render(ReceivePage, {
       providers: [
@@ -76,6 +73,7 @@ describe('ReceivePage', () => {
         { provide: ReceiveManager, useValue: manager },
         { provide: TransferHistory, useValue: history },
         { provide: FileExport, useValue: { download, isShareAvailable: () => false } },
+        { provide: ScreenWakeLock, useValue: wakeLock },
       ],
     });
     return { ...view, manager };
@@ -83,12 +81,62 @@ describe('ReceivePage', () => {
 
   beforeEach(() => {
     download.mockReset();
+    wakeLock.acquire.mockClear();
+    wakeLock.release.mockClear();
     history.load.mockClear();
     URL.createObjectURL = vi.fn(() => 'blob:preview');
     URL.revokeObjectURL = vi.fn();
   });
 
   afterEach(() => vi.restoreAllMocks());
+
+  describe('screen kept on while reading', () => {
+    it.each(['starting', 'reading', 'finishing'] as const)(
+      'asks to keep the screen on while the phase is %s',
+      async (phase) => {
+        const manager = createManager();
+        manager.phase.set(phase);
+
+        await setup(manager);
+
+        expect(wakeLock.acquire).toHaveBeenCalled();
+      },
+    );
+
+    it.each(['idle', 'result'] as const)(
+      'does not keep the screen on in the %s phase',
+      async (phase) => {
+        const manager = createManager();
+        manager.phase.set(phase);
+
+        await setup(manager);
+
+        expect(wakeLock.acquire).not.toHaveBeenCalled();
+        expect(wakeLock.release).toHaveBeenCalled();
+      },
+    );
+
+    it('lets the screen go once the reception has a result', async () => {
+      const manager = createManager();
+      const { fixture } = await setup(manager);
+      wakeLock.release.mockClear();
+
+      manager.phase.set('result');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(wakeLock.release).toHaveBeenCalled();
+    });
+
+    it('releases it when leaving the screen', async () => {
+      const { fixture } = await setup();
+      wakeLock.release.mockClear();
+
+      fixture.destroy();
+
+      expect(wakeLock.release).toHaveBeenCalled();
+    });
+  });
 
   it('activates the camera on entering, on the video element of the screen', async () => {
     // Act
@@ -104,13 +152,12 @@ describe('ReceivePage', () => {
     await setup();
     // Assert
     expect(screen.getByText('Esperando el primer QR…')).toBeTruthy();
-    expect(
-      screen.getByRole('progressbar', { name: 'Progreso de la recepción' }).getAttribute('value'),
-    ).toBe('0');
     expect(screen.getByText('0 %')).toBeTruthy();
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(screen.queryByRole('img', { name: 'Fragmentos recibidos' })).toBeNull();
   });
 
-  it('shows name, total size, estimated time, fragments and progress with its percentage', async () => {
+  it('shows name, total size, estimated time, percentage and the bar of received fragments', async () => {
     // Arrange
     const manager = createManager();
     manager.progress.set(reading);
@@ -122,9 +169,42 @@ describe('ReceivePage', () => {
     expect(screen.getByText(/268\s+de\s+412\s+fragmentos/)).toBeTruthy();
     expect(screen.getByText(/~1 min 10 s/)).toBeTruthy();
     expect(screen.getByText('65 %')).toBeTruthy();
-    expect(
-      screen.getByRole('progressbar', { name: 'Progreso de la recepción' }).getAttribute('value'),
-    ).toBe('65');
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(screen.getByRole('img', { name: 'Fragmentos recibidos' })).toBeTruthy();
+  });
+
+  it('puts size, estimated time and percentage in one row spread across it, in that order, above the bar', async () => {
+    // Arrange
+    const manager = createManager();
+    manager.progress.set(reading);
+    // Act
+    await setup(manager);
+    // Assert
+    const size = screen.getByText(/1\.2 MB/);
+    const time = screen.getByText(/~1 min 10 s/);
+    const percent = screen.getByText('65 %');
+    const bar = screen.getByRole('img', { name: 'Fragmentos recibidos' });
+    const row = size.parentElement as HTMLElement;
+    expect(row.className).toContain('flex');
+    expect(row.className).toContain('justify-between');
+    expect(time.parentElement).toBe(row);
+    expect(percent.parentElement).toBe(row);
+    const follows = (a: Node, b: Node) =>
+      a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+    expect(follows(size, time)).toBeTruthy();
+    expect(follows(time, percent)).toBeTruthy();
+    expect(follows(row, bar)).toBeTruthy();
+  });
+
+  it('keeps the size and time labels available to screen readers, hidden on screen', async () => {
+    // Arrange
+    const manager = createManager();
+    manager.progress.set(reading);
+    // Act
+    await setup(manager);
+    // Assert
+    expect(screen.getByText('Tamaño total:').className).toContain('sr-only');
+    expect(screen.getByText('Tiempo estimado:').className).toContain('sr-only');
   });
 
   it('hides the fragment count on narrow screens, keeping name, size, time and percentage', async () => {
@@ -147,54 +227,6 @@ describe('ReceivePage', () => {
     await setup(manager);
     // Assert
     expect(screen.getByText(/calculando…/)).toBeTruthy();
-  });
-
-  describe('confirmation notice', () => {
-    it('does not show the notice when no transfer is waiting', async () => {
-      // Act
-      await setup();
-      // Assert
-      expect(screen.queryByRole('alert')).toBeNull();
-    });
-
-    it('asks to confirm the name and size, and lets the user confirm', async () => {
-      // Arrange
-      const manager = createManager();
-      manager.pending.set({ name: 'informe-q3.pdf', type: 'application/pdf', size: 1_258_291 });
-      await setup(manager);
-      // Assert
-      expect(screen.getByRole('alert').textContent).toContain('«informe-q3.pdf» (1.2 MB)');
-      expect(screen.getByText('Hasta confirmar no se guarda nada.')).toBeTruthy();
-      // Act
-      await fireEvent.click(screen.getByRole('button', { name: 'Confirmar' }));
-      // Assert
-      expect(manager.confirm).toHaveBeenCalledTimes(1);
-    });
-
-    it('lets the user discard the transfer', async () => {
-      // Arrange
-      const manager = createManager();
-      manager.pending.set({ name: 'x.bin', type: '', size: 10 });
-      await setup(manager);
-      // Act
-      await fireEvent.click(screen.getByRole('button', { name: 'Descartar' }));
-      // Assert
-      expect(manager.discard).toHaveBeenCalledTimes(1);
-    });
-
-    it('stays visible and keeps the progress updating while waiting', async () => {
-      // Arrange
-      const manager = createManager();
-      manager.pending.set({ name: 'x.bin', type: '', size: 10 });
-      manager.progress.set({ ...reading, received: 3, percent: 1 });
-      const { fixture } = await setup(manager);
-      // Act
-      manager.progress.set({ ...reading, received: 150, percent: 36 });
-      fixture.detectChanges();
-      // Assert
-      expect(screen.getByRole('alert')).toBeTruthy();
-      expect(screen.getByText('36 %')).toBeTruthy();
-    });
   });
 
   describe('actions', () => {
@@ -280,6 +312,19 @@ describe('ReceivePage', () => {
         preview.compareDocumentPosition(historyTitle) & Node.DOCUMENT_POSITION_FOLLOWING,
       ).toBeTruthy();
       expect(history.load).toHaveBeenCalled();
+    });
+
+    it('tells the user the file was received and offers to view or download it', async () => {
+      // Arrange
+      const manager = createManager();
+      manager.phase.set('result');
+      manager.result.set({ outcome: 'completed', record, file });
+      // Act
+      await setup(manager);
+      // Assert
+      expect(screen.getByRole('heading', { name: 'Archivo recibido correctamente' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'Ver archivo' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'Descargar' })).toBeTruthy();
     });
 
     it('hides the camera controls once there is a result', async () => {

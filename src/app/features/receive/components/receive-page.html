@@ -41,8 +41,20 @@
     <p class="mt-2 text-center" i18n>Apunta al QR del emisor</p>
   </div>
 
+  @if (debug) {
+    <p class="rounded-md bg-gray-100 p-2 font-mono text-xs" aria-live="off">
+      cuadros {{ stats().frames }} · QR vistos {{ stats().detected }} · leídos
+      {{ stats().read }} ({{ stats().lastLength ?? '-' }} B) · fragmentos válidos
+      {{ stats().valid }} · vídeo {{ stats().videoSize ?? '-' }} ·
+      {{ stats().fps ?? '-' }} cuadros/s · {{ stats().averageMs ?? '-' }} ms/cuadro · lector
+      {{ stats().reader ?? '-' }} · detector nativo {{ nativeDetectorLabel() }} · error
+      {{ stats().lastError ?? '-' }}
+    </p>
+  }
+
   @if (phase() === 'result') {
     @if (completedFile(); as file) {
+      <app-receive-success [file]="file" />
       <app-file-preview [file]="file" />
     } @else if (failure(); as failed) {
       <app-result-card
@@ -54,14 +66,6 @@
     }
     <app-history-panel />
   } @else if (cameraMessage() === null) {
-    @if (pending(); as transfer) {
-      <app-transfer-confirmation
-        [transfer]="transfer"
-        (confirmed)="confirm()"
-        (discarded)="discard()"
-      />
-    }
-
     <app-receive-progress [progress]="progress()" />
 
     <button

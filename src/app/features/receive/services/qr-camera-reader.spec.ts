@@ -29,7 +29,7 @@ describe('QrCameraReader', () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    decode = vi.fn().mockResolvedValue(null);
+    decode = vi.fn().mockResolvedValue([]);
     getUserMedia = vi.fn();
     vi.stubGlobal('navigator', { mediaDevices: { getUserMedia } });
     TestBed.configureTestingModule({ providers: [{ provide: QrDecoder, useValue: { decode } }] });
@@ -65,15 +65,49 @@ describe('QrCameraReader', () => {
     // Arrange
     getUserMedia.mockResolvedValue(createStream().stream);
     decode
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(Uint8Array.of(1))
-      .mockResolvedValueOnce(Uint8Array.of(2));
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([Uint8Array.of(1)])
+      .mockResolvedValueOnce([Uint8Array.of(2)]);
     const onQr = vi.fn();
     // Act
     await reader.start(createVideo(), onQr);
     await vi.advanceTimersByTimeAsync(500);
     // Assert
     expect(onQr.mock.calls).toEqual([[Uint8Array.of(1)], [Uint8Array.of(2)]]);
+  });
+
+  it('delivers both QR codes of a frame when the sender shows two at once', async () => {
+    // Arrange
+    getUserMedia.mockResolvedValue(createStream().stream);
+    decode
+      .mockResolvedValueOnce([Uint8Array.of(1), Uint8Array.of(2)])
+      .mockResolvedValueOnce([Uint8Array.of(3)]);
+    const onQr = vi.fn();
+    // Act
+    await reader.start(createVideo(), onQr);
+    await vi.advanceTimersByTimeAsync(500);
+    // Assert
+    expect(onQr.mock.calls).toEqual([[Uint8Array.of(1)], [Uint8Array.of(2)], [Uint8Array.of(3)]]);
+  });
+
+  it('reads each new camera frame when the browser reports them, without sleeping in between', async () => {
+    // Arrange
+    getUserMedia.mockResolvedValue(createStream().stream);
+    const frameCallbacks: (() => void)[] = [];
+    const video = Object.assign(createVideo(), {
+      requestVideoFrameCallback: vi.fn((callback: () => void) => frameCallbacks.push(callback)),
+    });
+    decode.mockResolvedValue([Uint8Array.of(1)]);
+    const onQr = vi.fn();
+    // Act
+    await reader.start(video, onQr);
+    await vi.advanceTimersByTimeAsync(1000);
+    // Assert: nothing is decoded again until the camera delivers the next frame
+    expect(decode).toHaveBeenCalledTimes(1);
+    frameCallbacks.shift()?.();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(decode).toHaveBeenCalledTimes(2);
+    expect(onQr).toHaveBeenCalledTimes(2);
   });
 
   it('does not start a second reading while one is starting or in progress', async () => {
@@ -159,7 +193,7 @@ describe('QrCameraReader', () => {
   it('keeps reading when a frame fails to decode', async () => {
     // Arrange
     getUserMedia.mockResolvedValue(createStream().stream);
-    decode.mockRejectedValueOnce(new Error('boom')).mockResolvedValueOnce(Uint8Array.of(9));
+    decode.mockRejectedValueOnce(new Error('boom')).mockResolvedValueOnce([Uint8Array.of(9)]);
     const onQr = vi.fn();
     // Act
     await reader.start(createVideo(), onQr);

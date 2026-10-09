@@ -19,8 +19,12 @@ function sampleBytes(size: number): Uint8Array<ArrayBuffer> {
   return Uint8Array.from({ length: size }, (_, i) => (i * 5 + 1) % 256);
 }
 
-async function transfer(name = 'foto.png', size = 1000): Promise<Uint8Array[]> {
-  return fragmentFile({ name, type: 'image/png', bytes: sampleBytes(size) });
+async function transfer(name = 'foto.png', size = 1200): Promise<Uint8Array[]> {
+  // 400 B per fragment and no compression (not the defaults) so the counts of these scenarios stay the same.
+  return fragmentFile(
+    { name, type: 'image/png', bytes: sampleBytes(size) },
+    { dataSize: 400, compress: false },
+  );
 }
 
 /** Rewrites a fragment with another payload and a valid CRC. */
@@ -122,25 +126,34 @@ describe('ReceiveManager', () => {
     });
   });
 
-  describe('confirmation of the transfer', () => {
-    it('asks to confirm the name and size once the metadata is read', async () => {
+  describe('election of the transfer', () => {
+    it('takes the first transfer with readable metadata as the active one, without asking', async () => {
       // Arrange
       await manager.start(video);
-      const fragments = await transfer('foto.png', 1000);
+      const fragments = await transfer('foto.png', 1200);
       // Act
       await read([fragments[0]]);
       // Assert
-      expect(manager.pending()).toEqual({ name: 'foto.png', type: 'image/png', size: 1000 });
+      expect(manager.progress()).toMatchObject({ name: 'foto.png', size: 1200, received: 1 });
     });
 
-    it('shows the fragments already read while waiting for the confirmation', async () => {
+    it('tells which fragments were received so the user knows what is missing', async () => {
+      // Arrange
+      await manager.start(video);
+      const fragments = await transfer();
+      // Act
+      await read([fragments[0], fragments[2]]);
+      // Assert
+      expect([...manager.progress().fragments]).toEqual([0, 2]);
+    });
+
+    it('shows the fragments already read before the metadata arrived', async () => {
       // Arrange
       await manager.start(video);
       const fragments = await transfer();
       // Act
       await read([fragments[2], fragments[1], fragments[0]]);
       // Assert
-      expect(manager.pending()).not.toBeNull();
       expect(manager.progress()).toMatchObject({
         received: 3,
         total: 4,
@@ -149,65 +162,33 @@ describe('ReceiveManager', () => {
       });
     });
 
-    it('does not complete nor save anything until the transfer is confirmed', async () => {
+    it('completes and saves by itself once every fragment was read', async () => {
       // Arrange
       await manager.start(video);
-      const fragments = await transfer();
       // Act
-      await read(fragments);
-      // Assert
-      expect(manager.phase()).toBe('reading');
-      expect(manager.result()).toBeNull();
-      expect(save).not.toHaveBeenCalled();
-      expect(readerStop).not.toHaveBeenCalled();
-    });
-
-    it('completes right after the confirmation when every fragment was already read', async () => {
-      // Arrange
-      await manager.start(video);
       await read(await transfer());
-      // Act
-      await manager.confirm();
       // Assert
-      expect(manager.pending()).toBeNull();
       expect(manager.result()?.outcome).toBe('completed');
       expect(save).toHaveBeenCalledTimes(1);
     });
 
-    it('ignores the fragments of a discarded transfer and keeps reading', async () => {
+    it('does not complete before the metadata is read, even with every data fragment', async () => {
       // Arrange
       await manager.start(video);
-      const discarded = await transfer('ajeno.png');
-      await read([discarded[0], discarded[1]]);
+      const fragments = await transfer();
       // Act
-      manager.discard();
-      await read([discarded[2], discarded[3]]);
+      await read(fragments.slice(1));
       // Assert
-      expect(manager.pending()).toBeNull();
-      expect(manager.progress()).toMatchObject({ received: 0, total: 0 });
       expect(manager.phase()).toBe('reading');
-      expect(readerStop).not.toHaveBeenCalled();
+      expect(save).not.toHaveBeenCalled();
     });
 
-    it('offers the next transfer after discarding a foreign one', async () => {
-      // Arrange
-      await manager.start(video);
-      const foreign = await transfer('ajeno.png');
-      const mine = await transfer('mio.png');
-      await read([foreign[0], mine[0]]);
-      // Act
-      manager.discard();
-      // Assert
-      expect(manager.pending()).toMatchObject({ name: 'mio.png' });
-    });
-
-    it('ignores fragments of other transfers once one is confirmed', async () => {
+    it('ignores the fragments of other transfers once one is active', async () => {
       // Arrange
       await manager.start(video);
       const mine = await transfer('mio.png');
       const foreign = await transfer('ajeno.png');
       await read([mine[0], foreign[0]]);
-      await manager.confirm();
       // Act
       await read([foreign[1], foreign[2], foreign[3], mine[1]]);
       // Assert
@@ -233,7 +214,6 @@ describe('ReceiveManager', () => {
       await manager.start(video);
       const fragments = await transfer('foto.png', 2000);
       await read([fragments[0]]);
-      await manager.confirm();
       // Act
       await vi.advanceTimersByTimeAsync(1000);
       await read([fragments[1], fragments[2]]);
@@ -255,12 +235,44 @@ describe('ReceiveManager', () => {
   });
 
   describe('completion', () => {
+    it('never shows 100 % while a fragment is missing, even if rounding would', async () => {
+      // Arrange
+      await manager.start(video);
+      const fragments = await transfer('grande.png', 100_000);
+      // Act
+      await read(fragments.slice(0, -1));
+      // Assert
+      expect(manager.progress().percent).toBe(99);
+      expect(manager.phase()).toBe('reading');
+      expect(manager.result()).toBeNull();
+      // Act
+      await read(fragments.slice(-1));
+      // Assert
+      expect(manager.progress().percent).toBe(100);
+      expect(manager.result()?.outcome).toBe('completed');
+    });
+
+    it('ends on a result instead of hanging when rebuilding the file fails unexpectedly', async () => {
+      // Arrange
+      await manager.start(video);
+      const fragments = await transfer();
+      const digest = vi.spyOn(crypto.subtle, 'digest').mockRejectedValue(new Error('no crypto'));
+      try {
+        // Act
+        await read(fragments);
+        // Assert
+        expect(manager.phase()).toBe('result');
+        expect(manager.result()).toEqual({ outcome: 'unreconstructable' });
+      } finally {
+        digest.mockRestore();
+      }
+    });
+
     it('releases the camera before saving and registers the received file', async () => {
       // Arrange
       await manager.start(video);
       const fragments = await transfer();
       await read([fragments[0]]);
-      await manager.confirm();
       // Act
       await read(fragments.slice(1));
       // Assert
@@ -275,13 +287,12 @@ describe('ReceiveManager', () => {
       await manager.start(video);
       const fragments = await transfer();
       await read([fragments[0]]);
-      await manager.confirm();
       // Act
       await read(fragments.slice(1));
       // Assert
       const result = manager.result();
       expect(result?.outcome).toBe('storage-full');
-      expect(result && 'file' in result ? result.file.bytes : null).toEqual(sampleBytes(1000));
+      expect(result && 'file' in result ? result.file.bytes : null).toEqual(sampleBytes(1200));
     });
 
     it('reports a save-failed result for any other storage error', async () => {
@@ -290,7 +301,6 @@ describe('ReceiveManager', () => {
       await manager.start(video);
       const fragments = await transfer();
       await read([fragments[0]]);
-      await manager.confirm();
       // Act
       await read(fragments.slice(1));
       // Assert
@@ -304,7 +314,6 @@ describe('ReceiveManager', () => {
       const altered = Uint8Array.from(fragments[1].subarray(12, fragments[1].length - 4));
       altered[0] ^= 1;
       await read([fragments[0]]);
-      await manager.confirm();
       // Act
       await read([withPayload(fragments[1], altered), ...fragments.slice(2)]);
       // Assert
@@ -320,7 +329,6 @@ describe('ReceiveManager', () => {
       const metadata = Uint8Array.from(fragments[0].subarray(12, fragments[0].length - 4));
       new DataView(metadata.buffer).setUint32(32, 9999);
       await read([withPayload(fragments[0], metadata)]);
-      await manager.confirm();
       // Act
       await read(fragments.slice(1));
       // Assert
@@ -333,14 +341,12 @@ describe('ReceiveManager', () => {
       await manager.start(video);
       const fragments = await transfer();
       await read([fragments[0]]);
-      await manager.confirm();
       await read(fragments.slice(1));
       const result = manager.result();
       // Act
       await read([(await transfer('otro.png'))[0]]);
       // Assert
       expect(manager.result()).toBe(result);
-      expect(manager.pending()).toBeNull();
     });
   });
 
@@ -350,7 +356,6 @@ describe('ReceiveManager', () => {
       await manager.start(video);
       const fragments = await transfer();
       await read([fragments[0]]);
-      await manager.confirm();
       await read([fragments[1]]);
       // Act
       await manager.finishReading();
@@ -363,7 +368,7 @@ describe('ReceiveManager', () => {
       expect(readerStop).toHaveBeenCalled();
     });
 
-    it('reports incomplete when no transfer was confirmed', async () => {
+    it('reports incomplete when no transfer was elected', async () => {
       // Arrange
       await manager.start(video);
       await read([(await transfer())[0]]);
@@ -379,7 +384,6 @@ describe('ReceiveManager', () => {
       await manager.start(video);
       const fragments = await transfer();
       await read([fragments[0]]);
-      await manager.confirm();
       await read([fragments[1]]);
       await manager.finishReading();
       // Act
@@ -397,7 +401,6 @@ describe('ReceiveManager', () => {
       const altered = Uint8Array.from(fragments[1].subarray(12, fragments[1].length - 4));
       altered[0] ^= 1;
       await read([fragments[0]]);
-      await manager.confirm();
       await read([withPayload(fragments[1], altered), ...fragments.slice(2)]);
       // Act
       await manager.continueScanning();
@@ -414,7 +417,6 @@ describe('ReceiveManager', () => {
       const altered = Uint8Array.from(fragments[1].subarray(12, fragments[1].length - 4));
       altered[0] ^= 1;
       await read([fragments[0]]);
-      await manager.confirm();
       await read([withPayload(fragments[1], altered), ...fragments.slice(2)]);
       // Act
       await manager.retry();
@@ -422,7 +424,6 @@ describe('ReceiveManager', () => {
       expect(manager.result()).toBeNull();
       expect(manager.phase()).toBe('reading');
       expect(manager.progress().received).toBe(0);
-      expect(manager.pending()).toBeNull();
       expect(readerStart).toHaveBeenCalledTimes(2);
     });
   });
@@ -438,7 +439,6 @@ describe('ReceiveManager', () => {
       // Assert
       expect(readerStop).toHaveBeenCalled();
       expect(manager.phase()).toBe('idle');
-      expect(manager.pending()).toBeNull();
       expect(manager.progress().received).toBe(0);
       expect(save).not.toHaveBeenCalled();
     });
@@ -452,7 +452,6 @@ describe('ReceiveManager', () => {
       await read(fragments);
       // Assert
       expect(manager.progress().received).toBe(0);
-      expect(manager.pending()).toBeNull();
     });
 
     it('can cancel while the camera is still opening', async () => {

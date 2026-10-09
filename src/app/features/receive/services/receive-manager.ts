@@ -3,43 +3,42 @@ import { StorageQuotaError } from '@/core/services/storage-quota-error';
 import { CameraError, CameraErrorCode } from '@/features/receive/models/camera-error';
 import {
   EMPTY_RECEIVE_PROGRESS,
-  PendingTransfer,
   ReceivePhase,
   ReceiveProgress,
   ReceiveResult,
 } from '@/features/receive/models/receive-state';
+import { ReceiveDiagnostics } from '@/features/receive/services/receive-diagnostics';
 import { QrCameraReader } from '@/features/receive/services/qr-camera-reader';
 import { ReceivedFileSaver } from '@/features/receive/services/received-file-saver';
 import { FragmentAssembler, parseFragment } from '@/shared/utils/qr-protocol';
 
 /**
- * Orchestrates one reception: camera, reassembly, confirmation of the transfer, result and saving.
+ * Orchestrates one reception: camera, reassembly, result and saving.
  *
  * Every transfer seen by the camera gets its own assembler, so a foreign sequence in frame never mixes
- * with the user's. Nothing is completed or saved until the user confirms the transfer, and the partial
- * fragments live only in memory: they are dropped on cancel, retry or when the page is left.
+ * with the user's. The first transfer whose metadata can be read becomes the active one without asking
+ * the user, and the others are dropped. The partial fragments live only in memory: they are dropped on
+ * cancel, retry or when the page is left.
  *
  * Only a verified file is saved and registered; «incomplete», «invalid data» and «unreconstructable»
- * save nothing. The screen drives it through `start`, `confirm`, `discard`, `finishReading`,
+ * save nothing. The screen drives it through `start`, `finishReading`,
  * `continueScanning`, `retry` and `cancel`, and renders its signals.
  */
 @Service()
 export class ReceiveManager {
   private readonly reader = inject(QrCameraReader);
   private readonly saver = inject(ReceivedFileSaver);
+  private readonly diagnostics = inject(ReceiveDiagnostics);
 
   private readonly _phase = signal<ReceivePhase>('idle');
   private readonly _progress = signal<ReceiveProgress>(EMPTY_RECEIVE_PROGRESS);
-  private readonly _pending = signal<PendingTransfer | null>(null);
   private readonly _result = signal<ReceiveResult | null>(null);
   private readonly _cameraError = signal<CameraErrorCode | null>(null);
 
   /** Where the reception is. */
   public readonly phase = this._phase.asReadonly();
-  /** Progress of the transfer being received (or of the one waiting for confirmation). */
+  /** Progress of the transfer being received. */
   public readonly progress = this._progress.asReadonly();
-  /** Transfer waiting for the user to confirm or discard it, if any. */
-  public readonly pending = this._pending.asReadonly();
   /** Result of the reception once it ended. */
   public readonly result = this._result.asReadonly();
   /** Why the camera could not start, if it could not. */
@@ -47,9 +46,7 @@ export class ReceiveManager {
 
   private assemblers = new Map<number, FragmentAssembler>();
   private firstSeenAt = new Map<number, number>();
-  private discarded = new Set<number>();
   private activeId: number | null = null;
-  private pendingId: number | null = null;
   private video: HTMLVideoElement | null = null;
 
   /**
@@ -65,40 +62,9 @@ export class ReceiveManager {
     }
     this.video = video;
     this._cameraError.set(null);
+    this.diagnostics.reset();
     this.resetTransfers();
     await this.openCamera(video);
-  }
-
-  /** Accepts the transfer waiting for confirmation; if it is already complete, it ends right away. */
-  public async confirm(): Promise<void> {
-    if (this.pendingId === null) {
-      return;
-    }
-    this.activeId = this.pendingId;
-    this.pendingId = null;
-    for (const id of [...this.assemblers.keys()]) {
-      if (id !== this.activeId) {
-        this.assemblers.delete(id);
-        this.firstSeenAt.delete(id);
-      }
-    }
-    this.refresh();
-    if (this.isActiveComplete()) {
-      await this.complete();
-    }
-  }
-
-  /** Discards the transfer waiting for confirmation and ignores its fragments from now on. */
-  public discard(): void {
-    if (this.pendingId === null) {
-      return;
-    }
-    this.discarded.add(this.pendingId);
-    this.assemblers.delete(this.pendingId);
-    this.firstSeenAt.delete(this.pendingId);
-    this.pendingId = null;
-    this.updatePending();
-    this.refresh();
   }
 
   /** The user ends the reading: with fragments missing the result is «incomplete». */
@@ -171,8 +137,9 @@ export class ReceiveManager {
     if (!fragment) {
       return;
     }
+    this.diagnostics.valid();
     const id = fragment.transferId;
-    if (this.discarded.has(id) || (this.activeId !== null && id !== this.activeId)) {
+    if (this.activeId !== null && id !== this.activeId) {
       return;
     }
     let assembler = this.assemblers.get(id);
@@ -184,7 +151,7 @@ export class ReceiveManager {
     if (assembler.accept(bytes) !== 'accepted') {
       return;
     }
-    this.updatePending();
+    this.electActive();
     this.refresh();
     if (this.isActiveComplete()) {
       void this.complete();
@@ -198,11 +165,14 @@ export class ReceiveManager {
     }
     this._phase.set('finishing');
     this.reader.stop();
-    const reception = await assembler.finish();
-    if (reception.outcome === 'completed') {
-      this._result.set(await this.save(reception.file));
-    } else {
-      this._result.set(reception);
+    try {
+      const reception = await assembler.finish();
+      this._result.set(
+        reception.outcome === 'completed' ? await this.save(reception.file) : reception,
+      );
+    } catch {
+      // Whatever went wrong while rebuilding, the screen must end on a result and never hang.
+      this._result.set({ outcome: 'unreconstructable' });
     }
     this._phase.set('result');
   }
@@ -223,25 +193,30 @@ export class ReceiveManager {
     return total > 0 && received === total;
   }
 
-  /** Elects the first transfer with readable metadata as the one to confirm, unless one is already chosen. */
-  private updatePending(): void {
-    if (this.activeId !== null || this.pendingId !== null) {
+  /** Makes active the first transfer with readable metadata, dropping the others, unless one is already active. */
+  private electActive(): void {
+    if (this.activeId !== null) {
       return;
     }
     for (const [id, assembler] of this.assemblers) {
       if (assembler.metadata) {
-        this.pendingId = id;
+        this.activeId = id;
+        for (const other of [...this.assemblers.keys()]) {
+          if (other !== id) {
+            this.assemblers.delete(other);
+            this.firstSeenAt.delete(other);
+          }
+        }
         return;
       }
     }
   }
 
-  /** Assembler whose progress is shown: the confirmed one, else the pending one, else the most advanced. */
+  /** Assembler whose progress is shown: the active one, else the most advanced. */
   private displayed(): { id: number; assembler: FragmentAssembler } | null {
-    const id = this.activeId ?? this.pendingId;
-    if (id !== null) {
-      const assembler = this.assemblers.get(id);
-      return assembler ? { id, assembler } : null;
+    if (this.activeId !== null) {
+      const assembler = this.assemblers.get(this.activeId);
+      return assembler ? { id: this.activeId, assembler } : null;
     }
     let best: { id: number; assembler: FragmentAssembler } | null = null;
     for (const [candidate, assembler] of this.assemblers) {
@@ -257,9 +232,6 @@ export class ReceiveManager {
   }
 
   private refresh(): void {
-    const pending =
-      this.pendingId === null ? null : (this.assemblers.get(this.pendingId)?.metadata ?? null);
-    this._pending.set(pending);
     const shown = this.displayed();
     if (!shown) {
       this._progress.set(EMPTY_RECEIVE_PROGRESS);
@@ -272,7 +244,14 @@ export class ReceiveManager {
       size: metadata?.size ?? null,
       received,
       total,
-      percent: total > 0 ? Math.round((received / total) * 100) : 0,
+      fragments: shown.assembler.receivedIndices,
+      // Never 100 % until every fragment is in: rounding must not hide a missing one.
+      percent:
+        total > 0
+          ? received >= total
+            ? 100
+            : Math.min(99, Math.floor((received / total) * 100))
+          : 0,
       remainingSeconds: this.remainingSeconds(shown.id, received, total),
     });
   }
@@ -288,10 +267,7 @@ export class ReceiveManager {
   private resetTransfers(): void {
     this.assemblers = new Map();
     this.firstSeenAt = new Map();
-    this.discarded = new Set();
     this.activeId = null;
-    this.pendingId = null;
-    this._pending.set(null);
     this._progress.set(EMPTY_RECEIVE_PROGRESS);
   }
 }

@@ -1,76 +1,425 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-
-vi.mock('jsqr', () => ({ default: vi.fn() }));
-
-import jsQR from 'jsqr';
+import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { QrDecoder } from '@/features/receive/services/qr-decoder';
+import { QrFrameReader, QrRegion } from '@/features/receive/services/qr-frame-reader';
+import { ReceiveDiagnostics } from '@/features/receive/services/receive-diagnostics';
+import type { QrWorkerRequest } from '@/features/receive/services/qr.worker';
 
-const frame = { data: new Uint8ClampedArray(16), width: 2, height: 2 };
+const video = { videoWidth: 640, videoHeight: 480 } as HTMLVideoElement;
+
+/** Stands in for the reading worker: records what it is sent and lets the test answer. */
+class FakeWorker {
+  public static instances: FakeWorker[] = [];
+  public readonly sent: QrWorkerRequest[] = [];
+  public readonly transferred: Transferable[][] = [];
+  public terminated = false;
+  private readonly listeners = new Map<string, ((event: never) => void)[]>();
+
+  constructor() {
+    FakeWorker.instances.push(this);
+  }
+
+  public addEventListener(type: string, listener: (event: never) => void): void {
+    this.listeners.set(type, [...(this.listeners.get(type) ?? []), listener]);
+  }
+
+  public postMessage(request: QrWorkerRequest, transfer: Transferable[]): void {
+    this.sent.push(request);
+    this.transferred.push(transfer);
+  }
+
+  public terminate(): void {
+    this.terminated = true;
+  }
+
+  public emit(type: string, event: unknown): void {
+    (this.listeners.get(type) ?? []).forEach((listener) => listener(event as never));
+  }
+}
 
 describe('QrDecoder', () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    vi.mocked(jsQR).mockReset();
+  let close: ReturnType<typeof vi.fn>;
+  let createImageBitmap: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    close = vi.fn();
+    createImageBitmap = vi.fn(async () => ({ close, width: 640, height: 480 }));
+    vi.stubGlobal('createImageBitmap', createImageBitmap);
+    vi.stubGlobal('BarcodeDetector', undefined);
+    FakeWorker.instances = [];
   });
 
-  describe('with BarcodeDetector available', () => {
-    it('returns the bytes of the detected QR using the raw value as latin1', async () => {
-      // Arrange
-      const detect = vi.fn().mockResolvedValue([{ rawValue: 'AÿB' }]);
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  const stubDetector = (codes: object[] | Error) => {
+    const detect =
+      codes instanceof Error ? vi.fn().mockRejectedValue(codes) : vi.fn().mockResolvedValue(codes);
+    vi.stubGlobal(
+      'BarcodeDetector',
+      class {
+        public detect = detect;
+      },
+    );
+    return detect;
+  };
+
+  const readPixels = (bytes: Uint8Array | null) =>
+    vi.spyOn(QrFrameReader.prototype, 'read').mockReturnValue(bytes ? [bytes] : []);
+
+  const diagnostics = () => TestBed.inject(ReceiveDiagnostics).state();
+
+  it('returns null without capturing anything while the camera has no frame yet', async () => {
+    const bytes = await TestBed.inject(QrDecoder).decode({
+      videoWidth: 0,
+      videoHeight: 0,
+    } as HTMLVideoElement);
+
+    expect(bytes).toEqual([]);
+    expect(createImageBitmap).not.toHaveBeenCalled();
+  });
+
+  describe('where workers are not available', () => {
+    it('reads the whole frame with jsQR when there is no native detector', async () => {
+      const read = readPixels(Uint8Array.of(1, 2, 3));
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([Uint8Array.of(1, 2, 3)]);
+      expect(read).toHaveBeenCalledWith(expect.anything(), []);
+      expect(close).toHaveBeenCalledTimes(1);
+      expect(diagnostics()).toMatchObject({ reader: 'page', nativeDetector: false });
+    });
+
+    it('reads no pixels when the detector sees no QR, and releases the capture', async () => {
+      stubDetector([]);
+      const read = readPixels(null);
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([]);
+      expect(read).not.toHaveBeenCalled();
+      expect(close).toHaveBeenCalledTimes(1);
+      expect(diagnostics()).toMatchObject({ nativeDetector: true, detected: 0 });
+    });
+
+    it('reads the area around the QR the detector located', async () => {
+      stubDetector([{ rawValue: '', boundingBox: { x: 100, y: 100, width: 100, height: 100 } }]);
+      const read = readPixels(Uint8Array.of(5));
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([Uint8Array.of(5)]);
+      expect(read).toHaveBeenCalledWith(expect.anything(), [
+        { x: 75, y: 75, width: 150, height: 150 } satisfies QrRegion,
+      ]);
+      expect(diagnostics()).toMatchObject({ detected: 1, read: 1, lastLength: 1 });
+    });
+
+    it('takes the detector text as latin1 when jsQR cannot read the frame', async () => {
+      stubDetector([{ rawValue: 'AÿB' }]);
+      readPixels(null);
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([Uint8Array.of(0x41, 0xff, 0x42)]);
+    });
+
+    it('detects without bytes when jsQR fails and the detector text is empty', async () => {
+      stubDetector([{ rawValue: '' }]);
+      readPixels(null);
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([]);
+      expect(diagnostics()).toMatchObject({ detected: 1, read: 0 });
+    });
+
+    it('stops using a detector that keeps failing and reads with jsQR alone', async () => {
+      const detect = stubDetector(
+        Object.assign(new Error('unavailable'), { name: 'NotSupportedError' }),
+      );
+      readPixels(Uint8Array.of(1));
+      const decoder = TestBed.inject(QrDecoder);
+
+      for (let frame = 0; frame < 6; frame++) {
+        await decoder.decode(video);
+      }
+
+      expect(detect).toHaveBeenCalledTimes(3);
+      expect(diagnostics()).toMatchObject({ nativeDetector: false, read: 6 });
+    });
+
+    it('keeps using a detector that fails only now and then', async () => {
+      const detect = vi
+        .fn()
+        .mockRejectedValueOnce(new Error('x'))
+        .mockRejectedValueOnce(new Error('x'))
+        .mockResolvedValueOnce([])
+        .mockRejectedValueOnce(new Error('x'))
+        .mockRejectedValueOnce(new Error('x'))
+        .mockResolvedValue([]);
       vi.stubGlobal(
         'BarcodeDetector',
         class {
           public detect = detect;
         },
       );
-      const video = {} as HTMLVideoElement;
-      // Act
-      const bytes = await new QrDecoder().decode(video);
-      // Assert
-      expect(bytes).toEqual(Uint8Array.of(0x41, 0xff, 0x42));
-      expect(detect).toHaveBeenCalledWith(video);
-      expect(jsQR).not.toHaveBeenCalled();
+      readPixels(null);
+      const decoder = TestBed.inject(QrDecoder);
+
+      for (let frame = 0; frame < 6; frame++) {
+        await decoder.decode(video);
+      }
+
+      expect(detect).toHaveBeenCalledTimes(6);
     });
 
-    it('returns null when no QR is detected', async () => {
-      // Arrange
-      vi.stubGlobal(
-        'BarcodeDetector',
-        class {
-          public detect = vi.fn().mockResolvedValue([]);
-        },
-      );
-      // Act
-      const bytes = await new QrDecoder().decode({} as HTMLVideoElement);
-      // Assert
-      expect(bytes).toBeNull();
+    it('reads the whole frame and records the cause when the detector throws', async () => {
+      stubDetector(Object.assign(new Error('invalid state'), { name: 'InvalidStateError' }));
+      const read = readPixels(Uint8Array.of(9, 8));
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([Uint8Array.of(9, 8)]);
+      expect(read).toHaveBeenCalledWith(expect.anything(), []);
+      expect(diagnostics().lastError).toContain('InvalidStateError');
+    });
+
+    it('releases the capture even when reading fails, and records the failure', async () => {
+      vi.spyOn(QrFrameReader.prototype, 'read').mockImplementation(() => {
+        throw new Error('boom');
+      });
+
+      await expect(TestBed.inject(QrDecoder).decode(video)).rejects.toThrow('boom');
+
+      expect(close).toHaveBeenCalledTimes(1);
+      expect(diagnostics().lastError).toContain('boom');
+    });
+
+    it('records the frame, its size and the time spent', async () => {
+      readPixels(null);
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(diagnostics()).toMatchObject({ frames: 1, videoSize: '640×480' });
+      expect(diagnostics().averageMs).not.toBeNull();
     });
   });
 
-  describe('without BarcodeDetector', () => {
-    it('falls back to jsQR and returns its binary data', async () => {
-      // Arrange
-      vi.stubGlobal('BarcodeDetector', undefined);
-      vi.mocked(jsQR).mockReturnValue({ binaryData: [1, 2, 3] } as ReturnType<typeof jsQR>);
-      const decoder = new QrDecoder();
-      vi.spyOn(decoder, 'grabFrame').mockReturnValue(frame);
-      // Act
-      const bytes = await decoder.decode({} as HTMLVideoElement);
-      // Assert
-      expect(bytes).toEqual(Uint8Array.of(1, 2, 3));
-      expect(jsQR).toHaveBeenCalledWith(frame.data, 2, 2, { inversionAttempts: 'dontInvert' });
+  describe('with two QR codes in the same frame', () => {
+    const box = (x: number) => ({ x, y: 100, width: 100, height: 100 });
+
+    it('reads every QR the detector located, each from its own area', async () => {
+      stubDetector([
+        { rawValue: '', boundingBox: box(50) },
+        { rawValue: '', boundingBox: box(400) },
+      ]);
+      const read = vi
+        .spyOn(QrFrameReader.prototype, 'read')
+        .mockReturnValue([Uint8Array.of(1), Uint8Array.of(2)]);
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([Uint8Array.of(1), Uint8Array.of(2)]);
+      expect(read).toHaveBeenCalledWith(expect.anything(), [
+        { x: 25, y: 75, width: 150, height: 150 },
+        { x: 375, y: 75, width: 150, height: 150 },
+      ]);
+      expect(diagnostics()).toMatchObject({ detected: 2, read: 2 });
     });
 
-    it('returns null when jsQR finds nothing', async () => {
-      // Arrange
-      vi.stubGlobal('BarcodeDetector', undefined);
-      vi.mocked(jsQR).mockReturnValue(null);
-      const decoder = new QrDecoder();
-      vi.spyOn(decoder, 'grabFrame').mockReturnValue(frame);
-      // Act
-      const bytes = await decoder.decode({} as HTMLVideoElement);
-      // Assert
-      expect(bytes).toBeNull();
+    it('takes at most four QR codes from one frame', async () => {
+      stubDetector(
+        Array.from({ length: 7 }, (_, i) => ({ rawValue: '', boundingBox: box(i * 120) })),
+      );
+      const read = readPixels(Uint8Array.of(1));
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect((read.mock.calls[0][1] as unknown[]).length).toBe(4);
+    });
+
+    it('takes the text of every detected QR as latin1 when jsQR reads none', async () => {
+      stubDetector([{ rawValue: 'AB' }, { rawValue: '' }, { rawValue: 'CD' }]);
+      readPixels(null);
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([Uint8Array.of(0x41, 0x42), Uint8Array.of(0x43, 0x44)]);
+    });
+
+    it('counts as detected the codes the detector spotted even if only some could be read', async () => {
+      stubDetector([
+        { rawValue: '', boundingBox: box(50) },
+        { rawValue: '', boundingBox: box(400) },
+      ]);
+      vi.spyOn(QrFrameReader.prototype, 'read').mockReturnValue([Uint8Array.of(1)]);
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(diagnostics()).toMatchObject({ detected: 2, read: 1 });
+    });
+  });
+
+  describe('when the browser cannot capture a bitmap', () => {
+    let drawImage: ReturnType<typeof vi.fn>;
+    let canvas: {
+      width: number;
+      height: number;
+      getContext: () => { drawImage: typeof drawImage };
+    };
+
+    beforeEach(() => {
+      createImageBitmap.mockRejectedValue(
+        Object.assign(new Error('The ImageBitmap could not be allocated.'), {
+          name: 'InvalidStateError',
+        }),
+      );
+      drawImage = vi.fn();
+      canvas = { width: 0, height: 0, getContext: () => ({ drawImage }) };
+      vi.spyOn(document, 'createElement').mockReturnValue(canvas as unknown as HTMLElement);
+      vi.stubGlobal('Worker', FakeWorker);
+      vi.stubGlobal('OffscreenCanvas', class {});
+    });
+
+    it('draws the frame on a canvas, reads it in the page and keeps the cause', async () => {
+      const read = readPixels(Uint8Array.of(3, 3));
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([Uint8Array.of(3, 3)]);
+      expect(drawImage).toHaveBeenCalledWith(video, 0, 0, 640, 480);
+      expect(read).toHaveBeenCalledWith(canvas, []);
+      expect(FakeWorker.instances.every((worker) => worker.sent.length === 0)).toBe(true);
+      expect(diagnostics()).toMatchObject({ reader: 'page' });
+      expect(diagnostics().lastError).toContain('could not be allocated');
+    });
+
+    it('reduces a large frame so its longest side is at most 1280 px', async () => {
+      readPixels(null);
+      const portrait = { videoWidth: 1080, videoHeight: 1920 } as HTMLVideoElement;
+
+      await TestBed.inject(QrDecoder).decode(portrait);
+
+      expect(canvas.width).toBe(720);
+      expect(canvas.height).toBe(1280);
+    });
+
+    it('passes the canvas to the native detector and reads the area it locates', async () => {
+      const detect = stubDetector([
+        { rawValue: '', boundingBox: { x: 100, y: 100, width: 100, height: 100 } },
+      ]);
+      const read = readPixels(Uint8Array.of(6));
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(detect).toHaveBeenCalledWith(canvas);
+      expect(read).toHaveBeenCalledWith(canvas, [{ x: 75, y: 75, width: 150, height: 150 }]);
+    });
+
+    it('does not try to capture a bitmap again after it failed', async () => {
+      readPixels(null);
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
+      await decoder.decode(video);
+
+      expect(createImageBitmap).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('with a worker', () => {
+    beforeEach(() => {
+      vi.stubGlobal('Worker', FakeWorker);
+      vi.stubGlobal('OffscreenCanvas', class {});
+    });
+
+    const answerWhenSent = async (index: number, response: object) => {
+      await vi.waitFor(() => expect(FakeWorker.instances[0]?.sent).toHaveLength(index + 1), {
+        timeout: 3000,
+      });
+      const worker = FakeWorker.instances[0];
+      worker.emit('message', { data: { id: worker.sent[index].id, error: null, ...response } });
+    };
+
+    it('locates the QR in the page and sends the area to the worker with the transferred frame', async () => {
+      stubDetector([{ rawValue: '', boundingBox: { x: 100, y: 100, width: 100, height: 100 } }]);
+      const decoder = TestBed.inject(QrDecoder);
+
+      const pending = decoder.decode(video);
+      await answerWhenSent(0, { bytes: [Uint8Array.of(7)] });
+
+      expect(await pending).toEqual([Uint8Array.of(7)]);
+      const worker = FakeWorker.instances[0];
+      expect(worker.sent[0].regions).toEqual([{ x: 75, y: 75, width: 150, height: 150 }]);
+      expect(worker.transferred[0]).toEqual([worker.sent[0].bitmap]);
+      expect(close).not.toHaveBeenCalled();
+      expect(diagnostics()).toMatchObject({ reader: 'worker', nativeDetector: true });
+    });
+
+    it('sends nothing to the worker when the detector sees no QR', async () => {
+      stubDetector([]);
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(bytes).toEqual([]);
+      expect(FakeWorker.instances[0].sent).toHaveLength(0);
+      expect(close).toHaveBeenCalledTimes(1);
+    });
+
+    it('sends the whole frame to the worker when there is no native detector', async () => {
+      const decoder = TestBed.inject(QrDecoder);
+
+      const pending = decoder.decode(video);
+      await answerWhenSent(0, { bytes: [] });
+      await pending;
+
+      expect(FakeWorker.instances[0].sent[0].regions).toEqual([]);
+    });
+
+    it('creates one worker and reuses it for every frame', async () => {
+      const decoder = TestBed.inject(QrDecoder);
+      for (let frame = 0; frame < 2; frame++) {
+        const pending = decoder.decode(video);
+        await answerWhenSent(frame, { bytes: [] });
+        await pending;
+      }
+
+      expect(FakeWorker.instances).toHaveLength(1);
+    });
+
+    it('ignores an answer that belongs to an older request', async () => {
+      const decoder = TestBed.inject(QrDecoder);
+
+      const pending = decoder.decode(video);
+      await vi.waitFor(() => expect(FakeWorker.instances[0]?.sent).toHaveLength(1), {
+        timeout: 3000,
+      });
+      const worker = FakeWorker.instances[0];
+      worker.emit('message', { data: { id: 999, bytes: [Uint8Array.of(1)], error: null } });
+      worker.emit('message', { data: { id: worker.sent[0].id, bytes: [], error: null } });
+
+      expect(await pending).toEqual([]);
+    });
+
+    it('gives up on a worker that fails and reads the next frames in the page', async () => {
+      const decoder = TestBed.inject(QrDecoder);
+      const pending = decoder.decode(video);
+      const failed = expect(pending).rejects.toThrow('falló');
+      await vi.waitFor(() => expect(FakeWorker.instances[0]?.sent).toHaveLength(1), {
+        timeout: 3000,
+      });
+
+      FakeWorker.instances[0].emit('error', { message: 'script error' });
+
+      await failed;
+      expect(FakeWorker.instances[0].terminated).toBe(true);
+      readPixels(Uint8Array.of(4));
+      expect(await decoder.decode(video)).toEqual([Uint8Array.of(4)]);
+      expect(FakeWorker.instances).toHaveLength(1);
     });
   });
 });

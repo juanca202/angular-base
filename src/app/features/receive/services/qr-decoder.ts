@@ -1,83 +1,235 @@
-import { Service } from '@angular/core';
-import jsQR from 'jsqr';
+import { Service, inject } from '@angular/core';
+import { ReceiveDiagnostics } from '@/features/receive/services/receive-diagnostics';
+import {
+  QrFrameReader,
+  QrRegion,
+  QrSource,
+  regionAround,
+} from '@/features/receive/services/qr-frame-reader';
+import type { QrWorkerRequest, QrWorkerResponse } from '@/features/receive/services/qr.worker';
+
+/** A QR spotted by the native detector, with where it is in the frame. */
+interface QrDetection {
+  rawValue: string;
+  boundingBox?: QrRegion;
+}
 
 /** Minimal `BarcodeDetector` shape used here (the API is not yet in the TypeScript DOM lib). */
 interface QrDetector {
-  detect(source: HTMLVideoElement): Promise<{ rawValue: string }[]>;
+  detect(source: QrSource): Promise<QrDetection[]>;
 }
 
 type QrDetectorConstructor = new (options: { formats: string[] }) => QrDetector;
 
-/** Pixels of a captured video frame, as consumed by the JavaScript reader. */
-export interface QrFrame {
-  data: Uint8ClampedArray;
-  width: number;
-  height: number;
+/** Most QR codes taken from the native detector in one frame (the sender shows at most two). */
+const MAX_CODES = 4;
+
+/** Consecutive failures of the native detector after which it is no longer used. */
+const DETECTOR_MAX_FAILURES = 3;
+
+/** Longest side, in pixels, of the frame drawn on the canvas when a bitmap cannot be captured. */
+const CANVAS_MAX_SIDE = 1280;
+
+/** What reading one frame found. */
+interface FrameReading {
+  /** How many QR codes were spotted in the frame (by the native detector or by jsQR). */
+  readonly detected: number;
+  /** The payload of every QR read; empty when none could be read. */
+  readonly bytes: readonly Uint8Array[];
+  /** Why the native detector or the reading failed on this frame, if it did. */
+  readonly error: string | null;
 }
 
 /**
  * Reads the bytes of a QR code from a video element.
  *
- * Uses the native `BarcodeDetector` when the browser provides it (Chromium) and falls back to the
- * `jsQR` JavaScript reader otherwise (Safari, Firefox). Both return the raw payload as bytes.
+ * Each camera frame is captured as an `ImageBitmap`. The native `BarcodeDetector` (when the browser
+ * has it) runs in the page, where the browser does the work off the main thread, to spot the QR and
+ * say where it is; its text is not used for the bytes because it is empty or altered for binary data.
+ * The bytes are read with `jsQR` from the area around the QR, in a Web Worker so the page stays free,
+ * or in the page itself where workers are not available.
  */
 @Service()
 export class QrDecoder {
+  private readonly diagnostics = inject(ReceiveDiagnostics);
+  private readonly localReader = new QrFrameReader();
+
   private detector: QrDetector | null = null;
   private canvas: HTMLCanvasElement | null = null;
+  private bitmapsFail = false;
+  private detectorFailures = 0;
+  private worker: Worker | null | undefined;
+  private nextId = 0;
+  private pending: {
+    id: number;
+    resolve: (response: QrWorkerResponse) => void;
+    reject: (error: Error) => void;
+  } | null = null;
 
   /**
    * Decodes the QR visible in the current video frame.
    *
    * @param video - Video element showing the camera stream.
-   * @returns The payload bytes, or `null` when no QR is found in the frame.
+   * @returns The payload bytes of every QR read in the frame (the sender may show two at once); empty
+   * when none is found.
    */
-  public async decode(video: HTMLVideoElement): Promise<Uint8Array | null> {
-    const detectorConstructor = (globalThis as { BarcodeDetector?: QrDetectorConstructor })
-      .BarcodeDetector;
-    if (detectorConstructor) {
-      return this.decodeNative(video, detectorConstructor);
+  public async decode(video: HTMLVideoElement): Promise<readonly Uint8Array[]> {
+    this.diagnostics.frame(video);
+    const startedAt = performance.now();
+    try {
+      if (!video.videoWidth || !video.videoHeight) {
+        // The camera has not produced a frame yet: not an error, the next one is tried.
+        return [];
+      }
+      const reading = await this.read(video);
+      if (reading.error) {
+        this.diagnostics.failed(reading.error);
+      }
+      if (reading.detected > 0) {
+        this.diagnostics.detected(reading.detected);
+      }
+      reading.bytes.forEach((bytes) => this.diagnostics.read(bytes.length));
+      return reading.bytes;
+    } catch (error) {
+      this.diagnostics.failed(error);
+      throw error;
+    } finally {
+      this.diagnostics.timed(performance.now() - startedAt);
     }
-    return this.decodeWithFallback(this.grabFrame(video));
+  }
+
+  private async read(video: HTMLVideoElement): Promise<FrameReading> {
+    const bitmap = await this.captureBitmap(video);
+    // Without a bitmap the frame is drawn on a canvas and read in the page: a canvas cannot be sent.
+    const frame: QrSource = bitmap ?? this.drawFrame(video);
+    let released = false;
+    try {
+      // A detector that keeps failing (for example its service is unavailable) is left alone: every
+      // failed attempt costs time, and jsQR reads the frame without it.
+      const detectorConstructor =
+        this.detectorFailures >= DETECTOR_MAX_FAILURES
+          ? undefined
+          : (globalThis as { BarcodeDetector?: QrDetectorConstructor }).BarcodeDetector;
+      const worker = bitmap ? this.getWorker() : null;
+      this.diagnostics.mode(worker ? 'worker' : 'page', detectorConstructor !== undefined);
+
+      let hints: QrDetection[] = [];
+      let error: string | null = null;
+      if (detectorConstructor) {
+        try {
+          this.detector ??= new detectorConstructor({ formats: ['qr_code'] });
+          const codes = await this.detector.detect(frame);
+          this.detectorFailures = 0;
+          if (codes.length === 0) {
+            return { detected: 0, bytes: [], error };
+          }
+          hints = codes.slice(0, MAX_CODES);
+        } catch (failure) {
+          // The detector is unusable on this frame: keep the cause and read it with jsQR alone.
+          this.detectorFailures++;
+          error =
+            failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
+        }
+      }
+
+      const regions = hints
+        .map((hint) => regionAround(hint.boundingBox, frame))
+        .filter((region): region is QrRegion => region !== null);
+      let bytes: readonly Uint8Array[];
+      if (worker && bitmap) {
+        // The bitmap is transferred: the worker owns it and releases it after reading.
+        released = true;
+        const response = await this.ask(worker, bitmap, regions);
+        bytes = response.bytes;
+        error ??= response.error;
+      } else {
+        bytes = this.localReader.read(frame, regions);
+      }
+      if (bytes.length === 0) {
+        // Only if jsQR cannot read any is the detector text taken as latin1, one char per byte.
+        bytes = hints
+          .map((hint) => hint.rawValue)
+          .filter((raw) => raw !== '')
+          .map((raw) => Uint8Array.from(raw, (char) => char.charCodeAt(0) & 0xff));
+      }
+      return { detected: Math.max(hints.length, bytes.length), bytes, error };
+    } finally {
+      if (!released) {
+        bitmap?.close();
+      }
+    }
   }
 
   /**
-   * Captures the current video frame as pixels.
-   *
-   * @internal Public only so tests can replace it; there is no canvas in the unit-test environment.
+   * Captures the current frame as a bitmap, or `null` when the browser cannot (for example, it
+   * cannot allocate one for a large frame); after a failure bitmaps are not tried again.
    */
-  public grabFrame(video: HTMLVideoElement): QrFrame {
+  private async captureBitmap(video: HTMLVideoElement): Promise<ImageBitmap | null> {
+    if (this.bitmapsFail) {
+      return null;
+    }
+    try {
+      return await createImageBitmap(video);
+    } catch (error) {
+      this.bitmapsFail = true;
+      this.diagnostics.failed(error);
+      return null;
+    }
+  }
+
+  /** Draws the current frame on a canvas, reduced so its longest side is at most 1280 px. */
+  private drawFrame(video: HTMLVideoElement): HTMLCanvasElement {
+    const scale = Math.min(1, CANVAS_MAX_SIDE / Math.max(video.videoWidth, video.videoHeight));
     this.canvas ??= document.createElement('canvas');
-    const width = video.videoWidth;
-    const height = video.videoHeight;
-    this.canvas.width = width;
-    this.canvas.height = height;
-    const context = this.canvas.getContext('2d', { willReadFrequently: true });
-    if (!context) {
-      return { data: new Uint8ClampedArray(0), width: 0, height: 0 };
-    }
-    context.drawImage(video, 0, 0, width, height);
-    return context.getImageData(0, 0, width, height);
+    this.canvas.width = Math.round(video.videoWidth * scale);
+    this.canvas.height = Math.round(video.videoHeight * scale);
+    this.canvas
+      .getContext('2d', { willReadFrequently: true })
+      ?.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
+    return this.canvas;
   }
 
-  private async decodeNative(
-    video: HTMLVideoElement,
-    detectorConstructor: QrDetectorConstructor,
-  ): Promise<Uint8Array | null> {
-    this.detector ??= new detectorConstructor({ formats: ['qr_code'] });
-    const codes = await this.detector.detect(video);
-    if (codes.length === 0) {
-      return null;
-    }
-    // The detector returns the payload as text where each char is one byte (latin1), validated in WI-002.
-    return Uint8Array.from(codes[0].rawValue, (char) => char.charCodeAt(0) & 0xff);
+  private ask(worker: Worker, bitmap: ImageBitmap, regions: readonly QrRegion[]) {
+    return new Promise<QrWorkerResponse>((resolve, reject) => {
+      const id = this.nextId++;
+      this.pending = { id, resolve, reject };
+      const request: QrWorkerRequest = { id, bitmap, regions };
+      worker.postMessage(request, [bitmap]);
+    });
   }
 
-  private decodeWithFallback(frame: QrFrame): Uint8Array | null {
-    if (frame.width === 0 || frame.height === 0) {
+  /** The reading worker, or `null` if the browser cannot run it (then the page reads by itself). */
+  private getWorker(): Worker | null {
+    if (this.worker !== undefined) {
+      return this.worker;
+    }
+    this.worker = null;
+    if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {
       return null;
     }
-    const code = jsQR(frame.data, frame.width, frame.height, { inversionAttempts: 'dontInvert' });
-    return code ? Uint8Array.from(code.binaryData) : null;
+    try {
+      const worker = new Worker(new URL('./qr.worker', import.meta.url), { type: 'module' });
+      worker.addEventListener('message', ({ data }: MessageEvent<QrWorkerResponse>) => {
+        if (this.pending?.id === data.id) {
+          const { resolve } = this.pending;
+          this.pending = null;
+          resolve(data);
+        }
+      });
+      worker.addEventListener('error', (event) => this.dropWorker(worker, event.message));
+      this.worker = worker;
+    } catch {
+      this.worker = null;
+    }
+    return this.worker;
+  }
+
+  /** The worker broke: give up on it so every later frame is read by the page instead. */
+  private dropWorker(worker: Worker, message: string): void {
+    worker.terminate();
+    this.worker = null;
+    const pending = this.pending;
+    this.pending = null;
+    pending?.reject(new Error(`El lector en segundo plano falló: ${message}`));
   }
 }

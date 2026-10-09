@@ -2,7 +2,7 @@ import { Service, inject, signal } from '@angular/core';
 import { CameraError } from '@/features/receive/models/camera-error';
 import { QrDecoder } from '@/features/receive/services/qr-decoder';
 
-/** Pause between two reading attempts, so frames are never decoded concurrently. */
+/** Pause between two reading attempts when the browser cannot tell when a new frame is ready. */
 const SCAN_INTERVAL_MS = 50;
 
 /**
@@ -78,7 +78,14 @@ export class QrCameraReader {
     }
     try {
       return await mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        video: {
+          facingMode: 'environment',
+          // Larger frames (a phone in portrait gives 1080×1920) can fail to be captured for lack of memory.
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          // A dense QR needs sharp modules: ask for continuous autofocus where it is supported.
+          advanced: [{ focusMode: 'continuous' } as MediaTrackConstraintSet],
+        },
         audio: false,
       });
     } catch (error) {
@@ -96,19 +103,32 @@ export class QrCameraReader {
     session: object,
   ): Promise<void> {
     while (this.session === session) {
-      let bytes: Uint8Array | null = null;
+      let found: readonly Uint8Array[] = [];
       try {
-        bytes = await this.decoder.decode(video);
+        found = await this.decoder.decode(video);
       } catch {
         // A frame that cannot be decoded is skipped; the next one is tried.
       }
       if (this.session !== session) {
         return;
       }
-      if (bytes) {
-        onQr(bytes);
-      }
-      await new Promise<void>((resolve) => setTimeout(resolve, SCAN_INTERVAL_MS));
+      found.forEach((bytes) => onQr(bytes));
+      await this.nextFrame(video);
     }
+  }
+
+  /**
+   * Waits for the camera to produce a new frame, so each attempt reads a fresh one and no time is
+   * lost sleeping. Frames that arrive while one is being decoded are skipped: decoding is never
+   * concurrent. Without `requestVideoFrameCallback` it falls back to a short pause.
+   */
+  private nextFrame(video: HTMLVideoElement): Promise<void> {
+    return new Promise<void>((resolve) => {
+      if (typeof video.requestVideoFrameCallback === 'function') {
+        video.requestVideoFrameCallback(() => resolve());
+      } else {
+        setTimeout(resolve, SCAN_INTERVAL_MS);
+      }
+    });
   }
 }

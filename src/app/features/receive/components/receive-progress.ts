@@ -1,40 +1,48 @@
 import { Component, computed, input } from '@angular/core';
+import { FragmentBar } from '@/shared/components/fragment-bar/fragment-bar';
 import { ReceiveProgress } from '@/features/receive/models/receive-state';
 import { formatSeconds } from '@/shared/utils/format';
 import { formatSize } from '@/shared/utils/format-size';
 
 /**
- * Information about the file being received: name, total size, estimated time left, fragments
- * received and a progress bar with the percentage. On narrow screens the fragment count is omitted,
- * keeping name, size, time and percentage.
+ * Information about the file being received: its name, a row with the total size, the estimated time
+ * left and the percentage received (in that order, spread across the row), and a bar of the fragments
+ * received that shows what is still missing. The size and time carry visually hidden labels so the
+ * row stays short on narrow screens; the fragment count is omitted there.
  */
 @Component({
   selector: 'app-receive-progress',
+  imports: [FragmentBar],
   template: `
     <div class="flex flex-col gap-2">
       <p class="break-all font-medium">{{ progress().name ?? waitingText }}</p>
-      @if (progress().size !== null) {
-        <p>
-          <span i18n>Tamaño total:</span> {{ size() }}
+      <div class="flex justify-between gap-2">
+        <span>
+          @if (progress().size !== null) {
+            <span class="sr-only" i18n>Tamaño total:</span>{{ size() }}
+          }
+        </span>
+        <span> <span class="sr-only" i18n>Tiempo estimado:</span>{{ remaining() }} </span>
+        <span class="tabular-nums">
+          <span class="sr-only" i18n>Progreso:</span>{{ progress().percent }} %
+        </span>
+      </div>
+      @if (progress().total > 0) {
+        <app-fragment-bar
+          [total]="progress().total"
+          [received]="progress().fragments"
+          label="Fragmentos recibidos"
+          i18n-label
+        />
+        <p class="text-sm">
           <span class="hidden sm:inline" i18n
-            >· {{ progress().received }} de {{ progress().total }} fragmentos</span
-          >
+            >{{ progress().received }} de {{ progress().total }} fragmentos ·
+          </span>
+          <ng-container i18n>
+            Verde: QR ya recibidos. Gris: los que faltan; busca ese tramo en el emisor.
+          </ng-container>
         </p>
       }
-      <p>
-        <span i18n>Tiempo estimado:</span>
-        {{ remaining() }}
-      </p>
-      <div class="flex items-center gap-3">
-        <progress
-          class="h-3 w-full"
-          [value]="progress().percent"
-          max="100"
-          aria-label="Progreso de la recepción"
-          i18n-aria-label
-        ></progress>
-        <span class="w-12 text-right tabular-nums">{{ progress().percent }} %</span>
-      </div>
     </div>
   `,
   host: { class: 'block' },

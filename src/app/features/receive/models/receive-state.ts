@@ -1,5 +1,5 @@
 import { StoredTransfer } from '@/core/models/stored-transfer';
-import { ReceivedFile, ReceptionProgress, TransferMetadata } from '@/shared/utils/qr-protocol';
+import { ReceivedFile, ReceptionProgress } from '@/shared/utils/qr-protocol';
 
 /**
  * Where the reception is:
@@ -11,15 +11,14 @@ import { ReceivedFile, ReceptionProgress, TransferMetadata } from '@/shared/util
  */
 export type ReceivePhase = 'idle' | 'starting' | 'reading' | 'finishing' | 'result';
 
-/** Transfer whose name and size were read and that waits for the user to confirm or discard it. */
-export type PendingTransfer = TransferMetadata;
-
 /** Progress shown while receiving. Before the first QR is read every value is empty. */
 export interface ReceiveProgress extends ReceptionProgress {
   /** Name of the file, once its metadata was read. */
   readonly name: string | null;
   /** Total size of the file in bytes, once its metadata was read. */
   readonly size: number | null;
+  /** Positions (from 0) of the fragments received so far. */
+  readonly fragments: ReadonlySet<number>;
   /** Percentage of fragments received, from 0 to 100. */
   readonly percent: number;
   /** Estimated seconds left, or `null` while there are too few fragments to estimate it. */
@@ -43,6 +42,7 @@ export const EMPTY_RECEIVE_PROGRESS: ReceiveProgress = {
   size: null,
   received: 0,
   total: 0,
+  fragments: new Set<number>(),
   percent: 0,
   remainingSeconds: null,
 };
