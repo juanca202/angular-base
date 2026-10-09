@@ -4,7 +4,7 @@ import { Service, signal } from '@angular/core';
 export interface ReceiveDiagnosticsSnapshot {
   /** Frames from the camera handed to the decoder. */
   readonly frames: number;
-  /** Frames where a QR was spotted (by the native detector or by jsQR). */
+  /** Frames where a QR was spotted (by the native detector or by ZXing). */
   readonly detected: number;
   /** Frames where the QR bytes could be read. */
   readonly read: number;

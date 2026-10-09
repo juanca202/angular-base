@@ -15,7 +15,8 @@
           "/*.css",
           "/*.js",
           "!/mockServiceWorker.js",
-          "/icons/**"
+          "/icons/**",
+          "/zxing/**"
         ]
       }
     },

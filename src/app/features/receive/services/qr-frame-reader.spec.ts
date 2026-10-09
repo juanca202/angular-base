@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { create } from 'qrcode';
+import type { ZXingModuleOverrides } from 'zxing-wasm/reader';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { QrFrameReader, regionAround } from '@/features/receive/services/qr-frame-reader';
 
@@ -49,6 +51,18 @@ function picture(payloads: Uint8Array[]): {
   return { data, width, height: SIDE };
 }
 
+/** ZXing gets its `.wasm` from disk: there is no web server in the unit tests. */
+const TEST_WASM: ZXingModuleOverrides = {
+  instantiateWasm: (
+    imports: WebAssembly.Imports,
+    receiveInstance: (instance: WebAssembly.Instance) => void,
+  ) => {
+    const bytes = readFileSync('node_modules/zxing-wasm/dist/reader/zxing_reader.wasm');
+    void WebAssembly.instantiate(bytes, imports).then(({ instance }) => receiveInstance(instance));
+    return {};
+  },
+};
+
 describe('QrFrameReader', () => {
   let drawImage: ReturnType<typeof vi.fn>;
   let getImageData: ReturnType<typeof vi.fn>;
@@ -95,17 +109,21 @@ describe('QrFrameReader', () => {
 
   afterEach(() => vi.unstubAllGlobals());
 
-  it('reads the QR in the whole frame when no area is given', () => {
-    const found = new QrFrameReader().read(bitmap(), []);
+  it('loads the ZXing module ahead of the first frame with warmUp', async () => {
+    await expect(new QrFrameReader(TEST_WASM).warmUp()).resolves.toBeUndefined();
+  });
+
+  it('reads the QR in the whole frame when no area is given', async () => {
+    const found = await new QrFrameReader(TEST_WASM).read(bitmap(), []);
 
     expect(found).toEqual([PAYLOAD]);
     expect(getImageData).toHaveBeenCalledTimes(1);
   });
 
-  it('reads only the given area when it holds the QR, not the whole frame', () => {
+  it('reads only the given area when it holds the QR, not the whole frame', async () => {
     show(OTHER, PAYLOAD);
 
-    const found = new QrFrameReader().read(bitmap(), [
+    const found = await new QrFrameReader(TEST_WASM).read(bitmap(), [
       { x: SIDE + GAP, y: 0, width: SIDE, height: SIDE },
     ]);
 
@@ -125,10 +143,10 @@ describe('QrFrameReader', () => {
   });
 
   describe('where the QR was read', () => {
-    it('gives the box of a QR read from the whole frame', () => {
-      const reader = new QrFrameReader();
+    it('gives the box of a QR read from the whole frame', async () => {
+      const reader = new QrFrameReader(TEST_WASM);
 
-      reader.read(bitmap(), []);
+      await reader.read(bitmap(), []);
 
       expect(reader.lastBoxes).toHaveLength(1);
       const [box] = reader.lastBoxes;
@@ -140,11 +158,11 @@ describe('QrFrameReader', () => {
       expect(box.height).toBeGreaterThan(SIDE / 2);
     });
 
-    it('gives a box in frame coordinates for a QR read from a given area', () => {
+    it('gives a box in frame coordinates for a QR read from a given area', async () => {
       show(OTHER, PAYLOAD);
-      const reader = new QrFrameReader();
+      const reader = new QrFrameReader(TEST_WASM);
 
-      reader.read(bitmap(), [{ x: SIDE + GAP, y: 0, width: SIDE, height: SIDE }]);
+      await reader.read(bitmap(), [{ x: SIDE + GAP, y: 0, width: SIDE, height: SIDE }]);
 
       expect(reader.lastBoxes).toHaveLength(1);
       const [box] = reader.lastBoxes;
@@ -152,32 +170,32 @@ describe('QrFrameReader', () => {
       expect(box.x + box.width).toBeLessThanOrEqual(2 * SIDE + GAP);
     });
 
-    it('forgets the boxes of the previous frame', () => {
-      const reader = new QrFrameReader();
-      reader.read(bitmap(), []);
+    it('forgets the boxes of the previous frame', async () => {
+      const reader = new QrFrameReader(TEST_WASM);
+      await reader.read(bitmap(), []);
 
       current = {
         data: new Uint8ClampedArray(SIDE * SIDE * 4).fill(255),
         width: SIDE,
         height: SIDE,
       };
-      reader.read(bitmap(), []);
+      await reader.read(bitmap(), []);
 
       expect(reader.lastBoxes).toEqual([]);
     });
   });
 
-  it('returns nothing when there is no QR anywhere', () => {
+  it('returns nothing when there is no QR anywhere', async () => {
     current = {
       data: new Uint8ClampedArray(current.width * SIDE * 4).fill(255),
       width: current.width,
       height: SIDE,
     };
 
-    expect(new QrFrameReader().read(bitmap(), [])).toEqual([]);
+    expect(await new QrFrameReader(TEST_WASM).read(bitmap(), [])).toEqual([]);
   });
 
-  it('returns nothing without reading pixels when there is no 2d context', () => {
+  it('returns nothing without reading pixels when there is no 2d context', async () => {
     vi.stubGlobal(
       'OffscreenCanvas',
       class {
@@ -189,14 +207,14 @@ describe('QrFrameReader', () => {
       },
     );
 
-    expect(new QrFrameReader().read(bitmap(), [])).toEqual([]);
+    expect(await new QrFrameReader(TEST_WASM).read(bitmap(), [])).toEqual([]);
   });
 });
 
 describe('regionAround', () => {
   const frame = { width: 400, height: 400 };
 
-  it('adds a 25 % margin on each side', () => {
+  it('adds a 25 % margin on each side', async () => {
     expect(regionAround({ x: 100, y: 100, width: 100, height: 100 }, frame)).toEqual({
       x: 75,
       y: 75,
@@ -205,7 +223,7 @@ describe('regionAround', () => {
     });
   });
 
-  it('keeps the area inside the frame when the QR is at its edge', () => {
+  it('keeps the area inside the frame when the QR is at its edge', async () => {
     expect(regionAround({ x: 0, y: 300, width: 100, height: 100 }, frame)).toEqual({
       x: 0,
       y: 275,
@@ -214,7 +232,7 @@ describe('regionAround', () => {
     });
   });
 
-  it('gives no area when there is no box or it is empty', () => {
+  it('gives no area when there is no box or it is empty', async () => {
     expect(regionAround(undefined, frame)).toBeNull();
     expect(regionAround({ x: 10, y: 10, width: 0, height: 20 }, frame)).toBeNull();
   });
