@@ -1,6 +1,5 @@
 import { Service, computed, inject, signal } from '@angular/core';
 import { IDLE_SEND_PROGRESS, SendProgress } from '@/features/send/models/send-progress';
-import { QR_COUNT_OPTIONS } from '@/features/send/models/send-qr-count';
 import { FRAMES_PER_SECOND, SPEED_OPTIONS } from '@/features/send/models/send-speed';
 import { QrEncoder, QrMatrix } from '@/features/send/services/qr-encoder';
 import { SendPreferences } from '@/features/send/services/send-preferences';
@@ -36,9 +35,6 @@ export class SendSequenceManager {
 
   private readonly state = signal<SendProgress>(IDLE_SEND_PROGRESS);
   private readonly matrix = signal<QrMatrix | null>(null);
-  private readonly matrix2 = signal<QrMatrix | null>(null);
-  /** QR mostrados a la vez: los que el usuario eligió la última vez, si los hay. */
-  private readonly count = signal<number>(this.preferences.qrCount());
 
   private fragments: readonly Uint8Array[] = [];
   private timer: ReturnType<typeof setTimeout> | undefined;
@@ -53,14 +49,6 @@ export class SendSequenceManager {
   public readonly progress = this.state.asReadonly();
   /** Matriz del QR que se debe mostrar ahora, o `null` si no hay emisión. */
   public readonly currentQr = this.matrix.asReadonly();
-  /**
-   * Matriz del segundo QR, que recorre la secuencia desde el final mientras el primero avanza desde el
-   * principio (así cada fragmento se muestra dos veces por recorrido, en momentos distintos), o `null`
-   * si solo se muestra un QR.
-   */
-  public readonly currentSecondQr = this.matrix2.asReadonly();
-  /** Cuántos QR se muestran a la vez (1 o 2). */
-  public readonly qrCount = this.count.asReadonly();
   /** QR por segundo con los que se emite la secuencia. */
   public readonly speed = this.fps.asReadonly();
   /** Si la emisión está en curso. */
@@ -80,39 +68,12 @@ export class SendSequenceManager {
     this.cancel();
     this.fragments = fragments;
     this.matrix.set(this.encoder.encode(fragments[0]));
-    this.matrix2.set(this.secondQr(0));
     this.state.set({
       active: true,
       waiting: true,
       index: 0,
-      secondIndex: this.secondIndexOf(0),
       total: fragments.length,
       lap: 1,
-      estimatedLapMs: this.lapMs(),
-    });
-  }
-
-  /**
-   * Cambia cuántos QR se muestran a la vez. Con dos, el segundo recorre la secuencia desde el final:
-   * cada fragmento se muestra dos veces por recorrido y el tiempo hasta cubrirlos todos se reduce a la
-   * mitad. Con la secuencia en marcha, el primer QR y la cadencia no se alteran.
-   *
-   * @param count - 1 o 2; cualquier otro valor se ignora.
-   */
-  public setQrCount(count: number): void {
-    if (!(QR_COUNT_OPTIONS as readonly number[]).includes(count)) {
-      return;
-    }
-    this.count.set(count);
-    this.preferences.saveQrCount(count);
-    if (this.fragments.length === 0) {
-      return;
-    }
-    const current = this.state();
-    this.matrix2.set(this.secondQr(current.index));
-    this.state.set({
-      ...current,
-      secondIndex: this.secondIndexOf(current.index),
       estimatedLapMs: this.lapMs(),
     });
   }
@@ -184,20 +145,17 @@ export class SendSequenceManager {
     this.timer = undefined;
     this.fragments = [];
     this.matrix.set(null);
-    this.matrix2.set(null);
     this.state.set(IDLE_SEND_PROGRESS);
   }
 
   private show(index: number, lap: number): void {
     const total = this.fragments.length;
     this.matrix.set(this.encoder.encode(this.fragments[index]));
-    this.matrix2.set(this.secondQr(index));
     this.emitted++;
     this.state.set({
       active: true,
       waiting: false,
       index,
-      secondIndex: this.secondIndexOf(index),
       total,
       lap,
       estimatedLapMs: this.lapMs(),
@@ -205,25 +163,9 @@ export class SendSequenceManager {
     this.schedule(index, lap);
   }
 
-  /** Si se muestran dos QR: hace falta haberlo elegido y que haya al menos dos fragmentos distintos. */
-  private isDual(): boolean {
-    return this.count() === 2 && this.fragments.length >= 2;
-  }
-
-  /** Posición del fragmento del segundo QR cuando el primero muestra `index`: el opuesto desde el final. */
-  private secondIndexOf(index: number): number | null {
-    return this.isDual() ? this.fragments.length - 1 - index : null;
-  }
-
-  private secondQr(index: number): QrMatrix | null {
-    const second = this.secondIndexOf(index);
-    return second === null ? null : this.encoder.encode(this.fragments[second]);
-  }
-
-  /** Tiempo hasta haber mostrado cada fragmento al menos una vez: la vuelta, o la mitad con dos QR. */
+  /** Tiempo hasta haber mostrado cada fragmento una vez: la vuelta completa. */
   private lapMs(): number {
-    const steps = this.isDual() ? Math.ceil(this.fragments.length / 2) : this.fragments.length;
-    return steps * this.intervalMs();
+    return this.fragments.length * this.intervalMs();
   }
 
   /** Programa el QR siguiente al que se muestra ahora (`index`, de la vuelta `lap`). */

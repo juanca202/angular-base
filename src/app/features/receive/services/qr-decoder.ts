@@ -28,8 +28,8 @@ interface QrDetector {
 
 type QrDetectorConstructor = new (options: { formats: string[] }) => QrDetector;
 
-/** Most QR codes taken from the native detector in one frame (the sender shows at most two). */
-const MAX_CODES = 4;
+/** Milliseconds the frame stays on screen after the last frame that located a QR, so it does not flicker. */
+const LOCATION_HOLD_MS = 400;
 
 /** Consecutive failures of the native detector after which it is no longer used. */
 const DETECTOR_MAX_FAILURES = 3;
@@ -64,6 +64,7 @@ export class QrDecoder {
   private detector: QrDetector | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private readonly _location = signal<QrLocation | null>(null);
+  private lastLocatedAt = Number.NEGATIVE_INFINITY;
   private bitmapsFail = false;
   private detectorFailures = 0;
   private worker: Worker | null | undefined;
@@ -82,6 +83,7 @@ export class QrDecoder {
 
   /** Forgets the last location (for example when the reading stops). */
   public clearLocation(): void {
+    this.lastLocatedAt = Number.NEGATIVE_INFINITY;
     this._location.set(null);
   }
 
@@ -129,13 +131,11 @@ export class QrDecoder {
         this.detectorFailures >= DETECTOR_MAX_FAILURES
           ? undefined
           : (globalThis as { BarcodeDetector?: QrDetectorConstructor }).BarcodeDetector;
-      if (!detectorConstructor) {
-        this._location.set(null);
-      }
       const worker = bitmap ? this.getWorker() : null;
       this.diagnostics.mode(worker ? 'worker' : 'page', detectorConstructor !== undefined);
 
       let hints: QrDetection[] = [];
+      let detected: QrLocation | null = null;
       let error: string | null = null;
       if (detectorConstructor) {
         try {
@@ -143,15 +143,14 @@ export class QrDecoder {
           const codes = await this.detector.detect(frame);
           this.detectorFailures = 0;
           if (codes.length === 0) {
-            this._location.set(null);
+            this.updateLocation(null);
             return { detected: 0, bytes: [], error };
           }
-          hints = codes.slice(0, MAX_CODES);
-          this.locate(hints, video);
+          hints = codes.slice(0, 1);
+          detected = this.locate(hints, video);
         } catch (failure) {
           // The detector is unusable on this frame: keep the cause and read it with jsQR alone.
           this.detectorFailures++;
-          this._location.set(null);
           error =
             failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
         }
@@ -174,13 +173,16 @@ export class QrDecoder {
         readBoxes = this.localReader.lastBoxes;
       }
       // Where jsQR found the codes serves when the native detector gave no boxes (or is not there).
-      if (this._location() === null && readBoxes.length > 0) {
-        this._location.set({
-          boxes: readBoxes.map(({ x, y, width, height }) => ({ x, y, width, height })),
-          width: video.videoWidth,
-          height: video.videoHeight,
-        });
-      }
+      this.updateLocation(
+        detected ??
+          (readBoxes.length > 0
+            ? {
+                boxes: readBoxes.map(({ x, y, width, height }) => ({ x, y, width, height })),
+                width: video.videoWidth,
+                height: video.videoHeight,
+              }
+            : null),
+      );
       if (bytes.length === 0) {
         // Only if jsQR cannot read any is the detector text taken as latin1, one char per byte.
         bytes = hints
@@ -196,15 +198,28 @@ export class QrDecoder {
     }
   }
 
-  /** Keeps where the detector found each QR (those that came with a box) for the view to draw. */
-  private locate(hints: readonly QrDetection[], video: HTMLVideoElement): void {
+  /** Where the detector found the QR (when it came with a box), for the view to draw. */
+  private locate(hints: readonly QrDetection[], video: HTMLVideoElement): QrLocation | null {
     const boxes = hints
       .map((hint) => hint.boundingBox)
       .filter((box): box is QrRegion => box !== undefined)
       .map(({ x, y, width, height }) => ({ x, y, width, height }));
-    this._location.set(
-      boxes.length > 0 ? { boxes, width: video.videoWidth, height: video.videoHeight } : null,
-    );
+    return boxes.length > 0 ? { boxes, width: video.videoWidth, height: video.videoHeight } : null;
+  }
+
+  /**
+   * Publishes where the QR was seen in this frame. A frame that finds nothing does not clear it right
+   * away: the last location is kept for {@link LOCATION_HOLD_MS}, so a QR that is missed for a frame
+   * or two does not make the frame blink.
+   */
+  private updateLocation(location: QrLocation | null): void {
+    const now = performance.now();
+    if (location) {
+      this.lastLocatedAt = now;
+      this._location.set(location);
+    } else if (now - this.lastLocatedAt >= LOCATION_HOLD_MS) {
+      this._location.set(null);
+    }
   }
 
   /**

@@ -209,58 +209,21 @@ describe('QrDecoder', () => {
     });
   });
 
-  describe('with two QR codes in the same frame', () => {
+  describe('with several QR codes in the same frame', () => {
     const box = (x: number) => ({ x, y: 100, width: 100, height: 100 });
 
-    it('reads every QR the detector located, each from its own area', async () => {
+    it('takes only the first QR the detector located', async () => {
       stubDetector([
         { rawValue: '', boundingBox: box(50) },
         { rawValue: '', boundingBox: box(400) },
       ]);
-      const read = vi
-        .spyOn(QrFrameReader.prototype, 'read')
-        .mockReturnValue([Uint8Array.of(1), Uint8Array.of(2)]);
-
-      const bytes = await TestBed.inject(QrDecoder).decode(video);
-
-      expect(bytes).toEqual([Uint8Array.of(1), Uint8Array.of(2)]);
-      expect(read).toHaveBeenCalledWith(expect.anything(), [
-        { x: 25, y: 75, width: 150, height: 150 },
-        { x: 375, y: 75, width: 150, height: 150 },
-      ]);
-      expect(diagnostics()).toMatchObject({ detected: 2, read: 2 });
-    });
-
-    it('takes at most four QR codes from one frame', async () => {
-      stubDetector(
-        Array.from({ length: 7 }, (_, i) => ({ rawValue: '', boundingBox: box(i * 120) })),
-      );
       const read = readPixels(Uint8Array.of(1));
 
       await TestBed.inject(QrDecoder).decode(video);
 
-      expect((read.mock.calls[0][1] as unknown[]).length).toBe(4);
-    });
-
-    it('takes the text of every detected QR as latin1 when jsQR reads none', async () => {
-      stubDetector([{ rawValue: 'AB' }, { rawValue: '' }, { rawValue: 'CD' }]);
-      readPixels(null);
-
-      const bytes = await TestBed.inject(QrDecoder).decode(video);
-
-      expect(bytes).toEqual([Uint8Array.of(0x41, 0x42), Uint8Array.of(0x43, 0x44)]);
-    });
-
-    it('counts as detected the codes the detector spotted even if only some could be read', async () => {
-      stubDetector([
-        { rawValue: '', boundingBox: box(50) },
-        { rawValue: '', boundingBox: box(400) },
+      expect(read).toHaveBeenCalledWith(expect.anything(), [
+        { x: 25, y: 75, width: 150, height: 150 },
       ]);
-      vi.spyOn(QrFrameReader.prototype, 'read').mockReturnValue([Uint8Array.of(1)]);
-
-      await TestBed.inject(QrDecoder).decode(video);
-
-      expect(diagnostics()).toMatchObject({ detected: 2, read: 1 });
     });
   });
 
@@ -432,40 +395,51 @@ describe('QrDecoder', () => {
   describe('where the QR codes are', () => {
     const box = { x: 100, y: 120, width: 90, height: 80 };
 
-    it('exposes the box of every QR the detector located, with the frame size', async () => {
-      stubDetector([
-        { rawValue: '', boundingBox: box },
-        { rawValue: '', boundingBox: { x: 300, y: 10, width: 50, height: 50 } },
-      ]);
+    it('exposes the box of the QR the detector located, with the frame size', async () => {
+      stubDetector([{ rawValue: '', boundingBox: box }]);
       readPixels(Uint8Array.of(5));
       const decoder = TestBed.inject(QrDecoder);
 
       await decoder.decode(video);
 
-      expect(decoder.location()).toEqual({
-        boxes: [box, { x: 300, y: 10, width: 50, height: 50 }],
-        width: 640,
-        height: 480,
-      });
+      expect(decoder.location()).toEqual({ boxes: [box], width: 640, height: 480 });
     });
 
-    it('ignores a detected QR that came without a box', async () => {
-      stubDetector([{ rawValue: 'A' }, { rawValue: '', boundingBox: box }]);
+    it('has no box from the detector when the QR came without one', async () => {
+      stubDetector([{ rawValue: 'A' }]);
       readPixels(Uint8Array.of(5));
       const decoder = TestBed.inject(QrDecoder);
 
       await decoder.decode(video);
 
-      expect(decoder.location()?.boxes).toEqual([box]);
+      expect(decoder.location()).toBeNull();
     });
 
-    it('forgets the location when the QR leaves the frame', async () => {
+    it('keeps the box for a moment when a frame finds nothing, so it does not flicker', async () => {
+      let now = 1000;
+      vi.spyOn(performance, 'now').mockImplementation(() => now);
       const detect = stubDetector([{ rawValue: '', boundingBox: box }]);
       readPixels(Uint8Array.of(5));
       const decoder = TestBed.inject(QrDecoder);
       await decoder.decode(video);
       detect.mockResolvedValue([]);
 
+      now += 200;
+      await decoder.decode(video);
+
+      expect(decoder.location()?.boxes).toEqual([box]);
+    });
+
+    it('forgets the location once the QR has been gone for longer than that', async () => {
+      let now = 1000;
+      vi.spyOn(performance, 'now').mockImplementation(() => now);
+      const detect = stubDetector([{ rawValue: '', boundingBox: box }]);
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+      await decoder.decode(video);
+      detect.mockResolvedValue([]);
+
+      now += 600;
       await decoder.decode(video);
 
       expect(decoder.location()).toBeNull();

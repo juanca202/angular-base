@@ -15,7 +15,6 @@ import { ScreenWakeLock } from '@/core/services/screen-wake-lock';
 import { StorageQuotaError } from '@/core/services/storage-quota-error';
 import { FragmentBar } from '@/shared/components/fragment-bar/fragment-bar';
 import { QrCanvas } from '@/features/send/components/qr-canvas';
-import { QR_COUNT_OPTIONS } from '@/features/send/models/send-qr-count';
 import { SPEED_OPTIONS, SendSequenceManager } from '@/features/send/managers/send-sequence-manager';
 import { SendFileValidator } from '@/features/send/services/send-file-validator';
 import { formatSize } from '@/shared/utils/format-size';
@@ -74,16 +73,7 @@ export class SendPage {
   protected readonly densities = DENSITY_OPTIONS;
   /** Bytes de archivo por QR con los que se fragmenta el envío. */
   protected readonly dataSize = signal<number>(this.preferences.density());
-  protected readonly qrCounts = QR_COUNT_OPTIONS;
-  protected readonly qrCount = this.manager.qrCount;
   protected readonly currentQr = this.manager.currentQr;
-  protected readonly currentSecondQr = this.manager.currentSecondQr;
-  /** Ancho máximo del grupo de QR: un QR cuadrado, o dos lado a lado sin pasar del alto de la ventana. */
-  protected readonly qrWidth = computed(() =>
-    this.progress().secondIndex === null
-      ? 'max-w-[min(40rem,70vh)]'
-      : 'max-w-[min(100%,calc(2*70vh+1rem),80rem)]',
-  );
   protected readonly speeds = SPEED_OPTIONS;
   protected readonly speed = this.manager.speed;
   protected readonly progress = this.manager.progress;
@@ -136,11 +126,6 @@ export class SendPage {
    */
   protected restartLap(): void {
     this.manager.restartLap();
-  }
-
-  /** Cambia cuántos QR se muestran a la vez al elegido en el selector. */
-  protected changeQrCount(event: Event): void {
-    this.manager.setQrCount(Number((event.target as HTMLSelectElement).value));
   }
 
   /** Cambia la velocidad de la secuencia a la elegida en el selector. */
