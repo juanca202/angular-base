@@ -49,30 +49,6 @@ function picture(payloads: Uint8Array[]): {
   return { data, width, height: SIDE };
 }
 
-/** A real QR drawn with `scale` pixels per module, as RGBA pixels and its side. */
-function qrPixelsSized(
-  payload: Uint8Array,
-  scale: number,
-): { pixels: Uint8ClampedArray; side: number } {
-  const qr = create([{ data: payload, mode: 'byte' }], { errorCorrectionLevel: 'M' });
-  const modules = qr.modules.size;
-  const quiet = 4;
-  const side = (modules + quiet * 2) * scale;
-  const pixels = new Uint8ClampedArray(side * side * 4).fill(255);
-  for (let row = 0; row < modules; row++) {
-    for (let col = 0; col < modules; col++) {
-      if (!qr.modules.data[row * modules + col]) continue;
-      for (let dy = 0; dy < scale; dy++) {
-        for (let dx = 0; dx < scale; dx++) {
-          const at = (((row + quiet) * scale + dy) * side + (col + quiet) * scale + dx) * 4;
-          pixels[at] = pixels[at + 1] = pixels[at + 2] = 0;
-        }
-      }
-    }
-  }
-  return { pixels, side };
-}
-
 describe('QrFrameReader', () => {
   let drawImage: ReturnType<typeof vi.fn>;
   let getImageData: ReturnType<typeof vi.fn>;
@@ -118,8 +94,6 @@ describe('QrFrameReader', () => {
   });
 
   afterEach(() => vi.unstubAllGlobals());
-
-  const sorted = (found: Uint8Array[]) => found.map((bytes) => Array.from(bytes)).sort();
 
   it('reads the QR in the whole frame when no area is given', () => {
     const found = new QrFrameReader().read(bitmap(), []);

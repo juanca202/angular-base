@@ -415,13 +415,31 @@ describe('QrDecoder', () => {
       expect(decoder.location()).toBeNull();
     });
 
-    it('forgets the location when the QR leaves the frame', async () => {
+    it('keeps the box for a moment when a frame finds nothing, so it does not flicker', async () => {
+      let now = 1000;
+      vi.spyOn(performance, 'now').mockImplementation(() => now);
       const detect = stubDetector([{ rawValue: '', boundingBox: box }]);
       readPixels(Uint8Array.of(5));
       const decoder = TestBed.inject(QrDecoder);
       await decoder.decode(video);
       detect.mockResolvedValue([]);
 
+      now += 200;
+      await decoder.decode(video);
+
+      expect(decoder.location()?.boxes).toEqual([box]);
+    });
+
+    it('forgets the location once the QR has been gone for longer than that', async () => {
+      let now = 1000;
+      vi.spyOn(performance, 'now').mockImplementation(() => now);
+      const detect = stubDetector([{ rawValue: '', boundingBox: box }]);
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+      await decoder.decode(video);
+      detect.mockResolvedValue([]);
+
+      now += 600;
       await decoder.decode(video);
 
       expect(decoder.location()).toBeNull();
