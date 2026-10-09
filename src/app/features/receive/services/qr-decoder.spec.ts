@@ -342,7 +342,9 @@ describe('QrDecoder', () => {
         timeout: 3000,
       });
       const worker = FakeWorker.instances[0];
-      worker.emit('message', { data: { id: worker.sent[index].id, error: null, ...response } });
+      worker.emit('message', {
+        data: { id: worker.sent[index].id, error: null, boxes: [], ...response },
+      });
     };
 
     it('locates the QR in the page and sends the area to the worker with the transferred frame', async () => {
@@ -399,8 +401,12 @@ describe('QrDecoder', () => {
         timeout: 3000,
       });
       const worker = FakeWorker.instances[0];
-      worker.emit('message', { data: { id: 999, bytes: [Uint8Array.of(1)], error: null } });
-      worker.emit('message', { data: { id: worker.sent[0].id, bytes: [], error: null } });
+      worker.emit('message', {
+        data: { id: 999, bytes: [Uint8Array.of(1)], boxes: [], error: null },
+      });
+      worker.emit('message', {
+        data: { id: worker.sent[0].id, bytes: [], boxes: [], error: null },
+      });
 
       expect(await pending).toEqual([]);
     });
@@ -465,15 +471,6 @@ describe('QrDecoder', () => {
       expect(decoder.location()).toBeNull();
     });
 
-    it('has no location without a native detector, which is the only one that locates', async () => {
-      readPixels(Uint8Array.of(5));
-      const decoder = TestBed.inject(QrDecoder);
-
-      await decoder.decode(video);
-
-      expect(decoder.location()).toBeNull();
-    });
-
     it('forgets the location with clearLocation', async () => {
       stubDetector([{ rawValue: '', boundingBox: box }]);
       readPixels(Uint8Array.of(5));
@@ -481,6 +478,61 @@ describe('QrDecoder', () => {
       await decoder.decode(video);
 
       decoder.clearLocation();
+
+      expect(decoder.location()).toBeNull();
+    });
+  });
+
+  describe('where jsQR found the QR codes', () => {
+    it('exposes the boxes the worker found when there is no native detector', async () => {
+      vi.stubGlobal('Worker', FakeWorker);
+      vi.stubGlobal('OffscreenCanvas', class {});
+      const decoder = TestBed.inject(QrDecoder);
+      const box = { x: 40, y: 50, width: 120, height: 110 };
+
+      const pending = decoder.decode(video);
+      await vi.waitFor(() => expect(FakeWorker.instances[0]?.sent).toHaveLength(1), {
+        timeout: 3000,
+      });
+      const worker = FakeWorker.instances[0];
+      worker.emit('message', {
+        data: { id: worker.sent[0].id, bytes: [Uint8Array.of(1)], boxes: [box], error: null },
+      });
+      await pending;
+
+      expect(decoder.location()).toEqual({ boxes: [box], width: 640, height: 480 });
+    });
+
+    it('exposes the boxes found when the page reads the frame itself', async () => {
+      const box = { x: 5, y: 6, width: 70, height: 80 };
+      readPixels(Uint8Array.of(5));
+      vi.spyOn(QrFrameReader.prototype, 'lastBoxes', 'get').mockReturnValue([box]);
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
+
+      expect(decoder.location()).toEqual({ boxes: [box], width: 640, height: 480 });
+    });
+
+    it('prefers the boxes of the native detector when it gave them', async () => {
+      const detected = { x: 100, y: 120, width: 90, height: 80 };
+      stubDetector([{ rawValue: '', boundingBox: detected }]);
+      readPixels(Uint8Array.of(5));
+      vi.spyOn(QrFrameReader.prototype, 'lastBoxes', 'get').mockReturnValue([
+        { x: 1, y: 1, width: 1, height: 1 },
+      ]);
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
+
+      expect(decoder.location()?.boxes).toEqual([detected]);
+    });
+
+    it('has no location when the frame holds no readable QR', async () => {
+      readPixels(null);
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
 
       expect(decoder.location()).toBeNull();
     });

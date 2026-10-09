@@ -14,6 +14,8 @@ export interface QrWorkerResponse {
   readonly id: number;
   /** Payload of every QR read; empty when none could be read. */
   readonly bytes: readonly Uint8Array[];
+  /** Where each QR read was in the frame, in pixels. */
+  readonly boxes: readonly QrRegion[];
   /** Why reading failed, if it did. */
   readonly error: string | null;
 }
@@ -23,11 +25,12 @@ const reader = new QrFrameReader();
 addEventListener('message', ({ data }: MessageEvent<QrWorkerRequest>) => {
   let response: QrWorkerResponse;
   try {
-    response = { id: data.id, bytes: reader.read(data.bitmap, data.regions), error: null };
+    const bytes = reader.read(data.bitmap, data.regions);
+    response = { id: data.id, bytes, boxes: reader.lastBoxes, error: null };
   } catch (failure) {
     const error =
       failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
-    response = { id: data.id, bytes: [], error };
+    response = { id: data.id, bytes: [], boxes: [], error };
   } finally {
     data.bitmap.close();
   }

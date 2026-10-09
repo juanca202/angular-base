@@ -161,14 +161,25 @@ export class QrDecoder {
         .map((hint) => regionAround(hint.boundingBox, frame))
         .filter((region): region is QrRegion => region !== null);
       let bytes: readonly Uint8Array[];
+      let readBoxes: readonly QrRegion[];
       if (worker && bitmap) {
         // The bitmap is transferred: the worker owns it and releases it after reading.
         released = true;
         const response = await this.ask(worker, bitmap, regions);
         bytes = response.bytes;
+        readBoxes = response.boxes;
         error ??= response.error;
       } else {
         bytes = this.localReader.read(frame, regions);
+        readBoxes = this.localReader.lastBoxes;
+      }
+      // Where jsQR found the codes serves when the native detector gave no boxes (or is not there).
+      if (this._location() === null && readBoxes.length > 0) {
+        this._location.set({
+          boxes: readBoxes.map(({ x, y, width, height }) => ({ x, y, width, height })),
+          width: video.videoWidth,
+          height: video.videoHeight,
+        });
       }
       if (bytes.length === 0) {
         // Only if jsQR cannot read any is the detector text taken as latin1, one char per byte.

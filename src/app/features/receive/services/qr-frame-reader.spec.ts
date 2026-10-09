@@ -259,6 +259,59 @@ describe('QrFrameReader', () => {
     });
   });
 
+  describe('where the QR codes were read', () => {
+    it('gives the box of a QR read from the whole frame', () => {
+      const reader = new QrFrameReader();
+
+      reader.read(bitmap(), []);
+
+      expect(reader.lastBoxes).toHaveLength(1);
+      const [box] = reader.lastBoxes;
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.y).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(SIDE);
+      expect(box.y + box.height).toBeLessThanOrEqual(SIDE);
+      expect(box.width).toBeGreaterThan(SIDE / 2);
+      expect(box.height).toBeGreaterThan(SIDE / 2);
+    });
+
+    it('gives a box in frame coordinates for a QR read from a given area', () => {
+      show(OTHER, PAYLOAD);
+      const reader = new QrFrameReader();
+
+      reader.read(bitmap(), [{ x: SIDE + GAP, y: 0, width: SIDE, height: SIDE }]);
+
+      expect(reader.lastBoxes).toHaveLength(1);
+      const [box] = reader.lastBoxes;
+      expect(box.x).toBeGreaterThanOrEqual(SIDE + GAP);
+      expect(box.x + box.width).toBeLessThanOrEqual(2 * SIDE + GAP);
+    });
+
+    it('gives one box per QR when two are read', () => {
+      show(OTHER, PAYLOAD);
+      const reader = new QrFrameReader();
+
+      reader.read(bitmap(), []);
+
+      expect(reader.lastBoxes).toHaveLength(2);
+      expect(reader.lastBoxes.map((box) => box.x < SIDE).sort()).toEqual([false, true]);
+    });
+
+    it('forgets the boxes of the previous frame', () => {
+      const reader = new QrFrameReader();
+      reader.read(bitmap(), []);
+
+      current = {
+        data: new Uint8ClampedArray(SIDE * SIDE * 4).fill(255),
+        width: SIDE,
+        height: SIDE,
+      };
+      reader.read(bitmap(), []);
+
+      expect(reader.lastBoxes).toEqual([]);
+    });
+  });
+
   it('returns nothing when there is no QR anywhere', () => {
     current = {
       data: new Uint8ClampedArray(current.width * SIDE * 4).fill(255),
