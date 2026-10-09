@@ -25,14 +25,18 @@ function domError(name: string): Error {
 describe('QrCameraReader', () => {
   let reader: QrCameraReader;
   let decode: ReturnType<typeof vi.fn>;
+  let clearLocation: ReturnType<typeof vi.fn>;
   let getUserMedia: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.useFakeTimers();
     decode = vi.fn().mockResolvedValue([]);
+    clearLocation = vi.fn();
     getUserMedia = vi.fn();
     vi.stubGlobal('navigator', { mediaDevices: { getUserMedia } });
-    TestBed.configureTestingModule({ providers: [{ provide: QrDecoder, useValue: { decode } }] });
+    TestBed.configureTestingModule({
+      providers: [{ provide: QrDecoder, useValue: { decode, clearLocation } }],
+    });
     reader = TestBed.inject(QrCameraReader);
   });
 
@@ -200,5 +204,16 @@ describe('QrCameraReader', () => {
     await vi.advanceTimersByTimeAsync(300);
     // Assert
     expect(onQr).toHaveBeenCalledWith(Uint8Array.of(9));
+  });
+
+  it('clears the QR location when it stops', async () => {
+    // Arrange
+    const { stream } = createStream();
+    getUserMedia.mockResolvedValue(stream);
+    await reader.start(createVideo(), vi.fn());
+    // Act
+    reader.stop();
+    // Assert
+    expect(clearLocation).toHaveBeenCalled();
   });
 });

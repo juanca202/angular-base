@@ -422,4 +422,67 @@ describe('QrDecoder', () => {
       expect(FakeWorker.instances).toHaveLength(1);
     });
   });
+
+  describe('where the QR codes are', () => {
+    const box = { x: 100, y: 120, width: 90, height: 80 };
+
+    it('exposes the box of every QR the detector located, with the frame size', async () => {
+      stubDetector([
+        { rawValue: '', boundingBox: box },
+        { rawValue: '', boundingBox: { x: 300, y: 10, width: 50, height: 50 } },
+      ]);
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
+
+      expect(decoder.location()).toEqual({
+        boxes: [box, { x: 300, y: 10, width: 50, height: 50 }],
+        width: 640,
+        height: 480,
+      });
+    });
+
+    it('ignores a detected QR that came without a box', async () => {
+      stubDetector([{ rawValue: 'A' }, { rawValue: '', boundingBox: box }]);
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
+
+      expect(decoder.location()?.boxes).toEqual([box]);
+    });
+
+    it('forgets the location when the QR leaves the frame', async () => {
+      const detect = stubDetector([{ rawValue: '', boundingBox: box }]);
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+      await decoder.decode(video);
+      detect.mockResolvedValue([]);
+
+      await decoder.decode(video);
+
+      expect(decoder.location()).toBeNull();
+    });
+
+    it('has no location without a native detector, which is the only one that locates', async () => {
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
+
+      expect(decoder.location()).toBeNull();
+    });
+
+    it('forgets the location with clearLocation', async () => {
+      stubDetector([{ rawValue: '', boundingBox: box }]);
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+      await decoder.decode(video);
+
+      decoder.clearLocation();
+
+      expect(decoder.location()).toBeNull();
+    });
+  });
 });
