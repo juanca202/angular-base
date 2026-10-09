@@ -26,7 +26,9 @@ interface QrDetector {
   detect(source: QrSource): Promise<QrDetection[]>;
 }
 
-type QrDetectorConstructor = new (options: { formats: string[] }) => QrDetector;
+type QrDetectorConstructor = (new (options: { formats: string[] }) => QrDetector) & {
+  getSupportedFormats?: () => Promise<string[]>;
+};
 
 /** Milliseconds the frame stays on screen after the last frame that located a QR, so it does not flicker. */
 const LOCATION_HOLD_MS = 400;
@@ -65,6 +67,8 @@ export class QrDecoder {
   private canvas: HTMLCanvasElement | null = null;
   private readonly _location = signal<QrLocation | null>(null);
   private lastLocatedAt = Number.NEGATIVE_INFINITY;
+  private nativeUnusable = false;
+  private formatsChecked = false;
   private bitmapsFail = false;
   private detectorFailures = 0;
   private worker: Worker | null | undefined;
@@ -127,10 +131,14 @@ export class QrDecoder {
     try {
       // A detector that keeps failing (for example its service is unavailable) is left alone: every
       // failed attempt costs time, and jsQR reads the frame without it.
+      const available = (globalThis as { BarcodeDetector?: QrDetectorConstructor }).BarcodeDetector;
+      if (available && !this.formatsChecked) {
+        await this.checkFormats(available);
+      }
       const detectorConstructor =
-        this.detectorFailures >= DETECTOR_MAX_FAILURES
+        this.nativeUnusable || this.detectorFailures >= DETECTOR_MAX_FAILURES
           ? undefined
-          : (globalThis as { BarcodeDetector?: QrDetectorConstructor }).BarcodeDetector;
+          : available;
       const worker = bitmap ? this.getWorker() : null;
       this.diagnostics.mode(worker ? 'worker' : 'page', detectorConstructor !== undefined);
 
@@ -149,10 +157,16 @@ export class QrDecoder {
           hints = codes.slice(0, 1);
           detected = this.locate(hints, video);
         } catch (failure) {
-          // The detector is unusable on this frame: keep the cause and read it with jsQR alone.
-          this.detectorFailures++;
-          error =
-            failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
+          if (failure instanceof Error && failure.name === 'NotSupportedError') {
+            // The device has no detection service (for example, no Google Play services): it will
+            // not appear later, so the detector is dropped for good and jsQR reads the frames.
+            this.nativeUnusable = true;
+          } else {
+            // The detector is unusable on this frame: keep the cause and read it with jsQR alone.
+            this.detectorFailures++;
+            error =
+              failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
+          }
         }
       }
 
@@ -195,6 +209,22 @@ export class QrDecoder {
       if (!released) {
         bitmap?.close();
       }
+    }
+  }
+
+  /**
+   * Asks the browser once which formats its detector can read: a browser that offers the API but not
+   * QR codes (or whose detection service is missing) would only fail on every frame.
+   */
+  private async checkFormats(detectorConstructor: QrDetectorConstructor): Promise<void> {
+    this.formatsChecked = true;
+    try {
+      const formats = await detectorConstructor.getSupportedFormats?.();
+      if (formats && !formats.includes('qr_code')) {
+        this.nativeUnusable = true;
+      }
+    } catch {
+      // Not knowing the formats is not a reason to give up the detector: the first frame decides.
     }
   }
 

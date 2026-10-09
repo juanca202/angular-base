@@ -139,7 +139,7 @@ describe('QrDecoder', () => {
 
     it('stops using a detector that keeps failing and reads with jsQR alone', async () => {
       const detect = stubDetector(
-        Object.assign(new Error('unavailable'), { name: 'NotSupportedError' }),
+        Object.assign(new Error('unavailable'), { name: 'InvalidStateError' }),
       );
       readPixels(Uint8Array.of(1));
       const decoder = TestBed.inject(QrDecoder);
@@ -175,6 +175,57 @@ describe('QrDecoder', () => {
       }
 
       expect(detect).toHaveBeenCalledTimes(6);
+    });
+
+    it('does not use the native detector when it cannot read QR codes', async () => {
+      const detect = vi.fn().mockResolvedValue([]);
+      vi.stubGlobal(
+        'BarcodeDetector',
+        class {
+          public static getSupportedFormats = vi.fn().mockResolvedValue(['code_128']);
+          public detect = detect;
+        },
+      );
+      readPixels(Uint8Array.of(5));
+
+      const bytes = await TestBed.inject(QrDecoder).decode(video);
+
+      expect(detect).not.toHaveBeenCalled();
+      expect(bytes).toEqual([Uint8Array.of(5)]);
+      expect(diagnostics()).toMatchObject({ nativeDetector: false, lastError: null });
+    });
+
+    it('uses the native detector when it lists QR codes among its formats', async () => {
+      const detect = vi.fn().mockResolvedValue([]);
+      vi.stubGlobal(
+        'BarcodeDetector',
+        class {
+          public static getSupportedFormats = vi.fn().mockResolvedValue(['qr_code', 'ean_13']);
+          public detect = detect;
+        },
+      );
+      readPixels(null);
+
+      await TestBed.inject(QrDecoder).decode(video);
+
+      expect(detect).toHaveBeenCalledTimes(1);
+      expect(diagnostics()).toMatchObject({ nativeDetector: true });
+    });
+
+    it('drops the detector at once when its service is unavailable, without reporting an error', async () => {
+      const detect = stubDetector(
+        Object.assign(new Error('Barcode detection service unavailable.'), {
+          name: 'NotSupportedError',
+        }),
+      );
+      readPixels(Uint8Array.of(5));
+      const decoder = TestBed.inject(QrDecoder);
+
+      await decoder.decode(video);
+      await decoder.decode(video);
+
+      expect(detect).toHaveBeenCalledTimes(1);
+      expect(diagnostics()).toMatchObject({ nativeDetector: false, lastError: null, read: 2 });
     });
 
     it('reads the whole frame and records the cause when the detector throws', async () => {
