@@ -67,7 +67,7 @@ describe('QrDecoder', () => {
   };
 
   const readPixels = (bytes: Uint8Array | null) =>
-    vi.spyOn(QrFrameReader.prototype, 'read').mockReturnValue(bytes ? [bytes] : []);
+    vi.spyOn(QrFrameReader.prototype, 'read').mockResolvedValue(bytes ? [bytes] : []);
 
   const diagnostics = () => TestBed.inject(ReceiveDiagnostics).state();
 
@@ -82,7 +82,7 @@ describe('QrDecoder', () => {
   });
 
   describe('where workers are not available', () => {
-    it('reads the whole frame with jsQR when there is no native detector', async () => {
+    it('reads the whole frame with ZXing when there is no native detector', async () => {
       const read = readPixels(Uint8Array.of(1, 2, 3));
 
       const bytes = await TestBed.inject(QrDecoder).decode(video);
@@ -118,7 +118,7 @@ describe('QrDecoder', () => {
       expect(diagnostics()).toMatchObject({ detected: 1, read: 1, lastLength: 1 });
     });
 
-    it('takes the detector text as latin1 when jsQR cannot read the frame', async () => {
+    it('takes the detector text as latin1 when ZXing cannot read the frame', async () => {
       stubDetector([{ rawValue: 'AÿB' }]);
       readPixels(null);
 
@@ -127,7 +127,7 @@ describe('QrDecoder', () => {
       expect(bytes).toEqual([Uint8Array.of(0x41, 0xff, 0x42)]);
     });
 
-    it('detects without bytes when jsQR fails and the detector text is empty', async () => {
+    it('detects without bytes when ZXing fails and the detector text is empty', async () => {
       stubDetector([{ rawValue: '' }]);
       readPixels(null);
 
@@ -137,7 +137,7 @@ describe('QrDecoder', () => {
       expect(diagnostics()).toMatchObject({ detected: 1, read: 0 });
     });
 
-    it('stops using a detector that keeps failing and reads with jsQR alone', async () => {
+    it('stops using a detector that keeps failing and reads with ZXing alone', async () => {
       const detect = stubDetector(
         Object.assign(new Error('unavailable'), { name: 'InvalidStateError' }),
       );
@@ -298,9 +298,7 @@ describe('QrDecoder', () => {
     });
 
     it('releases the capture even when reading fails, and records the failure', async () => {
-      vi.spyOn(QrFrameReader.prototype, 'read').mockImplementation(() => {
-        throw new Error('boom');
-      });
+      vi.spyOn(QrFrameReader.prototype, 'read').mockRejectedValue(new Error('boom'));
 
       await expect(TestBed.inject(QrDecoder).decode(video)).rejects.toThrow('boom');
 
@@ -400,6 +398,25 @@ describe('QrDecoder', () => {
       await decoder.decode(video);
 
       expect(createImageBitmap).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('preparing the reading', () => {
+    it('starts the worker ahead of the first frame, so it can load what it needs', () => {
+      vi.stubGlobal('Worker', FakeWorker);
+      vi.stubGlobal('OffscreenCanvas', class {});
+
+      TestBed.inject(QrDecoder).prepare();
+
+      expect(FakeWorker.instances).toHaveLength(1);
+    });
+
+    it('loads the reader of the page when there is no worker', () => {
+      const warmUp = vi.spyOn(QrFrameReader.prototype, 'warmUp').mockResolvedValue();
+
+      TestBed.inject(QrDecoder).prepare();
+
+      expect(warmUp).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -566,7 +583,7 @@ describe('QrDecoder', () => {
     });
   });
 
-  describe('where jsQR found the QR codes', () => {
+  describe('where ZXing found the QR codes', () => {
     it('exposes the boxes the worker found when there is no native detector', async () => {
       vi.stubGlobal('Worker', FakeWorker);
       vi.stubGlobal('OffscreenCanvas', class {});

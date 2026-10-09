@@ -39,6 +39,7 @@ export class QrCameraReader {
     this.session = session;
     this._active.set(true);
     try {
+      this.decoder.prepare();
       const stream = await this.openCamera();
       if (this.session !== session) {
         stream.getTracks().forEach((track) => track.stop());

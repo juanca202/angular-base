@@ -41,7 +41,7 @@ const CANVAS_MAX_SIDE = 1280;
 
 /** What reading one frame found. */
 interface FrameReading {
-  /** How many QR codes were spotted in the frame (by the native detector or by jsQR). */
+  /** How many QR codes were spotted in the frame (by the native detector or by ZXing). */
   readonly detected: number;
   /** The payload of every QR read; empty when none could be read. */
   readonly bytes: readonly Uint8Array[];
@@ -55,7 +55,7 @@ interface FrameReading {
  * Each camera frame is captured as an `ImageBitmap`. The native `BarcodeDetector` (when the browser
  * has it) runs in the page, where the browser does the work off the main thread, to spot the QR and
  * say where it is; its text is not used for the bytes because it is empty or altered for binary data.
- * The bytes are read with `jsQR` from the area around the QR, in a Web Worker so the page stays free,
+ * The bytes are read with `ZXing` from the area around the QR, in a Web Worker so the page stays free,
  * or in the page itself where workers are not available.
  */
 @Service()
@@ -89,6 +89,17 @@ export class QrDecoder {
   public clearLocation(): void {
     this.lastLocatedAt = Number.NEGATIVE_INFINITY;
     this._location.set(null);
+  }
+
+  /**
+   * Gets the reading ready before the first frame: starts the worker (which loads ZXing on its own) or,
+   * where there is none, loads ZXing in the page. A failure here is not reported: the first frame
+   * tries again and records the cause.
+   */
+  public prepare(): void {
+    if (!this.getWorker()) {
+      this.localReader.warmUp().catch(() => undefined);
+    }
   }
 
   /**
@@ -130,7 +141,7 @@ export class QrDecoder {
     let released = false;
     try {
       // A detector that keeps failing (for example its service is unavailable) is left alone: every
-      // failed attempt costs time, and jsQR reads the frame without it.
+      // failed attempt costs time, and ZXing reads the frame without it.
       const available = (globalThis as { BarcodeDetector?: QrDetectorConstructor }).BarcodeDetector;
       if (available && !this.formatsChecked) {
         await this.checkFormats(available);
@@ -159,10 +170,10 @@ export class QrDecoder {
         } catch (failure) {
           if (failure instanceof Error && failure.name === 'NotSupportedError') {
             // The device has no detection service (for example, no Google Play services): it will
-            // not appear later, so the detector is dropped for good and jsQR reads the frames.
+            // not appear later, so the detector is dropped for good and ZXing reads the frames.
             this.nativeUnusable = true;
           } else {
-            // The detector is unusable on this frame: keep the cause and read it with jsQR alone.
+            // The detector is unusable on this frame: keep the cause and read it with ZXing alone.
             this.detectorFailures++;
             error =
               failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
@@ -183,10 +194,10 @@ export class QrDecoder {
         readBoxes = response.boxes;
         error ??= response.error;
       } else {
-        bytes = this.localReader.read(frame, regions);
+        bytes = await this.localReader.read(frame, regions);
         readBoxes = this.localReader.lastBoxes;
       }
-      // Where jsQR found the codes serves when the native detector gave no boxes (or is not there).
+      // Where ZXing found the codes serves when the native detector gave no boxes (or is not there).
       this.updateLocation(
         detected ??
           (readBoxes.length > 0
@@ -198,7 +209,7 @@ export class QrDecoder {
             : null),
       );
       if (bytes.length === 0) {
-        // Only if jsQR cannot read any is the detector text taken as latin1, one char per byte.
+        // Only if ZXing cannot read any is the detector text taken as latin1, one char per byte.
         bytes = hints
           .map((hint) => hint.rawValue)
           .filter((raw) => raw !== '')

@@ -26,16 +26,18 @@ describe('QrCameraReader', () => {
   let reader: QrCameraReader;
   let decode: ReturnType<typeof vi.fn>;
   let clearLocation: ReturnType<typeof vi.fn>;
+  let prepare: ReturnType<typeof vi.fn>;
   let getUserMedia: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.useFakeTimers();
     decode = vi.fn().mockResolvedValue([]);
     clearLocation = vi.fn();
+    prepare = vi.fn();
     getUserMedia = vi.fn();
     vi.stubGlobal('navigator', { mediaDevices: { getUserMedia } });
     TestBed.configureTestingModule({
-      providers: [{ provide: QrDecoder, useValue: { decode, clearLocation } }],
+      providers: [{ provide: QrDecoder, useValue: { decode, clearLocation, prepare } }],
     });
     reader = TestBed.inject(QrCameraReader);
   });
@@ -215,5 +217,18 @@ describe('QrCameraReader', () => {
     reader.stop();
     // Assert
     expect(clearLocation).toHaveBeenCalled();
+  });
+
+  it('prepares the decoder before it opens the camera', async () => {
+    // Arrange
+    const { stream } = createStream();
+    getUserMedia.mockImplementation(async () => {
+      expect(prepare).toHaveBeenCalled();
+      return stream;
+    });
+    // Act
+    await reader.start(createVideo(), vi.fn());
+    // Assert
+    expect(getUserMedia).toHaveBeenCalled();
   });
 });

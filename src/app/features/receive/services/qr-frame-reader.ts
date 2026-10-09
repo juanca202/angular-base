@@ -1,4 +1,10 @@
-import jsQR from 'jsqr';
+import {
+  prepareZXingModule,
+  readBarcodes,
+  type Position,
+  type ReaderOptions,
+  type ZXingModuleOverrides,
+} from 'zxing-wasm/reader';
 
 /** Area of a frame, in pixels. */
 export interface QrRegion {
@@ -37,22 +43,35 @@ export function regionAround(
   return right > x && bottom > y ? { x, y, width: right - x, height: bottom - y } : null;
 }
 
-/** The corners jsQR reports for a QR it read. */
-interface QrCorners {
-  topLeftCorner: { x: number; y: number };
-  topRightCorner: { x: number; y: number };
-  bottomRightCorner: { x: number; y: number };
-  bottomLeftCorner: { x: number; y: number };
-}
+/** Folder, under the app root, where the build copies the ZXing `.wasm` file (see `angular.json`). */
+const WASM_FOLDER = 'zxing/';
+
+/**
+ * Where ZXing finds its `.wasm`: the copy served with the app, so reading works offline. The page
+ * resolves it against its base URL and a Web Worker against the URL of its own script, which sits at
+ * the app root too.
+ */
+const APP_WASM: ZXingModuleOverrides = {
+  locateFile: (path: string, prefix: string) => {
+    if (!path.endsWith('.wasm')) {
+      return prefix + path;
+    }
+    const base = typeof document === 'undefined' ? globalThis.location.href : document.baseURI;
+    return new URL(WASM_FOLDER + path, base).href;
+  },
+};
+
+/** What is asked of ZXing: QR codes only, one per frame, and no search for rotated or inverted ones. */
+const READER_OPTIONS: ReaderOptions = {
+  formats: ['QRCode'],
+  maxNumberOfSymbols: 1,
+  tryRotate: false,
+  tryInvert: false,
+};
 
 /** The rectangle that contains the corners of a QR, moved by the origin of the area it was read from. */
-function boxOf(location: QrCorners, offsetX: number, offsetY: number): QrRegion {
-  const corners = [
-    location.topLeftCorner,
-    location.topRightCorner,
-    location.bottomRightCorner,
-    location.bottomLeftCorner,
-  ];
+function boxOf(position: Position, offsetX: number, offsetY: number): QrRegion {
+  const corners = [position.topLeft, position.topRight, position.bottomRight, position.bottomLeft];
   const left = Math.min(...corners.map((c) => c.x));
   const top = Math.min(...corners.map((c) => c.y));
   return {
@@ -64,7 +83,7 @@ function boxOf(location: QrCorners, offsetX: number, offsetY: number): QrRegion 
 }
 
 /**
- * Reads the bytes of the QR code in a camera frame with `jsQR`. It has no dependency on Angular or on
+ * Reads the bytes of the QR code in a camera frame with ZXing (WebAssembly). It has no dependency on Angular or on
  * the page, so the same code runs in a Web Worker (off the main thread) or, where workers are
  * unavailable, in the page itself.
  *
@@ -74,6 +93,22 @@ function boxOf(location: QrCorners, offsetX: number, offsetY: number): QrRegion 
 export class QrFrameReader {
   private canvas: OffscreenCanvas | null = null;
   private boxes: QrRegion[] = [];
+
+  /**
+   * @param wasm - Where ZXing gets its `.wasm`. The app's own copy by default; tests pass their own.
+   * It must be the same object every time: ZXing compiles the module again whenever it changes.
+   */
+  constructor(private readonly wasm: ZXingModuleOverrides = APP_WASM) {
+    prepareZXingModule({ overrides: wasm });
+  }
+
+  /**
+   * Loads and compiles the ZXing module now, so the first frame does not wait for it (and so it is
+   * already in memory if the connection is lost afterwards).
+   */
+  public async warmUp(): Promise<void> {
+    await prepareZXingModule({ overrides: this.wasm, fireImmediately: true });
+  }
 
   /**
    * Where, in frame pixels, each QR read by the last {@link read} was (in no particular order), so the
@@ -91,30 +126,29 @@ export class QrFrameReader {
    * @param regions - Areas around the QR, when the detector located it; only the first is used. Empty reads the whole frame.
    * @returns The payload bytes of the QR read (at most one); empty when it could not be read.
    */
-  public read(bitmap: QrSource, regions: readonly QrRegion[]): Uint8Array[] {
+  public async read(bitmap: QrSource, regions: readonly QrRegion[]): Promise<Uint8Array[]> {
     this.boxes = [];
     const bytes =
-      (regions.length > 0 ? this.readRegion(bitmap, regions[0]) : null) ?? this.readWhole(bitmap);
+      (regions.length > 0 ? await this.readRegion(bitmap, regions[0]) : null) ??
+      (await this.readWhole(bitmap));
     return bytes ? [bytes] : [];
   }
 
-  private readRegion(bitmap: QrSource, region: QrRegion): Uint8Array | null {
+  private async readRegion(bitmap: QrSource, region: QrRegion): Promise<Uint8Array | null> {
     const pixels = this.pixelsOf(bitmap, region);
     if (!pixels) {
       return null;
     }
-    const code = jsQR(pixels.data, pixels.width, pixels.height, {
-      inversionAttempts: 'dontInvert',
-    });
-    if (!code) {
+    const [code] = await readBarcodes(pixels, READER_OPTIONS);
+    if (!code?.isValid) {
       return null;
     }
-    this.boxes.push(boxOf(code.location, region.x, region.y));
-    return Uint8Array.from(code.binaryData);
+    this.boxes.push(boxOf(code.position, region.x, region.y));
+    return Uint8Array.from(code.bytes);
   }
 
   /** Reads the QR from the whole frame. */
-  private readWhole(bitmap: QrSource): Uint8Array | null {
+  private readWhole(bitmap: QrSource): Promise<Uint8Array | null> {
     return this.readRegion(bitmap, { x: 0, y: 0, width: bitmap.width, height: bitmap.height });
   }
 

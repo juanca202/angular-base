@@ -21,11 +21,13 @@ export interface QrWorkerResponse {
 }
 
 const reader = new QrFrameReader();
+// Loads ZXing as soon as the worker starts, before the first frame arrives.
+void reader.warmUp().catch(() => undefined);
 
-addEventListener('message', ({ data }: MessageEvent<QrWorkerRequest>) => {
+addEventListener('message', async ({ data }: MessageEvent<QrWorkerRequest>) => {
   let response: QrWorkerResponse;
   try {
-    const bytes = reader.read(data.bitmap, data.regions);
+    const bytes = await reader.read(data.bitmap, data.regions);
     response = { id: data.id, bytes, boxes: reader.lastBoxes, error: null };
   } catch (failure) {
     const error =

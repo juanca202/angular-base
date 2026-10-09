@@ -36,8 +36,14 @@ test.describe('recepción sin conexión', () => {
     const bytes = sampleBytes(102_400);
     const fragments = await transfer('prueba-100KB.bin', 'application/octet-stream', bytes);
     await installFakeCamera(page);
+    // The reader module (ZXing) is loaded when the reception starts; in production the service worker
+    // serves it from the cache, here it must be in memory before the connection is cut.
+    const readerModule = page.waitForResponse((response) =>
+      response.url().endsWith('/zxing/zxing_reader.wasm'),
+    );
     await page.goto('/recibir');
     await expect(page.getByRole('button', { name: 'Terminar lectura' })).toBeEnabled();
+    await readerModule;
 
     await context.setOffline(true);
     const requests = await captureRequests(page, async () => {
