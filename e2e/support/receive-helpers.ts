@@ -4,7 +4,7 @@ import { crc32, fragmentFile } from '../../src/app/shared/utils/qr-protocol';
 
 /** How the simulated browser offers the camera and the QR reader. */
 export type CameraMode =
-  /** Camera works and `BarcodeDetector` reads the QR queued by the test (no image needed). */
+  /** Camera works and `BarcodeDetector` reads the QR queued by the test (no image needed; no worker). */
   | 'detector'
   /** Camera works, `BarcodeDetector` is missing and QR images are drawn in the video for `jsQR`. */
   | 'fallback'
@@ -23,8 +23,15 @@ export const sampleBytes = (size: number): Uint8Array<ArrayBuffer> =>
   Uint8Array.from({ length: size }, (_, i) => (i * 7 + 3) % 256);
 
 /** Splits a file into the fragments the sender would show. */
-export const transfer = (name: string, type: string, bytes: Uint8Array<ArrayBuffer>) =>
-  fragmentFile({ name, type, bytes });
+export const transfer = (
+  name: string,
+  type: string,
+  bytes: Uint8Array<ArrayBuffer>,
+  compress = false,
+) =>
+  // 400 B per fragment and, unless asked, no compression (not the app's defaults) so the counts of
+  // these scenarios stay the same.
+  fragmentFile({ name, type, bytes }, { dataSize: 400, compress });
 
 /** Rewrites a fragment with another payload and a valid CRC, simulating well-formed but wrong content. */
 export function withPayload(fragment: Uint8Array, payload: Uint8Array): Uint8Array {
@@ -61,26 +68,41 @@ export async function installFakeCamera(page: Page, mode: CameraMode = 'detector
     if (cameraMode === 'unsupported') {
       Object.defineProperty(navigator, 'mediaDevices', { value: undefined, configurable: true });
     } else {
+      // A camera view twice as wide as tall, so two QR codes fit side by side like on a sender screen.
       const canvas = document.createElement('canvas');
-      canvas.width = 480;
+      canvas.width = 960;
       canvas.height = 480;
       const context = canvas.getContext('2d') as CanvasRenderingContext2D;
       context.fillStyle = '#fff';
-      context.fillRect(0, 0, 480, 480);
-      // Draws a QR (modules of the matrix) like a sender screen filling the camera view.
-      w['__showQr'] = (size: number, modules: number[]) => {
+      context.fillRect(0, 0, 960, 480);
+      // Draws the modules of a QR matrix inside the 480 px slot that starts at `left`.
+      const drawQr = (left: number, size: number, modules: number[]) => {
         const margin = 4;
         const cell = Math.floor(480 / (size + margin * 2));
-        context.fillStyle = '#fff';
-        context.fillRect(0, 0, 480, 480);
-        context.fillStyle = '#000';
-        const origin = Math.floor((480 - cell * size) / 2);
+        const origin = left + Math.floor((480 - cell * size) / 2);
+        const top = Math.floor((480 - cell * size) / 2);
         for (let y = 0; y < size; y++) {
           for (let x = 0; x < size; x++) {
             if (modules[y * size + x]) {
-              context.fillRect(origin + x * cell, origin + y * cell, cell, cell);
+              context.fillRect(origin + x * cell, top + y * cell, cell, cell);
             }
           }
+        }
+      };
+      // Shows one QR in the middle of the view, or two side by side when a second one is given.
+      w['__showQr'] = (
+        size: number,
+        modules: number[],
+        second?: { size: number; modules: number[] },
+      ) => {
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, 960, 480);
+        context.fillStyle = '#000';
+        if (second) {
+          drawQr(0, size, modules);
+          drawQr(480, second.size, second.modules);
+        } else {
+          drawQr(240, size, modules);
         }
       };
       // A pixel in the corner changes on every tick, so the canvas keeps producing video frames.
@@ -116,6 +138,10 @@ export async function installFakeCamera(page: Page, mode: CameraMode = 'detector
     if (cameraMode === 'fallback') {
       Object.defineProperty(window, 'BarcodeDetector', { value: undefined, configurable: true });
     } else {
+      // The simulated detector lives in the page, which a Web Worker cannot see: without workers the
+      // app reads the frames in the page with the same code. The `fallback` mode, with real QR
+      // images, goes through the worker.
+      Object.defineProperty(window, 'Worker', { value: undefined, configurable: true });
       w['BarcodeDetector'] = class {
         public async detect(): Promise<{ rawValue: string }[]> {
           const next = queue.shift();
@@ -134,13 +160,25 @@ export async function feed(page: Page, fragments: Uint8Array[]): Promise<void> {
   );
 }
 
-/** Shows a fragment as a real QR image in the simulated camera (for the `jsQR` fallback). */
-export async function showQr(page: Page, fragment: Uint8Array): Promise<void> {
-  const qr = create([{ data: fragment, mode: 'byte' }], { errorCorrectionLevel: 'M' });
+/**
+ * Shows a fragment as a real QR image in the simulated camera (for the `jsQR` fallback), and a second
+ * one beside it when given, as the sender does with two QR codes at once.
+ */
+export async function showQr(page: Page, fragment: Uint8Array, second?: Uint8Array): Promise<void> {
+  const matrix = (bytes: Uint8Array) => {
+    const qr = create([{ data: bytes, mode: 'byte' }], { errorCorrectionLevel: 'M' });
+    return { size: qr.modules.size, modules: Array.from(qr.modules.data) };
+  };
+  const first = matrix(fragment);
+  const other = second ? matrix(second) : undefined;
   await page.evaluate(
-    ({ size, modules }) =>
-      (window as unknown as { __showQr: (s: number, m: number[]) => void }).__showQr(size, modules),
-    { size: qr.modules.size, modules: Array.from(qr.modules.data) },
+    ({ size, modules, other }) =>
+      (
+        window as unknown as {
+          __showQr: (s: number, m: number[], second?: { size: number; modules: number[] }) => void;
+        }
+      ).__showQr(size, modules, other),
+    { ...first, other },
   );
 }
 

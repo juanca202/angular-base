@@ -37,6 +37,7 @@ test.describe('envío sin conexión', () => {
     const requests = await captureRequests(page, async () => {
       await page.setInputFiles('input[type="file"]', file);
       await expect(page.getByRole('img', { name: 'Código QR del archivo' })).toBeVisible();
+      await page.getByRole('button', { name: /Iniciar o reiniciar la vuelta/ }).click();
       // Deja correr varios fotogramas de la secuencia antes de contar peticiones.
       await page.waitForTimeout(1_500);
     });

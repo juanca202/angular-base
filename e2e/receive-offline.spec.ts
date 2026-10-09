@@ -42,7 +42,6 @@ test.describe('recepción sin conexión', () => {
     await context.setOffline(true);
     const requests = await captureRequests(page, async () => {
       await feed(page, fragments);
-      await page.getByRole('button', { name: 'Confirmar' }).click({ timeout: 60_000 });
       await expect(page.getByRole('heading', { name: 'Resultado de la recepción' })).toBeVisible({
         timeout: 60_000,
       });

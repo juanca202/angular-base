@@ -16,8 +16,6 @@ const resultTitle = (page: Page) =>
   page.getByRole('heading', { name: 'Resultado de la recepción' });
 const notice = (page: Page, text: string | RegExp) =>
   page.getByRole('alert').filter({ hasText: text });
-const confirm = (page: Page) => page.getByRole('button', { name: 'Confirmar' });
-const discard = (page: Page) => page.getByRole('button', { name: 'Descartar' });
 const finish = (page: Page) => page.getByRole('button', { name: 'Terminar lectura' });
 
 /** Opens the reception screen with the simulated camera and waits until it is reading. */
@@ -36,11 +34,9 @@ async function open(
   }
 }
 
-/** Reads a whole transfer and confirms it. */
+/** Reads a whole transfer and waits for the result. */
 async function receive(page: Page, fragments: Uint8Array[]) {
   await feed(page, fragments);
-  await expect(confirm(page)).toBeVisible();
-  await confirm(page).click();
   await expect(resultTitle(page)).toBeVisible();
 }
 
@@ -58,8 +54,6 @@ test.describe('recepción: transferencia completa', () => {
     await open(page);
 
     await feed(page, fragments);
-    await expect(notice(page, '«foto.png» (1000 B)')).toBeVisible();
-    await confirm(page).click();
 
     await expect(resultTitle(page)).toBeVisible();
     await expect(page.getByRole('img', { name: 'foto.png' })).toBeVisible();
@@ -95,11 +89,50 @@ test.describe('recepción: transferencia completa', () => {
       fragments[1],
       fragments[5],
     ]);
-    await expect(confirm(page)).toBeVisible();
-    await confirm(page).click();
 
     await expect(resultTitle(page)).toBeVisible();
     expect(await storedBytes(page, 'mezcla.bin')).toEqual(Array.from(bytes));
+  });
+
+  test('la barra de fragmentos muestra cuáles se recibieron y cuáles faltan', async ({ page }) => {
+    const fragments = await transfer('barra.bin', '', sampleBytes(1500));
+    await open(page);
+
+    await feed(page, [fragments[0], fragments[2]]);
+
+    const bar = page.getByRole('img', { name: 'Fragmentos recibidos' });
+    await expect(bar).toBeVisible();
+    await expect(page.getByText(/2 de 4 fragmentos|2 de 5 fragmentos/)).toBeVisible();
+    // Verde en los tramos recibidos (0 y 2) y gris donde faltan.
+    const paint = await bar.locator('canvas').evaluate((canvas: HTMLCanvasElement) => {
+      const context = canvas.getContext('2d')!;
+      const slice = canvas.width / 5;
+      const at = (index: number) =>
+        context.getImageData(Math.floor(slice * (index + 0.5)), 0, 1, 1).data[3];
+      return [0, 1, 2, 3].map(at);
+    });
+    expect(paint[0]).toBeGreaterThan(0);
+    expect(paint[1]).toBe(0);
+    expect(paint[2]).toBeGreaterThan(0);
+  });
+
+  test('recibe un archivo transmitido comprimido y lo guarda idéntico al original', async ({
+    page,
+  }) => {
+    const bytes = new Uint8Array(20_000).fill(9);
+    const fragments = await transfer('ceros.bin', 'application/octet-stream', bytes, true);
+    // Comprimido, el archivo viaja en muy pocos fragmentos frente a los 51 que ocuparía sin comprimir.
+    expect(fragments.length).toBeLessThan(10);
+    await open(page);
+
+    await feed(page, fragments);
+
+    await expect(resultTitle(page)).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Archivo recibido correctamente' }),
+    ).toBeVisible();
+    expect(await storedBytes(page, 'ceros.bin')).toEqual(Array.from(bytes));
+    expect((await storedFiles(page)).map((file) => file.size)).toEqual([20_000]);
   });
 
   test('misma entrada con el mismo nombre no sobrescribe el archivo existente', async ({
@@ -141,53 +174,24 @@ test.describe('recepción: transferencia completa', () => {
   });
 });
 
-test.describe('recepción: confirmación de la transferencia', () => {
-  test('no completa ni guarda nada hasta confirmar, y muestra el avance con el aviso', async ({
-    page,
-  }) => {
+test.describe('recepción: elección de la transferencia', () => {
+  test('completa sola, sin pedir confirmación, y muestra el avance', async ({ page }) => {
     await open(page);
     await feed(page, await transfer('espera.bin', '', sampleBytes(1000)));
 
-    await expect(notice(page, '«espera.bin»')).toBeVisible();
-    await expect(page.getByText('100 %')).toBeVisible();
-    await expect(page.getByText(/5 de 5 fragmentos|4 de 4 fragmentos/)).toBeVisible();
-    await page.waitForTimeout(1_000);
-    await expect(resultTitle(page)).toBeHidden();
-    await expect(notice(page, '«espera.bin»')).toBeVisible();
-    expect(await storedFiles(page)).toEqual([]);
-
-    await confirm(page).click();
     await expect(resultTitle(page)).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Confirmar' })).toHaveCount(0);
+    expect((await storedFiles(page)).map((file) => file.name)).toEqual(['espera.bin']);
   });
 
-  test('descartar ignora los fragmentos de esa transferencia y sigue leyendo', async ({ page }) => {
-    const foreign = await transfer('ajeno.bin', '', sampleBytes(1000));
-    await open(page);
-    await feed(page, foreign.slice(0, 2));
-    await expect(notice(page, '«ajeno.bin»')).toBeVisible();
-
-    await discard(page).click();
-    await feed(page, foreign.slice(2));
-    await page.waitForTimeout(800);
-
-    await expect(page.getByText('Esperando el primer QR…')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Confirmar' })).toBeHidden();
-    await expect(finish(page)).toBeEnabled();
-    expect(await storedFiles(page)).toEqual([]);
-  });
-
-  test('con una secuencia ajena en cuadro, permite elegir la propia sin completar la ajena', async ({
+  test('con una secuencia ajena en cuadro, sigue la primera leída y no completa la otra', async ({
     page,
   }) => {
     const foreign = await transfer('ajeno.bin', '', sampleBytes(1000));
     const mine = await transfer('mio.bin', '', sampleBytes(800));
     await open(page);
 
-    await feed(page, [foreign[0], ...mine, ...foreign.slice(1)]);
-    await expect(notice(page, '«ajeno.bin»')).toBeVisible();
-    await discard(page).click();
-    await expect(notice(page, '«mio.bin»')).toBeVisible();
-    await confirm(page).click();
+    await feed(page, [mine[0], foreign[0], ...foreign.slice(1), ...mine.slice(1)]);
 
     await expect(resultTitle(page)).toBeVisible();
     expect((await storedFiles(page)).map((file) => file.name)).toEqual(['mio.bin']);
@@ -196,11 +200,10 @@ test.describe('recepción: confirmación de la transferencia', () => {
 
 test.describe('recepción: resultados que no guardan', () => {
   test('incompleta: no guarda ni registra y permite seguir escaneando', async ({ page }) => {
-    const bytes = sampleBytes(1000);
+    const bytes = sampleBytes(1500);
     const fragments = await transfer('parcial.bin', '', bytes);
     await open(page);
     await feed(page, fragments.slice(0, 2));
-    await confirm(page).click();
     await expect(page.getByText(/2 de 4 fragmentos|2 de 5 fragmentos/)).toBeVisible();
 
     await finish(page).click();
@@ -222,7 +225,6 @@ test.describe('recepción: resultados que no guardan', () => {
     altered[0] ^= 1;
     await open(page);
     await feed(page, [fragments[0]]);
-    await confirm(page).click();
     await feed(page, [withPayload(fragments[1], altered), ...fragments.slice(2)]);
 
     await expect(notice(page, 'Datos inválidos')).toBeVisible();
@@ -240,7 +242,6 @@ test.describe('recepción: resultados que no guardan', () => {
     new DataView(metadata.buffer).setUint32(32, 9999);
     await open(page);
     await feed(page, [withPayload(fragments[0], metadata), ...fragments.slice(1)]);
-    await confirm(page).click();
 
     await expect(notice(page, 'Archivo no reconstruible')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Reintentar' })).toBeVisible();
@@ -268,8 +269,8 @@ test.describe('recepción: resultados que no guardan', () => {
 test.describe('recepción: cancelar', () => {
   test('cancela sin confirmación, descarta lo recibido y libera la cámara', async ({ page }) => {
     await open(page);
-    await feed(page, (await transfer('cancelada.bin', '', sampleBytes(1000))).slice(0, 3));
-    await expect(notice(page, '«cancelada.bin»')).toBeVisible();
+    await feed(page, (await transfer('cancelada.bin', '', sampleBytes(1500))).slice(0, 3));
+    await expect(page.getByText(/3 de \d+ fragmentos/)).toBeVisible();
 
     await page.getByRole('button', { name: 'Cancelar' }).click();
 
@@ -360,14 +361,50 @@ test.describe('recepción: lector de reserva con imágenes de QR reales', () => 
     })();
 
     try {
-      await expect(notice(page, '«real.bin»')).toBeVisible({ timeout: 45_000 });
-      await confirm(page).click();
       await expect(resultTitle(page)).toBeVisible({ timeout: 45_000 });
     } finally {
       running = false;
       await loop;
     }
     expect(await storedBytes(page, 'real.bin')).toEqual(Array.from(bytes));
+    // The frames were read by the Web Worker, not by the page.
+    expect(page.workers().length).toBeGreaterThan(0);
+  });
+});
+
+test.describe('recepción: dos QR en el mismo cuadro', () => {
+  test('lee un QR secuencial y otro inverso a la vez y recibe el archivo idéntico', async ({
+    page,
+  }) => {
+    test.setTimeout(90_000);
+    const bytes = sampleBytes(2400);
+    const fragments = await transfer('doble.bin', 'application/octet-stream', bytes);
+    await open(page, 'fallback');
+
+    // Como el emisor con dos QR: el primero avanza y el segundo recorre desde el final, de modo que
+    // ceil(N / 2) pasos bastan para ver todos los fragmentos.
+    const steps = Math.ceil(fragments.length / 2);
+    let running = true;
+    const loop = (async () => {
+      while (running) {
+        for (let step = 0; step < steps; step++) {
+          if (!running) {
+            return;
+          }
+          await showQr(page, fragments[step], fragments[fragments.length - 1 - step]);
+          await page.waitForTimeout(450);
+        }
+      }
+    })();
+
+    try {
+      await expect(resultTitle(page)).toBeVisible({ timeout: 45_000 });
+    } finally {
+      running = false;
+      await loop;
+    }
+    expect(await storedBytes(page, 'doble.bin')).toEqual(Array.from(bytes));
+    expect(page.workers().length).toBeGreaterThan(0);
   });
 });
 
@@ -388,10 +425,8 @@ test.describe('recepción: sin desplazamiento horizontal', () => {
           3,
         ),
       );
-      await expect(confirm(page)).toBeVisible();
       expect(await overflow()).toBeLessThanOrEqual(0);
 
-      await confirm(page).click();
       await finish(page).click();
       await expect(notice(page, 'Recepción incompleta')).toBeVisible();
       expect(await overflow()).toBeLessThanOrEqual(0);
