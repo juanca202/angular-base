@@ -68,6 +68,7 @@ export class QrCameraReader {
       this.video.srcObject = null;
       this.video = null;
     }
+    this.decoder.clearLocation();
     this._active.set(false);
   }
 

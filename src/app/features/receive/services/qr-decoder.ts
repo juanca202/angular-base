@@ -1,4 +1,4 @@
-import { Service, inject } from '@angular/core';
+import { Service, inject, signal } from '@angular/core';
 import { ReceiveDiagnostics } from '@/features/receive/services/receive-diagnostics';
 import {
   QrFrameReader,
@@ -12,6 +12,13 @@ import type { QrWorkerRequest, QrWorkerResponse } from '@/features/receive/servi
 interface QrDetection {
   rawValue: string;
   boundingBox?: QrRegion;
+}
+
+/** Where the QR codes seen in the last frame are: their boxes and the size of the frame they refer to. */
+export interface QrLocation {
+  readonly boxes: readonly QrRegion[];
+  readonly width: number;
+  readonly height: number;
 }
 
 /** Minimal `BarcodeDetector` shape used here (the API is not yet in the TypeScript DOM lib). */
@@ -56,6 +63,7 @@ export class QrDecoder {
 
   private detector: QrDetector | null = null;
   private canvas: HTMLCanvasElement | null = null;
+  private readonly _location = signal<QrLocation | null>(null);
   private bitmapsFail = false;
   private detectorFailures = 0;
   private worker: Worker | null | undefined;
@@ -65,6 +73,17 @@ export class QrDecoder {
     resolve: (response: QrWorkerResponse) => void;
     reject: (error: Error) => void;
   } | null = null;
+
+  /**
+   * Where the QR codes of the last frame are, for drawing a frame over them, or `null` when none was
+   * located. Only the native detector says where a QR is, so without it this stays `null`.
+   */
+  public readonly location = this._location.asReadonly();
+
+  /** Forgets the last location (for example when the reading stops). */
+  public clearLocation(): void {
+    this._location.set(null);
+  }
 
   /**
    * Decodes the QR visible in the current video frame.
@@ -110,6 +129,9 @@ export class QrDecoder {
         this.detectorFailures >= DETECTOR_MAX_FAILURES
           ? undefined
           : (globalThis as { BarcodeDetector?: QrDetectorConstructor }).BarcodeDetector;
+      if (!detectorConstructor) {
+        this._location.set(null);
+      }
       const worker = bitmap ? this.getWorker() : null;
       this.diagnostics.mode(worker ? 'worker' : 'page', detectorConstructor !== undefined);
 
@@ -121,12 +143,15 @@ export class QrDecoder {
           const codes = await this.detector.detect(frame);
           this.detectorFailures = 0;
           if (codes.length === 0) {
+            this._location.set(null);
             return { detected: 0, bytes: [], error };
           }
           hints = codes.slice(0, MAX_CODES);
+          this.locate(hints, video);
         } catch (failure) {
           // The detector is unusable on this frame: keep the cause and read it with jsQR alone.
           this.detectorFailures++;
+          this._location.set(null);
           error =
             failure instanceof Error ? `${failure.name}: ${failure.message}` : String(failure);
         }
@@ -158,6 +183,17 @@ export class QrDecoder {
         bitmap?.close();
       }
     }
+  }
+
+  /** Keeps where the detector found each QR (those that came with a box) for the view to draw. */
+  private locate(hints: readonly QrDetection[], video: HTMLVideoElement): void {
+    const boxes = hints
+      .map((hint) => hint.boundingBox)
+      .filter((box): box is QrRegion => box !== undefined)
+      .map(({ x, y, width, height }) => ({ x, y, width, height }));
+    this._location.set(
+      boxes.length > 0 ? { boxes, width: video.videoWidth, height: video.videoHeight } : null,
+    );
   }
 
   /**
