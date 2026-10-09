@@ -28,9 +28,6 @@ interface QrDetector {
 
 type QrDetectorConstructor = new (options: { formats: string[] }) => QrDetector;
 
-/** Most QR codes taken from the native detector in one frame (the sender shows at most two). */
-const MAX_CODES = 4;
-
 /** Consecutive failures of the native detector after which it is no longer used. */
 const DETECTOR_MAX_FAILURES = 3;
 
@@ -146,7 +143,7 @@ export class QrDecoder {
             this._location.set(null);
             return { detected: 0, bytes: [], error };
           }
-          hints = codes.slice(0, MAX_CODES);
+          hints = codes.slice(0, 1);
           this.locate(hints, video);
         } catch (failure) {
           // The detector is unusable on this frame: keep the cause and read it with jsQR alone.
