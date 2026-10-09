@@ -25,7 +25,7 @@ Vista móvil (retrato, responsiva):
 
 - Área del QR: muestra el primer QR fijo al elegir el archivo. Es pulsable: el primer toque inicia la secuencia en bucle (velocidad automática) y los siguientes reinician la vuelta; en ambos casos mantiene el primer QR unos 3 s para que el receptor pueda capturarlo (FR-005, FR-026).
 - Barra de posición (FR-028): bajo el QR, barra horizontal con una marca vertical que indica qué QR de la vuelta se muestra y, debajo, «QR n de N». Se puede tocar o arrastrar (o usar el teclado) para elegir desde qué QR continúa la secuencia; el QR elegido se retiene unos 3 s.
-- Selector «QR a la vez» (FR-035): 1 o 2. Con 2, el área del QR muestra dos QR lado a lado: el primero avanza y el segundo recorre desde el final; la barra de posición lleva una segunda marca (naranja) y el texto indica «QR n y m de N».
+- Un solo QR en pantalla (FR-035 retirado el 2026-10-09: la opción «QR a la vez» y el segundo QR se eliminaron tras las pruebas con dispositivos).
 - Selector de densidad (FR-032): lista desplegable «Densidad» con 200, 400, 800, 1200 y 1600 B por QR (800 por defecto); cambiarlo reinicia la transferencia y se avisa bajo los selectores.
 - Los selectores de densidad y velocidad muestran la última elección del usuario, recordada entre visitas (FR-033).
 - Selector de velocidad (FR-031): lista desplegable «Velocidad» con 4, 6, 8, 10 y 12 QR por segundo (8 por defecto), bajo la barra de posición.
@@ -48,3 +48,4 @@ Vista móvil (retrato, responsiva):
 | 2026-10-09 | Poder elegir el tamaño de fragmento (densidad) | Selector añadido en la descripción; FR-032 |
 | 2026-10-09 | Recordar la velocidad y la densidad entre cargas de la página | Texto añadido en la descripción; FR-033 |
 | 2026-10-09 | Mostrar dos QR a la vez, uno secuencial y otro desde el final | Descripción actualizada (el wireframe muestra un QR); FR-035 |
+| 2026-10-09 | Los dos QR no funcionaron en las pruebas con dispositivos: quitar la opción y dejar un solo QR | Descripción actualizada; FR-035 retirado ([insumo 04](../references/raw-requirement-04-decisiones-lectura-zxing.md)) |

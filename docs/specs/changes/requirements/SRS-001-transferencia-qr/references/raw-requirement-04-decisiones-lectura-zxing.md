@@ -1,0 +1,14 @@
+# Insumo 04: decisiones tras probar la lectura con ZXing y los valores por defecto
+
+Origen: segunda ronda de pruebas con un móvil con Chrome en Android como receptor, 2026-10-09. Complementa el [insumo 03](raw-requirement-03-decisiones-pruebas-con-dispositivos.md).
+
+Hallazgos y decisiones del usuario:
+
+- **`BarcodeDetector` falla siempre en el móvil de pruebas.** Cada llamada a `detect` rechaza con `NotSupportedError: Barcode detection service unavailable` (el servicio de detección del dispositivo, ligado a los servicios de Google Play, no está disponible), y `getSupportedFormats()` no resolvió el problema. La lectura quedaba en `jsQR` (unos 10 cuadros/s, 135 ms por cuadro) y solo se leían 13 QR en 651 cuadros. Decisión: el detector nativo deja de formar parte de la solución.
+- **ZXing en WebAssembly funciona bien y siempre está disponible.** `zxing-wasm` (lector `QRCode`) lee los bytes exactos del QR sin depender de ningún servicio del dispositivo ni del navegador. Decisión: la lectura de QR se implementa **solo con `zxing-wasm`**: se descartan `jsQR` y `BarcodeDetector` (ni como detector ni como lector de reserva). El `.wasm` (unos 940 KB) se sirve con la aplicación, se precachea con el service worker para funcionar sin conexión y se carga al empezar la recepción, antes del primer cuadro.
+- **Un solo QR por cuadro.** La opción de mostrar dos QR a la vez (FR-035 del insumo 03) no funcionó en las pruebas con dispositivos y se retira: el emisor muestra siempre un QR y el receptor lee uno por cuadro. Se elimina también la lógica de leer cada QR desde su zona, de tapar el primero para buscar el segundo y de partir el cuadro por la franja vacía.
+- **Recuadro sobre el QR detectado.** En lugar de un recuadro blanco fijo en la cámara, el receptor dibuja un recuadro solo cuando detecta un QR, sobre su posición (la que informa ZXing). Se mantiene unos 0,4 s tras el último cuadro que lo ubicó, para que no parpadee si un cuadro suelto falla.
+- **Valores por defecto.** La densidad por defecto pasa de 800 B a **1600 B** por QR (QR de unos 149 módulos por lado, versión 33, frente a 109 con 800 B) y la velocidad por defecto se mantiene en **8 QR por segundo**. Los selectores y los valores recordados no cambian; un valor guardado que ya no sea una opción vigente sigue ignorándose.
+- **Diagnóstico.** El panel `?debug` ya mostraba, además de los contadores, los formatos que informa el detector nativo y el navegador; con la lectura solo por ZXing, el detector nativo y sus formatos dejan de ser relevantes (el navegador sigue siendo útil para comparar dispositivos).
+
+Pendiente de confirmar con cámara real tras estos cambios: tasa de lectura de QR de 1600 B con ZXing (módulos más pequeños que con 800 B) y cuadros por segundo en el móvil de pruebas; si no es estable, volver a un tamaño menor (constante `DEFAULT_DATA_SIZE`).
