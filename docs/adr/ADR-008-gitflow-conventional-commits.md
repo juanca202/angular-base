@@ -54,7 +54,7 @@ de esta decisión viven en el estándar de dominio **DevOps Standards**
 ## Referencias
 
 - [DevOps Standards](../standards/devops.md)
-- [Índice de ADRs](./README.md)
+- [Índice de ADRs](README.md)
 - [GitFlow (original)](https://nvie.com/posts/a-successful-git-branching-model/)
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [commitlint](https://commitlint.js.org/)

@@ -16,8 +16,8 @@ emits: [architecture/CR-011, architecture/CR-013]
 Cuando los flujos de usuario combinan diálogos, navegación, notificaciones y varias operaciones de
 datos, esa coordinación suele acabar en componentes (que engordan y mezclan presentación con
 orquestación) o repartida entre servicios ad hoc. Eso choca con la separación ya adoptada entre
-acceso a datos ([ADR-010](./ADR-010-repository-pattern-rest-api.md) — Repository) y feedback
-desacoplado ([ADR-009](./ADR-009-core-event-notification-bridge.md) — `notify`), y dificulta
+acceso a datos ([ADR-010](ADR-010-repository-pattern-rest-api.md) — Repository) y feedback
+desacoplado ([ADR-009](ADR-009-core-event-notification-bridge.md) — `notify`), y dificulta
 reutilizar reglas de presentación y de negocio.
 
 Se necesita un rol explícito que orqueste experiencias complejas sin absorber el acceso HTTP ni la
@@ -41,7 +41,7 @@ experiencias de usuario que requieren orquestación de múltiples servicios o co
    - **Feature:** `src/app/features/{feature}/managers/` — orquestación específica de la feature.
    - **Transversal (p. ej. auth/settings):** managers reutilizados por varias features, ubicados en la
      feature o área que posea ese flujo (p. ej. `features/settings/managers/`), sin romper la
-     dirección de dependencias de [ADR-001](./ADR-001-hybrid-layered-feature-architecture.md).
+     dirección de dependencias de [ADR-001](ADR-001-hybrid-layered-feature-architecture.md).
    - **Core:** `src/app/core/services/` — infraestructura global (p. ej. `AppManager`,
      `LayoutManager`); no depende de Features.
 5. **Nomenclatura:** clase `{Entidad|Flujo}Manager`; archivo `{entidad|flujo}-manager.ts`.
@@ -68,8 +68,8 @@ viven en el estándar de dominio **Architecture Standards**
 ## Referencias
 
 - [Architecture Standards](../standards/architecture.md)
-- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](./ADR-001-hybrid-layered-feature-architecture.md)
-- [ADR-009: Puente de notificaciones por eventos en Core (`notify`)](./ADR-009-core-event-notification-bridge.md)
-- [ADR-010: Patrón Repository para comunicación REST API](./ADR-010-repository-pattern-rest-api.md)
-- [Índice de ADRs](./README.md)
+- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](ADR-001-hybrid-layered-feature-architecture.md)
+- [ADR-009: Puente de notificaciones por eventos en Core (`notify`)](ADR-009-core-event-notification-bridge.md)
+- [ADR-010: Patrón Repository para comunicación REST API](ADR-010-repository-pattern-rest-api.md)
+- [Índice de ADRs](README.md)
 - Ejemplos en repo: `src/app/core/services/app-manager.ts`, `layout-manager.ts`

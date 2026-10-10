@@ -64,7 +64,7 @@ de esta decisión viven en el estándar de dominio **Testing Standards**
 ## Referencias
 
 - [Testing Standards](../standards/testing.md)
-- [Índice de ADRs](./README.md)
+- [Índice de ADRs](README.md)
 - [Vitest](https://vitest.dev/)
 - [Testing Library](https://testing-library.com/)
 - [Angular unit testing](https://angular.dev/guide/testing)

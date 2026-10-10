@@ -51,6 +51,6 @@ El enunciado normativo (RFC 2119) de esta decisión vive en el estándar de domi
 ## Referencias
 
 - [Coding Style Standards](../standards/coding-style.md)
-- [Índice de ADRs](./README.md)
+- [Índice de ADRs](README.md)
 - [Prettier](https://prettier.io/)
 - [`.prettierignore`](../../.prettierignore)

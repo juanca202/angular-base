@@ -38,8 +38,8 @@ El enunciado normativo (RFC 2119), los criterios de cumplimiento verificables y 
 de esta decisión viven en el estándar de dominio **Testing Standards**
 (`../standards/testing.md`), no en este ADR.
 
-Complementa a [ADR-003](./ADR-003-unit-testing-vitest-testing-library.md) y
-[ADR-005](./ADR-005-e2e-testing-playwright.md); no los reemplaza.
+Complementa a [ADR-003](ADR-003-unit-testing-vitest-testing-library.md) y
+[ADR-005](ADR-005-e2e-testing-playwright.md); no los reemplaza.
 
 ## Consecuencias
 
@@ -58,8 +58,8 @@ Complementa a [ADR-003](./ADR-003-unit-testing-vitest-testing-library.md) y
 ## Referencias
 
 - [Testing Standards](../standards/testing.md)
-- [ADR-003: Estrategia de pruebas unitarias con Vitest, Testing Library y convenciones AAA / Object Mother](./ADR-003-unit-testing-vitest-testing-library.md)
-- [ADR-005: Pruebas end-to-end con Playwright](./ADR-005-e2e-testing-playwright.md)
-- [Índice de ADRs](./README.md)
+- [ADR-003: Estrategia de pruebas unitarias con Vitest, Testing Library y convenciones AAA / Object Mother](ADR-003-unit-testing-vitest-testing-library.md)
+- [ADR-005: Pruebas end-to-end con Playwright](ADR-005-e2e-testing-playwright.md)
+- [Índice de ADRs](README.md)
 - [Mock Service Worker](https://mswjs.io/)
 - Scaffold: `src/mocks/` (`handlers.ts`, `node.ts`, `browser.ts`) y worker en `public/`

@@ -60,6 +60,6 @@ de esta decisión viven en el estándar de dominio **Frontend Standards**
 ## Referencias
 
 - [Frontend Standards](../standards/frontend.md)
-- [Índice de ADRs](./README.md)
+- [Índice de ADRs](README.md)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Tailwind — @apply](https://tailwindcss.com/docs/functions-and-directives#apply-directive)

@@ -62,4 +62,4 @@ de esta decisión viven en el estándar de dominio **Coding Style Standards**
 ## Referencias
 
 - [Coding Style Standards](../standards/coding-style.md)
-- [Índice de ADRs](./README.md)
+- [Índice de ADRs](README.md)
