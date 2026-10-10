@@ -42,7 +42,7 @@ test.describe('recepción sin conexión', () => {
       response.url().endsWith('/zxing/zxing_reader.wasm'),
     );
     await page.goto('/recibir');
-    await expect(page.getByRole('button', { name: 'Terminar lectura' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Cerrar' })).toBeEnabled();
     await readerModule;
 
     await context.setOffline(true);

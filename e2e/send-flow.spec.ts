@@ -19,24 +19,39 @@ const alert = (page: Page) => page.getByRole('alert');
 
 /** Abre «Enviar» y entrega al selector los archivos indicados. */
 async function choose(page: Page, files: (ReturnType<typeof fileOf> | string)[]) {
-  await page.goto('/enviar');
-  await expect(page.getByRole('heading', { name: 'Enviar archivo' })).toBeVisible();
+  // La hoja abre el selector por sí sola al entrar.
   const chooser = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Elegir archivo' }).click();
+  await page.goto('/enviar');
   await (await chooser).setFiles(files);
 }
 
 /** Hash de la imagen actual del canvas, para detectar que la secuencia avanza. */
+/** Cierra la hoja tocando el fondo atenuado, fuera del panel. */
+const dismiss = (page: Page) => page.mouse.click(2, 2);
+
+/** Elige un valor de densidad o velocidad en el menú ⋮ de la cabecera. */
+async function pick(page: Page, value: number) {
+  await page.getByRole('button', { name: 'Opciones de envío' }).click();
+  await page.getByRole('menuitemradio', { name: String(value), exact: true }).click();
+}
+
+/** Valores marcados en el menú ⋮ (densidad y velocidad), en ese orden. */
+async function checkedOptions(page: Page) {
+  await page.getByRole('button', { name: 'Opciones de envío' }).click();
+  const checked = await page
+    .getByRole('menuitemradio', { checked: true })
+    .evaluateAll((items) => items.map((item) => item.textContent?.replace('✓', '').trim()));
+  await page.keyboard.press('Escape');
+  return checked;
+}
+
 const frame = (page: Page) =>
   page.locator('canvas').evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL());
 
 test.describe('envío: flujo completo', () => {
-  test('«Elegir archivo» abre el selector del dispositivo, de un solo archivo', async ({
-    page,
-  }) => {
-    await page.goto('/enviar');
+  test('al entrar abre el selector del dispositivo, de un solo archivo', async ({ page }) => {
     const chooser = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Elegir archivo' }).click();
+    await page.goto('/enviar');
 
     expect((await chooser).isMultiple()).toBe(false);
   });
@@ -45,7 +60,7 @@ test.describe('envío: flujo completo', () => {
     await choose(page, []);
 
     await expect(qr(page)).toBeHidden();
-    await expect(page.getByRole('button', { name: 'Elegir archivo' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Actividad reciente' })).toBeVisible();
   });
 
   test('muestra el QR y la información del archivo, sin progreso de transmisión', async ({
@@ -55,9 +70,7 @@ test.describe('envío: flujo completo', () => {
 
     await expect(qr(page)).toBeVisible();
     await expect(page.getByText('prueba-100KB.bin')).toBeVisible();
-    await expect(page.getByText('application/octet-stream')).toBeVisible();
-    await expect(page.getByText('100.0 KB')).toBeVisible();
-    await expect(page.getByText('65', { exact: true })).toBeVisible();
+    await expect(page.getByText('application/octet-stream · 100.0 KB · 65 QR')).toBeVisible();
     await expect(page.getByRole('progressbar')).toHaveCount(0);
   });
 
@@ -65,10 +78,8 @@ test.describe('envío: flujo completo', () => {
     await choose(page, [fileOf('ceros.bin', 102_400)]);
 
     await expect(qr(page)).toBeVisible();
-    await expect(page.getByText('100.0 KB')).toBeVisible();
-    await expect(page.getByText('Se transmite')).toBeVisible();
-    await expect(page.getByText(/\(comprimido\)/)).toBeVisible();
-    await expect(page.getByText('129', { exact: true })).toBeHidden();
+    await expect(page.getByText(/100\.0 KB \(se transmite .* comprimido\)/)).toBeVisible();
+    await expect(page.getByText(/ · 129 QR$/)).toBeHidden();
   });
 
   test('el QR queda fijo hasta el primer toque y el tiempo por vuelta se muestra desde el inicio', async ({
@@ -77,8 +88,8 @@ test.describe('envío: flujo completo', () => {
     await choose(page, [fileOf('prueba-1MB.bin', 1_048_576)]);
     await expect(qr(page)).toBeVisible();
 
-    await expect(page.getByText('Tiempo por vuelta')).toBeVisible();
-    await expect(page.getByText(/tócalo para iniciar/)).toBeVisible();
+    await expect(page.getByText(/por vuelta$/)).toBeVisible();
+    await expect(page.getByText('Toca el QR para iniciar o reiniciar la vuelta')).toBeVisible();
     const first = await frame(page);
     await page.waitForTimeout(1_000);
     expect(await frame(page)).toBe(first);
@@ -94,7 +105,7 @@ test.describe('envío: flujo completo', () => {
 
     await page.getByRole('button', { name: /Iniciar o reiniciar la vuelta/ }).click();
 
-    await expect(page.getByText(/Toca el QR para reiniciar la vuelta/)).toBeVisible();
+    await expect(page.getByText('Toca el QR para iniciar o reiniciar la vuelta')).toBeVisible();
     await page.waitForTimeout(1_500);
     expect(await frame(page)).toBe(first);
     // Se muestrea con un periodo corto (no múltiplo de la vuelta de 0,5 s) para no coincidir siempre
@@ -142,18 +153,17 @@ test.describe('envío: flujo completo', () => {
     await expect(label).toBeHidden({ timeout: 5_000 });
   });
 
-  test('el selector de velocidad cambia el ritmo de la secuencia', async ({ page }) => {
+  test('el menú ⋮ cambia el ritmo de la secuencia', async ({ page }) => {
     // 4 QR al azar: a 4 QR/s una vuelta dura 1 s; a 12 QR/s, 0,33 s.
     await choose(page, [fileOf('veloz.bin', 5_000, true)]);
     await expect(qr(page)).toBeVisible();
-    const selector = page.getByRole('combobox', { name: 'Velocidad' });
-    await expect(selector).toHaveValue('8');
+    expect((await checkedOptions(page))[1]).toBe('8');
     await page.getByRole('button', { name: /Iniciar o reiniciar la vuelta/ }).click();
 
-    await selector.selectOption('12');
+    await pick(page, 12);
 
-    await expect(selector).toHaveValue('12');
-    await expect(page.getByText(/^1 s$|^0 s$/).first()).toBeVisible();
+    expect((await checkedOptions(page))[1]).toBe('12');
+    await expect(page.getByText(/^~[01] s por vuelta$/)).toBeVisible();
     // Tras la retención de 3 s el QR avanza con el nuevo ritmo.
     const first = await frame(page);
     // Muestreo con periodo corto y no múltiplo de la vuelta (0,25 s) para no caer siempre en el mismo QR.
@@ -166,40 +176,38 @@ test.describe('envío: flujo completo', () => {
     expect(changed).toBe(true);
   });
 
-  test('el selector de densidad vuelve a fragmentar el archivo con otro tamaño de QR', async ({
+  test('la densidad del menú ⋮ vuelve a fragmentar el archivo con otro tamaño de QR', async ({
     page,
   }) => {
     await choose(page, [fileOf('densidad.bin', 20_000, true)]);
     await expect(qr(page)).toBeVisible();
     const slider = page.getByRole('slider', { name: 'Posición en la secuencia de QR' });
-    const density = page.getByRole('combobox', { name: 'Densidad' });
-    await expect(density).toHaveValue('1600');
+    expect((await checkedOptions(page))[0]).toBe('1600');
     const before = Number(await slider.getAttribute('aria-valuemax'));
     await page.getByRole('button', { name: /Iniciar o reiniciar la vuelta/ }).click();
 
-    await density.selectOption('800');
+    await pick(page, 800);
 
     // Con la mitad de bytes por QR hacen falta casi el doble de QR, y se espera de nuevo el toque.
-    await expect(density).toHaveValue('800');
+    expect((await checkedOptions(page))[0]).toBe('800');
     await expect
       .poll(async () => Number(await slider.getAttribute('aria-valuemax')))
       .toBeGreaterThan(before * 1.7);
-    await expect(page.getByText(/tócalo para iniciar/)).toBeVisible();
+    await expect(page.getByText(/el receptor debe empezar de nuevo/)).toBeVisible();
   });
 
   test('recuerda la densidad y la velocidad elegidas al recargar la página', async ({ page }) => {
     await choose(page, [fileOf('recuerdo.bin', 20_000, true)]);
     await expect(qr(page)).toBeVisible();
-    await page.getByRole('combobox', { name: 'Densidad' }).selectOption('400');
-    await page.getByRole('combobox', { name: 'Velocidad' }).selectOption('12');
-    await expect(page.getByRole('combobox', { name: 'Densidad' })).toHaveValue('400');
+    await pick(page, 400);
+    await pick(page, 12);
+    expect(await checkedOptions(page)).toEqual(['400', '12']);
 
     await page.reload();
     await choose(page, [fileOf('recuerdo.bin', 20_000, true)]);
 
     await expect(qr(page)).toBeVisible();
-    await expect(page.getByRole('combobox', { name: 'Densidad' })).toHaveValue('400');
-    await expect(page.getByRole('combobox', { name: 'Velocidad' })).toHaveValue('12');
+    expect(await checkedOptions(page)).toEqual(['400', '12']);
     // Se fragmenta con la densidad recordada: casi el doble de QR que con 800 B.
     const slider = page.getByRole('slider', { name: 'Posición en la secuencia de QR' });
     expect(Number(await slider.getAttribute('aria-valuemax'))).toBeGreaterThan(40);
@@ -223,7 +231,7 @@ test.describe('envío: flujo completo', () => {
     expect(names.some((name) => name.endsWith('.json'))).toBe(true);
   });
 
-  test('cancelar detiene el envío sin confirmación y conserva la copia', async ({ page }) => {
+  test('cerrar la hoja detiene el envío sin confirmación y conserva la copia', async ({ page }) => {
     let dialogs = 0;
     page.on('dialog', async (dialog) => {
       dialogs++;
@@ -232,9 +240,10 @@ test.describe('envío: flujo completo', () => {
     await choose(page, [fileOf('cancelar.bin', 5_000)]);
     await expect(qr(page)).toBeVisible();
 
-    await page.getByRole('button', { name: 'Cancelar' }).click();
+    await dismiss(page);
 
     await expect(qr(page)).toBeHidden();
+    await expect(page).toHaveURL(/\/$/);
     expect(dialogs).toBe(0);
     const files = await page.evaluate(async () => {
       const root = await navigator.storage.getDirectory();
@@ -306,10 +315,7 @@ test.describe('envío: pantalla responsiva', () => {
         page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
       expect(await overflow()).toBe(false);
 
-      await page.getByRole('button', { name: 'Cancelar' }).click();
-      const chooser = page.waitForEvent('filechooser');
-      await page.getByRole('button', { name: 'Elegir archivo' }).click();
-      await (await chooser).setFiles([fileOf('vacio.bin', 0)]);
+      await choose(page, [fileOf('vacio.bin', 0)]);
       await expect(alert(page)).toBeVisible();
       expect(await overflow()).toBe(false);
     });

@@ -12,7 +12,9 @@ async function captureRequests(page: Page, action: () => Promise<void>): Promise
   const urls: string[] = [];
   const listener = (request: { url(): string }) => {
     const url = request.url();
-    if (!url.startsWith('data:') && !url.startsWith('blob:')) {
+    // El sprite de iconos es un recurso estático de la propia aplicación: no sale ningún dato.
+    const isIconSprite = /\/images\/[\w-]+\.svg$/.test(url);
+    if (!url.startsWith('data:') && !url.startsWith('blob:') && !isIconSprite) {
       urls.push(url);
     }
   };
@@ -30,6 +32,8 @@ test.describe('envío sin conexión', () => {
     page,
     context,
   }) => {
+    // Un oyente que no responde mantiene abierto el selector que abre la hoja al entrar.
+    page.on('filechooser', () => undefined);
     await page.goto('/enviar');
     await expect(page.getByRole('heading', { name: 'Enviar archivo' })).toBeVisible();
 
@@ -47,13 +51,14 @@ test.describe('envío sin conexión', () => {
   });
 
   test('cancelar el envío sin conexión no genera peticiones', async ({ page, context }) => {
+    page.on('filechooser', () => undefined);
     await page.goto('/enviar');
     await expect(page.getByRole('heading', { name: 'Enviar archivo' })).toBeVisible();
     await context.setOffline(true);
 
     const requests = await captureRequests(page, async () => {
       await page.setInputFiles('input[type="file"]', file);
-      await page.getByRole('button', { name: 'Cancelar' }).click();
+      await page.mouse.click(2, 2);
       await expect(page.getByRole('img', { name: 'Código QR del archivo' })).toBeHidden();
     });
 
@@ -73,6 +78,7 @@ test.describe('envío sin conexión', () => {
       'Define PWA_URL con la compilación de producción servida para probar el service worker',
     );
 
+    page.on('filechooser', () => undefined);
     await page.goto(`${base}/enviar`);
     await page.evaluate(() => navigator.serviceWorker.ready);
     // La primera recarga pone la página bajo el control del service worker.

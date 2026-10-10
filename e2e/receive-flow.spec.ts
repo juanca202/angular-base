@@ -15,7 +15,9 @@ const resultTitle = (page: Page) =>
   page.getByRole('heading', { name: 'Resultado de la recepción' });
 const notice = (page: Page, text: string | RegExp) =>
   page.getByRole('alert').filter({ hasText: text });
-const finish = (page: Page) => page.getByRole('button', { name: 'Terminar lectura' });
+const finish = (page: Page) => page.getByRole('button', { name: 'Cerrar' });
+/** Cierra la hoja tocando el fondo atenuado y deja ver el historial del inicio. */
+const dismiss = (page: Page) => page.mouse.click(2, 2);
 
 /** Opens the reception screen with the simulated camera and waits until it is reading. */
 async function open(
@@ -56,7 +58,8 @@ test.describe('recepción: transferencia completa', () => {
 
     await expect(resultTitle(page)).toBeVisible();
     await expect(page.getByRole('img', { name: 'foto.png' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Historial' })).toBeVisible();
+    await dismiss(page);
+    await expect(page.getByRole('heading', { name: 'Actividad reciente' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'foto.png', level: 3 })).toBeVisible();
     expect(await storedFiles(page)).toEqual([
       expect.objectContaining({
@@ -101,7 +104,7 @@ test.describe('recepción: transferencia completa', () => {
 
     const bar = page.getByRole('img', { name: 'Fragmentos recibidos' });
     await expect(bar).toBeVisible();
-    await expect(page.getByText(/2 de 4 fragmentos|2 de 5 fragmentos/)).toBeVisible();
+    await expect(page.getByText(/^\s*QR 2 de [45]\s*$/)).toBeVisible();
     // Verde en los tramos recibidos (0 y 2) y gris donde faltan.
     const paint = await bar.locator('canvas').evaluate((canvas: HTMLCanvasElement) => {
       const context = canvas.getContext('2d')!;
@@ -127,9 +130,7 @@ test.describe('recepción: transferencia completa', () => {
     await feed(page, fragments);
 
     await expect(resultTitle(page)).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Archivo recibido correctamente' }),
-    ).toBeVisible();
+    await expect(page.getByText(/recibido exitosamente\./)).toBeVisible();
     expect(await storedBytes(page, 'ceros.bin')).toEqual(Array.from(bytes));
     expect((await storedFiles(page)).map((file) => file.size)).toEqual([20_000]);
   });
@@ -146,6 +147,7 @@ test.describe('recepción: transferencia completa', () => {
 
     const files = await storedFiles(page);
     expect(files.filter((file) => file.name === 'igual.bin')).toHaveLength(2);
+    await dismiss(page);
     await expect(page.getByRole('heading', { name: 'igual.bin', level: 3 })).toHaveCount(2);
   });
 
@@ -203,7 +205,7 @@ test.describe('recepción: resultados que no guardan', () => {
     const fragments = await transfer('parcial.bin', '', bytes);
     await open(page);
     await feed(page, fragments.slice(0, 2));
-    await expect(page.getByText(/2 de 4 fragmentos|2 de 5 fragmentos/)).toBeVisible();
+    await expect(page.getByText(/^\s*QR 2 de [45]\s*$/)).toBeVisible();
 
     await finish(page).click();
 
@@ -213,8 +215,9 @@ test.describe('recepción: resultados que no guardan', () => {
 
     await page.getByRole('button', { name: 'Seguir escaneando' }).click();
     await feed(page, fragments.slice(2));
-    await expect(page.getByRole('heading', { name: 'parcial.bin', level: 3 })).toBeVisible();
     await expect(notice(page, 'Recepción incompleta')).toBeHidden();
+    await dismiss(page);
+    await expect(page.getByRole('heading', { name: 'parcial.bin', level: 3 })).toBeVisible();
     expect(await storedBytes(page, 'parcial.bin')).toEqual(Array.from(bytes));
   });
 
@@ -269,9 +272,10 @@ test.describe('recepción: cancelar', () => {
   test('cancela sin confirmación, descarta lo recibido y libera la cámara', async ({ page }) => {
     await open(page);
     await feed(page, (await transfer('cancelada.bin', '', sampleBytes(1500))).slice(0, 3));
-    await expect(page.getByText(/3 de \d+ fragmentos/)).toBeVisible();
+    await expect(page.getByText(/^\s*QR 3 de \d+\s*$/)).toBeVisible();
 
-    await page.getByRole('button', { name: 'Cancelar' }).click();
+    await page.getByRole('button', { name: 'Opciones de recepción' }).click();
+    await page.getByRole('menuitem', { name: 'Cancelar' }).click();
 
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('dialog')).toHaveCount(0);

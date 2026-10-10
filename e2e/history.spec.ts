@@ -51,6 +51,12 @@ async function seed(page: Page, entries: Seed[]) {
   await page.reload();
 }
 
+/** Abre el menú ⋮ de la fila de `name` y elige una de sus acciones. */
+async function rowAction(page: Page, name: string, action: 'Exportar' | 'Compartir' | 'Eliminar') {
+  await page.getByRole('button', { name: `Acciones de ${name}` }).click();
+  await page.getByRole('menuitem', { name: action }).click();
+}
+
 /** Nombres de las filas visibles, en orden. */
 const names = (page: Page) => page.getByRole('listitem').getByRole('heading', { level: 3 });
 
@@ -79,29 +85,31 @@ test.describe('historial: lista y filtros', () => {
   });
 
   test('Todos es el filtro por defecto', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Todos' })).toHaveAttribute(
-      'aria-pressed',
+    await expect(page.getByRole('radio', { name: 'Todos' })).toHaveAttribute(
+      'aria-checked',
       'true',
     );
   });
 
   test('filtra por Recibidos y por Enviados sin alterar el orden', async ({ page }) => {
-    await page.getByRole('button', { name: 'Recibidos' }).click();
+    await page.getByRole('radio', { name: 'Recibidos' }).click();
     await expect(names(page)).toHaveText(['notas.txt', 'foto.png']);
 
-    await page.getByRole('button', { name: 'Enviados' }).click();
+    await page.getByRole('radio', { name: 'Enviados' }).click();
     await expect(names(page)).toHaveText(['datos.bin', 'informe.pdf']);
   });
 
   test('al volver a la pantalla el filtro es Todos', async ({ page }) => {
-    await page.getByRole('button', { name: 'Enviados' }).click();
+    await page.getByRole('radio', { name: 'Enviados' }).click();
+    // Un oyente que no responde mantiene abierto el selector que abre la hoja de envío.
+    page.on('filechooser', () => undefined);
     await page.getByRole('link', { name: 'Enviar' }).click();
     await expect(page).toHaveURL(/\/enviar$/);
 
     await page.goBack();
 
-    await expect(page.getByRole('button', { name: 'Todos' })).toHaveAttribute(
-      'aria-pressed',
+    await expect(page.getByRole('radio', { name: 'Todos' })).toHaveAttribute(
+      'aria-checked',
       'true',
     );
     await expect(names(page)).toHaveCount(4);
@@ -113,7 +121,7 @@ test.describe('historial: exportar', () => {
     await seed(page, HISTORY);
 
     const download = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Exportar informe.pdf' }).click();
+    await rowAction(page, 'informe.pdf', 'Exportar');
 
     expect((await download).suggestedFilename()).toBe('informe.pdf');
   });
@@ -123,7 +131,7 @@ test.describe('historial: exportar', () => {
     await seed(page, [{ name, direction: 'sent', size: 1024, age: HOUR }]);
 
     const download = page.waitForEvent('download');
-    await page.getByRole('button', { name: `Exportar ${name}` }).click();
+    await rowAction(page, name, 'Exportar');
 
     expect((await download).suggestedFilename()).toBe(name);
   });
@@ -141,9 +149,9 @@ test.describe('historial: exportar', () => {
     });
     await seed(page, HISTORY);
 
-    await page.getByRole('button', { name: 'Recibidos' }).click();
-    await page.getByRole('button', { name: 'Todos' }).click();
-    await page.getByRole('button', { name: 'Eliminar foto.png' }).click();
+    await page.getByRole('radio', { name: 'Recibidos' }).click();
+    await page.getByRole('radio', { name: 'Todos' }).click();
+    await rowAction(page, 'foto.png', 'Eliminar');
     await page.getByRole('button', { name: 'Cancelar' }).click();
     await expect(names(page)).toHaveCount(4);
 
@@ -156,7 +164,7 @@ test.describe('historial: eliminar', () => {
   test.beforeEach(async ({ page }) => seed(page, HISTORY));
 
   test('al confirmar elimina la entrada y libera su espacio', async ({ page }) => {
-    await page.getByRole('button', { name: 'Eliminar informe.pdf' }).click();
+    await rowAction(page, 'informe.pdf', 'Eliminar');
     await page.getByRole('button', { name: 'Eliminar', exact: true }).click();
 
     await expect(names(page)).toHaveText(['datos.bin', 'notas.txt', 'foto.png']);
@@ -164,7 +172,7 @@ test.describe('historial: eliminar', () => {
   });
 
   test('al cancelar no se borra nada', async ({ page }) => {
-    await page.getByRole('button', { name: 'Eliminar informe.pdf' }).click();
+    await rowAction(page, 'informe.pdf', 'Eliminar');
     await page.getByRole('button', { name: 'Cancelar' }).click();
 
     await expect(names(page)).toHaveCount(4);
@@ -174,7 +182,7 @@ test.describe('historial: eliminar', () => {
   test('al eliminar la última entrada muestra el historial vacío', async ({ page }) => {
     await seed(page, [HISTORY[0]]);
 
-    await page.getByRole('button', { name: 'Eliminar foto.png' }).click();
+    await rowAction(page, 'foto.png', 'Eliminar');
     await page.getByRole('button', { name: 'Eliminar', exact: true }).click();
 
     await expect(page.getByText('Aún no hay transferencias')).toBeVisible();
