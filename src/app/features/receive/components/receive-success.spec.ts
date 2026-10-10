@@ -18,23 +18,35 @@ describe('ReceiveSuccess', () => {
     render(ReceiveSuccess, {
       inputs: { file },
       providers: [
-        { provide: SafeFileOpener, useValue: { open } },
+        { provide: SafeFileOpener, useValue: { open, previewKind: () => 'none' } },
         { provide: FileExport, useValue: { download } },
       ],
     });
 
-  it('announces that the file was received, verified and saved, with its name and size', async () => {
+  it('announces that the file was received with its name', async () => {
     await setup();
 
     expect(screen.getByRole('status')).toBeTruthy();
-    expect(screen.getByRole('heading', { name: 'Archivo recibido correctamente' })).toBeTruthy();
-    expect(screen.getByText(/«informe\.pdf» \(2\.0 KB\) se verificó y se guardó/)).toBeTruthy();
+    expect(screen.getByText(/recibido exitosamente\./)).toBeTruthy();
+    expect(screen.getByText('informe.pdf', { selector: 'strong' })).toBeTruthy();
   });
 
-  it('lets the user view the file', async () => {
+  it('offers only the two actions «Abrir» and «Descargar»', async () => {
     await setup();
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Ver archivo' }));
+    expect(screen.getAllByRole('button').map((b) => b.textContent?.trim())).toEqual([
+      'informe.pdf',
+      'Abrir',
+      'Descargar',
+    ]);
+    expect(screen.queryByRole('button', { name: 'Aceptar' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Ver archivo' })).toBeNull();
+  });
+
+  it('lets the user open the file', async () => {
+    await setup();
+
+    await fireEvent.click(screen.getByRole('button', { name: 'Abrir' }));
 
     expect(open).toHaveBeenCalledWith(file);
     expect(download).not.toHaveBeenCalled();

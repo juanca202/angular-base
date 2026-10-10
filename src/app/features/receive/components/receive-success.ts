@@ -1,26 +1,35 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { Icon } from '@factor_ec/ui';
 import { FileExport } from '@/core/services/file-export';
+import { FilePreview } from '@/features/receive/components/file-preview';
 import { SafeFileOpener } from '@/features/receive/services/safe-file-opener';
-import { formatSize } from '@/shared/utils/format-size';
 
 /**
- * Message shown when a reception ended well: says that the file was received, verified and saved, and
- * offers to view it (shown when its type is passive, downloaded otherwise) or to download it.
+ * Content of the sheet shown when a reception ended well: a success mark, the message that the file
+ * was received, its preview and the only two actions, «Abrir» (shown when its type is passive,
+ * downloaded otherwise) and «Descargar».
  */
 @Component({
   selector: 'app-receive-success',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, Icon, FilePreview],
   template: `
-    <section
-      role="status"
-      class="flex flex-col gap-3 rounded-lg border border-green-300 bg-green-50 p-4 text-green-950"
-    >
-      <h2 class="text-xl font-semibold" i18n>Archivo recibido correctamente</h2>
-      <p i18n>«{{ file().name }}» ({{ size() }}) se verificó y se guardó en el historial.</p>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" matButton="filled" (click)="view()" i18n>Ver archivo</button>
-        <button type="button" matButton="outlined" (click)="download()" i18n>Descargar</button>
+    <section role="status" class="flex flex-col items-center gap-4 text-center">
+      <span
+        class="grid size-14 place-items-center rounded-full bg-green-700 text-white"
+        aria-hidden="true"
+      >
+        <ft-icon name="check" class="text-2xl" />
+      </span>
+      <p class="text-lg" i18n>
+        Archivo <strong>{{ file().name }}</strong> recibido exitosamente.
+      </p>
+      <app-file-preview class="w-full" [file]="file()" />
+      <div class="flex w-full gap-3">
+        <button type="button" matButton="filled" class="grow" (click)="open()" i18n>Abrir</button>
+        <button type="button" matButton="outlined" class="grow" (click)="download()" i18n>
+          Descargar
+        </button>
       </div>
     </section>
   `,
@@ -33,9 +42,7 @@ export class ReceiveSuccess {
   /** Received file. */
   public readonly file = input.required<File>();
 
-  protected readonly size = computed(() => formatSize(this.file().size));
-
-  protected view(): void {
+  protected open(): void {
     this.opener.open(this.file());
   }
 

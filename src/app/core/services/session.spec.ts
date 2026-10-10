@@ -32,7 +32,7 @@ describe('Session', () => {
     mockStorage = {
       get: vi.fn(),
       set: vi.fn(),
-      delete: vi.fn()
+      delete: vi.fn(),
     };
     mockAuthProvider = createMockAuthProvider();
 
@@ -41,8 +41,8 @@ describe('Session', () => {
         Session,
         provideHttpClient(),
         { provide: Storage, useValue: mockStorage },
-        { provide: AuthProvider, useValue: mockAuthProvider }
-      ]
+        { provide: AuthProvider, useValue: mockAuthProvider },
+      ],
     });
 
     service = TestBed.inject(Session);
@@ -75,15 +75,15 @@ describe('Session', () => {
             firstName: '',
             lastName: '',
             picture: '',
-            featureFlags: []
+            featureFlags: [],
           },
           language: 'en',
           subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
           environment: 'dev',
           onboarding: false,
-          country: 'US'
+          country: 'US',
         },
-        params: { key1: 'value1' }
+        params: { key1: 'value1' },
       };
       vi.mocked(mockStorage.get).mockReturnValue(storedState);
 
@@ -94,8 +94,8 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           { provide: Storage, useValue: mockStorage },
-          { provide: AuthProvider, useValue: createMockAuthProvider() }
-        ]
+          { provide: AuthProvider, useValue: createMockAuthProvider() },
+        ],
       });
 
       // Assert
@@ -110,7 +110,7 @@ describe('Session', () => {
       // Arrange
       const settings: Partial<Settings> = {
         language: 'es',
-        environment: 'production'
+        environment: 'production',
       };
 
       // Act
@@ -128,10 +128,10 @@ describe('Session', () => {
       // Arrange
       const firstSettings: Partial<Settings> = {
         language: 'en',
-        environment: 'dev'
+        environment: 'dev',
       };
       const secondSettings: Partial<Settings> = {
-        language: 'es'
+        language: 'es',
       };
 
       // Act
@@ -155,7 +155,7 @@ describe('Session', () => {
         language: 'en',
         environment: 'dev',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
-        onboarding: false
+        onboarding: false,
       });
       await service.getSettings(true);
 
@@ -216,7 +216,7 @@ describe('Session', () => {
       const params = {
         key1: 'value1',
         key2: 'value2',
-        key3: 'value3'
+        key3: 'value3',
       };
 
       // Act
@@ -232,7 +232,7 @@ describe('Session', () => {
       service.setParam('existingKey', 'existingValue');
       const newParams = {
         newKey1: 'newValue1',
-        newKey2: 'newValue2'
+        newKey2: 'newValue2',
       };
 
       // Act
@@ -266,7 +266,7 @@ describe('Session', () => {
         language: 'en',
         environment: 'dev',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
-        onboarding: false
+        onboarding: false,
       });
       await service.getSettings(true);
       service.setParams({ key1: 'value1' });
@@ -294,8 +294,8 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           { provide: Storage, useValue: mockStorage },
-          { provide: AuthProvider, useValue: createMockAuthProvider() }
-        ]
+          { provide: AuthProvider, useValue: createMockAuthProvider() },
+        ],
       });
 
       const newService = TestBed.inject(Session);
@@ -316,15 +316,15 @@ describe('Session', () => {
             firstName: '',
             lastName: '',
             picture: '',
-            featureFlags: []
+            featureFlags: [],
           },
           language: 'es',
           subscription: { code: '2', name: 'Premium', plan: { code: '2', name: 'Premium' } },
           environment: 'prod',
           onboarding: true,
-          country: 'US'
+          country: 'US',
         },
-        params: { key1: 'value1', key2: 'value2' }
+        params: { key1: 'value1', key2: 'value2' },
       };
       vi.mocked(mockStorage.get).mockReturnValue(storedState);
 
@@ -335,8 +335,8 @@ describe('Session', () => {
           Session,
           provideHttpClient(),
           { provide: Storage, useValue: mockStorage },
-          { provide: AuthProvider, useValue: createMockAuthProvider() }
-        ]
+          { provide: AuthProvider, useValue: createMockAuthProvider() },
+        ],
       });
 
       const newService = TestBed.inject(Session);
@@ -352,7 +352,7 @@ describe('Session', () => {
       // Arrange
       const newSettings: Partial<Settings> = {
         language: 'fr',
-        environment: 'test'
+        environment: 'test',
       };
 
       // Act
@@ -371,7 +371,7 @@ describe('Session', () => {
         language: 'en',
         subscription: { code: '1', name: 'Basic', plan: { code: '1', name: 'Basic' } },
         environment: 'dev',
-        onboarding: false
+        onboarding: false,
       });
       await service.getSettings(true);
 
@@ -396,7 +396,7 @@ describe('Session', () => {
       expect(mockStorage.set).toHaveBeenCalledWith(
         expect.stringContaining('_sess'),
         expect.objectContaining({ params: { key1: 'value1' } }),
-        'local'
+        'local',
       );
     });
   });
@@ -409,7 +409,7 @@ describe('Session', () => {
         http.get(getApiUrl('settings'), ({ request }) => {
           capturedPushToken = request.headers.get('Push-Token');
           return HttpResponse.json({ language: 'en' });
-        })
+        }),
       );
 
       // Act

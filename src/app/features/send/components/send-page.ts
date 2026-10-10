@@ -2,7 +2,6 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  afterNextRender,
   computed,
   effect,
   inject,
@@ -10,9 +9,13 @@ import {
   viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { Router } from '@angular/router';
+import { Icon } from '@factor_ec/ui';
 import { PrivateStorage } from '@/core/services/private-storage';
 import { ScreenWakeLock } from '@/core/services/screen-wake-lock';
 import { StorageQuotaError } from '@/core/services/storage-quota-error';
+import { Sheet } from '@/shared/components/sheet/sheet';
 import { FragmentBar } from '@/shared/components/fragment-bar/fragment-bar';
 import { QrCanvas } from '@/features/send/components/qr-canvas';
 import { SPEED_OPTIONS, SendSequenceManager } from '@/features/send/managers/send-sequence-manager';
@@ -27,7 +30,7 @@ import {
   type ProtocolFile,
 } from '@/shared/utils/qr-protocol';
 
-/** Datos del archivo que se muestran bajo el QR. */
+/** Datos del archivo que se muestran en la cabecera de la hoja. */
 interface SendInfo {
   readonly name: string;
   readonly type: string;
@@ -45,15 +48,16 @@ function formatDuration(ms: number): string {
 }
 
 /**
- * Pantalla de envío: abre el selector de un solo archivo, guarda una copia en el almacenamiento
- * privado, emite la secuencia de QR en bucle y muestra la información del archivo. No muestra
- * progreso de transmisión porque el emisor no tiene canal de retorno.
+ * Hoja de envío sobre el inicio: abre el selector de un solo archivo, guarda una copia en el
+ * almacenamiento privado, emite la secuencia de QR en bucle y muestra la información del archivo en
+ * su cabecera. La densidad y la velocidad se eligen en el menú ⋮ de la cabecera. No muestra progreso
+ * de transmisión porque el emisor no tiene canal de retorno; cerrar la hoja cancela el envío.
  *
  * @since 1.0.0
  */
 @Component({
   selector: 'app-send-page',
-  imports: [QrCanvas, FragmentBar, MatButtonModule],
+  imports: [QrCanvas, FragmentBar, Sheet, Icon, MatButtonModule, MatMenuModule],
   templateUrl: './send-page.html',
   host: { class: 'block' },
 })
@@ -63,6 +67,7 @@ export class SendPage {
   private readonly validator = inject(SendFileValidator);
   private readonly preferences = inject(SendPreferences);
   private readonly wakeLock = inject(ScreenWakeLock);
+  private readonly router = inject(Router);
 
   /** Archivo en curso, para volver a fragmentarlo si cambia el tamaño de fragmento. */
   private source: ProtocolFile | null = null;
@@ -81,6 +86,8 @@ export class SendPage {
   protected readonly info = signal<SendInfo | null>(null);
   protected readonly error = signal<string | null>(null);
   protected readonly busy = signal(false);
+  /** Si se acaba de cambiar la densidad: el receptor debe empezar de nuevo. */
+  protected readonly densityNotice = signal(false);
   protected readonly lapTime = computed(() => {
     const ms = this.manager.progress().estimatedLapMs;
     return ms === null ? '' : formatDuration(ms);
@@ -92,7 +99,6 @@ export class SendPage {
   );
 
   constructor() {
-    afterNextRender(() => this.openPicker());
     // La pantalla no debe apagarse ni atenuarse mientras se muestra la secuencia.
     effect(() => void (this.sending() ? this.wakeLock.acquire() : this.wakeLock.release()));
     inject(DestroyRef).onDestroy(() => {
@@ -128,9 +134,9 @@ export class SendPage {
     this.manager.restartLap();
   }
 
-  /** Cambia la velocidad de la secuencia a la elegida en el selector. */
-  protected changeSpeed(event: Event): void {
-    this.manager.setSpeed(Number((event.target as HTMLSelectElement).value));
+  /** Cambia la velocidad de la secuencia a la elegida en el menú. */
+  protected changeSpeed(framesPerSecond: number): void {
+    this.manager.setSpeed(framesPerSecond);
   }
 
   /**
@@ -139,12 +145,9 @@ export class SendPage {
    * nuevo. Si no se puede (nombre largo para fragmentos pequeños, archivo grande para fragmentos
    * pequeños), se avisa y se conserva la transferencia y el tamaño actuales.
    */
-  protected async changeDensity(event: Event): Promise<void> {
-    const select = event.target as HTMLSelectElement;
+  protected async changeDensity(size: number): Promise<void> {
     const source = this.source;
-    const size = Number(select.value);
     if (!source || this.busy() || size === this.dataSize()) {
-      select.value = String(this.dataSize());
       return;
     }
     this.busy.set(true);
@@ -153,20 +156,19 @@ export class SendPage {
       const validation = this.validator.validate(source.bytes.length, size);
       if (!validation.ok) {
         this.error.set(validation.message);
-        select.value = String(this.dataSize());
         return;
       }
       const fragments = await fragmentFile(source, { dataSize: size });
       this.dataSize.set(size);
       this.preferences.saveDensity(size);
       this.present(source, fragments);
+      this.densityNotice.set(true);
     } catch (error) {
       this.error.set(
         error instanceof QrProtocolError && error.code === 'metadata-too-large'
           ? $localize`El nombre del archivo es demasiado largo para fragmentos tan pequeños. Elige un tamaño de fragmento mayor.`
           : $localize`No se pudo cambiar el tamaño de fragmento. Inténtalo de nuevo.`,
       );
-      select.value = String(this.dataSize());
     } finally {
       this.busy.set(false);
     }
@@ -177,12 +179,21 @@ export class SendPage {
     this.manager.seekTo(index);
   }
 
-  /** Cancela el envío sin confirmación; la copia ya guardada se conserva. */
-  protected cancel(): void {
+  /** Se cerró el selector sin elegir archivo: no se inicia ninguna transferencia y se vuelve al inicio. */
+  protected onPickerCancelled(): void {
+    if (!this.sending() && !this.busy()) {
+      void this.router.navigateByUrl('/');
+    }
+  }
+
+  /** Cierra la hoja: cancela el envío sin confirmación (la copia ya guardada se conserva). */
+  protected close(): void {
     this.manager.cancel();
     this.source = null;
     this.info.set(null);
     this.error.set(null);
+    this.densityNotice.set(false);
+    void this.router.navigateByUrl('/');
   }
 
   /** Muestra los datos del archivo y deja el primer QR fijo, a la espera del primer toque. */
@@ -204,6 +215,7 @@ export class SendPage {
     this.source = null;
     this.info.set(null);
     this.error.set(null);
+    this.densityNotice.set(false);
     const validation = this.validator.validate(file.size, this.dataSize());
     if (!validation.ok) {
       this.error.set(validation.message);

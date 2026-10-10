@@ -54,6 +54,13 @@ describe('HomePage', () => {
       ],
     });
 
+  /** Abre el menú ⋮ de la fila de `name` y elige su acción. */
+  const act = async (name: string, action: RegExp) => {
+    const trigger = await screen.findByRole('button', { name: `Acciones de ${name}` });
+    await fireEvent.click(trigger);
+    await fireEvent.click(await screen.findByRole('menuitem', { name: action }));
+  };
+
   const rows = () => screen.queryAllByRole('listitem');
   const rowNames = () =>
     rows().map((row) => within(row).getByRole('heading', { level: 3 }).textContent);
@@ -81,9 +88,13 @@ describe('HomePage', () => {
     vi.restoreAllMocks();
   });
 
-  it('muestra los botones Enviar y Recibir que navegan a sus rutas', async () => {
+  it('muestra la cabecera «QRTransfer» y las tarjetas Enviar y Recibir que navegan a sus rutas', async () => {
     await setup();
 
+    expect(screen.getByText('QRTransfer')).toBeTruthy();
+    expect(screen.getByText('Transfiere archivos mediante QR')).toBeTruthy();
+    expect(screen.getByText('Escanea código QR para recibir datos')).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Actividad reciente' })).toBeTruthy();
     expect(screen.getByRole('link', { name: /enviar/i }).getAttribute('href')).toBe('/enviar');
     expect(screen.getByRole('link', { name: /recibir/i }).getAttribute('href')).toBe('/recibir');
   });
@@ -112,15 +123,15 @@ describe('HomePage', () => {
     stored = [entry('s', 'sent', 200), entry('r', 'received', 100)];
     await setup();
     await waitFor(() => expect(rows()).toHaveLength(2));
-    expect(screen.getByRole('button', { name: 'Todos' }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('radio', { name: 'Todos' }).getAttribute('aria-checked')).toBe('true');
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Recibidos' }));
+    await fireEvent.click(screen.getByRole('radio', { name: 'Recibidos' }));
     expect(rowNames()).toEqual(['r.bin']);
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Enviados' }));
+    await fireEvent.click(screen.getByRole('radio', { name: 'Enviados' }));
     expect(rowNames()).toEqual(['s.bin']);
 
-    await fireEvent.click(screen.getByRole('button', { name: 'Todos' }));
+    await fireEvent.click(screen.getByRole('radio', { name: 'Todos' }));
     expect(rowNames()).toEqual(['s.bin', 'r.bin']);
   });
 
@@ -137,7 +148,7 @@ describe('HomePage', () => {
     read.mockResolvedValue(file);
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: /exportar a\.bin/i }));
+    await act('a.bin', /exportar/i);
 
     await waitFor(() => expect(fileExport.download).toHaveBeenCalledWith(file));
     expect(read).toHaveBeenCalledWith('a');
@@ -148,7 +159,9 @@ describe('HomePage', () => {
     await setup();
 
     await screen.findByRole('listitem');
-    expect(screen.queryByRole('button', { name: /compartir/i })).toBeNull();
+    await fireEvent.click(screen.getByRole('button', { name: 'Acciones de a.bin' }));
+    expect(await screen.findByRole('menuitem', { name: /exportar/i })).toBeTruthy();
+    expect(screen.queryByRole('menuitem', { name: /compartir/i })).toBeNull();
   });
 
   it('comparte el archivo cuando el navegador lo permite', async () => {
@@ -159,7 +172,7 @@ describe('HomePage', () => {
     read.mockResolvedValue(file);
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: /compartir a\.bin/i }));
+    await act('a.bin', /compartir/i);
 
     await waitFor(() => expect(fileExport.share).toHaveBeenCalledWith(file));
     expect(notifyMock).not.toHaveBeenCalled();
@@ -171,7 +184,7 @@ describe('HomePage', () => {
     stored = [entry('a', 'sent', 1)];
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: /compartir a\.bin/i }));
+    await act('a.bin', /compartir/i);
 
     await waitFor(() => expect(fileExport.share).toHaveBeenCalled());
     expect(notifyMock).not.toHaveBeenCalled();
@@ -183,7 +196,7 @@ describe('HomePage', () => {
     read.mockResolvedValue(undefined);
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: /exportar a\.bin/i }));
+    await act('a.bin', /exportar/i);
 
     await waitFor(() =>
       expect(notifyMock).toHaveBeenCalledWith(expect.any(String), { level: 'error' }),
@@ -196,7 +209,7 @@ describe('HomePage', () => {
     stored = [entry('a', 'sent', 2), entry('b', 'received', 1)];
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: /eliminar a\.bin/i }));
+    await act('a.bin', /eliminar/i);
 
     await waitFor(() => expect(rowNames()).toEqual(['b.bin']));
     expect(confirmMock).toHaveBeenCalledTimes(1);
@@ -208,7 +221,7 @@ describe('HomePage', () => {
     stored = [entry('a', 'sent', 1)];
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: /eliminar a\.bin/i }));
+    await act('a.bin', /eliminar/i);
 
     await waitFor(() => expect(confirmMock).toHaveBeenCalled());
     expect(remove).not.toHaveBeenCalled();
@@ -220,7 +233,7 @@ describe('HomePage', () => {
     stored = [entry('a', 'sent', 1)];
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: /eliminar a\.bin/i }));
+    await act('a.bin', /eliminar/i);
 
     expect(await screen.findByText('Aún no hay transferencias')).toBeTruthy();
   });
@@ -229,7 +242,7 @@ describe('HomePage', () => {
     stored = [entry('a', 'sent', 1)];
     await setup();
 
-    await fireEvent.click(await screen.findByRole('button', { name: 'Enviados' }));
+    await fireEvent.click(await screen.findByRole('radio', { name: 'Enviados' }));
 
     expect(fileExport.download).not.toHaveBeenCalled();
     expect(fileExport.share).not.toHaveBeenCalled();

@@ -19,8 +19,8 @@ import { MenuItem } from '@/shared/models/menu-item';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
   host: {
-    class: 'ft-main-layout'
-  }
+    class: 'ft-main-layout',
+  },
 })
 export class MainLayout implements OnInit {
   // Dependency injection

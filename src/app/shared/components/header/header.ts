@@ -6,8 +6,8 @@ import { Component, ElementRef, inject, input } from '@angular/core';
   templateUrl: './header.html',
   styleUrl: './header.css',
   host: {
-    class: 'flex items-center min-h-14 p-2 text-2xl font-bold text-center'
-  }
+    class: 'flex items-center min-h-14 p-2 text-2xl font-bold text-center',
+  },
 })
 export class Header {
   // Dependency injection

@@ -1,6 +1,6 @@
 import { signal, WritableSignal } from '@angular/core';
 import { provideRouter, Router } from '@angular/router';
-import { fireEvent, render, screen } from '@testing-library/angular';
+import { fireEvent, render, screen, waitFor } from '@testing-library/angular';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CameraErrorCode } from '@/features/receive/models/camera-error';
 import {
@@ -12,7 +12,6 @@ import {
 import { StoredTransfer } from '@/core/models/stored-transfer';
 import { FileExport } from '@/core/services/file-export';
 import { ScreenWakeLock } from '@/core/services/screen-wake-lock';
-import { TransferHistory } from '@/core/services/transfer-history';
 import { ReceivePage } from '@/features/receive/components/receive-page';
 import { ReceiveManager } from '@/features/receive/services/receive-manager';
 
@@ -54,24 +53,14 @@ const reading: ReceiveProgress = {
 
 describe('ReceivePage', () => {
   const download = vi.fn();
-  const history = {
-    filter: signal('all'),
-    visible: signal<StoredTransfer[]>([]),
-    entries: signal<StoredTransfer[]>([]),
-    load: vi.fn().mockResolvedValue(undefined),
-    resetFilter: vi.fn(),
-    setFilter: vi.fn(),
-    remove: vi.fn(),
-  };
-
   const wakeLock = { acquire: vi.fn(async () => undefined), release: vi.fn(async () => undefined) };
 
   const setup = async (manager = createManager()) => {
     const view = await render(ReceivePage, {
       providers: [
+        { provide: MATERIAL_ANIMATIONS, useValue: { animationsDisabled: true } },
         provideRouter([]),
         { provide: ReceiveManager, useValue: manager },
-        { provide: TransferHistory, useValue: history },
         { provide: FileExport, useValue: { download, isShareAvailable: () => false } },
         { provide: ScreenWakeLock, useValue: wakeLock },
       ],
@@ -83,7 +72,6 @@ describe('ReceivePage', () => {
     download.mockReset();
     wakeLock.acquire.mockClear();
     wakeLock.release.mockClear();
-    history.load.mockClear();
     URL.createObjectURL = vi.fn(() => 'blob:preview');
     URL.revokeObjectURL = vi.fn();
   });
@@ -140,10 +128,10 @@ describe('ReceivePage', () => {
 
   it('activates the camera on entering, on the video element of the screen', async () => {
     // Act
-    const { manager, container } = await setup();
+    const { manager } = await setup();
     // Assert
     expect(manager.start).toHaveBeenCalledTimes(1);
-    expect(manager.start).toHaveBeenCalledWith(container.querySelector('video'));
+    expect(manager.start).toHaveBeenCalledWith(document.querySelector('video'));
     expect(screen.getByText('Apunta al QR del emisor')).toBeTruthy();
   });
 
@@ -164,9 +152,9 @@ describe('ReceivePage', () => {
     // Act
     await setup(manager);
     // Assert
-    expect(screen.getByText('informe-q3.pdf')).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'informe-q3.pdf' })).toBeTruthy();
     expect(screen.getByText(/1\.2 MB/)).toBeTruthy();
-    expect(screen.getByText(/268\s+de\s+412\s+fragmentos/)).toBeTruthy();
+    expect(screen.getByText('QR 268 de 412')).toBeTruthy();
     expect(screen.getByText(/~1 min 10 s/)).toBeTruthy();
     expect(screen.getByText('65 %')).toBeTruthy();
     expect(screen.queryByRole('progressbar')).toBeNull();
@@ -207,16 +195,16 @@ describe('ReceivePage', () => {
     expect(screen.getByText('Tiempo estimado:').className).toContain('sr-only');
   });
 
-  it('hides the fragment count on narrow screens, keeping name, size, time and percentage', async () => {
+  it('shows the file name and «QR n de N» in the header of the sheet, with a ⋮ menu', async () => {
     // Arrange
     const manager = createManager();
     manager.progress.set(reading);
     // Act
     await setup(manager);
     // Assert
-    const fragments = screen.getByText(/268 de 412 fragmentos/);
-    expect(fragments?.className).toContain('sm:inline');
-    expect(screen.getByText('informe-q3.pdf').className).not.toContain('hidden');
+    expect(screen.getByRole('dialog', { name: 'Recibir archivo' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'informe-q3.pdf' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Opciones de recepción' })).toBeTruthy();
   });
 
   it('shows an estimate placeholder while there are too few fragments', async () => {
@@ -230,11 +218,11 @@ describe('ReceivePage', () => {
   });
 
   describe('actions', () => {
-    it('ends the reading with «Terminar lectura»', async () => {
+    it('ends the reading with «Cerrar»', async () => {
       // Arrange
       const { manager } = await setup();
       // Act
-      await fireEvent.click(screen.getByRole('button', { name: 'Terminar lectura' }));
+      await fireEvent.click(screen.getByRole('button', { name: 'Cerrar' }));
       // Assert
       expect(manager.finishReading).toHaveBeenCalledTimes(1);
     });
@@ -244,11 +232,22 @@ describe('ReceivePage', () => {
       const { manager } = await setup();
       const navigate = vi.spyOn(TestBedRouter(), 'navigateByUrl').mockResolvedValue(true);
       // Act
-      await fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
+      await fireEvent.click(screen.getByRole('button', { name: 'Opciones de recepción' }));
+      await fireEvent.click(await screen.findByRole('menuitem', { name: 'Cancelar' }));
       // Assert
       expect(manager.cancel).toHaveBeenCalledTimes(1);
       expect(navigate).toHaveBeenCalledWith('/');
-      expect(screen.queryByRole('dialog')).toBeNull();
+    });
+
+    it('cancels when the sheet is dismissed', async () => {
+      // Arrange
+      const { manager } = await setup();
+      const navigate = vi.spyOn(TestBedRouter(), 'navigateByUrl').mockResolvedValue(true);
+      // Act
+      await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', keyCode: 27 });
+      // Assert
+      await waitFor(() => expect(manager.cancel).toHaveBeenCalledTimes(1));
+      expect(navigate).toHaveBeenCalledWith('/');
     });
 
     it('cannot end the reading or cancel while the file is being finished', async () => {
@@ -257,12 +256,13 @@ describe('ReceivePage', () => {
       manager.phase.set('finishing');
       await setup(manager);
       // Assert
-      expect(
-        (screen.getByRole('button', { name: 'Terminar lectura' }) as HTMLButtonElement).disabled,
-      ).toBe(true);
-      expect((screen.getByRole('button', { name: 'Cancelar' }) as HTMLButtonElement).disabled).toBe(
+      expect((screen.getByRole('button', { name: 'Cerrar' }) as HTMLButtonElement).disabled).toBe(
         true,
       );
+      await fireEvent.click(screen.getByRole('button', { name: 'Opciones de recepción' }));
+      expect(
+        (await screen.findByRole('menuitem', { name: 'Cancelar' })).getAttribute('aria-disabled'),
+      ).toBe('true');
     });
 
     it('cannot end the reading while the camera is still opening', async () => {
@@ -271,9 +271,9 @@ describe('ReceivePage', () => {
       manager.phase.set('starting');
       await setup(manager);
       // Assert
-      expect(
-        (screen.getByRole('button', { name: 'Terminar lectura' }) as HTMLButtonElement).disabled,
-      ).toBe(true);
+      expect((screen.getByRole('button', { name: 'Cerrar' }) as HTMLButtonElement).disabled).toBe(
+        true,
+      );
     });
 
     it('cancels the reception when the screen is left', async () => {
@@ -297,7 +297,7 @@ describe('ReceivePage', () => {
       date: 0,
     };
 
-    it('shows the preview of the received file with the history right below', async () => {
+    it('shows the success mark, the message and the preview of the received file', async () => {
       // Arrange
       const manager = createManager();
       manager.phase.set('result');
@@ -306,15 +306,11 @@ describe('ReceivePage', () => {
       await setup(manager);
       // Assert
       expect(screen.getByRole('img', { name: 'foto.png' })).toBeTruthy();
-      const preview = screen.getByRole('button', { name: /foto\.png/ });
-      const historyTitle = screen.getByRole('heading', { name: 'Historial' });
-      expect(
-        preview.compareDocumentPosition(historyTitle) & Node.DOCUMENT_POSITION_FOLLOWING,
-      ).toBeTruthy();
-      expect(history.load).toHaveBeenCalled();
+      expect(screen.getByText(/recibido exitosamente\./)).toBeTruthy();
+      expect(screen.queryByRole('heading', { name: 'Actividad reciente' })).toBeNull();
     });
 
-    it('tells the user the file was received and offers to view or download it', async () => {
+    it('offers only «Abrir» and «Descargar»', async () => {
       // Arrange
       const manager = createManager();
       manager.phase.set('result');
@@ -322,9 +318,10 @@ describe('ReceivePage', () => {
       // Act
       await setup(manager);
       // Assert
-      expect(screen.getByRole('heading', { name: 'Archivo recibido correctamente' })).toBeTruthy();
-      expect(screen.getByRole('button', { name: 'Ver archivo' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'Abrir' })).toBeTruthy();
       expect(screen.getByRole('button', { name: 'Descargar' })).toBeTruthy();
+      expect(screen.queryByRole('button', { name: 'Aceptar' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Ver archivo' })).toBeNull();
     });
 
     it('hides the camera controls once there is a result', async () => {
@@ -335,9 +332,9 @@ describe('ReceivePage', () => {
       // Act
       await setup(manager);
       // Assert
-      expect(screen.queryByRole('button', { name: 'Terminar lectura' })).toBeNull();
+      expect(screen.queryByRole('button', { name: 'Cerrar' })).toBeNull();
       expect(screen.queryByRole('progressbar')).toBeNull();
-      expect(screen.getByRole('link', { name: 'Volver al inicio' })).toBeTruthy();
+      expect(screen.queryByRole('link', { name: 'Volver al inicio' })).toBeNull();
     });
 
     it('shows the card of an incomplete reception and keeps scanning from it', async () => {
@@ -351,7 +348,6 @@ describe('ReceivePage', () => {
       // Assert
       expect(screen.getByRole('alert').textContent).toContain('Recepción incompleta');
       expect(manager.continueScanning).toHaveBeenCalledTimes(1);
-      expect(screen.getByRole('heading', { name: 'Historial' })).toBeTruthy();
     });
 
     it.each([
@@ -403,7 +399,7 @@ describe('ReceivePage', () => {
         await setup(manager);
         // Assert
         expect(screen.getByRole('alert').textContent).toMatch(message);
-        expect(screen.queryByRole('button', { name: 'Terminar lectura' })).toBeNull();
+        expect(screen.queryByRole('button', { name: 'Cerrar' })).toBeNull();
         expect(screen.queryByText('Esperando el primer QR…')).toBeNull();
       },
     );
@@ -422,6 +418,7 @@ describe('ReceivePage', () => {
   });
 });
 
+import { MATERIAL_ANIMATIONS } from '@angular/material/core';
 import { TestBed } from '@angular/core/testing';
 function TestBedRouter(): Router {
   return TestBed.inject(Router);

@@ -1,44 +1,45 @@
-<ul class="flex flex-col divide-y divide-gray-200 rounded-md border border-gray-200">
+<ul class="flex flex-col gap-2">
   @for (entry of entries(); track entry.id) {
-    <li class="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
-      <div class="min-w-0">
-        <h3 class="font-medium break-all">{{ entry.name }}</h3>
+    <li class="flex items-center gap-3 rounded-xl border border-gray-300 bg-white p-3">
+      <span
+        class="grid size-10 shrink-0 place-items-center rounded-full"
+        [class.bg-blue-100]="entry.direction === 'sent'"
+        [class.bg-green-100]="entry.direction === 'received'"
+      >
+        <ft-icon
+          [name]="entry.direction === 'sent' ? 'upload' : 'download'"
+          aria-hidden="true"
+          class="text-2xl"
+        />
+      </span>
+      <div class="min-w-0 grow">
+        <h3 class="font-bold break-all">{{ entry.name }}</h3>
         <p class="text-sm break-words text-gray-700">
           {{ direction(entry) }} · {{ entry.type || '—' }} · {{ size(entry) }} ·
           {{ entry.date | date: 'medium' }}
         </p>
       </div>
-      <div class="flex shrink-0 flex-wrap gap-2">
-        <button
-          type="button"
-          matButton="outlined"
-          [attr.aria-label]="exportLabel(entry)"
-          (click)="exportEntry.emit(entry)"
-        >
-          <ft-icon name="download" aria-hidden="true" />
+      <button
+        type="button"
+        matIconButton
+        [matMenuTriggerFor]="actions"
+        [attr.aria-label]="actionsLabel(entry)"
+      >
+        <ft-icon name="ellipsis-vertical" aria-hidden="true" class="text-2xl" />
+      </button>
+      <mat-menu #actions="matMenu">
+        <button type="button" mat-menu-item (click)="exportEntry.emit(entry)">
           <span i18n>Exportar</span>
         </button>
         @if (shareAvailable()) {
-          <button
-            type="button"
-            matButton="outlined"
-            [attr.aria-label]="shareLabel(entry)"
-            (click)="shareEntry.emit(entry)"
-          >
-            <ft-icon name="share" aria-hidden="true" />
+          <button type="button" mat-menu-item (click)="shareEntry.emit(entry)">
             <span i18n>Compartir</span>
           </button>
         }
-        <button
-          type="button"
-          matButton="outlined"
-          [attr.aria-label]="removeLabel(entry)"
-          (click)="removeEntry.emit(entry)"
-        >
-          <ft-icon name="trash" aria-hidden="true" />
+        <button type="button" mat-menu-item (click)="removeEntry.emit(entry)">
           <span i18n>Eliminar</span>
         </button>
-      </div>
+      </mat-menu>
     </li>
   }
 </ul>

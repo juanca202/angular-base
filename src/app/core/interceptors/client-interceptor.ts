@@ -11,7 +11,7 @@ export const clientInterceptor: HttpInterceptorFn = (req, next) => {
     headers: req.headers
       .set('Client-Id', appManager.getClientId())
       .set('App-Id', environment.appId)
-      .set('App-Version', versionInfo.git.raw)
+      .set('App-Version', versionInfo.git.raw),
   });
   return next(clientReq);
 };

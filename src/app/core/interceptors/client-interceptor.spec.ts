@@ -18,10 +18,10 @@ describe('clientInterceptor', () => {
         {
           provide: AppManager,
           useValue: {
-            getClientId: vi.fn().mockReturnValue('test-client-id')
-          }
-        }
-      ]
+            getClientId: vi.fn().mockReturnValue('test-client-id'),
+          },
+        },
+      ],
     });
 
     next = vi.fn().mockReturnValue(of({}));
@@ -67,7 +67,7 @@ describe('clientInterceptor', () => {
 
   it('should preserve existing headers', () => {
     const req = new HttpRequest('GET', '/api/test', null, {
-      headers: new HttpHeaders({ 'Custom-Header': 'custom-value' })
+      headers: new HttpHeaders({ 'Custom-Header': 'custom-value' }),
     });
 
     TestBed.runInInjectionContext(() => {

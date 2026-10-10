@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { HistoryFilter } from '@/core/models/history-filter';
 import { StoredTransfer } from '@/core/models/stored-transfer';
 import { FileExport } from '@/core/services/file-export';
@@ -17,7 +17,7 @@ import { HistoryList } from '@/shared/components/history-list/history-list';
  */
 @Component({
   selector: 'app-history-panel',
-  imports: [MatButtonModule, HistoryList],
+  imports: [MatButtonToggleModule, HistoryList],
   templateUrl: './history-panel.html',
   host: { class: 'block' },
 })

@@ -62,7 +62,7 @@ export class Session {
     effect(() => {
       const state: SessionState = {
         settings: this._settings(),
-        params: this._params()
+        params: this._params(),
       };
       this.storage.set(STORAGE_KEY, state, 'local');
     });
@@ -91,7 +91,7 @@ export class Session {
     let headers = {};
     if (pushToken) {
       headers = {
-        'Push-Token': pushToken
+        'Push-Token': pushToken,
       };
     }
     const settings = this.settings();
@@ -99,13 +99,13 @@ export class Session {
     const networkSettings = lastValueFrom<Settings>(
       this.httpClient
         .get<Settings>(getApiUrl('settings'), {
-          headers
+          headers,
         })
         .pipe(
           tap((response: Settings) => {
             this.setSettings(response);
-          })
-        )
+          }),
+        ),
     );
     if (networkOnly || !user || !settings) {
       return networkSettings;

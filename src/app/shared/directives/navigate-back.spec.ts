@@ -8,7 +8,7 @@ import { NavigateBack } from '@/shared/directives/navigate-back';
 // Componente de prueba que usa la directiva
 @Component({
   imports: [NavigateBack],
-  template: '<button appNavigateBack [fallback]="fallbackRoute">Back</button>'
+  template: '<button appNavigateBack [fallback]="fallbackRoute">Back</button>',
 })
 class TestComponent {
   public fallbackRoute: string | null = null;
@@ -28,13 +28,13 @@ describe('NavigateBack', () => {
     Object.defineProperty(window, 'history', {
       value: { ...history, length },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestComponent]
+      imports: [TestComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponent);

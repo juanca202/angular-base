@@ -25,7 +25,7 @@ export abstract class BaseRepository {
   protected notifyChange(type: RepositoryChange['type'], ids: string[]) {
     this.lastChange.set({
       type,
-      ids
+      ids,
     });
   }
 }

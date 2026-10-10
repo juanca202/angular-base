@@ -16,7 +16,7 @@ import {
   createMockGoogleTagManagerService,
   createMockMatSnackBar,
   createMockSwUpdate,
-  createMockMessageServiceProvider
+  createMockMessageServiceProvider,
 } from '@/test/mocks/service-mocks';
 import { createMockStorageService } from '@/test/mocks/angular-mocks';
 
@@ -58,8 +58,8 @@ describe('AppManager', () => {
         { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: SwUpdate, useValue: mockSwUpdate },
         mockMessageServiceProvider,
-        { provide: PLATFORM_ID, useValue: 'browser' }
-      ]
+        { provide: PLATFORM_ID, useValue: 'browser' },
+      ],
     });
 
     appManager = TestBed.inject(AppManager);
@@ -169,7 +169,7 @@ describe('AppManager', () => {
       const mockUserChoice = Promise.resolve({ outcome: 'accepted' });
       (appManager as unknown as AppManagerPrivate).installPrompt = {
         prompt: mockPrompt,
-        userChoice: mockUserChoice
+        userChoice: mockUserChoice,
       };
 
       // Act
@@ -207,7 +207,10 @@ describe('AppManager', () => {
       const originalEnabled = environment.i18n.enabled;
       environment.i18n.enabled = false;
       vi.mocked(mockStorage.get!).mockReturnValue(null);
-      const loadSpy = vi.spyOn(appManager as unknown as AppManagerPrivate, 'loadTranslationsForLocale');
+      const loadSpy = vi.spyOn(
+        appManager as unknown as AppManagerPrivate,
+        'loadTranslationsForLocale',
+      );
 
       // Act
       await appManager.init();
@@ -224,7 +227,10 @@ describe('AppManager', () => {
       const originalEnabled = environment.i18n.enabled;
       environment.i18n.enabled = true;
       vi.mocked(mockStorage.get!).mockReturnValue(null);
-      const loadSpy = vi.spyOn(appManager as unknown as AppManagerPrivate, 'loadTranslationsForLocale');
+      const loadSpy = vi.spyOn(
+        appManager as unknown as AppManagerPrivate,
+        'loadTranslationsForLocale',
+      );
 
       // Act
       await appManager.init();
@@ -244,7 +250,7 @@ describe('AppManager', () => {
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
-        isEnabled: false
+        isEnabled: false,
       };
 
       TestBed.resetTestingModule();
@@ -258,8 +264,8 @@ describe('AppManager', () => {
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           mockMessageServiceProvider,
-          { provide: PLATFORM_ID, useValue: 'browser' }
-        ]
+          { provide: PLATFORM_ID, useValue: 'browser' },
+        ],
       });
 
       const manager = TestBed.inject(AppManager);
@@ -280,13 +286,13 @@ describe('AppManager', () => {
           subscribe: vi.fn((callback: () => void) => {
             callback();
             return { unsubscribe: vi.fn() };
-          })
-        })
+          }),
+        }),
       } as unknown as ReturnType<MatSnackBar['open']>);
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
-        isEnabled: false
+        isEnabled: false,
       };
 
       TestBed.resetTestingModule();
@@ -300,8 +306,8 @@ describe('AppManager', () => {
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           mockMessageServiceProvider,
-          { provide: PLATFORM_ID, useValue: 'browser' }
-        ]
+          { provide: PLATFORM_ID, useValue: 'browser' },
+        ],
       });
 
       const manager = TestBed.inject(AppManager);
@@ -311,15 +317,15 @@ describe('AppManager', () => {
         configurable: true,
         value: {
           ...window.location,
-          reload: vi.fn()
-        }
+          reload: vi.fn(),
+        },
       });
 
       // Act
       versionUpdates.emit({
         type: 'VERSION_READY',
         currentVersion: { hash: 'abc123' },
-        latestVersion: { hash: 'def456' }
+        latestVersion: { hash: 'def456' },
       });
 
       // Assert
@@ -333,7 +339,7 @@ describe('AppManager', () => {
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
-        isEnabled: false
+        isEnabled: false,
       };
 
       TestBed.resetTestingModule();
@@ -347,8 +353,8 @@ describe('AppManager', () => {
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           mockMessageServiceProvider,
-          { provide: PLATFORM_ID, useValue: 'browser' }
-        ]
+          { provide: PLATFORM_ID, useValue: 'browser' },
+        ],
       });
 
       const manager = TestBed.inject(AppManager);
@@ -358,7 +364,7 @@ describe('AppManager', () => {
       versionUpdates.emit({
         type: 'VERSION_INSTALLATION_FAILED',
         version: { hash: 'abc123' },
-        error: 'Installation failed'
+        error: 'Installation failed',
       });
 
       // Assert
@@ -371,7 +377,7 @@ describe('AppManager', () => {
       const swUpdateWithEmitter = {
         ...mockSwUpdate,
         versionUpdates,
-        isEnabled: false
+        isEnabled: false,
       };
 
       TestBed.resetTestingModule();
@@ -385,8 +391,8 @@ describe('AppManager', () => {
           { provide: MatSnackBar, useValue: mockSnackBar },
           { provide: SwUpdate, useValue: swUpdateWithEmitter },
           mockMessageServiceProvider,
-          { provide: PLATFORM_ID, useValue: 'browser' }
-        ]
+          { provide: PLATFORM_ID, useValue: 'browser' },
+        ],
       });
 
       const manager = TestBed.inject(AppManager);
@@ -409,15 +415,15 @@ describe('AppManager', () => {
         { level: 'error', expected: { class: 'ft-message--error' } },
         { level: 'warning', expected: { class: 'ft-message--warning' } },
         { level: 'info', expected: { class: 'ft-message--info' } },
-        { expected: {} }
+        { expected: {} },
       ];
 
       // Act
       for (const { level } of cases) {
         notificationEvents.dispatchEvent(
           new CustomEvent('notify', {
-            detail: { message: 'msg', options: level ? { level } : undefined }
-          })
+            detail: { message: 'msg', options: level ? { level } : undefined },
+          }),
         );
       }
 
@@ -425,7 +431,7 @@ describe('AppManager', () => {
       expect(mockMessageService.show).toHaveBeenCalledTimes(cases.length);
       cases.forEach(({ expected }, index) => {
         expect(vi.mocked(mockMessageService.show!).mock.calls[index][1]).toEqual(
-          expect.objectContaining({ type: 'notification', ...expected })
+          expect.objectContaining({ type: 'notification', ...expected }),
         );
       });
     });
@@ -436,12 +442,12 @@ describe('AppManager', () => {
 
       // Act
       notificationEvents.dispatchEvent(
-        new CustomEvent('notify', { detail: { message: 'msg', options: { type: 'modal' } } })
+        new CustomEvent('notify', { detail: { message: 'msg', options: { type: 'modal' } } }),
       );
 
       // Assert
       expect(vi.mocked(mockMessageService.show!).mock.calls[0][1]).toEqual(
-        expect.objectContaining({ type: 'modal' })
+        expect.objectContaining({ type: 'modal' }),
       );
     });
 
@@ -453,15 +459,15 @@ describe('AppManager', () => {
       // Act
       notificationEvents.dispatchEvent(
         new CustomEvent('confirm', {
-          detail: { message: 'Are you sure?', options: { class: 'c', icon: 'i' }, resolve }
-        })
+          detail: { message: 'Are you sure?', options: { class: 'c', icon: 'i' }, resolve },
+        }),
       );
 
       // Assert
       await vi.waitFor(() => expect(resolve).toHaveBeenCalled());
       expect(vi.mocked(mockMessageService.show!).mock.calls[0]).toEqual([
         'Are you sure?',
-        expect.objectContaining({ type: 'modal', class: 'c', icon: 'i' })
+        expect.objectContaining({ type: 'modal', class: 'c', icon: 'i' }),
       ]);
     });
   });
@@ -474,7 +480,9 @@ describe('AppManager', () => {
       const prompt = vi.fn();
 
       // Act
-      window.dispatchEvent(Object.assign(new Event('beforeinstallprompt'), { preventDefault, prompt }));
+      window.dispatchEvent(
+        Object.assign(new Event('beforeinstallprompt'), { preventDefault, prompt }),
+      );
       appManager.install();
 
       // Assert

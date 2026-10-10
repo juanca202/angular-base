@@ -11,7 +11,7 @@ import { Settings } from '@/core/models/settings';
 import {
   createMockRouter,
   createMockActivatedRoute,
-  COMMON_TEST_PROVIDERS
+  COMMON_TEST_PROVIDERS,
 } from '@/test/mocks/angular-mocks';
 import { createMockSession } from '@/test/mocks/service-mocks';
 
@@ -27,18 +27,18 @@ describe('MainLayout', () => {
     // Arrange: Create mocks
     const mockUser: User = {
       username: 'testuser',
-      roles: ['user']
+      roles: ['user'],
     };
 
     mockAuthProvider = {
       user: signal(mockUser),
       logout: vi.fn(),
       login: vi.fn().mockResolvedValue(true),
-      isLoggedIn: signal(true)
+      isLoggedIn: signal(true),
     };
 
     mockBottomSheet = {
-      open: vi.fn()
+      open: vi.fn(),
     };
 
     mockRouter = createMockRouter();
@@ -48,7 +48,7 @@ describe('MainLayout', () => {
     // Reemplaza templateUrl y styleUrl con template inline para evitar cargar archivos externos en las pruebas
     TestBed.overrideComponent(MainLayout, {
       remove: { templateUrl: './main-layout.html', styleUrl: './main-layout.css' },
-      add: { template: '<div>Test</div>', styles: [] }
+      add: { template: '<div>Test</div>', styles: [] },
     });
 
     await TestBed.configureTestingModule({
@@ -57,9 +57,9 @@ describe('MainLayout', () => {
         { provide: AuthProvider, useValue: mockAuthProvider },
         { provide: MatBottomSheet, useValue: mockBottomSheet },
         { provide: Session, useValue: createMockSession() },
-        ...COMMON_TEST_PROVIDERS.getRouterProviders(mockRouter, mockActivatedRoute)
+        ...COMMON_TEST_PROVIDERS.getRouterProviders(mockRouter, mockActivatedRoute),
       ],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MainLayout);
@@ -159,7 +159,7 @@ describe('MainLayout', () => {
       // Arrange
       const menuItems: MenuItem[] = [
         { url: '/home', label: 'Home', icon: 'home' },
-        { url: '/about', label: 'About', icon: 'info' }
+        { url: '/about', label: 'About', icon: 'info' },
       ];
 
       // Act
@@ -177,7 +177,7 @@ describe('MainLayout', () => {
         url: '/home',
         label: 'Home',
         icon: 'home',
-        children: [{ url: '/home/dashboard', label: 'Dashboard', icon: 'dashboard' }]
+        children: [{ url: '/home/dashboard', label: 'Dashboard', icon: 'dashboard' }],
       };
 
       // Act
@@ -200,13 +200,13 @@ describe('MainLayout', () => {
         lastName: 'Lovelace',
         email: 'ada@example.com',
         picture: '',
-        featureFlags: []
+        featureFlags: [],
       },
       language: 'en',
       subscription: { code: 'sub', name: 'Subscription', plan: { code: 'plan', name: 'Plan' } },
       environment: 'test',
       onboarding: false,
-      country: 'EC'
+      country: 'EC',
     };
 
     const menuItems: MenuItem[] = [
@@ -214,9 +214,9 @@ describe('MainLayout', () => {
         url: '/home',
         label: 'Home',
         icon: 'home',
-        children: [{ url: '/home/dashboard', label: 'Dashboard', icon: 'dashboard' }]
+        children: [{ url: '/home/dashboard', label: 'Dashboard', icon: 'dashboard' }],
       },
-      { url: '/about', label: 'About', icon: 'info' }
+      { url: '/about', label: 'About', icon: 'info' },
     ];
 
     beforeEach(async () => {
@@ -229,12 +229,12 @@ describe('MainLayout', () => {
           { provide: MatBottomSheet, useValue: mockBottomSheet },
           {
             provide: Session,
-            useValue: createMockSession({ settings: computed(() => mockSettings) })
+            useValue: createMockSession({ settings: computed(() => mockSettings) }),
           },
           ...COMMON_TEST_PROVIDERS.getRouterProviders(mockRouter, mockActivatedRoute),
-          ...COMMON_TEST_PROVIDERS.getUIOptionsProvider()
+          ...COMMON_TEST_PROVIDERS.getUIOptionsProvider(),
         ],
-        schemas: [NO_ERRORS_SCHEMA]
+        schemas: [NO_ERRORS_SCHEMA],
       }).compileComponents();
 
       renderFixture = TestBed.createComponent(MainLayout);
@@ -274,8 +274,9 @@ describe('MainLayout', () => {
 
     it('should set selected option when a navigation button is clicked', () => {
       // Act
-      const firstButton: HTMLButtonElement =
-        renderFixture.nativeElement.querySelectorAll('.ft-navbar__actions button')[0];
+      const firstButton: HTMLButtonElement = renderFixture.nativeElement.querySelectorAll(
+        '.ft-navbar__actions button',
+      )[0];
       firstButton.click();
       renderFixture.detectChanges();
 

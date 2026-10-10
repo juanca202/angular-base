@@ -1,19 +1,20 @@
 import { DatePipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { Icon } from '@factor_ec/ui';
 import { StoredTransfer } from '@/core/models/stored-transfer';
 import { formatSize } from '@/shared/utils/format-size';
 
 /**
- * Lista de transferencias del historial: una fila por entrada con su contenido y las acciones
- * Exportar, Compartir (si el navegador lo permite) y Eliminar. No decide nada: emite las acciones.
+ * Lista de transferencias del historial: una fila por entrada con su contenido y un menú ⋮ con las
+ * acciones Exportar, Compartir (si el navegador lo permite) y Eliminar. No decide nada: emite las acciones.
  *
  * @since 1.0.0
  */
 @Component({
   selector: 'app-history-list',
-  imports: [DatePipe, Icon, MatButtonModule],
+  imports: [DatePipe, Icon, MatButtonModule, MatMenuModule],
   templateUrl: './history-list.html',
   host: { class: 'block' },
 })
@@ -38,15 +39,7 @@ export class HistoryList {
     return entry.direction === 'sent' ? $localize`Enviado` : $localize`Recibido`;
   }
 
-  protected exportLabel(entry: StoredTransfer): string {
-    return $localize`Exportar ${entry.name}:name:`;
-  }
-
-  protected shareLabel(entry: StoredTransfer): string {
-    return $localize`Compartir ${entry.name}:name:`;
-  }
-
-  protected removeLabel(entry: StoredTransfer): string {
-    return $localize`Eliminar ${entry.name}:name:`;
+  protected actionsLabel(entry: StoredTransfer): string {
+    return $localize`Acciones de ${entry.name}:name:`;
   }
 }

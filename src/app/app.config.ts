@@ -38,13 +38,13 @@ export const appConfig: ApplicationConfig = {
     {
       provide: UI_OPTIONS,
       useValue: {
-        iconSettings: environment.iconSettings
-      }
+        iconSettings: environment.iconSettings,
+      },
     },
     {
       provide: LOCALE_ID,
       useFactory: (appManager: AppManager) => appManager.getLocale(),
-      deps: [AppManager]
-    }
+      deps: [AppManager],
+    },
   ],
 };

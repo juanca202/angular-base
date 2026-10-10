@@ -25,7 +25,7 @@ interface CardContent {
       class="flex flex-col gap-3 rounded-lg border border-red-300 bg-red-50 p-4 text-red-950"
     >
       <h2 class="flex items-center gap-2 text-xl font-semibold">
-        <ft-icon name="warning" aria-hidden="true" />
+        <ft-icon name="warning" aria-hidden="true" class="text-2xl" />
         <span>{{ content().title }}</span>
       </h2>
       <p>{{ content().message }}</p>

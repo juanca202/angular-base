@@ -17,7 +17,7 @@ import {
   ConfirmOptions,
   NotificationEvent,
   NotificationOptions,
-  notificationEvents
+  notificationEvents,
 } from '@/core/utils/notification';
 import { firstValueFrom } from 'rxjs';
 import { Language } from '@/core/models/language';
@@ -112,7 +112,7 @@ export class AppManager {
     notificationEvents.addEventListener('confirm', async (event: Event) => {
       const { message, options, resolve } = (event as CustomEvent<ConfirmEvent>).detail;
       const value = await firstValueFrom(
-        this.messageService.show(message, this.buildConfirmOptions(options))
+        this.messageService.show(message, this.buildConfirmOptions(options)),
       );
       resolve(value);
     });
@@ -145,7 +145,7 @@ export class AppManager {
       ? this.languages().find((l) => l.code === navigator.language.split('-')[0])?.code
       : null;
     const userLocale = this.languages().find(
-      (l) => l.code === this.storage.get(this.localeKey, 'local')
+      (l) => l.code === this.storage.get(this.localeKey, 'local'),
     )?.code;
     const locale = userLocale || systemLocale || environment.i18n.defaultLocale;
     this.storage.set(this.localeKey, locale, 'local');
@@ -206,7 +206,7 @@ export class AppManager {
       type: 'modal',
       class: options?.class,
       icon: options?.icon,
-      actions: options?.actions as MessageOptions['actions']
+      actions: options?.actions as MessageOptions['actions'],
     };
   }
   /**

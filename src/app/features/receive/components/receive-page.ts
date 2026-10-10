@@ -1,19 +1,12 @@
-import {
-  Component,
-  DestroyRef,
-  afterNextRender,
-  computed,
-  effect,
-  inject,
-  viewChild,
-} from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, DestroyRef, computed, effect, inject, viewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { Icon } from '@factor_ec/ui';
 import { FileExport } from '@/core/services/file-export';
 import { ScreenWakeLock } from '@/core/services/screen-wake-lock';
-import { HistoryPanel } from '@/shared/components/history-panel/history-panel';
+import { Sheet } from '@/shared/components/sheet/sheet';
 import { ReceiveSuccess } from '@/features/receive/components/receive-success';
-import { FilePreview } from '@/features/receive/components/file-preview';
 import { FailedReceiveResult, ResultCard } from '@/features/receive/components/result-card';
 import { CameraErrorCode } from '@/features/receive/models/camera-error';
 import { CameraView } from '@/features/receive/components/camera-view';
@@ -42,8 +35,9 @@ function toFile(received: { name: string; type: string; bytes: Uint8Array<ArrayB
 }
 
 /**
- * Reception screen: opens the camera on entering and shows what is being received. The reception
- * itself is driven by {@link ReceiveManager}; leaving the screen cancels it.
+ * Reception sheet over the start screen: opens the camera on entering and shows what is being
+ * received. The reception itself is driven by {@link ReceiveManager}; closing the sheet or leaving
+ * the screen cancels it.
  *
  * @since 1.0.0
  */
@@ -53,11 +47,11 @@ function toFile(received: { name: string; type: string; bytes: Uint8Array<ArrayB
     CameraView,
     ReceiveProgressInfo,
     ResultCard,
-    FilePreview,
     ReceiveSuccess,
-    HistoryPanel,
+    Sheet,
+    Icon,
     MatButtonModule,
-    RouterLink,
+    MatMenuModule,
   ],
   templateUrl: './receive-page.html',
   host: { class: 'block' },
@@ -75,6 +69,7 @@ export class ReceivePage {
   protected readonly stats = this.diagnostics.state;
   /** Browser and device as the page sees them (for `?debug`): Chrome version and the Android model. */
   protected readonly browser = describeBrowser(navigator.userAgent);
+  protected readonly waitingText = $localize`Esperando el primer QR…`;
   protected readonly phase = this.manager.phase;
   protected readonly progress = this.manager.progress;
   protected readonly result = this.manager.result;
@@ -101,7 +96,6 @@ export class ReceivePage {
   );
 
   constructor() {
-    afterNextRender(() => void this.start());
     // La pantalla no debe apagarse mientras la cámara lee la secuencia (hasta tener un resultado).
     effect(() => void (this.reading() ? this.wakeLock.acquire() : this.wakeLock.release()));
     inject(DestroyRef).onDestroy(() => {
@@ -124,6 +118,11 @@ export class ReceivePage {
   protected async cancel(): Promise<void> {
     this.manager.cancel();
     await this.router.navigateByUrl('/');
+  }
+
+  /** The sheet was dismissed (tap outside or Escape): same as cancelling. */
+  protected close(): Promise<void> {
+    return this.cancel();
   }
 
   /** After «incomplete», reads again keeping the valid fragments already received. */
