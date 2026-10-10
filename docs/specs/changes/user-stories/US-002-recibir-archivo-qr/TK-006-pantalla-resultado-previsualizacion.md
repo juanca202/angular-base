@@ -2,7 +2,7 @@
 
 <!-- tk:status=Ready -->
 **Estado:** Ready
-**Historia:** [US-002](./README.md)
+**Historia:** [US-002](README.md)
 **Repositorio:** laboratorio-1
 **Asignado a:** juanca202
 
@@ -12,15 +12,15 @@ Disponer de la presentación del resultado de la recepción dentro de `/recibir`
 
 ## Dependencias
 
-- Gestor de la recepción ([TK-004](./TK-004-gestor-recepcion.md)) — resultado y acciones de continuar o reintentar
-- Pantalla de recepción ([TK-005](./TK-005-pantalla-recepcion.md)) — contenedor de la ruta `/recibir`
+- Gestor de la recepción ([TK-004](TK-004-gestor-recepcion.md)) — resultado y acciones de continuar o reintentar
+- Pantalla de recepción ([TK-005](TK-005-pantalla-recepcion.md)) — contenedor de la ruta `/recibir`
 - Lista de historial de US-003 ([TK-003](../US-003-historial-transferencias/TK-003-pantalla-inicio-historial.md)) — historial bajo la previsualización
 - Servicio de exportación de US-003 ([TK-002](../US-003-historial-transferencias/TK-002-servicio-exportacion.md)) — descarga del archivo
 - Componentes de `@factor_ec/ui` (`ft-icon`) y Tailwind CSS — presentación
 
 ## Referencias
 
-- [Informe del spike WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
+- [Informe del spike WI-002](../../requirements/SRS-001-transferencia-qr/references/spike-report-WI-002-medicion-qr-android.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
 - **Diseño:** [WF-005: Resultado y previsualización](../../requirements/SRS-001-transferencia-qr/wireframes/WF-005-resultado-recepcion.md) — Aprobado ([SVG](../../requirements/SRS-001-transferencia-qr/wireframes/WF-005-resultado-recepcion.svg), [móvil](../../requirements/SRS-001-transferencia-qr/wireframes/WF-005-resultado-recepcion-movil.svg), [error](../../requirements/SRS-001-transferencia-qr/wireframes/WF-005-resultado-recepcion-error.svg), [error móvil](../../requirements/SRS-001-transferencia-qr/wireframes/WF-005-resultado-recepcion-error-movil.svg))
 - **Arquitectura:** [ADR-001: arquitectura híbrida por capas y funcionalidades](../../../../adr/ADR-001-hybrid-layered-feature-architecture.md)
 - **Arquitectura:** [ADR-006: presentación con Tailwind CSS](../../../../adr/ADR-006-presentation-tailwind-css.md)

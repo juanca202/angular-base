@@ -2,7 +2,7 @@
 
 <!-- tk:status=Ready -->
 **Estado:** Ready
-**Historia:** [US-002](./README.md)
+**Historia:** [US-002](README.md)
 **Repositorio:** laboratorio-1
 **Asignado a:** juanca202
 
@@ -18,7 +18,7 @@ Disponer de la operación de recepción que guarde el archivo reconstruido, con 
 
 ## Referencias
 
-- [Informe del spike WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
+- [Informe del spike WI-002](../../requirements/SRS-001-transferencia-qr/references/spike-report-WI-002-medicion-qr-android.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
 - **Arquitectura:** [ADR-001: arquitectura híbrida por capas y funcionalidades](../../../../adr/ADR-001-hybrid-layered-feature-architecture.md)
 - **Arquitectura:** [ADR-015: decorador `@Service` para singletons](../../../../adr/ADR-015-service-decorator-for-singletons.md)
 - **Arquitectura:** [ADR-002: modificadores de acceso explícitos y readonly](../../../../adr/ADR-002-explicit-member-accessibility-and-readonly.md)

@@ -3,7 +3,7 @@
 **Fecha:** 2026-10-08 17:37
 **Rama:** feature/US-003-historial-transferencias
 **Commit:** 17af4c1
-**Trabajo:** [US-003](./README.md)
+**Trabajo:** [US-003](README.md)
 **Veredicto:** ⚠️ Aprobado con observaciones
 
 ## Resumen
@@ -40,8 +40,8 @@ Los 7 criterios tienen caso de prueba y artefacto, y ninguno falla. AC-003 y AC-
 | AC-002 | TC-004 | E2E | [`history.spec.ts`](../../../../../e2e/history.spec.ts) | quality-check | ✅ PASS |
 | AC-002 | TC-005 | E2E | [`history.spec.ts`](../../../../../e2e/history.spec.ts) | quality-check | ✅ PASS |
 | AC-003 | TC-006 | E2E | [`history.spec.ts`](../../../../../e2e/history.spec.ts) | quality-check | ✅ PASS |
-| AC-003 | TC-007 | Manual | [TC-007](./test-cases/TC-007-exportar-compartiendo-con-otras-apps-happy.md) | Manual | — N/A |
-| AC-003 | TC-008 | Manual | [TC-008](./test-cases/TC-008-compartir-cancelado-conserva-historial-error.md) | Manual | — N/A |
+| AC-003 | TC-007 | Manual | [TC-007](test-cases/TC-007-exportar-compartiendo-con-otras-apps-happy.md) | Manual | — N/A |
+| AC-003 | TC-008 | Manual | [TC-008](test-cases/TC-008-compartir-cancelado-conserva-historial-error.md) | Manual | — N/A |
 | AC-003 | TC-009 | Integration | [`file-export.spec.ts`](../../../../../src/app/core/services/file-export.spec.ts) | quality-check | ✅ PASS |
 | AC-003 | TC-009 | E2E | [`history.spec.ts`](../../../../../e2e/history.spec.ts) | quality-check | ✅ PASS |
 | AC-004 | TC-010 | Integration | [`transfer-history.spec.ts`](../../../../../src/app/core/services/transfer-history.spec.ts) | quality-check | ✅ PASS |
@@ -58,7 +58,7 @@ Los 7 criterios tienen caso de prueba y artefacto, y ninguno falla. AC-003 y AC-
 
 ## Observaciones y pendientes
 
-- Las pruebas manuales con móvil (TC-007, TC-008 y la revisión de iconos) no se ejecutaron por decisión del usuario; el guion está en [guion-validacion-historial.md](./assets/guion-validacion-historial.md) y la tarea TK-004 sigue en curso.
+- Las pruebas manuales con móvil (TC-007, TC-008 y la revisión de iconos) no se ejecutaron por decisión del usuario; el guion está en [guion-validacion-historial.md](assets/guion-validacion-historial.md) y la tarea TK-004 sigue en curso.
 - El e2e se ejecutó en el puerto 4300 porque el 4200 lo ocupaba otro proyecto.
 
 <!-- coverage-verify:verdict=APPROVED_WITH_NOTES · fingerprint=da6ad8cfd889059bc8f3430856c76b8cb80c65c4 · spec=365ef6921e5508c87292ec1d1765bb545fd5ab80 · generated=2026-10-08 -->

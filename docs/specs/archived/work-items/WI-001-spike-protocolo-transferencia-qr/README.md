@@ -7,7 +7,7 @@
 **Repositorio:** transferencia-qr-web
 **Origen:** [SRS-001: Transferencia de archivos mediante secuencia de QR](../../../changes/requirements/SRS-001-transferencia-qr/README.md) (sección 2.5), [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md), [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md)
 **Timebox:** 2 días
-**Resolución:** Re-espigado (WI-002)
+**Resolución:** Re-espigado (WI-002); protocolo implementado en US-001 y US-002 (SRS-001, 2.6)
 
 ## Pregunta de investigación
 
@@ -46,7 +46,7 @@ Creemos que un fragmento por QR, con cabecera mínima (identificador de transfer
 
 - Safari iOS, Chrome/Edge de escritorio y otros navegadores: este spike solo evalúa Chrome Android; el resto se aborda en otro spike si hace falta.
 - Interfaz definitiva, historial, exportación, previsualización y manejo completo de errores.
-- Cifrado, compresión y corrección de errores (diferidos, SRS-001 sección 2.6).
+- Cifrado, compresión y corrección de errores (fuera de alcance del SRS-001, sección 1.2).
 - El código producido **no se integra**: queda en la rama `spike/WI-001-protocolo-transferencia-qr` como referencia de la implementación definitiva.
 
 ## Dependencias
@@ -58,26 +58,26 @@ Creemos que un fragmento por QR, con cabecera mínima (identificador de transfer
 
 ## Referencias
 
-- **Requerimiento:** [raw-requirement.md](../../../changes/requirements/SRS-001-transferencia-qr/references/raw-requirement.md)
+- **Requerimiento:** [SRS-001](../../../changes/requirements/SRS-001-transferencia-qr/README.md)
 - **Diseño:** [WF-002](../../../changes/requirements/SRS-001-transferencia-qr/wireframes/WF-002-enviar-seleccion.md) y [WF-004](../../../changes/requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) (referencia de contenido de pantalla; no se implementan).
 
 ## Enfoque del experimento
 
-- [ ] **IT-01** — Preparar un proyecto desde angular-base y los dispositivos de prueba; generar archivos de prueba de varios tamaños.
-- [ ] **IT-02** — Seleccionar y comparar librerías de generación y lectura de QR en Chrome Android.
-- [ ] **IT-03** — Construir un emisor y un receptor mínimos con un protocolo versionado y separado de la UI (fragmento con identificador, posición, total, verificación propia).
-- [ ] **IT-04** — Medir capacidad por QR y velocidad de cambio; probar desorden, duplicados y fragmentos corruptos; guardar evidencia en `assets/`.
-- [ ] **IT-05** — Probar modo sin conexión y capturar el tráfico de red durante una transferencia; documentar las APIs disponibles en Chrome Android.
-- [ ] **IT-06** — Redactar `spike-report.md` con los resultados por `Q-XX`, el veredicto y las consideraciones para la implementación definitiva, incluidos los NFR de rendimiento y compatibilidad propuestos.
+- [x] **IT-01** — Preparar un proyecto desde angular-base y los dispositivos de prueba; generar archivos de prueba de varios tamaños.
+- [x] **IT-02** — Seleccionar y comparar librerías de generación y lectura de QR en Chrome Android.
+- [x] **IT-03** — Construir un emisor y un receptor mínimos con un protocolo versionado y separado de la UI (fragmento con identificador, posición, total, verificación propia).
+- [x] **IT-04** — Medir capacidad por QR y velocidad de cambio; probar desorden, duplicados y fragmentos corruptos; guardar evidencia en `assets/`.
+- [x] **IT-05** — Probar modo sin conexión y capturar el tráfico de red durante una transferencia; documentar las APIs disponibles en Chrome Android.
+- [x] **IT-06** — Redactar `spike-report.md` con los resultados por `Q-XX`, el veredicto y las consideraciones para la implementación definitiva, incluidos los NFR de rendimiento y compatibilidad propuestos.
 
 ## Entregable
 
-- `spike-report.md` en esta carpeta, con veredicto y marca oculta `spike:verdict`.
+- [`spike-report.md`](../../../changes/requirements/SRS-001-transferencia-qr/references/spike-report-WI-001-protocolo-transferencia-qr.md) (movido a `references/` del SRS-001), con veredicto y marca oculta `spike:verdict`.
 - Evidencia del experimento en `assets/` de esta carpeta.
 - Rama `spike/WI-001-protocolo-transferencia-qr` con el código del experimento, sin integrar.
 
 ## Observaciones
 
 - Sin pendientes de definición. El umbral de la Q-02 (1 MB en ≤ 15 min, 9 de 10 intentos) lo fijó el usuario el 2026-10-08.
-- El repositorio `transferencia-qr-web` aún no existe: hay que crearlo desde angular-base antes de ejecutar el experimento.
+- El experimento se hizo en dos fases: prototipo en Node (2026-10-08) y protocolo definitivo en este repositorio, laboratorio-1 (formato versión 3); el detalle está en el informe.
 - Alcance de compatibilidad limitado a Chrome Android por decisión del usuario; el SRS-001 pide además los NFR de compatibilidad, que tendrán que ampliarse con otro spike o decisión.

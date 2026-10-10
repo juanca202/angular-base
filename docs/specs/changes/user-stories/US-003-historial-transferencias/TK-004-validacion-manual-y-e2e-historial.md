@@ -2,7 +2,7 @@
 
 <!-- tk:status=Ready -->
 **Estado:** Ready
-**Historia:** [US-003](./README.md)
+**Historia:** [US-003](README.md)
 **Repositorio:** laboratorio-1
 **Asignado a:** juanca202
 
@@ -18,7 +18,7 @@ Cerrar la verificación del historial con escenarios E2E de Playwright sobre un 
 
 ## Referencias
 
-- **Casos de prueba:** [índice de casos de la historia](./test-cases/README.md)
+- **Casos de prueba:** [índice de casos de la historia](test-cases/README.md)
 - **Arquitectura:** [ADR-005: pruebas end-to-end con Playwright](../../../../adr/ADR-005-e2e-testing-playwright.md)
 - **Arquitectura:** [ADR-003: pruebas unitarias con Vitest y Testing Library](../../../../adr/ADR-003-unit-testing-vitest-testing-library.md)
 
@@ -36,7 +36,7 @@ laboratorio-1/
 - [x] **IT-01** — Preparar el sembrado del historial (entradas enviadas y recibidas con fechas y tamaños conocidos) para los escenarios
 - [x] **IT-02** — Escribir los escenarios E2E de lista, filtros, exportar por descarga, eliminar (confirmar y cancelar), estado vacío y desplazamiento horizontal a 360 px y 1280 px
 - [x] **IT-03** — Redactar el guion manual de compartir con otras aplicaciones y de su cancelación, con hoja de registro
-- [ ] **IT-04** — Ejecutar el guion en Chrome para Android y registrar los resultados en el `progress.md`
+- [x] **IT-04** — Ejecutar el guion en Chrome para Android y registrar los resultados en el `progress.md` _(cerrado sin ejecutar por decisión del usuario, 2026-10-09)_
 
 ## Observaciones
 

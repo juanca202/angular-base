@@ -2,11 +2,11 @@
 
 ## US-001-enviar-archivo-qr
 
-<!-- work:id=US-001 · status=In Progress -->
-**Estado:** In Progress
+<!-- work:id=US-001 · status=Done -->
+**Estado:** Done
 **Tipo:** historia de usuario
 **Fecha de creación:** 2026-10-08
-**Ultima actualizacion:** 2026-10-08
+**Ultima actualizacion:** 2026-10-09
 
 ## Unidades
 
@@ -180,9 +180,10 @@
 
 ### TK-006: Validación con móviles y escenarios E2E del envío
 
-<!-- unit:id=TK-006 · status=In Progress -->
-**Estado:** In Progress
+<!-- unit:id=TK-006 · status=Done -->
+**Estado:** Done
 **Iniciado:** 2026-10-08
+**Finalizado:** 2026-10-09
 **Implementador:** juanca202 / Claude / claude-sonnet-5-5
 
 **Archivos:**
@@ -194,7 +195,8 @@
 **Notas:**
 - IT-01 hecha: 15 escenarios E2E (selector de un solo archivo, selector cerrado sin elegir, QR e información sin progreso, «calculando…», secuencia que avanza sola y en bucle, copia en el almacenamiento privado, cancelar sin confirmación, archivo vacío, máximo de fragmentos, cuota agotada, navegador incompatible y ausencia de desplazamiento horizontal a 360, 768, 1280 y 1600 px). Pasan los 15 contra `ng serve`.
 - IT-02 hecha: guion manual con hoja de registro en `assets/guion-validacion-envio.md`.
-- PENDIENTE (IT-03): ejecutar con móviles Android reales la serie de lecturas por tamaño de fragmento, el envío de 1 MB cronometrado y la prueba en modo avión, y registrar los resultados aquí. No se puede hacer desde el agente: requiere dos dispositivos con cámara y un túnel HTTPS. Mientras no se haga, la tarea no puede pasar a `Done`.
+- DECISIÓN DEL USUARIO (2026-10-09): el IT-03 ya no es necesario; la tarea se marca `Done` sin ejecutarlo y TC-018, TC-022 y TC-023 quedan sin validar en un dispositivo real.
+- Descartado (IT-03): ejecutar con móviles Android reales la serie de lecturas por tamaño de fragmento, el envío de 1 MB cronometrado y la prueba en modo avión, y registrar los resultados aquí. No se puede hacer desde el agente: requiere dos dispositivos con cámara y un túnel HTTPS. Queda como deuda de validación.
 
 **Decisiones adicionales:**
 - Como la recepción de la aplicación (US-002) aún no existe, el guion usa como receptor el prototipo del spike; cuando US-002 esté implementada conviene repetir TC-022 y TC-023 con la aplicación real en ambos extremos.

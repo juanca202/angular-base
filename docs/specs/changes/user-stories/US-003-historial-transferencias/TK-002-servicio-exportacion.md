@@ -2,7 +2,7 @@
 
 <!-- tk:status=Ready -->
 **Estado:** Ready
-**Historia:** [US-003](./README.md)
+**Historia:** [US-003](README.md)
 **Repositorio:** laboratorio-1
 **Asignado a:** juanca202
 

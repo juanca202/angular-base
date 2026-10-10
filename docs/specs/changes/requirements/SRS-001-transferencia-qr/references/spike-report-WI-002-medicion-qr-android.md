@@ -1,7 +1,7 @@
 # Informe del spike WI-002: Medición con móviles Android de la transferencia por secuencia de QR
 
 <!-- spike:verdict=VIABLE_WITH_REWORK · timebox=1d/1d · branch=spike/WI-002-medicion-qr-android · head=22b1ef4 · generated=2026-10-08 -->
-**Spike:** [WI-002: Medición con móviles Android de la transferencia por secuencia de QR](README.md)
+**Spike:** [WI-002: Medición con móviles Android de la transferencia por secuencia de QR](../../../../archived/work-items/WI-002-spike-medicion-qr-android/README.md)
 **Veredicto:** ⚠️ Viable con trabajo
 **Subtipo:** técnico
 **Timebox:** 1 día · consumido: 1 día (una sesión)
@@ -31,16 +31,16 @@ Prototipo PWA estático en `spike/web/` (emisor, receptor, series de capacidad, 
 
 | `Q-XX` | Criterio de éxito | Resultado observado | Resultado | Evidencia |
 |--------|-------------------|---------------------|-----------|-----------|
-| Q-01 | Capacidad con ≥ 9/10 lecturas de un QR estático a ~30 cm | N=400 B, M: **10/10**, tiempos 126 a 733 ms (mediana 146 ms). N=800: 11 de 17 entradas; N=1200: 16 de 18; ambas **no válidas** como serie (intentos solapados por pulsaciones rápidas) y solo indicativas | ✅ Cumple (para 400 B; máximo no determinado) | [EV-01](assets/EV-01-mediciones-android-1.json) |
-| Q-02 | 1 MB en ≤ 15 min con hash idéntico, 9 de 10 intentos reales | Sin transferencias completas. El modelo del WI-001 da, con fragmentos de 400 B y 90 % de lectura por vuelta, 36,9 min a 5 fps y 23,2 min a 8 fps; con 1200 B, 11 y 6,5 min | ⏸️ No concluyente | [EV-01](assets/EV-01-mediciones-android-1.json), [EV-02](assets/EV-02-fuentes-externas.md) |
-| Q-03 | Medir p y comparar la fórmula con ≥ 5 transferencias | Sin transferencias completas. Dato aislado: en la primera prueba (`BarcodeDetector`, 5 fps) se detectó un QR en 77 de 158 fotogramas | ⏸️ No concluyente | [EV-01](assets/EV-01-mediciones-android-1.json) |
-| Q-04 | Una combinación que cumpla Q-01 y Q-02, y lista de APIs | `jsQR` cumple Q-01 en el móvil; `BarcodeDetector` lee carga binaria (51 fragmentos únicos válidos). Q-02 sin medir. APIs disponibles: cámara, service worker, `wakeLock`, compartir archivos, `showSaveFilePicker`, OPFS, `storage.persist` (no activo por defecto) | ⏸️ No concluyente (parcial) | [EV-01](assets/EV-01-mediciones-android-1.json) |
-| Q-05 | 0 peticiones de red con la app instalada y sin red | El service worker controla la página y 0 peticiones propias de la app, pero con red. No se probó en modo avión | ⏸️ No concluyente | [EV-01](assets/EV-01-mediciones-android-1.json) |
-| Q-06 | El receptor muestra nombre y tamaño y 0/10 transferencias ajenas completadas sin verlas | La política v2 impide en las pruebas de Node completar una ajena sin confirmación; la v1 reproduce H-01. No se probó con cámara | ⏸️ No concluyente | [EV-01](assets/EV-01-mediciones-android-1.json) |
+| Q-01 | Capacidad con ≥ 9/10 lecturas de un QR estático a ~30 cm | N=400 B, M: **10/10**, tiempos 126 a 733 ms (mediana 146 ms). N=800: 11 de 17 entradas; N=1200: 16 de 18; ambas **no válidas** como serie (intentos solapados por pulsaciones rápidas) y solo indicativas | ✅ Cumple (para 400 B; máximo no determinado) | [EV-01](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-01-mediciones-android-1.json) |
+| Q-02 | 1 MB en ≤ 15 min con hash idéntico, 9 de 10 intentos reales | Sin transferencias completas. El modelo del WI-001 da, con fragmentos de 400 B y 90 % de lectura por vuelta, 36,9 min a 5 fps y 23,2 min a 8 fps; con 1200 B, 11 y 6,5 min | ⏸️ No concluyente | [EV-01](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-01-mediciones-android-1.json), [EV-02](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-02-fuentes-externas.md) |
+| Q-03 | Medir p y comparar la fórmula con ≥ 5 transferencias | Sin transferencias completas. Dato aislado: en la primera prueba (`BarcodeDetector`, 5 fps) se detectó un QR en 77 de 158 fotogramas | ⏸️ No concluyente | [EV-01](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-01-mediciones-android-1.json) |
+| Q-04 | Una combinación que cumpla Q-01 y Q-02, y lista de APIs | `jsQR` cumple Q-01 en el móvil; `BarcodeDetector` lee carga binaria (51 fragmentos únicos válidos). Q-02 sin medir. APIs disponibles: cámara, service worker, `wakeLock`, compartir archivos, `showSaveFilePicker`, OPFS, `storage.persist` (no activo por defecto) | ⏸️ No concluyente (parcial) | [EV-01](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-01-mediciones-android-1.json) |
+| Q-05 | 0 peticiones de red con la app instalada y sin red | El service worker controla la página y 0 peticiones propias de la app, pero con red. No se probó en modo avión | ⏸️ No concluyente | [EV-01](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-01-mediciones-android-1.json) |
+| Q-06 | El receptor muestra nombre y tamaño y 0/10 transferencias ajenas completadas sin verlas | La política v2 impide en las pruebas de Node completar una ajena sin confirmación; la v1 reproduce H-01. No se probó con cámara | ⏸️ No concluyente | [EV-01](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-01-mediciones-android-1.json) |
 
 ## Hallazgos
 
-Consolidan los de este spike y los del [WI-001](../WI-001-spike-protocolo-transferencia-qr/spike-report.md). Cada uno indica dónde se resuelve en la sección «Lagunas abiertas».
+Consolidan los de este spike y los del [WI-001](spike-report-WI-001-protocolo-transferencia-qr.md). Cada uno indica dónde se resuelve en la sección «Lagunas abiertas».
 
 ### Protocolo y fiabilidad (WI-001)
 
@@ -64,7 +64,7 @@ Consolidan los de este spike y los del [WI-001](../WI-001-spike-protocolo-transf
 ### Tiempo de transferencia y datos externos
 
 - **H-14: el objetivo de 1 MB en 15 minutos depende del tamaño de fragmento.** Con 400 B y 90 % de lectura por vuelta: 36,9 min a 5 fps y 23,2 min a 8 fps; con 1200 B: 11 y 6,5 min. Con el bucle secuencial solo se alcanza con fragmentos grandes o más de 8 fps.
-- **H-15: los códigos de fuente (fountain) eliminan la espera de la vuelta completa.** Fuentes externas ([EV-02](assets/EV-02-fuentes-externas.md)) declaran 128 a 190 KB/s con ellos, cifras de un solo proyecto y de baja fiabilidad. Hoy la corrección de errores está fuera de alcance en el SRS-001.
+- **H-15: los códigos de fuente (fountain) eliminan la espera de la vuelta completa.** Fuentes externas ([EV-02](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-02-fuentes-externas.md)) declaran 128 a 190 KB/s con ellos, cifras de un solo proyecto y de baja fiabilidad. Hoy la corrección de errores está fuera de alcance en el SRS-001.
 - **H-16: capacidad teórica.** 2953 B (L) y 2331 B (M) en modo binario, coherente con lo medido por `qrcode`.
 - **H-17: compatibilidad de lector.** `BarcodeDetector` solo en Chromium; Safari (iOS incluido) lo trae desactivado y Firefox no lo soporta.
 
@@ -74,16 +74,16 @@ Consolidan los de este spike y los del [WI-001](../WI-001-spike-protocolo-transf
 
 | Laguna | Origen | Dónde se resuelve |
 |--------|--------|-------------------|
-| Tamaño de fragmento por defecto (400 B validado; 800 a 2000 B sin serie válida) | H-06, H-14 | TK de protocolo de [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md): prueba manual con serie de 10 intentos secuenciales |
+| Tamaño de fragmento por defecto (400 B validado; 800 a 2000 B sin serie válida) | H-06, H-14 | TK de protocolo de [US-001](../../../user-stories/US-001-enviar-archivo-qr/README.md): prueba manual con serie de 10 intentos secuenciales |
 | Regla de velocidad automática (fps) | H-08, H-14 | TK de emisión de la US-001 |
-| 1 MB en 15 minutos con hash idéntico (Q-02, Q-03) | H-14 | Criterio de aceptación de la US-001 y la [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md), verificado con transferencias reales |
+| 1 MB en 15 minutos con hash idéntico (Q-02, Q-03) | H-14 | Criterio de aceptación de la US-001 y la [US-002](../../../user-stories/US-002-recibir-archivo-qr/README.md), verificado con transferencias reales |
 | Modo sin red con la app instalada (Q-05) | H-12 | AC de funcionamiento sin conexión de la US-001 y la US-002; prueba manual en modo avión |
 | Elección de transferencia con una secuencia ajena (Q-06, H-01) | H-01, H-09 | Criterio nuevo en la US-002 (`/work-define`): mostrar nombre y tamaño y pedir confirmación; prueba con cámara |
 | Avance visible y aviso de confirmación antes de aceptar | H-09 | Criterio de la US-002 (progreso) y TK de interfaz de recepción |
 | Una lectura a la vez y estados de cámara | H-11 | TK de interfaz de recepción |
 | Corrección de errores o códigos de fuente | H-14, H-15 | Decisión del equipo antes de planificar; si se adopta, ADR con `arch-manage` y cambio del SRS-001 |
 | Compatibilidad con iOS y Firefox, y lector de reserva | H-07, H-17 | NFR de compatibilidad del SRS-001 y TK del lector con `jsQR` |
-| Persistencia del almacenamiento y cuota | H-12 | TK de almacenamiento de la [US-003](../../../changes/user-stories/US-003-historial-transferencias/README.md) y AC de errores de cuota |
+| Persistencia del almacenamiento y cuota | H-12 | TK de almacenamiento de la [US-003](../../../user-stories/US-003-historial-transferencias/README.md) y AC de errores de cuota |
 | Límite de fragmentos y tamaño máximo de archivo | H-03 | TK de protocolo (validación) y criterio de aviso en la US-001 |
 | Estrategia de actualización del service worker | H-13 | TK de PWA de la US-001 y la US-002 |
 
@@ -115,12 +115,12 @@ Lo que funcionó: lectura estable de QR de 400 B, protocolo íntegro, APIs prese
 
 ## Impacto en el artefacto / próximo paso
 
-- Formalizar las historias con `/work-define`: actualizar [US-001](../../../changes/user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../../changes/user-stories/US-002-recibir-archivo-qr/README.md) con los criterios de este informe (tamaño de fragmento, confirmación de nombre y tamaño, criterios de verificación pendientes) y los NFR en el SRS-001.
+- Formalizar las historias con `/work-define`: actualizar [US-001](../../../user-stories/US-001-enviar-archivo-qr/README.md) y [US-002](../../../user-stories/US-002-recibir-archivo-qr/README.md) con los criterios de este informe (tamaño de fragmento, confirmación de nombre y tamaño, criterios de verificación pendientes) y los NFR en el SRS-001.
 - Registrar la decisión sobre corrección de errores o códigos de fuente (ADR con `arch-manage` si se adopta).
 - `Resolución` de este WI: la fija el skill que cree el artefacto definitivo.
 
 ## Fuentes
 
-- [Datos externos consultados (EV-02)](assets/EV-02-fuentes-externas.md)
+- [Datos externos consultados (EV-02)](../../../../archived/work-items/WI-002-spike-medicion-qr-android/assets/EV-02-fuentes-externas.md)
 - [Decimen Optical Transfer](https://github.com/tongatron/decimen-optical-transfer) — rendimiento publicado de QR animados con códigos de fuente.
 - [MDN: BarcodeDetector](https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector) — soporte por navegador.

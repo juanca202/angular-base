@@ -2,7 +2,7 @@
 
 <!-- tk:status=Ready -->
 **Estado:** Ready
-**Historia:** [US-002](./README.md)
+**Historia:** [US-002](README.md)
 **Repositorio:** laboratorio-1
 **Asignado a:** juanca202
 
@@ -12,14 +12,14 @@ Disponer del orquestador que une el lector de cámara, el ensamblador y el guard
 
 ## Dependencias
 
-- Decodificador y reensamblador ([TK-001](./TK-001-decodificador-reensamblador-protocolo.md)) — fragmentos, resultados y avance
-- Guardado del archivo recibido ([TK-002](./TK-002-guardado-archivo-recibido.md)) — persistencia y error de cuota
-- Lector de QR con cámara ([TK-003](./TK-003-lector-camara-qr.md)) — QR leídos y errores de cámara
+- Decodificador y reensamblador ([TK-001](TK-001-decodificador-reensamblador-protocolo.md)) — fragmentos, resultados y avance
+- Guardado del archivo recibido ([TK-002](TK-002-guardado-archivo-recibido.md)) — persistencia y error de cuota
+- Lector de QR con cámara ([TK-003](TK-003-lector-camara-qr.md)) — QR leídos y errores de cámara
 - Signals de Angular — estado observable por la interfaz
 
 ## Referencias
 
-- [Informe del spike WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
+- [Informe del spike WI-002](../../requirements/SRS-001-transferencia-qr/references/spike-report-WI-002-medicion-qr-android.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
 - **Diseño:** [WF-004: Recibir: escaneo e información](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) — Aprobado ([SVG](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.svg), [móvil](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo-movil.svg))
 - **Arquitectura:** [ADR-001: arquitectura híbrida por capas y funcionalidades](../../../../adr/ADR-001-hybrid-layered-feature-architecture.md)
 - **Arquitectura:** [ADR-011: patrón Manager para orquestación](../../../../adr/ADR-011-manager-pattern-orchestration.md)

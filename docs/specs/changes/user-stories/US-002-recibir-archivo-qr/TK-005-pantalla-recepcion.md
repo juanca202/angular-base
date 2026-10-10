@@ -2,7 +2,7 @@
 
 <!-- tk:status=Ready -->
 **Estado:** Ready
-**Historia:** [US-002](./README.md)
+**Historia:** [US-002](README.md)
 **Repositorio:** laboratorio-1
 **Asignado a:** juanca202
 
@@ -12,14 +12,14 @@ Disponer de la pantalla de recepción con ruta propia `/recibir`, a la que la pa
 
 ## Dependencias
 
-- Gestor de la recepción ([TK-004](./TK-004-gestor-recepcion.md)) — estado, avance, confirmación y acciones
+- Gestor de la recepción ([TK-004](TK-004-gestor-recepcion.md)) — estado, avance, confirmación y acciones
 - Ruta `/recibir` en `app.routes.ts` — carga diferida
 - Componentes de `@factor_ec/ui` y Tailwind CSS — presentación
 - `MessageService` / puente de notificaciones del Core — mensajes de error
 
 ## Referencias
 
-- [Informe del spike WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
+- [Informe del spike WI-002](../../requirements/SRS-001-transferencia-qr/references/spike-report-WI-002-medicion-qr-android.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
 - **Diseño:** [WF-004: Recibir: escaneo e información](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) — Aprobado ([SVG](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.svg), [móvil](../../requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo-movil.svg))
 - **Arquitectura:** [ADR-001: arquitectura híbrida por capas y funcionalidades](../../../../adr/ADR-001-hybrid-layered-feature-architecture.md)
 - **Arquitectura:** [ADR-006: presentación con Tailwind CSS](../../../../adr/ADR-006-presentation-tailwind-css.md)

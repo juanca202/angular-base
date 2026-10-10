@@ -2,7 +2,7 @@
 
 <!-- tk:status=Ready -->
 **Estado:** Ready
-**Historia:** [US-001](./README.md)
+**Historia:** [US-001](README.md)
 **Repositorio:** laboratorio-1
 **Asignado a:** juanca202
 
@@ -18,11 +18,11 @@ Cerrar la verificación del envío con lo que la automatización unitaria no cub
 
 ## Referencias
 
-- [Informe del spike WI-002](../../../archived/work-items/WI-002-spike-medicion-qr-android/spike-report.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
+- [Informe del spike WI-002](../../requirements/SRS-001-transferencia-qr/references/spike-report-WI-002-medicion-qr-android.md) (veredicto viable con trabajo; hallazgos y lagunas por tarea)
 - **Guion:** `spike/GUIA-MEDICION.md` en la rama `spike/WI-002-medicion-qr-android` (referencia de lectura)
 - **Arquitectura:** [ADR-005: pruebas end-to-end con Playwright](../../../../adr/ADR-005-e2e-testing-playwright.md)
 - **Arquitectura:** [ADR-003: pruebas unitarias con Vitest y Testing Library](../../../../adr/ADR-003-unit-testing-vitest-testing-library.md)
-- **Casos de prueba:** [índice de casos de la historia](./test-cases/README.md)
+- **Casos de prueba:** [índice de casos de la historia](test-cases/README.md)
 
 ## Archivos afectados
 
@@ -37,7 +37,7 @@ laboratorio-1/
 
 - [x] **IT-01** — Escribir los escenarios E2E del flujo de envío: selección, emisión, cancelación sin confirmación y cada mensaje de error
 - [x] **IT-02** — Redactar el guion manual a partir del guion del spike: serie de 10 lecturas secuenciales por tamaño candidato y hoja de registro
-- [~] **IT-03** — Ejecutar el envío de 1 MB cronometrado y la prueba en modo avión, y registrar los resultados en el `progress.md`
+- [x] **IT-03** — Ejecutar el envío de 1 MB cronometrado y la prueba en modo avión, y registrar los resultados en el `progress.md` _(cerrado sin ejecutar por decisión del usuario, 2026-10-09)_
   Si 1 MB no se completa en 15 minutos, dejar el resultado documentado y decidir con la historia si se ajusta el tamaño de fragmento o la velocidad.
 
 ## Observaciones

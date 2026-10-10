@@ -3,7 +3,7 @@
 **Fecha:** 2026-10-08 17:10
 **Rama:** feature/US-001-enviar-archivo-qr
 **Commit:** a551fb3
-**Trabajo:** [US-001](./README.md)
+**Trabajo:** [US-001](README.md)
 **Veredicto:** ⚠️ Aprobado con observaciones
 
 ## Resumen
@@ -67,20 +67,20 @@ Los 19 criterios tienen caso de prueba y artefacto, y ninguno falla. Tres quedan
 | AC-012 | TC-016 | E2E | [`send-offline.spec.ts:29`](../../../../../e2e/send-offline.spec.ts) | quality-check | ✅ PASS |
 | AC-013 | TC-017 | E2E | [`send-offline.spec.ts:29`](../../../../../e2e/send-offline.spec.ts) | quality-check | ✅ PASS |
 | AC-013 | TC-017 | E2E | [`send-offline.spec.ts:65`](../../../../../e2e/send-offline.spec.ts) | — | ⏭️ NOT_RUN (omitida) |
-| AC-013 | TC-018 | Manual | [TC-018](./test-cases/TC-018-envio-modo-avion-movil-happy.md) | Manual | — N/A |
+| AC-013 | TC-018 | Manual | [TC-018](test-cases/TC-018-envio-modo-avion-movil-happy.md) | Manual | — N/A |
 | AC-014 | TC-019 | Unit | [`fragment-file.spec.ts`](../../../../../src/app/shared/utils/qr-protocol/fragment-file.spec.ts) | quality-check | ✅ PASS |
 | AC-015 | TC-020 | E2E | [`send-flow.spec.ts:162`](../../../../../e2e/send-flow.spec.ts) | quality-check | ✅ PASS |
 | AC-015 | TC-020 | Visual Test | — | — | ❌ UNCOVERED |
 | AC-016 | TC-021 | Unit | [`fragment-file.spec.ts`](../../../../../src/app/shared/utils/qr-protocol/fragment-file.spec.ts) | quality-check | ✅ PASS |
-| AC-016 | TC-022 | Manual | [TC-022](./test-cases/TC-022-serie-10-lecturas-para-tamano-mayor-limite.md) | Manual | — N/A |
-| AC-017 | TC-023 | Manual | [TC-023](./test-cases/TC-023-1mb-en-15-minutos-happy.md) | Manual | — N/A |
+| AC-016 | TC-022 | Manual | [TC-022](test-cases/TC-022-serie-10-lecturas-para-tamano-mayor-limite.md) | Manual | — N/A |
+| AC-017 | TC-023 | Manual | [TC-023](test-cases/TC-023-1mb-en-15-minutos-happy.md) | Manual | — N/A |
 | AC-018 | TC-024 | Unit | [`fragment-file.spec.ts`](../../../../../src/app/shared/utils/qr-protocol/fragment-file.spec.ts) | quality-check | ✅ PASS |
 | AC-018 | TC-024 | E2E | [`send-flow.spec.ts:130`](../../../../../e2e/send-flow.spec.ts) | quality-check | ✅ PASS |
 | AC-019 | TC-025 | Unit | [`fragment-file.spec.ts`](../../../../../src/app/shared/utils/qr-protocol/fragment-file.spec.ts) | quality-check | ✅ PASS |
 
 ## Observaciones y pendientes
 
-- Las tres pruebas manuales con móviles (TC-018, TC-022 y TC-023) no se han ejecutado; el guion está en [guion-validacion-envio.md](./assets/guion-validacion-envio.md) y el seguimiento en la tarea TK-006 (IT-03), que sigue en curso.
+- Las tres pruebas manuales con móviles (TC-018, TC-022 y TC-023) no se han ejecutado; el guion está en [guion-validacion-envio.md](assets/guion-validacion-envio.md) y el seguimiento en la tarea TK-006 (IT-03), que sigue en curso.
 - El e2e se ejecutó en el puerto 4300 porque el 4200 lo ocupaba otro proyecto.
 
 <!-- coverage-verify:verdict=APPROVED_WITH_NOTES · fingerprint=4d9bc4efdf5073a19e42c00424a450a0911542d6 · spec=8fb6cf5624f2592026997e7996b7a3c573e59172 · generated=2026-10-08 -->

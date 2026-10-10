@@ -46,7 +46,7 @@ Creemos que fragmentos de 400 a 800 B con corrección de errores M, mostrados a 
 
 - Safari iOS, escritorio y otros navegadores.
 - Interfaz definitiva, historial, exportación, previsualización y manejo completo de errores.
-- Cifrado, compresión y corrección de errores del protocolo (diferidos, SRS-001 sección 2.6).
+- Cifrado, compresión y corrección de errores del protocolo (fuera de alcance del SRS-001, sección 1.2).
 - El código producido **no se integra**: queda en la rama `spike/WI-002-medicion-qr-android` como referencia de la implementación definitiva.
 
 ## Dependencias
@@ -60,7 +60,7 @@ Creemos que fragmentos de 400 a 800 B con corrección de errores M, mostrados a 
 ## Referencias
 
 - **Spike previo:** [WI-001](../WI-001-spike-protocolo-transferencia-qr/README.md); informe en la rama `spike/WI-001-protocolo-transferencia-qr`.
-- **Requerimiento:** [raw-requirement.md](../../../changes/requirements/SRS-001-transferencia-qr/references/raw-requirement.md)
+- **Requerimiento:** [SRS-001](../../../changes/requirements/SRS-001-transferencia-qr/README.md)
 - **Diseño:** [WF-004](../../../changes/requirements/SRS-001-transferencia-qr/wireframes/WF-004-recibir-escaneo.md) (recepción; referencia de contenido, no se implementa).
 
 ## Enfoque del experimento
@@ -75,7 +75,7 @@ Creemos que fragmentos de 400 a 800 B con corrección de errores M, mostrados a 
 
 ## Entregable
 
-- `spike-report.md` en esta carpeta, con veredicto y marca oculta `spike:verdict`.
+- [`spike-report.md`](../../../changes/requirements/SRS-001-transferencia-qr/references/spike-report-WI-002-medicion-qr-android.md) (movido a `references/` del SRS-001), con veredicto y marca oculta `spike:verdict`.
 - Evidencia del experimento en `assets/` de esta carpeta.
 - Rama `spike/WI-002-medicion-qr-android` con el código del experimento, sin integrar.
 
