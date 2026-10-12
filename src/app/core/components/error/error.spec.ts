@@ -6,7 +6,7 @@ import {
   Navigation,
   Router,
   RouterModule,
-  UrlTree,
+  UrlTree
 } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Error } from '@/core/components/error/error';
@@ -20,7 +20,7 @@ import {
   createMockActivatedRoute,
   createMockStorageService,
   createMockTitle,
-  COMMON_TEST_PROVIDERS,
+  COMMON_TEST_PROVIDERS
 } from '@/test/mocks/angular-mocks';
 import { createMockAuthProvider } from '@/test/mocks/service-mocks';
 import { withMockLocation } from '@/test/helpers/window-helpers';
@@ -39,7 +39,7 @@ describe('Error', () => {
     mockAuthProvider = createMockAuthProvider();
     mockStorage = createMockStorageService({
       get: vi.fn().mockReturnValue(null),
-      delete: vi.fn(),
+      delete: vi.fn()
     });
     mockTitle = createMockTitle();
     mockRouter = createMockRouter();
@@ -53,9 +53,9 @@ describe('Error', () => {
           router: mockRouter,
           activatedRoute: mockActivatedRoute,
           title: mockTitle,
-          storageService: mockStorage,
-        }),
-      ],
+          storageService: mockStorage
+        })
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Error);
@@ -82,8 +82,8 @@ describe('Error', () => {
       mockActivatedRoute = {
         snapshot: {
           params: { code: '404' },
-          data: {},
-        } as unknown as ActivatedRouteSnapshot,
+          data: {}
+        } as unknown as ActivatedRouteSnapshot
       };
 
       TestBed.resetTestingModule();
@@ -94,8 +94,8 @@ describe('Error', () => {
           { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
-          { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        ],
+          { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        ]
       });
 
       fixture = TestBed.createComponent(Error);
@@ -118,7 +118,7 @@ describe('Error', () => {
         trigger: 'imperative',
         extras: { state: { message: customMessage } },
         previousNavigation: null,
-        abort: () => {},
+        abort: () => {}
       };
 
       mockRouter = {
@@ -127,14 +127,14 @@ describe('Error', () => {
         createUrlTree: vi.fn().mockReturnValue({} as UrlTree),
         serializeUrl: vi.fn().mockReturnValue(''),
         events: EMPTY,
-        currentNavigation: signal<Navigation | null>(navigation),
+        currentNavigation: signal<Navigation | null>(navigation)
       };
 
       mockActivatedRoute = {
         snapshot: {
           params: { code: '404' },
-          data: {},
-        } as unknown as ActivatedRouteSnapshot,
+          data: {}
+        } as unknown as ActivatedRouteSnapshot
       };
 
       TestBed.resetTestingModule();
@@ -145,8 +145,8 @@ describe('Error', () => {
           { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
-          { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        ],
+          { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        ]
       });
 
       fixture = TestBed.createComponent(Error);
@@ -162,18 +162,18 @@ describe('Error', () => {
 
       mockStorage = createMockStorageService({
         get: vi.fn().mockReturnValue(storageMessage),
-        delete: vi.fn(),
+        delete: vi.fn()
       });
 
       mockRouter = {
-        currentNavigation: signal(null),
+        currentNavigation: signal(null)
       };
 
       mockActivatedRoute = {
         snapshot: {
           params: { code: '404' },
-          data: {},
-        } as unknown as ActivatedRouteSnapshot,
+          data: {}
+        } as unknown as ActivatedRouteSnapshot
       };
 
       TestBed.resetTestingModule();
@@ -184,8 +184,8 @@ describe('Error', () => {
           { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
-          { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        ],
+          { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        ]
       });
 
       fixture = TestBed.createComponent(Error);
@@ -196,7 +196,7 @@ describe('Error', () => {
       expect(component.message).toBe(storageMessage);
       expect(mockStorage.delete).toHaveBeenCalledWith(
         `${environment.sessionPrefix}_msg`,
-        'session',
+        'session'
       );
     });
   });
@@ -225,9 +225,9 @@ describe('Error', () => {
           { provide: Router, useValue: mockRouter },
           {
             provide: ActivatedRoute,
-            useValue: { snapshot: { params: { code: String(code) }, data: {} } },
-          },
-        ],
+            useValue: { snapshot: { params: { code: String(code) }, data: {} } }
+          }
+        ]
       });
 
       const codeFixture = TestBed.createComponent(Error);
@@ -299,8 +299,8 @@ describe('Error', () => {
           { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
-          { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: { code: 404 } } } },
-        ],
+          { provide: ActivatedRoute, useValue: { snapshot: { params: {}, data: { code: 404 } } } }
+        ]
       });
       const dataFixture = TestBed.createComponent(Error);
 
@@ -313,10 +313,7 @@ describe('Error', () => {
   });
 
   describe('template rendering', () => {
-    const renderWithCode = (
-      code: number,
-      logout: ReturnType<typeof vi.fn>,
-    ): ComponentFixture<Error> => {
+    const renderWithCode = (code: number, logout: ReturnType<typeof vi.fn>): ComponentFixture<Error> => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         imports: [Error, RouterModule],
@@ -327,9 +324,9 @@ describe('Error', () => {
           { provide: Router, useValue: mockRouter },
           {
             provide: ActivatedRoute,
-            useValue: { snapshot: { params: { code: String(code) }, data: {} } },
-          },
-        ],
+            useValue: { snapshot: { params: { code: String(code) }, data: {} } }
+          }
+        ]
       });
       const renderFixture = TestBed.createComponent(Error);
       renderFixture.detectChanges();
@@ -346,13 +343,27 @@ describe('Error', () => {
       expect(renderFixture.nativeElement.querySelector('h1').textContent).toContain('Not Found');
     });
 
-    it('should render a "Go home" link and no button for a 403 error', () => {
+    it('should render a "Logout" button for a 403 error', () => {
       // Act
       const renderFixture = renderWithCode(403, vi.fn().mockResolvedValue(true));
 
       // Assert
-      expect(renderFixture.nativeElement.querySelector('a[routerLink]')).not.toBeNull();
-      expect(renderFixture.nativeElement.querySelectorAll('button').length).toBe(0);
+      const buttons = renderFixture.nativeElement.querySelectorAll('button');
+      expect(buttons.length).toBe(1);
+      expect(renderFixture.nativeElement.querySelector('a[routerLink]')).toBeNull();
+    });
+
+    it('should call authProvider.logout when the Logout button is clicked', () => {
+      // Arrange
+      const logout = vi.fn().mockResolvedValue(true);
+      const renderFixture = renderWithCode(403, logout);
+      const button: HTMLButtonElement = renderFixture.nativeElement.querySelector('button');
+
+      // Act
+      button.click();
+
+      // Assert
+      expect(logout).toHaveBeenCalled();
     });
 
     it('should render a "Reload" button for an unknown error', () => {

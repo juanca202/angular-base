@@ -57,6 +57,6 @@ en el estándar de dominio **Coding Style Standards** (`../standards/coding-styl
 ## Referencias
 
 - [Coding Style Standards](../standards/coding-style.md)
-- [Índice de ADRs](README.md)
-- [ADR-002: Modificadores de acceso explícitos y uso de readonly en clases](ADR-002-explicit-member-accessibility-and-readonly.md)
+- [Índice de ADRs](./README.md)
+- [ADR-002: Modificadores de acceso explícitos y uso de readonly en clases](./ADR-002-explicit-member-accessibility-and-readonly.md)
 - Informe de auditoría: `../audits/arch-audit-2026-09-12.md`

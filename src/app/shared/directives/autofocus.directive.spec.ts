@@ -6,7 +6,7 @@ import { AutofocusDirective } from '@/shared/directives/autofocus.directive';
 // Componente de prueba que usa la directiva
 @Component({
   imports: [AutofocusDirective],
-  template: '<input appAutofocus type="text" />',
+  template: '<input appAutofocus type="text" />'
 })
 class TestComponent {}
 
@@ -16,7 +16,7 @@ describe('AutofocusDirective', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestComponent],
+      imports: [TestComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponent);

@@ -65,7 +65,7 @@ viven en el estándar de dominio **Architecture Standards**
 ## Referencias
 
 - [Architecture Standards](../standards/architecture.md)
-- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](ADR-001-hybrid-layered-feature-architecture.md)
-- [ADR-009: Puente de notificaciones por eventos en Core (`notify`)](ADR-009-core-event-notification-bridge.md)
-- [Índice de ADRs](README.md)
+- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](./ADR-001-hybrid-layered-feature-architecture.md)
+- [ADR-009: Puente de notificaciones por eventos en Core (`notify`)](./ADR-009-core-event-notification-bridge.md)
+- [Índice de ADRs](./README.md)
 - Implementación: `src/app/core/utils/async-resources.ts`, `src/app/core/services/base-repository.ts`

@@ -1,9 +1,0 @@
-/* Web Workers run without the DOM, so they are type-checked apart from the application. */
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "lib": ["es2022", "webworker"],
-    "types": []
-  },
-  "include": ["src/**/*.worker.ts"]
-}

@@ -6,18 +6,18 @@ import localeEs from '@angular/common/locales/es';
 import { SwUpdate } from '@angular/service-worker';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Storage } from '@factor_ec/utils';
+import { AuthProvider, Storage } from '@factor_ec/utils';
 import { MessageService, type MessageOptions } from '@factor_ec/ui';
 
 import { versionInfo } from '@/version-info';
 import { environment } from '@/environments/environment';
-import { AppUpdate } from '@/core/services/app-update';
+import { Session } from '@/core/services/session';
 import {
   ConfirmEvent,
   ConfirmOptions,
   NotificationEvent,
   NotificationOptions,
-  notificationEvents,
+  notificationEvents
 } from '@/core/utils/notification';
 import { firstValueFrom } from 'rxjs';
 import { Language } from '@/core/models/language';
@@ -41,10 +41,11 @@ registerLocaleData(localeEs, 'es');
 @Service()
 export class AppManager {
   // Dependency injection
+  private readonly authProvider = inject(AuthProvider);
   private readonly platformId = inject<object>(PLATFORM_ID);
+  private readonly session = inject(Session);
   private readonly snackbar = inject(MatSnackBar);
   private readonly swUpdate = inject(SwUpdate);
-  private readonly appUpdate = inject(AppUpdate);
   private readonly storage = inject(Storage);
   private readonly messageService = inject(MessageService);
 
@@ -95,7 +96,8 @@ export class AppManager {
 
   /**
    * Bootstraps application-wide concerns: PWA update listeners, the `notify`
-   * event bridge (ADR-009), and locale resolution.
+   * event bridge (ADR-009), locale resolution, and session restoration for an
+   * already authenticated user.
    */
   public async init(): Promise<void> {
     // Show version in console
@@ -112,13 +114,17 @@ export class AppManager {
     notificationEvents.addEventListener('confirm', async (event: Event) => {
       const { message, options, resolve } = (event as CustomEvent<ConfirmEvent>).detail;
       const value = await firstValueFrom(
-        this.messageService.show(message, this.buildConfirmOptions(options)),
+        this.messageService.show(message, this.buildConfirmOptions(options))
       );
       resolve(value);
     });
     // Load the configured application language
     const locale = await this.setLocale();
     console.log('Current locale: ', locale);
+    // If authenticated, initialize with local data
+    if (this.authProvider.isLoggedIn()) {
+      this.session.getSettings();
+    }
 
     // Log the time taken to initialize the app
     console.log('App initialized in:', (performance.now() - this.startTime).toFixed(2), 'ms');
@@ -145,7 +151,7 @@ export class AppManager {
       ? this.languages().find((l) => l.code === navigator.language.split('-')[0])?.code
       : null;
     const userLocale = this.languages().find(
-      (l) => l.code === this.storage.get(this.localeKey, 'local'),
+      (l) => l.code === this.storage.get(this.localeKey, 'local')
     )?.code;
     const locale = userLocale || systemLocale || environment.i18n.defaultLocale;
     this.storage.set(this.localeKey, locale, 'local');
@@ -206,7 +212,7 @@ export class AppManager {
       type: 'modal',
       class: options?.class,
       icon: options?.icon,
-      actions: options?.actions as MessageOptions['actions'],
+      actions: options?.actions as MessageOptions['actions']
     };
   }
   /**
@@ -233,7 +239,7 @@ export class AppManager {
           console.log(`New app version ready for use: ${evt.latestVersion.hash}`);
           const snack = this.snackbar.open($localize`Update Available`, $localize`Reload`);
           snack.onAction().subscribe(() => {
-            void this.appUpdate.activate();
+            window.location.reload();
           });
           break;
         }

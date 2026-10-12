@@ -9,6 +9,26 @@
 
 <!-- Normas de trabajo para agentes que no son preferencias (MEMORY), decisiones de arquitectura (ADR/estándares) ni stack: convenciones de código, comandos del repo, restricciones operativas. Ejemplo: "Seguir el estilo del código vecino; no reformatear líneas que no formen parte del cambio." -->
 
+## Stack tecnológico
+
+| Área | Tecnología |
+|------|------------|
+| Framework | Angular 22 (standalone, signals, application builder) |
+| Lenguaje | TypeScript ~6 |
+| UI / design system | `@factor_ec/ui` + `@factor_ec/utils` (p. ej. `ft-icon`, `MessageService`, `AuthProvider`); Angular Material |
+| Estilos | Tailwind CSS v4 + PostCSS (`@tailwindcss/postcss`) |
+| Reactividad | RxJS 7; estado local con signals de Angular |
+| HTTP / datos | `HttpClient` + patrón Repository (`getApiUrl`, `async-resources`) |
+| Mocks HTTP | MSW (Mock Service Worker) en `src/mocks/` |
+| PWA | `@angular/service-worker` |
+| Unit testing | Vitest + Testing Library (`@angular/build:unit-test`); helpers en `test/` |
+| E2E | Playwright (`e2e/`; `npm run e2e`) |
+| Lint / formato | ESLint (angular-eslint, typescript-eslint, reglas en `scripts/eslint-rules/`) + Prettier |
+| Commits | GitFlow + Conventional Commits (commitlint) + Husky |
+| Arquitectura (gate) | `npm run arch` — dependency-cruiser + fitness functions en `scripts/arch/` |
+| Empaquetado | npm (`packageManager`: npm@11) |
+| i18n | `$localize` / `@angular/localize` (opt-in `environment.i18n`) + scripts `extract-i18n` / `i18n` |
+
 ## TypeScript Best Practices
 
 - Use strict type checking
@@ -65,23 +85,3 @@
 - Use the `providedIn: 'root'` option for singleton services
 - Prefer the `@Service` decorator over `@Injectable({providedIn: 'root'})` for new singleton services (Angular v22+)
 - Use the `inject()` function instead of constructor injection
-
-# Stack tecnológico
-
-| Área | Tecnología |
-|------|------------|
-| Framework | Angular 22 (standalone, signals, application builder) |
-| Lenguaje | TypeScript ~6 |
-| UI / design system | `@factor_ec/ui` + `@factor_ec/utils` (p. ej. `ft-icon`, `MessageService`, `AuthProvider`); Angular Material |
-| Estilos | Tailwind CSS v4 + PostCSS (`@tailwindcss/postcss`) |
-| Reactividad | RxJS 7; estado local con signals de Angular |
-| HTTP / datos | `HttpClient` + patrón Repository (`getApiUrl`, `async-resources`) |
-| Mocks HTTP | MSW (Mock Service Worker) en `src/mocks/` |
-| PWA | `@angular/service-worker` |
-| Unit testing | Vitest + Testing Library (`@angular/build:unit-test`); helpers en `test/` |
-| E2E | Playwright (`e2e/`; `npm run e2e`) |
-| Lint / formato | ESLint (angular-eslint, typescript-eslint, reglas en `scripts/eslint-rules/`) + Prettier |
-| Commits | GitFlow + Conventional Commits (commitlint) + Husky |
-| Arquitectura (gate) | `npm run arch` — dependency-cruiser + fitness functions en `scripts/arch/` |
-| Empaquetado | npm (`packageManager`: npm@11) |
-| i18n | `$localize` / `@angular/localize` (opt-in `environment.i18n`) + scripts `extract-i18n` / `i18n` |

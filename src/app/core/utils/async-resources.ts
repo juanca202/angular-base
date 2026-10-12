@@ -9,7 +9,7 @@ import {
   Observable,
   Subject,
   takeUntil,
-  tap,
+  tap
 } from 'rxjs';
 import { notify } from '@/core/utils/notification';
 
@@ -18,7 +18,7 @@ import { notify } from '@/core/utils/notification';
  * Receives a SINGLE optional parameter (primitive or object).
  */
 export type AsyncFactory<TParams, TResult> = (
-  params: TParams extends void ? undefined : TParams,
+  params: TParams extends void ? undefined : TParams
 ) => Observable<TResult> | Promise<TResult>;
 
 /**
@@ -67,7 +67,7 @@ export interface Resource<TParams, TResult> {
   readonly error: Signal<unknown | null>;
   readonly load: (
     params?: TParams extends void ? undefined : TParams,
-    options?: Options,
+    options?: Options
   ) => Promise<TResult>;
   readonly reload: () => Promise<TResult | null>;
   readonly destroy: () => void;
@@ -76,16 +76,14 @@ export interface Resource<TParams, TResult> {
 /**
  * State container for a GET collection resource.
  */
-export interface ResourceCollection<TParams, TResult extends unknown[]> extends Resource<
-  TParams,
-  TResult
-> {
+export interface ResourceCollection<TParams, TResult extends unknown[]>
+  extends Resource<TParams, TResult> {
   readonly accumulated: Signal<TResult | null>;
   /** Total de registros cuando el API devuelve { data, total }. */
   readonly total: Signal<number | null>;
   readonly load: (
     params?: TParams extends void ? undefined : TParams,
-    options?: CollectionOptions,
+    options?: CollectionOptions
   ) => Promise<TResult>;
 }
 
@@ -130,7 +128,7 @@ function createMutationHandler<TParams, TResult>(
   error: ReturnType<typeof signal<unknown | null>>,
   globalError: ReturnType<typeof signal<unknown | null>>,
   onGlobalStart: () => void,
-  onGlobalEnd: () => void,
+  onGlobalEnd: () => void
 ): Mutate<TParams, TResult> {
   const fn = async (data: FactoryParams<TParams>, options?: Options): Promise<TResult> => {
     const { notifyError = true } = options || {};
@@ -156,7 +154,7 @@ function createMutationHandler<TParams, TResult>(
       finalize(() => {
         submitting.set(false);
         onGlobalEnd();
-      }),
+      })
     );
 
     return firstValueFrom(request$);
@@ -221,7 +219,7 @@ export function getMutations<T extends object>(factories: T): MutationsResult<T>
       error,
       globalError,
       () => globalSubmitting.set(true),
-      syncGlobalSubmitting,
+      syncGlobalSubmitting
     ) as MutationsResult<T>[typeof key];
   });
 
@@ -235,7 +233,7 @@ export function getMutations<T extends object>(factories: T): MutationsResult<T>
  * Creates a reactive GET resource with lifecycle and state management.
  */
 export function getResource<TParams, TResult>(
-  factory: AsyncFactory<TParams, TResult>,
+  factory: AsyncFactory<TParams, TResult>
 ): Resource<TParams, TResult> {
   const loading = signal(false);
   const value = signal<TResult | null>(null);
@@ -267,7 +265,7 @@ export function getResource<TParams, TResult>(
         throw new ResourceException(msg, err);
       }),
       finalize(() => loading.set(false)),
-      takeUntil(destroy$),
+      takeUntil(destroy$)
     );
 
     return await firstValueFrom(request$);
@@ -284,7 +282,7 @@ export function getResource<TParams, TResult>(
     destroy: () => {
       destroy$.next();
       destroy$.complete();
-    },
+    }
   };
 }
 
@@ -292,7 +290,7 @@ export function getResource<TParams, TResult>(
  * Creates a reactive resource (GET) with support for accumulable collections.
  */
 export function getResourceCollection<TParams, TResult extends unknown[]>(
-  factory: AsyncFactory<TParams, TResult | CollectionResult<TResult>>,
+  factory: AsyncFactory<TParams, TResult | CollectionResult<TResult>>
 ): ResourceCollection<TParams, TResult> {
   const loading = signal(false);
   const value = signal<TResult | null>(null);
@@ -306,7 +304,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
 
   const load = async (
     params?: FactoryParams<TParams>,
-    options?: CollectionOptions,
+    options?: CollectionOptions
   ): Promise<TResult> => {
     const { notifyError = true, append = false } = options || {};
     lastParams = params;
@@ -352,7 +350,7 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
         throw new ResourceException(msg, err);
       }),
       finalize(() => loading.set(false)),
-      takeUntil(destroy$),
+      takeUntil(destroy$)
     );
 
     const raw = await firstValueFrom(request$);
@@ -372,6 +370,6 @@ export function getResourceCollection<TParams, TResult extends unknown[]>(
     destroy: () => {
       destroy$.next();
       destroy$.complete();
-    },
+    }
   };
 }

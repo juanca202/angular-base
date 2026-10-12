@@ -38,7 +38,7 @@ El enunciado normativo (RFC 2119), los criterios de cumplimiento verificables y 
 de esta decisión viven en el estándar de dominio **Testing Standards**
 (`../standards/testing.md`), no en este ADR.
 
-Complementa a [ADR-003](ADR-003-unit-testing-vitest-testing-library.md) (pruebas unitarias); no lo
+Complementa a [ADR-003](./ADR-003-unit-testing-vitest-testing-library.md) (pruebas unitarias); no lo
 reemplaza.
 
 ## Consecuencias
@@ -60,7 +60,7 @@ reemplaza.
 ## Referencias
 
 - [Testing Standards](../standards/testing.md)
-- [ADR-003: Estrategia de pruebas unitarias con Vitest, Testing Library y convenciones AAA / Object Mother](ADR-003-unit-testing-vitest-testing-library.md)
-- [Índice de ADRs](README.md)
+- [ADR-003: Estrategia de pruebas unitarias con Vitest, Testing Library y convenciones AAA / Object Mother](./ADR-003-unit-testing-vitest-testing-library.md)
+- [Índice de ADRs](./README.md)
 - [Playwright](https://playwright.dev/)
 - [Playwright — Angular](https://playwright.dev/docs/intro)

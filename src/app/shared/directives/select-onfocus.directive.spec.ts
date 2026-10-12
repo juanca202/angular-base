@@ -6,7 +6,7 @@ import { SelectOnfocusDirective } from '@/shared/directives/select-onfocus.direc
 // Componente de prueba que usa la directiva
 @Component({
   imports: [SelectOnfocusDirective],
-  template: '<input appSelectOnfocus type="text" value="test value" />',
+  template: '<input appSelectOnfocus type="text" value="test value" />'
 })
 class TestComponent {}
 
@@ -16,7 +16,7 @@ describe('SelectOnfocusDirective', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestComponent],
+      imports: [TestComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponent);

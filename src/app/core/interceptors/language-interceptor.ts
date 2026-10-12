@@ -7,8 +7,8 @@ export const languageInterceptor: HttpInterceptorFn = (req, next) => {
   const appManager = inject(AppManager);
   const langReq = req.clone({
     setHeaders: {
-      'Accept-Language': appManager.getLocale(),
-    },
+      'Accept-Language': appManager.getLocale()
+    }
   });
   return next(langReq);
 };

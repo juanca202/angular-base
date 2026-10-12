@@ -16,10 +16,10 @@ describe('languageInterceptor', () => {
         {
           provide: AppManager,
           useValue: {
-            getLocale: vi.fn().mockReturnValue('en'),
-          },
-        },
-      ],
+            getLocale: vi.fn().mockReturnValue('en')
+          }
+        }
+      ]
     });
 
     appManager = TestBed.inject(AppManager);
@@ -42,8 +42,8 @@ describe('languageInterceptor', () => {
   it('should preserve existing headers', () => {
     const req = new HttpRequest('GET', '/api/test', null, {
       headers: new HttpHeaders({
-        Authorization: 'Bearer token123',
-      }),
+        Authorization: 'Bearer token123'
+      })
     });
 
     TestBed.runInInjectionContext(() => {

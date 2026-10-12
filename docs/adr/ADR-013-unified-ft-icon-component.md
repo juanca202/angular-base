@@ -17,7 +17,7 @@ Sin una convención única para colecciones, tamaños e iconos personalizados, e
 tiende a divergir: distintas APIs (`mat-icon`, SVG inline, tipografías de iconos), escalas ad hoc y
 símbolos custom sin alinear a la grilla Material 24×24. Eso rompe la consistencia visual y complica
 el mantenimiento del design system, incluso cuando ya se usa Tailwind como presentación
-([ADR-006](ADR-006-presentation-tailwind-css.md)).
+([ADR-006](./ADR-006-presentation-tailwind-css.md)).
 
 El proyecto ya dispone de `<ft-icon />` (p. ej. en layout y placeholders de error) y de colecciones
 Factor Icons. Falta fijar esa API como la vía canónica y documentar colecciones, tamaños y el sprite
@@ -58,5 +58,5 @@ viven en el estándar de dominio **Frontend Standards** (`../standards/frontend.
 ## Referencias
 
 - [Frontend Standards](../standards/frontend.md)
-- [ADR-006: Presentación con Tailwind CSS](ADR-006-presentation-tailwind-css.md)
-- [Índice de ADRs](README.md)
+- [ADR-006: Presentación con Tailwind CSS](./ADR-006-presentation-tailwind-css.md)
+- [Índice de ADRs](./README.md)

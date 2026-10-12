@@ -5,7 +5,7 @@
     [matMenuTriggerFor]="contextMenu"
     (click)="$event.stopPropagation()"
   >
-    <ft-icon name="ellipsis-vertical" class="text-2xl" />
+    <ft-icon name="ellipsis-vertical" />
   </button>
   <mat-menu #contextMenu="matMenu">
     @for (group of items(); track group.id) {

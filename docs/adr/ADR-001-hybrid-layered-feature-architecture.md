@@ -80,5 +80,5 @@ de esta decisión viven en el estándar de dominio **Architecture Standards**
 ## Referencias
 
 - [Architecture Standards](../standards/architecture.md)
-- [Índice de ADRs](README.md)
+- [Índice de ADRs](./README.md)
 - [Angular Style Guide - Estructura de Archivos](https://angular.dev/style-guide#file-structure)

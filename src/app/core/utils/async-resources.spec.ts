@@ -6,7 +6,7 @@ import {
   getResourceCollection,
   getMutations,
   getApiUrl,
-  ResourceException,
+  ResourceException
 } from '@/core/utils/async-resources';
 import { environment } from '@/environments/environment';
 import { notificationEvents, type NotificationEvent } from '@/core/utils/notification';
@@ -248,7 +248,7 @@ describe('async-resources', () => {
       // Arrange
       const factories = {
         create: vi.fn().mockReturnValue(of({ id: '1' })),
-        update: vi.fn().mockReturnValue(of({ id: '1', name: 'Updated' })),
+        update: vi.fn().mockReturnValue(of({ id: '1', name: 'Updated' }))
       };
 
       // Act
@@ -265,7 +265,7 @@ describe('async-resources', () => {
       // Arrange
       const testData = { id: '1', name: 'Test' };
       const factories = {
-        create: vi.fn().mockReturnValue(of(testData)),
+        create: vi.fn().mockReturnValue(of(testData))
       };
 
       // Act
@@ -287,7 +287,7 @@ describe('async-resources', () => {
         resolvePromise = resolve;
       });
       const factories = {
-        create: vi.fn().mockReturnValue(promise),
+        create: vi.fn().mockReturnValue(promise)
       };
 
       // Act
@@ -305,7 +305,7 @@ describe('async-resources', () => {
       // Arrange
       const error = { message: 'Mutation error', error: { messages: ['Error'] } };
       const factories = {
-        create: vi.fn().mockReturnValue(throwError(() => error)),
+        create: vi.fn().mockReturnValue(throwError(() => error))
       };
 
       // Act
@@ -321,7 +321,7 @@ describe('async-resources', () => {
       // Arrange
       const error = { message: 'Mutation error' };
       const factories = {
-        create: vi.fn().mockReturnValue(throwError(() => error)),
+        create: vi.fn().mockReturnValue(throwError(() => error))
       };
 
       // Act
@@ -336,7 +336,7 @@ describe('async-resources', () => {
       // Arrange
       const factories = {
         create: vi.fn().mockReturnValue(of({ id: '1' })),
-        update: vi.fn().mockReturnValue(of({ id: '1' })),
+        update: vi.fn().mockReturnValue(of({ id: '1' }))
       };
 
       // Act

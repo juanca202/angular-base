@@ -16,11 +16,11 @@ describe('ErrorPlaceholder', () => {
           useValue: {
             iconSettings: {
               path: 'images',
-              collection: 'factoricons-regular',
-            },
-          },
-        },
-      ],
+              collection: 'factoricons-regular'
+            }
+          }
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorPlaceholder);

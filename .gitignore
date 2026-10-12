@@ -55,7 +55,3 @@ git-version.json
 
 # TypeScript incremental build cache
 *.tsbuildinfo
-
-# Secretos locales del harness SDD Devkit
-.sdd-devkit/.env
-.sdd-devkit/quality-check-run.json

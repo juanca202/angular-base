@@ -8,7 +8,7 @@ describe('ProgressPlaceholder', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProgressPlaceholder],
+      imports: [ProgressPlaceholder]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProgressPlaceholder);

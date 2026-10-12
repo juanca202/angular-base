@@ -15,7 +15,7 @@ emits: [architecture/CR-007]
 
 El feedback al usuario (éxitos, errores, avisos) suele acoplar prematuramente la infraestructura y las
 features a la librería visual concreta (`MessageService` de `@factor_ec/ui`). Eso viola la intención de
-la capa Core ([ADR-001](ADR-001-hybrid-layered-feature-architecture.md)): Core no debe conocer la
+la capa Core ([ADR-001](./ADR-001-hybrid-layered-feature-architecture.md)): Core no debe conocer la
 implementación de presentación. Además, sin un canal único, los errores de operaciones asíncronas y el
 feedback de acciones ad hoc se resuelven de forma inconsistente (spies locales, imports directos de UI,
 diálogos improvisados).
@@ -65,7 +65,7 @@ viven en el estándar de dominio **Architecture Standards**
 ## Referencias
 
 - [Architecture Standards](../standards/architecture.md)
-- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](ADR-001-hybrid-layered-feature-architecture.md)
-- [Índice de ADRs](README.md)
+- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](./ADR-001-hybrid-layered-feature-architecture.md)
+- [Índice de ADRs](./README.md)
 - Implementación: `src/app/core/utils/notification.ts`, `src/app/core/services/app-manager.ts`
 - Firma: `import { notify } from '@/core/utils/notification';`

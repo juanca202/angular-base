@@ -15,7 +15,6 @@ import { environment } from '@/environments/environment';
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 
 import { AppManager } from '@/core/services/app-manager';
-import { AppUpdate } from '@/core/services/app-update';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -29,7 +28,6 @@ export const appConfig: ApplicationConfig = {
       const appManager = inject(AppManager);
       await appManager.init();
     }),
-    provideAppInitializer(() => inject(AppUpdate).watch()),
     provideHttpClient(withInterceptors([clientInterceptor, languageInterceptor])),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
@@ -38,13 +36,13 @@ export const appConfig: ApplicationConfig = {
     {
       provide: UI_OPTIONS,
       useValue: {
-        iconSettings: environment.iconSettings,
-      },
+        iconSettings: environment.iconSettings
+      }
     },
     {
       provide: LOCALE_ID,
       useFactory: (appManager: AppManager) => appManager.getLocale(),
-      deps: [AppManager],
-    },
+      deps: [AppManager]
+    }
   ],
 };

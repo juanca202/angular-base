@@ -11,7 +11,7 @@ describe('IconButtonContext', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IconButtonContext],
+      imports: [IconButtonContext]
     }).compileComponents();
 
     fixture = TestBed.createComponent(IconButtonContext);
@@ -34,11 +34,7 @@ describe('IconButtonContext', () => {
   it('should render the trigger button when there are items', () => {
     // Arrange
     const items: Action[] = [
-      {
-        id: 'group-1',
-        type: ACTION_TYPE.GROUP,
-        children: [{ id: 'action-1', label: 'Edit', type: ACTION_TYPE.ITEM }],
-      },
+      { id: 'group-1', type: ACTION_TYPE.GROUP, children: [{ id: 'action-1', label: 'Edit', type: ACTION_TYPE.ITEM }] }
     ];
     fixture.componentRef.setInput('items', items);
 
@@ -53,11 +49,7 @@ describe('IconButtonContext', () => {
   it('should stop click propagation on the trigger button', () => {
     // Arrange
     const items: Action[] = [
-      {
-        id: 'group-1',
-        type: ACTION_TYPE.GROUP,
-        children: [{ id: 'action-1', label: 'Edit', type: ACTION_TYPE.ITEM }],
-      },
+      { id: 'group-1', type: ACTION_TYPE.GROUP, children: [{ id: 'action-1', label: 'Edit', type: ACTION_TYPE.ITEM }] }
     ];
     fixture.componentRef.setInput('items', items);
     fixture.detectChanges();

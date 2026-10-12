@@ -8,7 +8,7 @@ import { Action } from '@/core/models/action';
   selector: 'app-icon-button-context',
   imports: [MatMenuModule, MatButtonModule, Icon],
   templateUrl: './icon-button-context.html',
-  styleUrl: './icon-button-context.css',
+  styleUrl: './icon-button-context.css'
 })
 export class IconButtonContext {
   public readonly items = input<Action[]>([]);

@@ -12,8 +12,8 @@ export interface ErrorResource {
   templateUrl: './error-placeholder.html',
   styleUrl: './error-placeholder.css',
   host: {
-    class: 'p-6',
-  },
+    class: 'p-6'
+  }
 })
 export class ErrorPlaceholder {
   public readonly resource = input<ErrorResource>();

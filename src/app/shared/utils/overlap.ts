@@ -7,7 +7,7 @@
  */
 export function setOverlapped(
   overlapped: boolean,
-  element: HTMLElement | { nativeElement?: HTMLElement } | null | undefined,
+  element: HTMLElement | { nativeElement?: HTMLElement } | null | undefined
 ): void {
   const targetElement = element instanceof HTMLElement ? element : element?.nativeElement;
   if (!targetElement) {

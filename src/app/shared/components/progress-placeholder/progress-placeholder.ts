@@ -7,8 +7,8 @@ import { Progress } from '@factor_ec/ui';
   templateUrl: './progress-placeholder.html',
   styleUrl: './progress-placeholder.css',
   host: {
-    class: 'text-center',
-  },
+    class: 'text-center'
+  }
 })
 export class ProgressPlaceholder {
   public readonly iconClass = input<string | null>(null);

@@ -18,10 +18,10 @@ Las transformaciones entre representaciones de una misma entidad (p. ej. Respons
 normalización (tipos, nulos, formas anidadas), dificulta el mantenimiento y mezcla la conversión de
 datos con orquestación o presentación.
 
-El acceso REST ya se concentra en repositorios ([ADR-010](ADR-010-repository-pattern-rest-api.md))
-y la orquestación en managers ([ADR-011](ADR-011-manager-pattern-orchestration.md)). Falta un rol
+El acceso REST ya se concentra en repositorios ([ADR-010](./ADR-010-repository-pattern-rest-api.md))
+y la orquestación en managers ([ADR-011](./ADR-011-manager-pattern-orchestration.md)). Falta un rol
 explícito y reutilizable solo para mapear entre capas de datos, alineado con la organización por
-feature de [ADR-001](ADR-001-hybrid-layered-feature-architecture.md).
+feature de [ADR-001](./ADR-001-hybrid-layered-feature-architecture.md).
 
 ## Decisión
 
@@ -62,7 +62,7 @@ viven en el estándar de dominio **Architecture Standards**
 ## Referencias
 
 - [Architecture Standards](../standards/architecture.md)
-- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](ADR-001-hybrid-layered-feature-architecture.md)
-- [ADR-010: Patrón Repository para comunicación REST API](ADR-010-repository-pattern-rest-api.md)
-- [ADR-011: Patrón Manager para orquestación de flujos de negocio y UX](ADR-011-manager-pattern-orchestration.md)
-- [Índice de ADRs](README.md)
+- [ADR-001: Arquitectura híbrida por capas y por funcionalidades](./ADR-001-hybrid-layered-feature-architecture.md)
+- [ADR-010: Patrón Repository para comunicación REST API](./ADR-010-repository-pattern-rest-api.md)
+- [ADR-011: Patrón Manager para orquestación de flujos de negocio y UX](./ADR-011-manager-pattern-orchestration.md)
+- [Índice de ADRs](./README.md)

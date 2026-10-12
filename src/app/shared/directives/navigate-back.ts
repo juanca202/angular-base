@@ -28,8 +28,8 @@ import { Router } from '@angular/router';
 @Directive({
   selector: '[appNavigateBack]',
   host: {
-    '(click)': 'handleClick()',
-  },
+    '(click)': 'handleClick()'
+  }
 })
 export class NavigateBack {
   // Dependency injection
