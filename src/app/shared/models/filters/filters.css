@@ -1,0 +1,5 @@
+@reference "tailwindcss";
+
+:host {
+    @apply shadow-md flex gap-3 items-center bg-[#FFF] p-4 rounded-md;
+}

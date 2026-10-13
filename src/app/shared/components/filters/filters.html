@@ -1,0 +1,93 @@
+@for (item of items(); track item.id) {
+  @switch (item.type) {
+    @case ('text') {
+      <mat-form-field [class]="item.fieldClass" subscriptSizing="dynamic">
+        <mat-label
+          >{{ item.label }}
+          @if (item.required) {
+            &nbsp;*
+          }
+        </mat-label>
+        @if (item.icon) {
+          <span matPrefix class="inline-flex items-center pl-1 text-muted-foreground">
+            <ft-icon [name]="item.icon" class="ft-icon--2" />
+          </span>
+        }
+        <input
+          matInput
+          type="text"
+          [attr.data-testid]="'filter-' + item.id"
+          [placeholder]="item.placeholder ?? ''"
+          [value]="textValue(item.id)"
+          (input)="onTextInput(item, $event)"
+        />
+      </mat-form-field>
+    }
+    @case ('dropdown') {
+      <mat-form-field [class]="item.fieldClass" subscriptSizing="dynamic">
+        <mat-label
+          >{{ item.label }}
+          @if (item.required) {
+            &nbsp;*
+          }
+        </mat-label>
+        <mat-select
+          [attr.data-testid]="'filter-' + item.id"
+          [value]="dropdownValue(item.id)"
+          (selectionChange)="onDropdownChange(item, $event.value)"
+        >
+          @if (item.defaultOption) {
+            <mat-option [value]="item.defaultOption.value">{{
+              item.defaultOption.label
+            }}</mat-option>
+          }
+          @for (option of item.options; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+    @case ('date-range') {
+      <mat-form-field [class]="item.fieldClass" subscriptSizing="dynamic">
+        <mat-label
+          >{{ item.label }}
+          @if (item.required) {
+            &nbsp;*
+          }
+        </mat-label>
+        <mat-date-range-input [rangePicker]="rangePicker">
+          <input
+            matStartDate
+            placeholder="Desde"
+            [attr.data-testid]="'filter-' + item.id + '-from'"
+            [value]="dateRangeValue(item.id).from ?? null"
+            (dateChange)="onDateRangeChange(item, { from: $event.value ?? undefined })"
+          />
+          <input
+            matEndDate
+            placeholder="Hasta"
+            [attr.data-testid]="'filter-' + item.id + '-to'"
+            [value]="dateRangeValue(item.id).to ?? null"
+            (dateChange)="onDateRangeChange(item, { to: $event.value ?? undefined })"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="rangePicker" />
+        <mat-date-range-picker #rangePicker />
+      </mat-form-field>
+    }
+    @case ('button') {
+      <button
+        [matButton]="item.buttonAppearance ?? 'filled'"
+        type="button"
+        [class]="item.fieldClass"
+        [attr.data-testid]="'filter-' + item.id"
+        (click)="onAction(item)"
+      >
+        @if (item.icon) {
+          <ft-icon [name]="item.icon" class="ft-icon--2" />
+        }
+        {{ item.label }}
+      </button>
+    }
+  }
+}

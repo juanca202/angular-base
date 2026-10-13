@@ -1,0 +1,5 @@
+@reference "tailwindcss";
+
+:host {
+  @apply block rounded-md shadow-md overflow-x-auto overflow-y-hidden bg-[#FFF];
+}
