@@ -76,9 +76,9 @@ locales de calidad).
 
 | ID     | Requisito                     | Descripción                                                                                                                         | Origen                                                   | Automatizable | Enfoque    | Verificación |
 | ------ | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------- | ---------- | ------------ |
-| CR-001 | gitflow-branching             | El trabajo en el repo **DEBE** usar GitFlow (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`)                              | [ADR-008](../adr/ADR-008-gitflow-conventional-commits.md) | no            | bloqueante | no           |
-| CR-002 | conventional-commits          | Los mensajes de commit **DEBEN** seguir Conventional Commits con los tipos permitidos del requisito                                 | [ADR-008](../adr/ADR-008-gitflow-conventional-commits.md) | yes           | bloqueante | yes          |
-| CR-003 | commit-message-enforcement    | El proyecto **DEBE** validar mensajes de commit con commitlint; Husky **DEBE** engancharlo en `commit-msg`                          | [ADR-008](../adr/ADR-008-gitflow-conventional-commits.md) | yes           | bloqueante | yes          |
+| CR-001 | gitflow-branching             | El trabajo en el repo **DEBE** usar GitFlow (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`)                              | [ADR-008](../adr/ADR-008-gitflow-conventional-commits.md) | no            | bloqueante | Pending |
+| CR-002 | conventional-commits          | Los mensajes de commit **DEBEN** seguir Conventional Commits con los tipos permitidos del requisito                                 | [ADR-008](../adr/ADR-008-gitflow-conventional-commits.md) | yes           | bloqueante | [scripts/arch/checks/devops.mjs](../../scripts/arch/checks/devops.mjs) |
+| CR-003 | commit-message-enforcement    | El proyecto **DEBE** validar mensajes de commit con commitlint; Husky **DEBE** engancharlo en `commit-msg`                          | [ADR-008](../adr/ADR-008-gitflow-conventional-commits.md) | yes           | bloqueante | [scripts/arch/checks/devops.mjs](../../scripts/arch/checks/devops.mjs) |
 
 ## Referencias
 

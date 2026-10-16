@@ -1,6 +1,8 @@
-# Architecture Decision Records
+# Registros de Decisiones de Arquitectura
 
-Índice de decisiones arquitectónicas del proyecto.
+Catálogo de las decisiones arquitectónicas del proyecto. Sirve para localizar rápidamente qué se decidió, por qué y con qué estado (`Draft`/`Proposed`/`Accepted`).
+
+<!-- arch-manage añade aquí una línea por ADR creado: `- [ADR-XXX: Título](ADR-XXX-slug.md)`. No reordenar ni eliminar entradas manualmente. -->
 
 - [ADR-001: Arquitectura híbrida por capas y por funcionalidades (Core, Shared, Features)](./ADR-001-hybrid-layered-feature-architecture.md)
 - [ADR-002: Modificadores de acceso explícitos y uso de readonly en clases](./ADR-002-explicit-member-accessibility-and-readonly.md)

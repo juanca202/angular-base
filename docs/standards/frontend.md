@@ -100,8 +100,8 @@ componente.
 
 | ID     | Requisito                 | Descripción                                                                                                                                                         | Origen                                                    | Automatizable | Enfoque    | Verificación |
 | ------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------- | ---------- | ------------ |
-| CR-002 | no-inline-styles          | Las plantillas y componentes **NO DEBEN** usar estilos en línea (`style`, `[style.*]`, `ngStyle`), salvo valores dinámicos no expresables con utilidades Tailwind | [ADR-006](../adr/ADR-006-presentation-tailwind-css.md)  | yes           | bloqueante | yes          |
-| CR-003 | css-classes-via-apply     | Las clases CSS propias definidas en el proyecto **DEBEN** usar `@apply` con utilidades Tailwind                                                                     | [ADR-006](../adr/ADR-006-presentation-tailwind-css.md)  | yes           | bloqueante | yes          |
+| CR-002 | no-inline-styles          | Las plantillas y componentes **NO DEBEN** usar estilos en línea (`style`, `[style.*]`, `ngStyle`), salvo valores dinámicos no expresables con utilidades Tailwind | [ADR-006](../adr/ADR-006-presentation-tailwind-css.md)  | yes           | bloqueante | [scripts/arch/checks/frontend.mjs](../../scripts/arch/checks/frontend.mjs) |
+| CR-003 | css-classes-via-apply     | Las clases CSS propias definidas en el proyecto **DEBEN** usar `@apply` con utilidades Tailwind                                                                     | [ADR-006](../adr/ADR-006-presentation-tailwind-css.md)  | yes           | bloqueante | [scripts/arch/checks/frontend.mjs](../../scripts/arch/checks/frontend.mjs) |
 
 ## Referencias
 
