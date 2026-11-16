@@ -9,11 +9,13 @@ import {
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { UI_OPTIONS } from '@factor_ec/ui';
+import { AuthProvider } from '@factor_ec/utils';
 
 import { clientInterceptor } from '@/core/interceptors/client-interceptor';
 import { environment } from '@/environments/environment';
 import { languageInterceptor } from '@/core/interceptors/language-interceptor';
 
+import { AnonymousAuthProvider } from '@/core/services/anonymous-auth-provider';
 import { AppManager } from '@/core/services/app-manager';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -33,6 +35,11 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    // No authentication yet: swap for a real provider (e.g. AuthService) when needed
+    {
+      provide: AuthProvider,
+      useClass: AnonymousAuthProvider
+    },
     {
       provide: UI_OPTIONS,
       useValue: {
