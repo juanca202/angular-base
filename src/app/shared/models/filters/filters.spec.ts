@@ -13,7 +13,7 @@ import type {
   FilterValue,
   FilterValues
 } from '@/shared/models/filters';
-import { Filters } from './filters';
+import { Filters } from '@/shared/models/filters/filters';
 
 /** Typed escape hatch to reach protected/private members from whitebox tests. */
 type FiltersInternals = {

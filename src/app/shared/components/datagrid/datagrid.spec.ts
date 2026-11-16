@@ -9,9 +9,9 @@ import { MatPaginatorHarness } from '@angular/material/paginator/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
 
 import type { DatagridColumn } from '@/shared/models/datagrid';
-import { Datagrid } from './datagrid';
-import { DatagridCellDirective } from './datagrid-cell.directive';
-import { DatagridHeaderCellDirective } from './datagrid-header-cell.directive';
+import { Datagrid } from '@/shared/components/datagrid/datagrid';
+import { DatagridCellDirective } from '@/shared/components/datagrid/datagrid-cell.directive';
+import { DatagridHeaderCellDirective } from '@/shared/components/datagrid/datagrid-header-cell.directive';
 
 /** Loosely-typed row used across tests; each test shapes its own fields. */
 type Row = Record<string, unknown>;

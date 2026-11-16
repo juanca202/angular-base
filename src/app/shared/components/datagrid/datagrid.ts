@@ -15,8 +15,8 @@ import type {
   DatagridColumnAlign,
   DatagridPageEvent
 } from '@/shared/models/datagrid';
-import { DatagridCellDirective } from './datagrid-cell.directive';
-import { DatagridHeaderCellDirective } from './datagrid-header-cell.directive';
+import { DatagridCellDirective } from '@/shared/components/datagrid/datagrid-cell.directive';
+import { DatagridHeaderCellDirective } from '@/shared/components/datagrid/datagrid-header-cell.directive';
 
 /** Page size used when the consumer does not provide one. */
 const DEFAULT_PAGE_SIZE = 10;

@@ -1,6 +1,6 @@
 import type { MatButtonAppearance } from '@angular/material/button';
 
-import type { Option } from './option';
+import type { Option } from '@/shared/models/option';
 
 /** Shared fields of every `FilterItem` variant. */
 interface FilterItemBase {
