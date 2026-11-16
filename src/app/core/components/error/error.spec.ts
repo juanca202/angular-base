@@ -313,12 +313,19 @@ describe('Error', () => {
   });
 
   describe('template rendering', () => {
-    const renderWithCode = (code: number, logout: ReturnType<typeof vi.fn>): ComponentFixture<Error> => {
+    const renderWithCode = (
+      code: number,
+      logout: ReturnType<typeof vi.fn>,
+      loggedIn = true
+    ): ComponentFixture<Error> => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         imports: [Error, RouterModule],
         providers: [
-          { provide: AuthProvider, useValue: { ...mockAuthProvider, logout } },
+          {
+            provide: AuthProvider,
+            useValue: { ...mockAuthProvider, logout, isLoggedIn: () => loggedIn }
+          },
           { provide: Storage, useValue: mockStorage },
           { provide: Title, useValue: mockTitle },
           { provide: Router, useValue: mockRouter },
@@ -351,6 +358,26 @@ describe('Error', () => {
       const buttons = renderFixture.nativeElement.querySelectorAll('button');
       expect(buttons.length).toBe(1);
       expect(renderFixture.nativeElement.querySelector('a[routerLink]')).toBeNull();
+    });
+
+    it('should render a "Go home" link instead of "Logout" for a 403 error when not logged in', () => {
+      // Act
+      const renderFixture = renderWithCode(403, vi.fn().mockResolvedValue(true), false);
+
+      // Assert
+      expect(renderFixture.nativeElement.querySelector('a[routerLink]')).not.toBeNull();
+      expect(renderFixture.nativeElement.querySelector('button')).toBeNull();
+    });
+
+    it('should not call authProvider.logout while rendering', () => {
+      // Arrange
+      const logout = vi.fn().mockResolvedValue(true);
+
+      // Act
+      renderWithCode(403, logout);
+
+      // Assert
+      expect(logout).not.toHaveBeenCalled();
     });
 
     it('should call authProvider.logout when the Logout button is clicked', () => {
